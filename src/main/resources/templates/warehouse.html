@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>WMS CLS app</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+
+	<script src ="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:if="${#request.remoteUser.equals('admin')}">
+	<div th:include="fragments/adminNavigation :: adminNavigation"></div>
+	</div>
+
+	<div th:unless="${#request.remoteUser.equals('admin')}">
+		<div th:include="fragments/userNavigation :: userNavigation"></div>
+	</div>
+</div>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form  method="post"  th:action="@{/stock}"  style="text-align: center; color:white;">
+			<label>In which warehouse are Your goods?</label><br/><br/>
+			<select th:name="id">
+				<option th:each="i : ${warehouses}" th:value="${i.id}" th:text="${i.city}">
+				</option>
+			</select>
+			<input type="submit" value="Display my stock">
+		</form>
+		<a th:href="@{/logout}"><div style="text-align: center; width: auto" class="button">Logout</div></a>
+
+		<div th:include="fragments/footer :: footer"></div>
+	</div>
+
+</div>
+<div class="w3copyright-agile">
+		<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+	</div>
+
+<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
+<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+<script>
+	superplaceholder({
+		el: input1,
+		sentences: [ 'Write your Username', 'For example:', 'SuperUserStrojem','or', 'SuperUserbUDUJem' ],
+		options: {
+			loop: true,
+			startOnFocus: false
+		}
+	})
+	superplaceholder({
+		el: input2,
+		sentences: [ 'Write your Password', 'For example:', 'SuperUserStrojem','**', 'SuperUserbUDUJem' ],
+		options: {
+			loop: true,
+			startOnFocus: false
+		}
+	})
+</script>
+</body>
+</html>

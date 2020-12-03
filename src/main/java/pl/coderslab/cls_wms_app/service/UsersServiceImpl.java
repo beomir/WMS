@@ -1,0 +1,64 @@
+package pl.coderslab.cls_wms_app.service;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.stereotype.Service;
+import pl.coderslab.cls_wms_app.entity.Users;
+import pl.coderslab.cls_wms_app.entity.Warehouse;
+import pl.coderslab.cls_wms_app.repository.UsersRepository;
+
+import java.util.List;
+
+@Service
+public class UsersServiceImpl implements UsersService{
+    private final UsersRepository usersRepository;
+    private final PasswordEncoder passwordEncoder;
+
+
+    @Autowired
+    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder) {
+        this.usersRepository = usersRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public void add(Users users) {
+        users.setPassword(passwordEncoder.encode(users.getPassword()));
+        usersRepository.save(users);
+    }
+
+    @Override
+    public List<Users> getUser(Long id) {
+        return usersRepository.getUser(id);
+    }
+
+//    @Override
+//    public void edit(long id, String phone) {
+//        usersRepository(id, phone);
+//    }
+
+    @Override
+    public List<Users> getUsers() {
+        return usersRepository.getUsers();
+    }
+
+    @Override
+    public Users findById(Long id) {
+        return usersRepository.getOne(id);
+    }
+
+
+    @Override
+    public void delete(Long id) {
+        Users users = usersRepository.getOne(id);
+        users.setActive(false);
+        usersRepository.save(users);
+        }
+
+    @Override
+    public void update(Users users) {
+
+    }
+}
