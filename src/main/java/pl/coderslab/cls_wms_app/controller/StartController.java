@@ -22,10 +22,10 @@ public class StartController {
         return "index";
     }
 
-    @PostMapping("/index")
-    public String loginGoNext() {
-        return "redirect:/warehouse";
-    }
+//    @PostMapping("/index")
+//    public String loginGoNext() {
+//        return "redirect:/warehouse";
+//    }
 
 //    @PostMapping("/index")
 //    public String get(@Auto String username, HttpSession session) {
