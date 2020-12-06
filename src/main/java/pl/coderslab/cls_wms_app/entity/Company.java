@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
-@AllArgsConstructor
 @Table(name="company")
 public class Company {
 
@@ -20,23 +18,25 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String company;
+    private String name;
     private String city;
     private String street;
     private String post_code;
     private String country;
-    private boolean europen_union;
+    private boolean european_union;
 
-    public Company(Long id, String company, String city, String street, String post_code, String country, boolean europen_union) {
+    private boolean active;
+
+    public Company(Long id, String name, String city, String street, String post_code, String country, boolean european_union, boolean active) {
         this.id = id;
-        this.company = company;
+        this.name = name;
         this.city = city;
         this.street = street;
         this.post_code = post_code;
         this.country = country;
-        this.europen_union = europen_union;
+        this.european_union = european_union;
+        this.active = active;
     }
-
 
     @OneToMany(mappedBy="company")
     private List<Reception> receptionList = new ArrayList<>();
@@ -44,8 +44,8 @@ public class Company {
     @OneToMany(mappedBy="company")
     private List<Shipment> shipmentList = new ArrayList<>();
 
-    @OneToMany(mappedBy="company")
-    private List<Users> UsersList = new ArrayList<>();
+//    @OneToMany(mappedBy="company")
+//    private List<Users> UsersList = new ArrayList<>();
 
     @OneToMany(mappedBy="company")
     private List<Stock> stockList = new ArrayList<>();
@@ -54,13 +54,13 @@ public class Company {
     public String toString() {
         return "Company{" +
                 "id=" + id +
-                ", company='" + company + '\'' +
+                ", name='" + name + '\'' +
                 ", city='" + city + '\'' +
                 ", street='" + street + '\'' +
                 ", post_code='" + post_code + '\'' +
                 ", country='" + country + '\'' +
-                ", europen_union='" + europen_union + '\'' +
+                ", european_union=" + european_union +
+                ", active=" + active +
                 '}';
     }
-
 }

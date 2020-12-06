@@ -32,7 +32,7 @@
 						<th class="tables">Reception Number</th>
 						<th class="tables">Pallet number</th>
 						<th class="tables">Article</th>
-						<th class="tables">Cartons Qty</th>
+						<th class="tables">Unit</th>
 						<th class="tables">Pieces Qty</th>
 						<th class="tables">Quality</th>
 						<th class="tables">Status</th>
@@ -41,7 +41,7 @@
 						<td class="tables" th:text="${reception.receptionNumber}"></td>
 						<td class="tables" th:text="${reception.hd_number}"></td>
 						<td class="tables" th:text="${reception.article.article_number}"></td>
-				        <td class="tables" th:text="${reception.cartons_qty}"></td>
+				        <td class="tables" th:text="${reception.unit.name}"></td>
 				        <td class="tables" th:text="${reception.pieces_qty}"></td>
 				        <td class="tables" th:text="${reception.quality}"></td>
 				        <td class="tables" th:text="${reception.closed}"></td>

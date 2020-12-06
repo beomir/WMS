@@ -1,6 +1,7 @@
 package pl.coderslab.cls_wms_app.service;
 
 import pl.coderslab.cls_wms_app.entity.Article;
+import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Customer;
 
 import java.util.List;
@@ -11,11 +12,15 @@ public interface CustomerService {
 
     List<Customer> getCustomer();
 
+    List<Customer> getDeactivatedCustomer();
+
     Customer findById(Long id);
 
     Customer get(Long id);
 
     void delete(Long id);
+
+    void activate(Long id);
 
     void update(Customer article);
 }

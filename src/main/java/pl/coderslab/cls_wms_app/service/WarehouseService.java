@@ -1,5 +1,6 @@
 package pl.coderslab.cls_wms_app.service;
 
+import pl.coderslab.cls_wms_app.entity.Vendor;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 
 import java.util.List;
@@ -10,6 +11,8 @@ public interface WarehouseService {
 
     List<Warehouse> getWarehouse();
 
+    List<Warehouse> getDeactivatedWarehouse();
+
     List<Warehouse> getWarehouse(Long id);
 
     Warehouse findById(Long id);
@@ -17,6 +20,8 @@ public interface WarehouseService {
     Warehouse get(Long id);
 
     void delete(Long id);
+
+    void activate(Long id);
 
     void update(Warehouse warehouse);
 }

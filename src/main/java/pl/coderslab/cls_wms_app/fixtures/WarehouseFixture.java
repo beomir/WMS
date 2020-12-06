@@ -14,8 +14,8 @@ import java.util.List;
 public class WarehouseFixture {
     private WarehouseService warehouseService;
     private List<Warehouse> warehouseList = Arrays.asList(
-            new Warehouse(null, "Pantatoni","Wrocław","Sławka 13","83-444", "Poland",true,"2020-11-28:T10:00:00","2020-11-28:T10:00:00"),
-            new Warehouse(null, "Pantatoni","Mielec","Rydza-Śmigłego 15","813-543", "Poland",true,"2020-11-28:T10:00:00","2020-11-28:T10:00:00")
+            new Warehouse(null,"WRO1" ,"Pantatoni","Wrocław","Sławka 13","83-444", "Poland",true,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
+            new Warehouse(null,"MIE1", "Pantatoni","Mielec","Rydza-Śmigłego 15","813-543", "Poland",true,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",true)
 
     );
 

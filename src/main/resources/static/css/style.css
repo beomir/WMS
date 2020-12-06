@@ -103,7 +103,7 @@ img {
 /*-- end reset --*/
 body {
     font-family: 'Open Sans', sans-serif;
-    background: url(http://torsjanie.000webhostapp.com/1.jpg) repeat 0px 0px;
+    background: url(../images/1.jpg) repeat 0px 0px;
     background-attachment: fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -145,7 +145,7 @@ h1 {
     border: 1px solid rgba(255, 255, 255, 0.52);
 }
 
-.login-form input[type="text"], .login-form input[type="password"] {
+.login-form input[type="text"], .login-form input[type="password"], input[type="number"] {
     outline: none;
     font-size: 1em;
     color: #000;
@@ -663,26 +663,24 @@ ol
     list-style-type: none;
     font-size: 18px;
     height: 35px;
-    line-height: 100%;
+    line-height: 200%;
+    display: inline-block;
 }
 
 ol a
 {
-    color: #444444;
+    color: #ffffff;
     text-decoration: none;
-    font-weight: bold;
+    display: block;
 }
 
 ol > li
 {
-    width: 100px;
-    height: 20px;
+    float: left;
+    width: 150px;
+    height: 40px;
 }
 
-ol > li:hover
-{
-    background-color: #cf6969;
-}
 
 ol > li:hover > a
 {
@@ -705,20 +703,19 @@ ol > li:hover > ul
 
 ol > li > ul > li
 {
-    background-color:magenta;
+    background-color:#00BCD4;
     position: relative;
     z-index: 100;
-    border-top: 1px solid black;
 }
 
 ol > li > ul > li:hover
 {
-    background-color: blue;
+    background-color: #6495ED;
 }
 
 ol > li > ul > li:hover > a
 {
-    color: darkblue;
+    color: #451717;
 }
 
 tr:hover > td{

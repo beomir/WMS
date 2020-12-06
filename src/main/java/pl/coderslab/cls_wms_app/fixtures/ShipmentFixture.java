@@ -18,24 +18,26 @@ public class ShipmentFixture {
     private CustomerService customerService;
     private ShipMethodService shipMethodService;
     private WarehouseService warehouseService;
+    private UnitService unitService;
 
 
     private List<Shipment> shipmentList = Arrays.asList(
-            new Shipment(null, null,null,10L, 1L,202000000000000005L,"EU1",null,null,null, false,20200001L),
-            new Shipment(null, null,null,12L, 1L,202000000000000006L,"BW1",null,null,null, false,20200002L),
-            new Shipment(null, null,null,12L, 2L,202000000000000007L,"EU1",null,null,null, false,20200003L),
-            new Shipment(null, null,null,12L, 3L,202000000000000008L,"EU1",null,null,null, false,20200004L)
+            new Shipment(null, null,null,10L, null,202000000000000005L,"EU1",null,null,null, false,20200001L),
+            new Shipment(null, null,null,12L, null,202000000000000006L,"BW1",null,null,null, false,20200002L),
+            new Shipment(null, null,null,12L, null,202000000000000007L,"EU1",null,null,null, false,20200003L),
+            new Shipment(null, null,null,12L, null,202000000000000008L,"EU1",null,null,null, false,20200004L)
 
     );
 
     @Autowired
-    public ShipmentFixture(ShipmentService shipmentService, ArticleService articleService, CustomerService customerService, CompanyService companyService, ShipMethodService shipMethodService, WarehouseService warehouseService) {
+    public ShipmentFixture(ShipmentService shipmentService, ArticleService articleService, CustomerService customerService, CompanyService companyService, ShipMethodService shipMethodService, WarehouseService warehouseService, UnitService unitService) {
         this.shipmentService = shipmentService;
         this.articleService = articleService;
         this.customerService = customerService;
         this.companyService = companyService;
         this.shipMethodService = shipMethodService;
         this.warehouseService = warehouseService;
+        this.unitService = unitService;
     }
 
     public void loadIntoDB() {
@@ -44,6 +46,7 @@ public class ShipmentFixture {
         List<Article> articles = articleService.getArticle();
         List<ShipMethod> shipMethods = shipMethodService.getShipMethod();
         List<Warehouse> warehouses = warehouseService.getWarehouse();
+        List<Unit> unit = unitService.getUnit();
         Random rand = new Random();
 
 
@@ -72,6 +75,11 @@ public class ShipmentFixture {
         shipment2.setCustomer(customers.get(1));
         shipment3.setCustomer(customers.get(2));
         shipment4.setCustomer(customers.get(3));
+
+        shipment1.setUnit(unit.get(0));
+        shipment2.setUnit(unit.get(0));
+        shipment3.setUnit(unit.get(0));
+        shipment4.setUnit(unit.get(0));
 
         shipmentService.add(shipment1);
         shipmentService.add(shipment2);

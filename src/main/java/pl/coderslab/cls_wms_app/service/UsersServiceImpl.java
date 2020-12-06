@@ -9,6 +9,8 @@ import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.repository.UsersRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -45,6 +47,11 @@ public class UsersServiceImpl implements UsersService{
     }
 
     @Override
+    public List<Users> getDeactivatedUsers() {
+        return usersRepository.getDeactivatedUsers();
+    }
+
+    @Override
     public Users findById(Long id) {
         return usersRepository.getOne(id);
     }
@@ -54,11 +61,23 @@ public class UsersServiceImpl implements UsersService{
     public void delete(Long id) {
         Users users = usersRepository.getOne(id);
         users.setActive(false);
+        users.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         usersRepository.save(users);
         }
 
     @Override
-    public void update(Users users) {
+    public void remove(Long id) {
+            usersRepository.deleteById(id);
+        }
 
+    @Override
+    public void activate(Long id) {
+        Users users = usersRepository.getOne(id);
+        users.setActive(true);
+        users.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        usersRepository.save(users);
     }
+
+
+
 }

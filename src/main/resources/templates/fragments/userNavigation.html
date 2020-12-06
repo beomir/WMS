@@ -7,6 +7,40 @@
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="'Hello: ' + ${#request.remoteUser} "></div>
 
         <a th:href="@{/warehouse}"><div class="button">Choose Warehouse</div></a>
+        <a th:href="@{/vendor}" style="min-width: 100%">
+            <ol class="button"><div style="color: white;font-weight: normal">Vendor list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:href="@{/formVendor}">Create New Vendor</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+        <a th:href="@{/customer}" style="min-width: 100%">
+            <ol class="button"><div style="color: white;font-weight: normal">Customer list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:href="@{/formCustomer}">Create New Customer</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+        <a th:href="@{/article}" style="min-width: 100%">
+            <ol class="button"><div style="color: white;font-weight: normal">Article list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:href="@{/formCustomer}">Create New Article</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+        <a th:href="@{/logout}"><div class="button">Logout</div></a>
     </div>
 </div>
 </body>

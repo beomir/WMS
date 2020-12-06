@@ -25,7 +25,6 @@ public class Stock {
     private Article article;
 
     private Long pieces_qty;
-    private Long cartons_qty;
 
     @NotNull
     @ManyToOne
@@ -33,12 +32,12 @@ public class Stock {
 
     private String quality;
 
-    public Stock(Long id, Long hd_number, Article article,  Long pieces_qty,Long cartons_qty, Status status, String quality, Warehouse warehouse, String created, String last_update, Company company) {
+    public Stock(Long id, Long hd_number, Article article,  Long pieces_qty,Unit unit, Status status, String quality, Warehouse warehouse, String created, String last_update, Company company) {
         this.id = id;
         this.hd_number = hd_number;
         this.article = article;
         this.pieces_qty = pieces_qty;
-        this.cartons_qty = cartons_qty;
+        this.unit = unit;
         this.status = status;
         this.quality = quality;
         this.warehouse = warehouse;
@@ -58,6 +57,10 @@ public class Stock {
     @NotNull
     @ManyToOne
     private Company company;
+
+    @NotNull
+    @ManyToOne
+    private Unit unit;
 
 
 }

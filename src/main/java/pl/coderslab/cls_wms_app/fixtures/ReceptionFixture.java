@@ -17,22 +17,24 @@ public class ReceptionFixture {
     private ArticleService articleService;
     private VendorService vendorService;
     private WarehouseService warehouseService;
+    private UnitService unitService;
 
 
     private List<Reception> receptionList = Arrays.asList(
-            new Reception(null, null,null,12L, 1L,202000000000000006L,"BW1",null,null, false,20200001L),
-            new Reception(null, null,null,12L, 2L,202000000000000007L,"EU1",null,null, false,20200002L),
-            new Reception(null, null,null,12L, 3L,202000000000000008L,"EU1",null,null, false,20200003L),
-            new Reception(null, null,null,10L, 1L,202000000000000005L,"EU1",null,null,false,20200004L)
+            new Reception(null, null,null,12L, null,202000000000000006L,"BW1",null,null, false,20200001L),
+            new Reception(null, null,null,12L, null,202000000000000007L,"EU1",null,null, false,20200002L),
+            new Reception(null, null,null,12L, null,202000000000000008L,"EU1",null,null, false,20200003L),
+            new Reception(null, null,null,10L, null,202000000000000005L,"EU1",null,null,false,20200004L)
     );
 
     @Autowired
-    public ReceptionFixture(ReceptionService receptionService, ArticleService articleService, VendorService vendorService, CompanyService companyService, WarehouseService warehouseService) {
+    public ReceptionFixture(ReceptionService receptionService, ArticleService articleService, VendorService vendorService, CompanyService companyService, WarehouseService warehouseService, UnitService unitService) {
         this.receptionService = receptionService;
         this.articleService = articleService;
         this.vendorService = vendorService;
         this.companyService = companyService;
         this.warehouseService = warehouseService;
+        this.unitService = unitService;
     }
 
     public void loadIntoDB() {
@@ -40,6 +42,7 @@ public class ReceptionFixture {
         List<Vendor> vendors = vendorService.getVendor();
         List<Article> articles = articleService.getArticle();
         List<Warehouse> warehouses = warehouseService.getWarehouse();
+        List<Unit> unit = unitService.getUnit();
         Random rand = new Random();
 
 
@@ -66,6 +69,11 @@ public class ReceptionFixture {
         reception2.setVendor(vendors.get(1));
         reception3.setVendor(vendors.get(2));
         reception4.setVendor(vendors.get(3));
+
+        reception1.setUnit(unit.get(0));
+        reception2.setUnit(unit.get(0));
+        reception3.setUnit(unit.get(0));
+        reception4.setUnit(unit.get(0));
 
         receptionService.add(reception1);
         receptionService.add(reception2);

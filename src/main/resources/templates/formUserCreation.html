@@ -19,10 +19,14 @@
 <div class="main-agileits">
 	<div th:include="fragments/header :: header"></div>
 </div>
-<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
-	<div style="float: left" class="login-form">
 
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:if="${#request.remoteUser.equals('admin')}">
 		<div th:include="fragments/adminNavigation :: adminNavigation"></div>
+	</div>
+
+	<div th:unless="${#request.remoteUser.equals('admin')}">
+		<div th:include="fragments/userNavigation :: userNavigation"></div>
 	</div>
 </div>
 
@@ -36,6 +40,7 @@
 				<input type="hidden" th:field="*{id}"/>
 				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
+				<input type="hidden" th:value="true" id="active" name="active"/>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Password</label>
@@ -46,14 +51,14 @@
 				<input type="text" th:field="*{email}"/>
 			</section>
 			<section>
-				<label style="color: white;font-weight: bold">Company</label><br/><br/>
+				<label style="color: white;font-weight: bold">Company</label>
 				<select class="select-css" th:field="*{company}">
-					<option th:each="i : ${companies}" th:value="${i.id}" th:text="${i.company}">
+					<option th:each="i : ${companies}" th:value="${i.name}" th:text="${i.name}">
 					</option>
 				</select>
-			</section><br/><br/>
+			</section><br/>
 			<section>
-				<label style="color: white;font-weight: bold">Permissions</label><br/><br/>
+				<label style="color: white;font-weight: bold">Permissions</label>
 				<select class="select-css" th:field="*{role}">
 					<option th:value="ROLE_USER">USER</option>
 					<option th:value="ROLE_ADMIN">ADMIN</option>
@@ -63,7 +68,6 @@
 				<br/><button class="button" type="submit">Save</button>
 			</section>
 		</form>
-		<div style="text-align: center; width: auto" class="button">Logout</div>
 
 	</div>
 

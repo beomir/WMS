@@ -11,8 +11,11 @@ import java.util.List;
 @Repository
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
 
-    @Query("Select w from Warehouse w")
+    @Query("Select w from Warehouse w where w.active = true")
     List<Warehouse> getWarehouse();
+
+    @Query("Select w from Warehouse w where w.active = false")
+    List<Warehouse> getDeactivatedWarehouse();
 
     @Query("Select distinct w from Warehouse w where w.id =?1")
     List<Warehouse> getWarehouse(Long id);

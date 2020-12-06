@@ -14,11 +14,16 @@ public interface UsersService {
 
     List<Users> getUsers();
 
+    List<Users> getDeactivatedUsers();
+
     Users findById(Long id);
 
     List<Users> getUser(Long id);
 
     void delete(Long id);
 
-    void update(Users users);
+    void remove(Long id);
+
+    void activate(Long id);
+
 }

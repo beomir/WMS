@@ -8,8 +8,85 @@
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="'Hello: ' + ${#request.remoteUser} "></div>
 
         <a th:href="@{/warehouse}"><div class="button">Choose Warehouse</div></a>
-        <a th:href="@{/formUserCreation}"><div class="button">Create new User</div></a>
-        <a th:href="@{/userList}"><div class="button">Users List</div></a>
+        <a th:href="@{/vendor}" style="min-width: 100%">
+            <ol class="button"><div style="color: white;font-weight: normal">Vendor list</div >
+            <li style="min-width: 100%;">
+                <ul>
+                    <li>
+                        <a th:href="@{/formVendor}">Create New Vendor</a>
+                    <li><a th:href="@{/vendorDeactivatedList}">Deactivated vendor list</a></li>
+                    </li>
+                </ul>
+            </li>
+        </ol>
+        </a>
+        <a th:href="@{/customer}" style="min-width: 100%">
+            <ol class="button"><div style="color: white;font-weight: normal">Customer list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:href="@{/formCustomer}">Create New Customer</a>
+                        <li><a th:href="@{/customerDeactivatedList}">Deactivated customer list</a></li>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+        <a th:href="@{/article}" style="min-width: 100%">
+            <ol class="button"><div style="color: white;font-weight: normal">Article list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:href="@{/formArticle}">Create New Article</a>
+                        <li><a th:href="@{/articleDeactivatedList}">Deactivated article list</a></li>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+        <a th:href="@{/unit}" style="min-width: 100%">
+            <ol class="button"><div style="color: white;font-weight: normal">Units list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li><a th:href="@{/formUnitCreation}">Create New Unit</a></li>
+                        <li><a th:href="@{/unitDeactivatedList}">Deactivated units list</a></li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+        <a th:href="@{/company}" style="min-width: 100%">
+            <ol class="button"><div style="color: white;font-weight: normal">Companies list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:href="@{/formCompany}">Create New Company</a>
+                        <li><a th:href="@{/companyDeactivatedList}">Deactivated company list</a></li>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+        <a th:href="@{/userList}" style="min-width: 100%">
+            <ol class="button"><div style="color: white;font-weight: normal">User list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li><a th:href="@{/formUserCreation}">Create New User</a></li>
+                        <li><a th:href="@{/usersDeactivatedList}">Deactivated users list</a></li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+        <a th:href="@{/warehouseList}" style="min-width: 100%">
+            <ol class="button"><div style="color: white;font-weight: normal">Warehouses list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li><a th:href="@{/formWarehouseCreation}">Create New Warehouse</a></li>
+                        <li><a th:href="@{/warehouseDeactivatedList}">Deactivated warehouses list</a></li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+        <a th:href="@{/logout}"><div class="button">Logout</div></a>
     </div>
 </div>
 </body>

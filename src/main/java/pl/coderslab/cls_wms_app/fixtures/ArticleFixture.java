@@ -20,10 +20,10 @@ public class ArticleFixture {
 
 
     private List<Article> articleList = Arrays.asList(
-            new Article(null, 1234567890123456L, "sandbag","01",10L,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00"),
-            new Article(null, 1234567890123456L, "sandbag","02",12L,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00"),
-            new Article(null, 1234567890123457L, "cement","01",6L,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00"),
-            new Article(null, 1234567890123458L, "glue","01",4L,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00")
+            new Article(null, 1234567890123456L, "sandbag",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
+            new Article(null, 1234567890123456L, "sandbag",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
+            new Article(null, 1234567890123457L, "cement",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
+            new Article(null, 1234567890123458L, "glue",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true)
     );
 
     @Autowired

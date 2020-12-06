@@ -34,7 +34,9 @@ public class Article {
 
     private String last_update;
 
-    public Article(Long id, Long article_number, String article_desc, String article_logistic_variant, Long pieces_per_carton, Company company, String created, String last_update) {
+    private boolean active;
+
+    public Article(Long id, Long article_number, String article_desc, String article_logistic_variant, Long pieces_per_carton, Company company, String created, String last_update,boolean active) {
         this.id = id;
         this.article_number = article_number;
         this.article_desc = article_desc;
@@ -43,6 +45,7 @@ public class Article {
         this.company = company;
         this.created = created;
         this.last_update = last_update;
+        this.active = active;
     }
 
     @OneToMany(mappedBy="article")

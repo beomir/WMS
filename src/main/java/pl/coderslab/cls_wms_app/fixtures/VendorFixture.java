@@ -21,10 +21,10 @@ public class VendorFixture {
 
 
     private List<Vendor> vendorList = Arrays.asList(
-            new Vendor(null, null, "Yokohama","Tokugawa 12","10-555","Japan", false),
-            new Vendor(null, null, "Istanbul","Altaturk 33","33-444","Turkey", false),
-            new Vendor(null, null, "Ciechocinek","Słowacka 122","77-777","Poland", true),
-            new Vendor(null, null, "Bydgoszcz","Kopernika 12","44-343","Poland", true)
+            new Vendor(null, null, "Yokohama","Tokugawa 12","10-555","Japan", false,"Sharpico",true),
+            new Vendor(null, null, "Istanbul","Altaturk 33","33-444","Turkey", false,"Kebabini",true),
+            new Vendor(null, null, "Ciechocinek","Słowacka 122","77-777","Poland", true,"Ustrowiczanka",true),
+            new Vendor(null, null, "Bydgoszcz","Kopernika 12","44-343","Poland", true,"LekkoAtletico",true)
     );
 
     @Autowired

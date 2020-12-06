@@ -16,10 +16,10 @@ public class CustomerFixture {
     private CompanyService companyService;
 
     private List<Customer> customerList = Arrays.asList(
-            new Customer(null,null, "Berlin", "Hermana 12", "56-765", "Germany",true),
-            new Customer(null,null, "Stuttgart", "Rudlofa 56", "32-323", "Germany", true),
-            new Customer(null,null, "Bonn", "Hermenegildy 12", "77-656", "Germany", true),
-            new Customer(null,null, "Hamburg", "Brunhildy 19", "99-767", "Germany", true)
+            new Customer(null,null, "Berlin", "Hermana 12", "56-765", "Germany",true,"Muzeum 2 wojny",true),
+            new Customer(null,null, "Stuttgart", "Rudlofa 56", "32-323", "Germany", true,"Mercedes",true),
+            new Customer(null,null, "Bonn", "Hermenegildy 12", "77-656", "Germany", true,"Muzeum Stolicy RFN",true),
+            new Customer(null,null, "Hamburg", "Brunhildy 19", "99-767", "Germany", true,"Stoczna parowców",true)
     );
 
     @Autowired

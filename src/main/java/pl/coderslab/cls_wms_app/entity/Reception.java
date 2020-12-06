@@ -31,7 +31,11 @@ public class Reception {
     private Long receptionNumber;
 
     private Long pieces_qty;
-    private Long cartons_qty;
+
+    @NotNull
+    @ManyToOne
+    private Unit unit;
+
     private Long hd_number;
     private String quality;
 
@@ -45,13 +49,13 @@ public class Reception {
 
     private boolean closed;
 
-    public Reception(Long id, Article article, Company company,  Long pieces_qty, Long cartons_qty, Long hd_number, String quality, Vendor vendor, Warehouse warehouse, boolean closed,Long receptionNumber) {
+    public Reception(Long id, Article article, Company company,  Long pieces_qty, Unit unit, Long hd_number, String quality, Vendor vendor, Warehouse warehouse, boolean closed,Long receptionNumber) {
         this.id = id;
         this.article = article;
         this.company = company;
 
         this.pieces_qty = pieces_qty;
-        this.cartons_qty = cartons_qty;
+        this.unit = unit;
         this.hd_number = hd_number;
         this.quality = quality;
         this.vendor = vendor;

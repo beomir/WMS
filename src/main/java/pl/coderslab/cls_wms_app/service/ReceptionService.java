@@ -11,11 +11,15 @@ public interface ReceptionService {
 
     List<Reception> getReception(Long id);
 
-    Reception findById(Long id);
+    List<Reception> getReceptions();
 
-    Reception get(Long id);
+    Reception findById(Long id);
 
     void delete(Long id);
 
     void update(Reception reception);
+
+    Long lastReception();
+
+    List<Integer> pallets();
 }

@@ -42,14 +42,15 @@
 						<td class="tables" th:utext="${users.username}"></td>
 						<td class="tables" th:text="${users.email}"></td>
 				        <td class="tables" th:text="${users.role}"></td>
-						<td class="tables" th:text="${users.usersDetails.company.company}"></td>
+						<td class="tables" th:text="${users.company}"></td>
 				        <td class="tables" th:text="${users.created}"></td>
 				        <td class="tables" th:text="${users.last_update}"></td>
 						<td style="cursor:pointer;" class="tables">
 							<ol>
 								<li>
 									<ul>
-										<li><a th:href="@{/delete/{id}(id=${users.id})}">DELETE</a></li>
+										<li><a th:href="@{/deleteUser/{id}(id=${users.id})}">DEACTIVATE</a></li>
+										<li><a th:href="@{/removeUser/{id}(id=${users.id})}">DELETE</a></li>
 										<li><a th:href="@{/formUserEdit/{id}(id=${users.id})}">EDIT</a></li>
 									</ul>
 								</li>

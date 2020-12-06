@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Stock;
+import pl.coderslab.cls_wms_app.entity.Vendor;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.repository.CompanyRepository;
 import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -31,13 +34,18 @@ public class WareohuseServiceImpl implements WarehouseService{
     }
 
     @Override
+    public List<Warehouse> getDeactivatedWarehouse() {
+        return warehouseRepository.getDeactivatedWarehouse();
+    }
+
+    @Override
     public List<Warehouse> getWarehouse(Long id) {
         return warehouseRepository.getWarehouse(id);
     }
 
     @Override
     public Warehouse findById(Long id) {
-        return null;
+        return warehouseRepository.getOne(id);
     }
 
     @Override
@@ -47,7 +55,18 @@ public class WareohuseServiceImpl implements WarehouseService{
 
     @Override
     public void delete(Long id) {
+        Warehouse warehouse = warehouseRepository.getOne(id);
+        warehouse.setActive(false);
+        warehouse.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        warehouseRepository.save(warehouse);
+    }
 
+    @Override
+    public void activate(Long id) {
+        Warehouse warehouse = warehouseRepository.getOne(id);
+        warehouse.setActive(true);
+        warehouse.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        warehouseRepository.save(warehouse);
     }
 
     @Override

@@ -21,19 +21,23 @@ public class Customer {
     @ManyToOne
     private Company company;
 
+    private String name;
+    private boolean active;
     private String city;
     private String street;
     private String post_code;
     private String country;
-    private boolean europen_union;
+    private boolean european_union;
 
-    public Customer(Long id, Company company, String city, String street, String post_code, String country, boolean europen_union) {
+    public Customer(Long id, Company company, String city, String street, String post_code, String country, boolean european_union, String name, boolean active) {
         this.id = id;
         this.company = company;
         this.city = city;
         this.street = street;
         this.post_code = post_code;
         this.country = country;
-        this.europen_union = europen_union;
+        this.european_union = european_union;
+        this.name = name;
+        this.active = active;
     }
 }

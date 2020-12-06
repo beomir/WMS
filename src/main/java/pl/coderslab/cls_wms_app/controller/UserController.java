@@ -81,10 +81,33 @@ public class UserController {
         return "redirect:/userList";
     }
 
-    @GetMapping("/delete/{id}")
-    public String removeUser(@PathVariable Long id) {
+
+    @GetMapping("usersDeactivatedList")
+    public String usersDeactivatedList(Model model) {
+        List<Company> companies = companyService.getCompany();
+        List<Users> users = usersService.getDeactivatedUsers();
+        model.addAttribute("companies", companies);
+        model.addAttribute("user", users);
+        return "usersDeactivatedList";
+    }
+
+
+    @GetMapping("/deleteUser/{id}")
+    public String deactivateUser(@PathVariable Long id) {
         usersService.delete(id);
         return "redirect:/userList";
+    }
+
+    @GetMapping("/removeUser/{id}")
+    public String removeUser(@PathVariable Long id) {
+        usersService.remove(id);
+        return "redirect:/userList";
+    }
+
+    @GetMapping("/activateUser/{id}")
+    public String activateUser(@PathVariable Long id) {
+        usersService.activate(id);
+        return "redirect:/usersDeactivatedList";
     }
 
 }

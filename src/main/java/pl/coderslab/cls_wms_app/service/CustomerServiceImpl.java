@@ -30,8 +30,13 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
+    public List<Customer> getDeactivatedCustomer() {
+        return customerRepository.getDeactivatedCustomer();
+    }
+
+    @Override
     public Customer findById(Long id) {
-        return null;
+        return customerRepository.getOne(id);
     }
 
     @Override
@@ -41,7 +46,18 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public void delete(Long id) {
+        Customer customer = customerRepository.getOne(id);
+        customer.setActive(false);
+//        company.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        customerRepository.save(customer);
+    }
 
+    @Override
+    public void activate(Long id) {
+        Customer customer = customerRepository.getOne(id);
+        customer.setActive(true);
+//        company.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        customerRepository.save(customer);
     }
 
     @Override

@@ -17,23 +17,25 @@ public class StockFixture {
     private WarehouseService warehouseService;
     private StatusService statusService;
     private ArticleService articleService;
+    private UnitService unitService;
 
     private List<Stock> stockList = Arrays.asList(
-            new Stock(null, 202000000000000000L, null, 24L,2L,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null),
-            new Stock(null, 202000000000000001L, null, 10L,1L,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null),
-            new Stock(null, 202000000000000002L, null,  18L,3L,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null),
-            new Stock(null, 202000000000000003L, null,  20L,5L,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null),
-            new Stock(null, 202000000000000004L, null,  20L,5L,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null)
+            new Stock(null, 202000000000000000L, null, 24L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null),
+            new Stock(null, 202000000000000001L, null, 10L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null),
+            new Stock(null, 202000000000000002L, null,  18L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null),
+            new Stock(null, 202000000000000003L, null,  20L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null),
+            new Stock(null, 202000000000000004L, null,  20L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null)
     );
 
 
     @Autowired
-    public StockFixture(StockService stockService, CompanyService companyService, WarehouseService warehouseService, StatusService statusService, ArticleService articleService) {
+    public StockFixture(StockService stockService, CompanyService companyService, WarehouseService warehouseService, StatusService statusService, ArticleService articleService, UnitService unitService) {
         this.stockService = stockService;
         this.companyService = companyService;
         this.warehouseService = warehouseService;
         this.statusService = statusService;
         this.articleService = articleService;
+        this.unitService = unitService;
     }
 
     public void loadIntoDB() {
@@ -41,6 +43,7 @@ public class StockFixture {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         List<Status> statuses = statusService.getStatus();
         List<Article> articles = articleService.getArticle();
+        List<Unit> unit = unitService.getUnit();
         Random rand = new Random();
 
         for (Stock storage : stockList) {
@@ -66,6 +69,12 @@ public class StockFixture {
         stock3.setCompany(companies.get(2));
         stock4.setCompany(companies.get(3));
         stock5.setCompany(companies.get(3));
+
+        stock1.setUnit(unit.get(0));
+        stock2.setUnit(unit.get(0));
+        stock3.setUnit(unit.get(0));
+        stock4.setUnit(unit.get(0));
+        stock5.setUnit(unit.get(0));
 
         stockService.add(stock1);
         stockService.add(stock2);

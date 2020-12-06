@@ -40,11 +40,13 @@ public class Users {
 //    @OneToOne(mappedBy = "users")
 //    private UsersDetails usersDetails;
 
-    @NotNull
-    @ManyToOne
-    private Company company;
+//    @NotNull
+//    @ManyToOne
+//    private Company company;
 
-    public Users(Long id, String username, String password, String created, String last_update, String role,String email, boolean active, Company company) {
+    private String company;
+
+    public Users(Long id, String username, String password, String created, String last_update, String role,String email, boolean active, String company) {
         this.id = id;
         this.username = username;
         this.password = password;

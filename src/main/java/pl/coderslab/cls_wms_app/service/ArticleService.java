@@ -11,12 +11,16 @@ public interface ArticleService {
 
     List<Article> getArticle();
 
+    List<Article> getDeactivatedArticle();
+
     Article findById(Long id);
 
 
     Article get(Long id);
 
     void delete(Long id);
+
+    void activate(Long id);
 
     void update(Article article);
 }

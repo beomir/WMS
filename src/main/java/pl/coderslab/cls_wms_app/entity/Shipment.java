@@ -31,7 +31,11 @@ public class Shipment {
     private Long shipmentNumber;
 
     private Long pieces_qty;
-    private Long cartons_qty;
+
+    @NotNull
+    @ManyToOne
+    private Unit unit;
+
     private Long hd_number;
     private String quality;
 
@@ -49,12 +53,12 @@ public class Shipment {
 
     private boolean closed;
 
-    public Shipment(Long id, Article article, Company company, Long pieces_qty, Long cartons_qty, Long hd_number, String quality, Customer customer, ShipMethod shipMethod,Warehouse warehouse, boolean closed,Long shipmentNumber) {
+    public Shipment(Long id, Article article, Company company, Long pieces_qty, Unit unit, Long hd_number, String quality, Customer customer, ShipMethod shipMethod,Warehouse warehouse, boolean closed,Long shipmentNumber) {
         this.id = id;
         this.article = article;
         this.company = company;
         this.pieces_qty = pieces_qty;
-        this.cartons_qty = cartons_qty;
+        this.unit = unit;
         this.hd_number = hd_number;
         this.quality = quality;
         this.customer = customer;

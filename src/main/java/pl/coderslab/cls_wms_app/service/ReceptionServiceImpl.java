@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.entity.Reception;
 import pl.coderslab.cls_wms_app.repository.ReceptionRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,10 +33,6 @@ public class ReceptionServiceImpl implements ReceptionService{
         return null;
     }
 
-    @Override
-    public Reception get(Long id) {
-        return null;
-    }
 
     @Override
     public void delete(Long id) {
@@ -46,4 +43,25 @@ public class ReceptionServiceImpl implements ReceptionService{
     public void update(Reception reception) {
 
     }
+
+    @Override
+    public Long lastReception() {
+        return receptionRepository.lastReception();
+    }
+
+
+    @Override
+    public List<Reception> getReceptions() {
+        return receptionRepository.getReceptions();
+    }
+
+    @Override
+    public List<Integer> pallets() {
+        List<Integer> ret = new ArrayList<>();
+        for (int i=1; i<=66; i++) {
+            ret.add(i);
+        }
+        return ret;
+    }
+
 }
