@@ -10,7 +10,9 @@ public interface CustomerService {
 
     void add(Customer customer);
 
-    List<Customer> getCustomer();
+    List<Customer> getCustomer(String username);
+
+    List<Customer> getCustomers();
 
     List<Customer> getDeactivatedCustomer();
 

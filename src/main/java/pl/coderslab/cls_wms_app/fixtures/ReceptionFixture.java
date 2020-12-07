@@ -21,10 +21,10 @@ public class ReceptionFixture {
 
 
     private List<Reception> receptionList = Arrays.asList(
-            new Reception(null, null,null,12L, null,202000000000000006L,"BW1",null,null, false,20200001L),
-            new Reception(null, null,null,12L, null,202000000000000007L,"EU1",null,null, false,20200002L),
-            new Reception(null, null,null,12L, null,202000000000000008L,"EU1",null,null, false,20200003L),
-            new Reception(null, null,null,10L, null,202000000000000005L,"EU1",null,null,false,20200004L)
+            new Reception(null, null,null,12L, null,202000000000000006L,"BW1",null,null, false ,20200001L ,true),
+            new Reception(null, null,null,12L, null,202000000000000007L,"EU1",null,null, false,20200002L,true),
+            new Reception(null, null,null,12L, null,202000000000000008L,"EU1",null,null, false,20200003L,true),
+            new Reception(null, null,null,10L, null,202000000000000005L,"EU1",null,null,false,20200004L,true)
     );
 
     @Autowired
@@ -39,8 +39,8 @@ public class ReceptionFixture {
 
     public void loadIntoDB() {
         List<Company> companies = companyService.getCompany();
-        List<Vendor> vendors = vendorService.getVendor();
-        List<Article> articles = articleService.getArticle();
+        List<Vendor> vendors = vendorService.getVendors();
+        List<Article> articles = articleService.getArticles();
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         List<Unit> unit = unitService.getUnit();
         Random rand = new Random();

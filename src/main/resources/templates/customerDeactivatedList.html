@@ -20,7 +20,14 @@
 		<div th:include="fragments/header :: header"></div>
 	</div>
 	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
-		<div th:include="fragments/adminNavigation :: adminNavigation"></div>
+
+		<div th:if="${#request.remoteUser.equals('admin')}">
+			<div th:include="fragments/adminNavigation :: adminNavigation"></div>
+		</div>
+
+		<div th:unless="${#request.remoteUser.equals('admin')}">
+			<div th:include="fragments/userNavigation :: userNavigation"></div>
+		</div>
 	</div>
 
 	<div id="content" class="mainw3-agileinfo">
@@ -36,18 +43,10 @@
 						<th class="tables">Country</th>
 						<th class="tables">Europen Union</th>
 						<th class="tables">Company</th>
-						<th class="tables">Action</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="customers: ${customers}">
-						<td class="tables" th:utext="${customers.name}"></td>
-						<td class="tables" th:text="${customers.city}"></td>
-				        <td class="tables" th:text="${customers.street}"></td>
-						<td class="tables" th:text="${customers.post_code}"></td>
-				        <td class="tables" th:text="${customers.country}"></td>
-				        <td class="tables" th:text="${customers.european_union}"></td>
-				        <td class="tables" th:text="${customers.company.name}"></td>
-						<td style="cursor:pointer;" class="tables">
-							<ol>
+						<td class="tables" style="padding-bottom: 2px">
+							<ol><div th:text="${customers.name}"></div>
 								<li>
 									<ul>
 										<li><a th:href="@{/activateCustomer/{id}(id=${customers.id})}">ACTIVATE</a></li>
@@ -55,6 +54,12 @@
 								</li>
 							</ol>
 						</td>
+						<td class="tables" th:text="${customers.city}"></td>
+				        <td class="tables" th:text="${customers.street}"></td>
+						<td class="tables" th:text="${customers.post_code}"></td>
+				        <td class="tables" th:text="${customers.country}"></td>
+				        <td class="tables" th:text="${customers.european_union}"></td>
+				        <td class="tables" th:text="${customers.company.name}"></td>
 				    </tr>
 				</table>
 			</div>

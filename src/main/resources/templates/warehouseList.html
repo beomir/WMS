@@ -20,7 +20,14 @@
 		<div th:include="fragments/header :: header"></div>
 	</div>
 	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
-		<div th:include="fragments/adminNavigation :: adminNavigation"></div>
+
+		<div th:if="${#request.remoteUser.contains('admin')}">
+			<div th:include="fragments/adminNavigation :: adminNavigation"></div>
+		</div>
+
+		<div th:unless="${#request.remoteUser.contains('admin')}">
+			<div th:include="fragments/userNavigation :: userNavigation"></div>
+		</div>
 	</div>
 
 	<div id="content" class="mainw3-agileinfo">

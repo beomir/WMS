@@ -17,7 +17,7 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
     @Query("Select w from Warehouse w where w.active = false")
     List<Warehouse> getDeactivatedWarehouse();
 
-    @Query("Select distinct w from Warehouse w where w.id =?1")
+    @Query("Select distinct w from Warehouse w where w.id =?1 order by w.name")
     List<Warehouse> getWarehouse(Long id);
 
 }

@@ -51,9 +51,11 @@ public class Shipment {
     @ManyToOne
     private Warehouse warehouse;
 
-    private boolean closed;
+    private boolean creation_closed;
 
-    public Shipment(Long id, Article article, Company company, Long pieces_qty, Unit unit, Long hd_number, String quality, Customer customer, ShipMethod shipMethod,Warehouse warehouse, boolean closed,Long shipmentNumber) {
+    private boolean finished;
+
+    public Shipment(Long id, Article article, Company company, Long pieces_qty, Unit unit, Long hd_number, String quality, Customer customer, ShipMethod shipMethod,Warehouse warehouse, boolean creation_closed,Long shipmentNumber, boolean finished) {
         this.id = id;
         this.article = article;
         this.company = company;
@@ -64,7 +66,8 @@ public class Shipment {
         this.customer = customer;
         this.shipMethod = shipMethod;
         this.warehouse = warehouse;
-        this.closed = closed;
+        this.creation_closed = creation_closed;
         this.shipmentNumber = shipmentNumber;
+        this.finished = finished;
     }
 }

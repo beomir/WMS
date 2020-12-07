@@ -21,11 +21,11 @@
 </div>
 
 <div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
-	<div th:if="${#request.remoteUser.equals('admin')}">
+	<div th:if="${#request.remoteUser.contains('admin')}">
 		<div th:include="fragments/adminNavigation :: adminNavigation"></div>
 	</div>
 
-	<div th:unless="${#request.remoteUser.equals('admin')}">
+	<div th:unless="${#request.remoteUser.contains('admin')}">
 		<div th:include="fragments/userNavigation :: userNavigation"></div>
 	</div>
 </div>

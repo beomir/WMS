@@ -6,7 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
+import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Unit;
+import pl.coderslab.cls_wms_app.service.CompanyService;
 import pl.coderslab.cls_wms_app.service.UnitService;
 
 import java.time.LocalDateTime;
@@ -16,17 +19,21 @@ import java.util.List;
 public class UnitController {
 
     private UnitService unitService;
+    private CompanyService companyService;
 
 
     @Autowired
-    public UnitController(UnitService unitService) {
+    public UnitController(UnitService unitService, CompanyService companyService) {
         this.unitService = unitService;
+        this.companyService = companyService;
     }
 
     @GetMapping("unit")
     public String list(Model model) {
         List<Unit> units = unitService.getUnit();
         model.addAttribute("units", units);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "unit";
     }
 
@@ -34,6 +41,8 @@ public class UnitController {
     public String unitDeactivatedList(Model model) {
         List<Unit> unitList = unitService.getDeactivatedUnit();
         model.addAttribute("units", unitList);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "unitDeactivatedList";
     }
 
@@ -42,6 +51,8 @@ public class UnitController {
     public String unitForm(Model model){
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("unit", new Unit());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formUnitCreation";
     }
 
@@ -69,6 +80,8 @@ public class UnitController {
         Unit unit = unitService.findById(id);
         model.addAttribute(unit);
         model.addAttribute("localDateTime", LocalDateTime.now());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formEditUnit";
     }
 

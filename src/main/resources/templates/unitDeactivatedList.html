@@ -20,7 +20,14 @@
 		<div th:include="fragments/header :: header"></div>
 	</div>
 	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
-		<div th:include="fragments/adminNavigation :: adminNavigation"></div>
+
+		<div th:if="${#request.remoteUser.contains('admin')}">
+			<div th:include="fragments/adminNavigation :: adminNavigation"></div>
+		</div>
+
+		<div th:unless="${#request.remoteUser.contains('admin')}">
+			<div th:include="fragments/userNavigation :: userNavigation"></div>
+		</div>
 	</div>
 
 	<div id="content" class="mainw3-agileinfo">
@@ -35,12 +42,8 @@
 						<th class="tables">Created</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="units: ${units}">
-						<td class="tables" th:utext="${units.name}"></td>
-						<td class="tables" th:text="${units.description}"></td>
-				        <td class="tables" th:text="${units.last_update}"></td>
-						<td class="tables" th:text="${units.created}"></td>
-						<td style="cursor:pointer;" class="tables">
-							<ol>
+						<td class="tables" style="padding-bottom: 2px">
+							<ol><div th:text="${units.name}"> </div>
 								<li>
 									<ul>
 										<li><a th:href="@{/activateUnit/{id}(id=${units.id})}">ACTIVATE</a></li>
@@ -48,6 +51,9 @@
 								</li>
 							</ol>
 						</td>
+						<td class="tables" th:text="${units.description}"></td>
+				        <td class="tables" th:text="${units.last_update}"></td>
+						<td class="tables" th:text="${units.created}"></td>
 				    </tr>
 				</table>
 			</div>

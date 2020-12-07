@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Customer;
 import pl.coderslab.cls_wms_app.entity.Users;
@@ -31,8 +32,10 @@ public class CustomerController {
 
     @GetMapping("customer")
     public String list(Model model) {
-        List<Customer> customers = customerService.getCustomer();
+        List<Customer> customers = customerService.getCustomer(SecurityUtils.username());
         model.addAttribute("customers", customers);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "customer";
     }
 
@@ -40,16 +43,20 @@ public class CustomerController {
     public String customerDeactivatedList(Model model) {
         List<Customer> customersList = customerService.getDeactivatedCustomer();
         model.addAttribute("customers", customersList);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "customerDeactivatedList";
     }
 
 
     @GetMapping("formCustomer")
     public String customerForm(Model model){
-        List<Company> companies = companyService.getCompany();
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
 //        model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("customer", new Customer());
         model.addAttribute("companies", companies);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formCustomer";
     }
 
@@ -75,10 +82,12 @@ public class CustomerController {
     @GetMapping("/formEditCustomer/{id}")
     public String updateCustomer(@PathVariable Long id, Model model) {
         Customer customer = customerService.findById(id);
-        List<Company> companies = companyService.getCompany();
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute(customer);
         model.addAttribute("companies", companies);
 //        model.addAttribute("localDateTime", LocalDateTime.now());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formEditCustomer";
     }
 

@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Vendor;
 import pl.coderslab.cls_wms_app.service.CompanyService;
@@ -28,8 +29,10 @@ public class VendorController {
 
     @GetMapping("vendor")
     public String list(Model model) {
-        List<Vendor> vendor = vendorService.getVendor();
+        List<Vendor> vendor = vendorService.getVendor(SecurityUtils.username());
         model.addAttribute("vendor", vendor);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "vendor";
     }
 
@@ -37,16 +40,20 @@ public class VendorController {
     public String vendorDeactivatedList(Model model) {
         List<Vendor> vendor = vendorService.getDeactivatedVendor();
         model.addAttribute("vendor", vendor);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "vendorDeactivatedList";
     }
 
 
     @GetMapping("formVendor")
     public String vendorForm(Model model){
-        List<Company> companies = companyService.getCompany();
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
 //        model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("vendor", new Vendor());
         model.addAttribute("companies", companies);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formVendor";
     }
 
@@ -71,10 +78,12 @@ public class VendorController {
     @GetMapping("/formEditVendor/{id}")
     public String updateVendor(@PathVariable Long id, Model model) {
         Vendor vendor = vendorService.findById(id);
-        List<Company> companies = companyService.getCompany();
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute(vendor);
         model.addAttribute("companies", companies);
 //        model.addAttribute("localDateTime", LocalDateTime.now());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formEditVendor";
     }
 

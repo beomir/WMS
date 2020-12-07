@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
 	<title>WMS CLS app</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,21 +26,54 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form  method="post" th:action="@{/formReception}">
-			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Create a new Reception</div><br/>
-			<section>
+
+			<span th:if="${#request.remoteUser.contains('admin')}">
+			<div th:if="${openedReception != null}" style="color: white;font-weight: bold;text-align: center;font-size: 25px">Add to opened Reception</div><br/>
+			<div th:if="${openedReception == null}" style="color: white;font-weight: bold;text-align: center;font-size: 25px">Create a new Reception</div><br/>
+			</span>
+
+			<span th:unless="${#request.remoteUser.contains('admin')}">
+				<span th:each="i : ${openedReception}" th:if="${i.receptionNumber != null}" >
+					<div th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Add to opened Reception for company: ' + ${companys.name}"></div><br/>
+				</span>
+
+				<span th:each="i : ${openedReception}" th:if="${i.receptionNumber == null}">
+					<div th:if="${openedReception == null}" th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Create a new Reception for company: ' + ${companys.name}"></div><br/>
+				</span>
+			</span>
+
+				<section th:each="i : ${openedReception}" th:if="${i.receptionNumber != null}">
+				<label style="color: white;font-weight: bold">Fullfill opened Reception</label>
+					<select class="select-css" th:field="*{reception.receptionNumber}">
+						<option th:each="i : ${openedReception}" th:value="${i.receptionNumber}" th:text="${i.receptionNumber}">
+						</option>
+					</select>
+			</section>
+
+			<section th:each="i : ${openedReception}" th:unless="${i.receptionNumber != null}" >
 				<label style="color: white;font-weight: bold">New Reception</label>
 				<input type="text" th:value="${lastReceptionNumber}" id="reception.reception_number" name="reception.reception_number"/>
-				<input type="hidden" th:field="*{reception.id}"/>
-				<input type="hidden" th:field="*{reception.company}"/>
-				<input type="hidden" th:field="*{reception.warehouse}"/>
-			</section>
+			</section><br/>
+
 			<section>
 				<label style="color: white;font-weight: bold">Article</label>
 				<select class="select-css" th:field="*{reception.article}">
 					<option th:each="i : ${articles}" th:value="${i.id}" th:text="${i.article_number}">
 					</option>
 				</select>
+				<input type="hidden" th:field="*{reception.id}"/>
+				<input th:unless="${#request.remoteUser.contains('admin')}" type="hidden" th:field="*{reception.company}"/>
+				<input type="hidden" th:field="*{reception.warehouse}"/>
+			</section>
+
+			<section th:if="${#request.remoteUser.contains('admin')}">
+				<label style="color: white;font-weight: bold">Company</label>
+				<select class="select-css" th:field="*{reception.company}">
+					<option th:each="i : ${companys}" th:value="${i.id}" th:text="${i.name}">
+					</option>
+				</select>
 			</section><br/>
+
 			<section>
 				<label style="color: white;font-weight: bold">Quality</label>
 				<select class="select-css" th:field="*{reception.quality}">
@@ -50,17 +83,20 @@
 					<option th:value="BW1">Bonded Warehouse second grade</option>
 				</select>
 			</section><br/>
+
 			<section>
-				<label style="color: white;font-weight: bold">How many pallets?</label>
+				<label style="color: white;font-weight: bold">How many handle devices?</label>
 				<select class="select-css">
 					<option th:each="i : ${pallets}" th:value="${i}" th:text="${i}">
 					</option>
 				</select>
 			</section><br/>
+
 			<section>
-				<label style="color: white;font-weight: bold">How many pieces?</label>
+				<label style="color: white;font-weight: bold">How many pieces on handle devices?</label>
 				<input type="number" th:field="*{reception.pieces_qty}"/>
 			</section>
+
 			<section>
 				<label style="color: white;font-weight: bold">Vendor</label>
 				<select class="select-css" th:field="*{reception.vendor}">
@@ -68,9 +104,16 @@
 					</option>
 				</select>
 			</section><br/><br/>
+
+			<section>
+				<label style="color: white;font-weight: bold">Close Creation?</label>
+				<input type="radio" th:field="*{reception.pieces_qty}"/>
+			</section>
+
 			<section>
 				<br/><button class="button" type="submit">Save</button>
 			</section>
+
 		</form>
 		<div th:include="fragments/footer :: footer"></div>
 	</div>

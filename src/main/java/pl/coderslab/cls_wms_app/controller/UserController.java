@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Users;
 
@@ -37,14 +38,11 @@ public class UserController {
     @GetMapping("formUserCreation")
     public String form(Model model) {
         List<Company> companies = companyService.getCompany();
-//        List<Users> users = usersService.getUsers();
-//        model.addAttribute("user", users);
-//        List<Company> companiesByUserDetails = usersDetailsService.getCompanyByUsersDetails();
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("users", new Users());
         model.addAttribute("companies", companies);
-
-//        model.addAttribute("companiesByUserDetails", companiesByUserDetails);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formUserCreation";
     }
 
@@ -61,6 +59,8 @@ public class UserController {
         List<Users> users = usersService.getUsers();
         model.addAttribute("companies", companies);
         model.addAttribute("user", users);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "userList";
     }
 
@@ -71,6 +71,8 @@ public class UserController {
         model.addAttribute(user);
         model.addAttribute("companies", companies);
         model.addAttribute("localDateTime", LocalDateTime.now());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formUserEdit";
     }
 
@@ -88,6 +90,8 @@ public class UserController {
         List<Users> users = usersService.getDeactivatedUsers();
         model.addAttribute("companies", companies);
         model.addAttribute("user", users);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "usersDeactivatedList";
     }
 

@@ -3,18 +3,14 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.repository.CompanyRepository;
-import pl.coderslab.cls_wms_app.repository.StockRepository;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 public class CompanyServiceImpl implements CompanyService{
-    private CompanyRepository companyRepository;
+    private final CompanyRepository companyRepository;
 
     @Autowired
     public CompanyServiceImpl(CompanyRepository companyRepository) {
@@ -67,4 +63,16 @@ public class CompanyServiceImpl implements CompanyService{
     public void update(Company company) {
 
     }
+
+
+    @Override
+    public List<Company> getCompanyByUsername(String username) {
+//        username = SecurityUtils.username();
+        return companyRepository.getCompanyByUsername(username);
+    }
+
+//    @Override
+//    public String getCompanyByUsername(String username) {
+//        return companyRepository.getCompanyByUsername(SecurityUtils.username());
+//    }
 }

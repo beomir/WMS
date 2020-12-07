@@ -9,7 +9,9 @@ public interface ArticleService {
 
     void add(Article article);
 
-    List<Article> getArticle();
+    List<Article> getArticle(String username);
+
+    List<Article> getArticles(); //for fixtures
 
     List<Article> getDeactivatedArticle();
 

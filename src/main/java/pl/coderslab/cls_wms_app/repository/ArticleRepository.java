@@ -12,11 +12,15 @@ import java.util.List;
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    @Query("Select a from Article a where a.active = true")
-    List<Article> getArticle();
+    @Query("Select distinct a from Article a join fetch a.company c JOIN fetch Users u on u.company = c.name where a.active = true and u.username like ?1 order by a.article_number")
+    List<Article> getArticle(String username);
 
     @Query("Select a from Article a where a.active = false")
     List<Article> getDeactivatedArticle();
+
+    //for fixtures
+    @Query("Select a from Article a")
+    List<Article> getArticles();
 
 
 }

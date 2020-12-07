@@ -20,13 +20,19 @@
 		<div th:include="fragments/header :: header"></div>
 	</div>
 	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
-		<div th:include="fragments/adminNavigation :: adminNavigation"></div>
+
+		<div th:if="${#request.remoteUser.contains('admin')}">
+			<div th:include="fragments/adminNavigation :: adminNavigation"></div>
+		</div>
+
+		<div th:unless="${#request.remoteUser.contains('admin')}">
+			<div th:include="fragments/userNavigation :: userNavigation"></div>
+		</div>
 	</div>
 
 	<div id="content" class="mainw3-agileinfo">
 		<div style="width: 1000px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px">
-<!--				<div th:text="'Your stock in' + ${warehouse.city}"></div>-->
 				<div style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Companies'"></div><br/><br/>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
@@ -36,17 +42,10 @@
 						<th class="tables">Post Code</th>
 						<th class="tables">Country</th>
 						<th class="tables">European union</th>
-						<th class="tables">Action</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="company: ${companies}">
-						<td class="tables" th:text="${company.name}"></td>
-						<td class="tables" th:text="${company.city}"></td>
-				        <td class="tables" th:text="${company.street}"></td>
-						<td class="tables" th:text="${company.post_code}"></td>
-				        <td class="tables" th:text="${company.country}"></td>
-				        <td class="tables" th:text="${company.european_union}"></td>
-						<td style="cursor:pointer;" class="tables">
-							<ol>
+						<td class="tables" style="padding-bottom: 2px">
+							<ol><div th:text="${company.name}"></div>
 								<li>
 									<ul>
 										<li><a th:href="@{/deleteCompany/{id}(id=${company.id})}">DEACTIVATE</a></li>
@@ -55,6 +54,11 @@
 								</li>
 							</ol>
 						</td>
+						<td class="tables" th:text="${company.city}"></td>
+				        <td class="tables" th:text="${company.street}"></td>
+						<td class="tables" th:text="${company.post_code}"></td>
+				        <td class="tables" th:text="${company.country}"></td>
+				        <td class="tables" th:text="${company.european_union}"></td>
 				    </tr>
 				</table>
 			</div>

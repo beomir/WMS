@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.service.ArticleService;
@@ -32,6 +33,8 @@ public class CompanyController {
     public String companyList(Model model) {
         List<Company> company = companyService.getCompanyWithoutAll();
         model.addAttribute("companies", company);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "company";
     }
 
@@ -39,6 +42,8 @@ public class CompanyController {
     public String companyDeactivatedList(Model model) {
         List<Company> company = companyService.getDeactivatedCompany();
         model.addAttribute("company", company);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "companyDeactivatedList";
     }
 
@@ -47,6 +52,8 @@ public class CompanyController {
     public String companyForm(Model model){
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("company", new Company());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formCompany";
     }
 
@@ -73,6 +80,8 @@ public class CompanyController {
         Company company = companyService.findById(id);
         model.addAttribute(company);
 //        model.addAttribute("localDateTime", LocalDateTime.now());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formEditCompany";
     }
 

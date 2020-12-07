@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
-    @Query("Select s from Shipment s join fetch s.article a join fetch s.shipMethod sh join fetch s.warehouse w where w.id =?1 ")
+    @Query("Select distinct s from Shipment s join fetch s.article a join fetch s.shipMethod sh join fetch s.warehouse w where w.id =?1 ")
     List<Shipment> getShipment(Long id);
 
     @Query("Select shi from Shipment shi join fetch shi.article a join fetch shi.shipMethod sh join fetch shi.warehouse ")

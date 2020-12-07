@@ -4,14 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.cls_wms_app.entity.Reception;
-import pl.coderslab.cls_wms_app.entity.Shipment;
-import pl.coderslab.cls_wms_app.entity.Stock;
-import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.ReceptionService;
-import pl.coderslab.cls_wms_app.service.ShipmentService;
-import pl.coderslab.cls_wms_app.service.StockService;
-import pl.coderslab.cls_wms_app.service.WarehouseService;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
+import pl.coderslab.cls_wms_app.entity.*;
+import pl.coderslab.cls_wms_app.service.*;
 
 
 import java.util.List;
@@ -23,33 +18,39 @@ public class StockController {
     private ShipmentService shipmentService;
     private ReceptionService receptionService;
     private WarehouseService warehouseService;
+    private CompanyService companyService;
 
 
     @Autowired
-    public StockController(StockService stockService, ShipmentService shipmentService, ReceptionService receptionService, WarehouseService warehouseService) {
+    public StockController(StockService stockService, ShipmentService shipmentService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService) {
         this.stockService = stockService;
         this.shipmentService = shipmentService;
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
+        this.companyService = companyService;
     }
 
     @GetMapping("")
     public String list(Model model,@SessionAttribute Long warehouseId) {
-        List<Stock> storage = stockService.getStorage(warehouseId);
+        List<Stock> storage = stockService.getStorage(warehouseId,SecurityUtils.username());
         List<Warehouse> warehouse = warehouseService.getWarehouse(warehouseId);
         model.addAttribute("stock", storage);
         model.addAttribute("warehouse", warehouse);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "stock";
     }
 
     @GetMapping("/receptionForm")
     public String receptionForm(Model model) {
         model.addAttribute("reception", new Reception());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formReception";
     }
 
     @PostMapping("/receptionForm")
-    public String addReception(Reception reception, Model model) {
+    public String addReception(Reception reception) {
         receptionService.add(reception);
         return "redirect:/reception";
     }
@@ -57,11 +58,13 @@ public class StockController {
     @GetMapping("/shipmentForm")
     public String formShipment(Model model) {
         model.addAttribute("shipment", new Shipment());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formShipment";
     }
 
     @PostMapping("/shipmentForm")
-    public String addShipment(Shipment shipment, Model model) {
+    public String addShipment(Shipment shipment) {
         shipmentService.add(shipment);
         return "redirect:/shipment";
     }
@@ -71,6 +74,8 @@ public class StockController {
     public String updateStock(@PathVariable Long id, Model model) {
         Stock stock = stockService.findById(id);
         model.addAttribute(stock);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "form";
     }
 

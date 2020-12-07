@@ -12,11 +12,14 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
-    @Query("Select cu from Customer cu where cu.active = true")
-    List<Customer> getCustomer();
+    @Query("Select distinct cu from Customer cu join fetch cu.company c JOIN fetch Users u on u.company = c.name where cu.active = true and u.username like ?1 order by cu.name")
+    List<Customer> getCustomer(String username);
 
     @Query("Select cu from Customer cu where cu.active = false")
     List<Customer> getDeactivatedCustomer();
+
+    @Query("Select cu from Customer cu")
+    List<Customer> getCustomers();
 
 
 

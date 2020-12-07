@@ -9,9 +9,10 @@ public interface ReceptionService {
 
     void add(Reception reception);
 
+    List<Reception> getReceptions(Long id,String username);
+
     List<Reception> getReception(Long id);
 
-    List<Reception> getReceptions();
 
     Reception findById(Long id);
 
@@ -20,6 +21,8 @@ public interface ReceptionService {
     void update(Reception reception);
 
     Long lastReception();
+
+    List<Reception> openedReceptions(Long id, String username);
 
     List<Integer> pallets();
 }

@@ -10,7 +10,9 @@ public interface VendorService {
 
     void add(Vendor vendor);
 
-    List<Vendor> getVendor();
+    List<Vendor> getVendor(String username);
+
+    List<Vendor> getVendors();
 
     List<Vendor> getDeactivatedVendor();
 

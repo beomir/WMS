@@ -17,10 +17,11 @@ public interface CompanyService {
 
     Company findById(Long id);
 
-
     void delete(Long id);
 
     void activate(Long id);
 
     void update(Company company);
+
+    List<Company> getCompanyByUsername(String username);
 }

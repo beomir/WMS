@@ -25,8 +25,13 @@ public class VendorServiceImpl implements VendorService{
     }
 
     @Override
-    public List<Vendor> getVendor() {
-        return vendorRepository.getVendor();
+    public List<Vendor> getVendor(String username) {
+        return vendorRepository.getVendor(username);
+    }
+
+    @Override
+    public List<Vendor> getVendors() {
+        return vendorRepository.getVendors();
     }
 
     @Override

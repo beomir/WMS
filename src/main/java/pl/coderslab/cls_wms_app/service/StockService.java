@@ -1,6 +1,7 @@
 package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.data.jpa.repository.Query;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 
@@ -11,9 +12,10 @@ import java.util.List;
 public interface StockService {
 
 
-    List<Stock> getStorage(Long id);
+    List<Stock> getStorage(Long id,String username);
 
     List<Warehouse> getWarehouse(Long id);
+
 
     Stock findById(Long id);
 

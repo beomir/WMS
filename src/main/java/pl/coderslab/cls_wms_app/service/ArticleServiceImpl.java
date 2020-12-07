@@ -27,9 +27,16 @@ public class ArticleServiceImpl implements ArticleService{
         articleRepository.save(article);
     }
 
+
     @Override
-    public List<Article> getArticle() {
-        return articleRepository.getArticle();
+    public List<Article> getArticle(String username) {
+        return articleRepository.getArticle(username);
+    }
+
+    //for fixtures
+    @Override
+    public List<Article> getArticles() {
+        return articleRepository.getArticles();
     }
 
     @Override

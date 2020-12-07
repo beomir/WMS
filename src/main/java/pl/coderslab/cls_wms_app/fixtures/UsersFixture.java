@@ -16,8 +16,13 @@ public class UsersFixture {
 
 
     private List<Users> usersList = Arrays.asList(
-             new Users(null, "SuperUserStrojem", "SuperUserStrojem", "2020-11-28:T10:00:00","2020-11-28:T10:00:00","ROLE_USER","Strojem@meta.ua",true,"Strojem"),
-             new Users(null, "SuperUserbuDUJEm", "SuperUserbuDUJEm", "2020-11-28:T10:00:00","2020-11-28:T10:00:00","ROLE_USER","buDUJEm@wp.pl",true,"buDUJEm"),
+             new Users(null, "MagdaM", "123", "2020-11-28:T10:00:00","2020-11-28:T10:00:00","ROLE_USER","StrojemMagdaM@meta.ua",true,"Strojem"),
+             new Users(null, "PiotrP", "123", "2020-11-28:T10:00:00","2020-11-28:T10:00:00","ROLE_USER","buDUJEmPiotrP@wp.pl",true,"buDUJEm"),
+             new Users(null, "GawelG", "123", "2020-11-28:T10:00:00","2020-11-28:T10:00:00","ROLE_USER","buDUJEmGawelG@wp.pl",true,"buDUJEm"),
+             new Users(null, "RuslanR", "123", "2020-11-28:T10:00:00","2020-11-28:T10:00:00","ROLE_USER","RuslanR@BuldMate.com",true,"BuildMate"),
+             new Users(null, "FernandosF", "123", "2020-11-28:T10:00:00","2020-11-28:T10:00:00","ROLE_USER","FernandosF@FNdMdAL.pt",true,"Fábrica Nacional de Munições de Armas Ligeiras"),
+             new Users(null, "BenitoB", "123", "2020-11-28:T10:00:00","2020-11-28:T10:00:00","ROLE_USER","BenitoB@Eni.it",true,"Eni"),
+             new Users(null, "ZladkoZ", "123", "2020-11-28:T10:00:00","2020-11-28:T10:00:00","ROLE_USER","ZladkoZ@HS.sb",true,"Hesteel Serbia"),
              new Users(null, "admin", "admin", "2020-11-28:T10:00:00","2020-11-28:T10:00:00","ROLE_ADMIN","beomir89@gmail.com",true,"all")
     );
 

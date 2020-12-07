@@ -5,8 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
+import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
+import pl.coderslab.cls_wms_app.service.CompanyService;
 import pl.coderslab.cls_wms_app.service.UsersService;
 import pl.coderslab.cls_wms_app.service.WarehouseService;
 
@@ -20,17 +23,21 @@ public class WarehouseController {
 
     private WarehouseService warehouseService;
     private UsersService usersService;
+    private CompanyService companyService;
 
     @Autowired
-    public WarehouseController(WarehouseService warehouseService, UsersService usersService) {
+    public WarehouseController(WarehouseService warehouseService, UsersService usersService, CompanyService companyService) {
         this.warehouseService = warehouseService;
         this.usersService = usersService;
+        this.companyService = companyService;
     }
 
     @GetMapping("/warehouse")
     public String list(Model model) {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         List<Users> users = usersService.getUsers();
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("users", users);
         return "warehouse";
@@ -50,6 +57,8 @@ public class WarehouseController {
     public String warehousesList(Model model) {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "/warehouseList";
     }
 
@@ -57,6 +66,8 @@ public class WarehouseController {
     public String warehouseDeactivatedList(Model model) {
         List<Warehouse> warehouseDeactivated = warehouseService.getDeactivatedWarehouse();
         model.addAttribute("warehouseDeactivated", warehouseDeactivated);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "/warehouseDeactivatedList";
     }
 
@@ -65,6 +76,8 @@ public class WarehouseController {
     public String warehouseForm(Model model){
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("warehouse", new Warehouse());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formWarehouseCreation";
     }
 
@@ -91,6 +104,8 @@ public class WarehouseController {
         Warehouse warehouse = warehouseService.findById(id);
         model.addAttribute(warehouse);
         model.addAttribute("localDateTime", LocalDateTime.now());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
         return "formEditWarehouse";
     }
 

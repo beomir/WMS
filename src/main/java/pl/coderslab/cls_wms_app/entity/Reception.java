@@ -47,9 +47,11 @@ public class Reception {
     @ManyToOne
     private Warehouse warehouse;
 
-    private boolean closed;
+    private boolean creation_closed;
 
-    public Reception(Long id, Article article, Company company,  Long pieces_qty, Unit unit, Long hd_number, String quality, Vendor vendor, Warehouse warehouse, boolean closed,Long receptionNumber) {
+    private boolean finished;
+
+    public Reception(Long id, Article article, Company company,  Long pieces_qty, Unit unit, Long hd_number, String quality, Vendor vendor, Warehouse warehouse, boolean creation_closed, Long receptionNumber ,boolean finished) {
         this.id = id;
         this.article = article;
         this.company = company;
@@ -60,7 +62,8 @@ public class Reception {
         this.quality = quality;
         this.vendor = vendor;
         this.warehouse = warehouse;
-        this.closed = closed;
+        this.creation_closed = creation_closed;
         this.receptionNumber = receptionNumber;
+        this.finished = finished;
     }
 }

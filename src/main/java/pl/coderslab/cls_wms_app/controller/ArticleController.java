@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.ArticleService;
 import pl.coderslab.cls_wms_app.service.CompanyService;
@@ -26,8 +27,10 @@ public class ArticleController {
 
     @GetMapping("article")
     public String list(Model model) {
-        List<Article> article = articleService.getArticle();
+        List<Article> article = articleService.getArticle(SecurityUtils.username());
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("article", article);
+        model.addAttribute("companys", companys);
         return "article";
     }
 
@@ -41,7 +44,7 @@ public class ArticleController {
 
     @GetMapping("formArticle")
     public String articleForm(Model model){
-        List<Company> companies = companyService.getCompany();
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("article", new Article());
         model.addAttribute("companies", companies);
@@ -69,7 +72,7 @@ public class ArticleController {
     @GetMapping("/formEditArticle/{id}")
     public String updateArticle(@PathVariable Long id, Model model) {
         Article article = articleService.findById(id);
-        List<Company> companies = companyService.getCompany();
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute(article);
         model.addAttribute("companies", companies);
         model.addAttribute("localDateTime", LocalDateTime.now());

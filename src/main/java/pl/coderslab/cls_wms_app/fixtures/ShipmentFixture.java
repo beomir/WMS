@@ -22,10 +22,10 @@ public class ShipmentFixture {
 
 
     private List<Shipment> shipmentList = Arrays.asList(
-            new Shipment(null, null,null,10L, null,202000000000000005L,"EU1",null,null,null, false,20200001L),
-            new Shipment(null, null,null,12L, null,202000000000000006L,"BW1",null,null,null, false,20200002L),
-            new Shipment(null, null,null,12L, null,202000000000000007L,"EU1",null,null,null, false,20200003L),
-            new Shipment(null, null,null,12L, null,202000000000000008L,"EU1",null,null,null, false,20200004L)
+            new Shipment(null, null,null,10L, null,202000000000000005L,"EU1",null,null,null, true,20200001L,false),
+            new Shipment(null, null,null,12L, null,202000000000000006L,"BW1",null,null,null, true,20200002L,false),
+            new Shipment(null, null,null,12L, null,202000000000000007L,"EU1",null,null,null, true,20200003L,false),
+            new Shipment(null, null,null,12L, null,202000000000000008L,"EU1",null,null,null, true,20200004L,false)
 
     );
 
@@ -42,8 +42,8 @@ public class ShipmentFixture {
 
     public void loadIntoDB() {
         List<Company> companies = companyService.getCompany();
-        List<Customer> customers = customerService.getCustomer();
-        List<Article> articles = articleService.getArticle();
+        List<Customer> customers = customerService.getCustomers();
+        List<Article> articles = articleService.getArticles();
         List<ShipMethod> shipMethods = shipMethodService.getShipMethod();
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         List<Unit> unit = unitService.getUnit();

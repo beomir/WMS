@@ -12,11 +12,13 @@ import java.util.List;
 @Repository
 public interface VendorRepository extends JpaRepository<Vendor, Long> {
 
-    @Query("Select v from Vendor v where v.active = true")
-    List<Vendor> getVendor();
+    @Query("Select distinct v from Vendor v join fetch v.company c JOIN fetch Users u on u.company = c.name where v.active = true and u.username like ?1 order by v.name")
+    List<Vendor> getVendor(String username);
 
     @Query("Select v from Vendor v where v.active = false")
     List<Vendor> getDeactivatedVendor();
 
+    @Query("Select v from Vendor v where v.active = true")
+    List<Vendor> getVendors();
 
 }

@@ -24,6 +24,11 @@ public class ReceptionServiceImpl implements ReceptionService{
     }
 
     @Override
+    public List<Reception> getReceptions(Long id,String username) {
+        return receptionRepository.getReceptions(id, username);
+    }
+
+    @Override
     public List<Reception> getReception(Long id) {
         return receptionRepository.getReception(id);
     }
@@ -51,9 +56,10 @@ public class ReceptionServiceImpl implements ReceptionService{
 
 
     @Override
-    public List<Reception> getReceptions() {
-        return receptionRepository.getReceptions();
+    public List<Reception> openedReceptions(Long id, String username) {
+        return receptionRepository.openedReceptions(id, username);
     }
+
 
     @Override
     public List<Integer> pallets() {
