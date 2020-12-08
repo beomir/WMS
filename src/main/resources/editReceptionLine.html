@@ -25,34 +25,20 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form  method="post" th:action="@{/formReception}">
+		<form  method="post" th:action="@{/editReceptionLine}">
 
 			<span th:if="${#request.remoteUser.contains('admin')}">
-			<div th:if="${qtyOfOpenedReceptions > 0}" style="color: white;font-weight: bold;text-align: center;font-size: 25px">Add to opened Reception</div><br/><br/>
-			<div th:if="${qtyOfOpenedReceptions == 0}" style="color: white;font-weight: bold;text-align: center;font-size: 25px">Create a new Reception</div><br/><br/>
+			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Edit a new Reception</div><br/><br/>
 			</span>
 
 			<span th:unless="${#request.remoteUser.contains('admin')}">
-				<span th:if="${qtyOfOpenedReceptions > 0}" >
-					<div th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Add to opened Reception for company: ' + ${companys.name}"></div><br/>
-				</span>
-
-				<span  th:if="${qtyOfOpenedReceptions == 0}">
-					<div  th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Create a new Reception for company: ' + ${companys.name}"></div><br/>
-				</span>
+				<div th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Edit Reception for company: ' + ${companys.name}"></div><br/>
 			</span>
 
-				<section  th:if="${qtyOfOpenedReceptions > 0}">
-				<label style="color: white;font-weight: bold">Fullfill opened Reception</label>
-					<select class="select-css" th:field="*{reception.receptionNumber}">
-						<option th:each="i : ${openedReception}" th:value="${i.receptionNumber}" th:text="${i.receptionNumber}">
-						</option>
-					</select><br/>
-			</section>
 
-			<section  th:if="${qtyOfOpenedReceptions == 0}" >
-				<label style="color: white;font-weight: bold">New Reception</label>
-				<input type="text" th:value="${lastReceptionNumber}" id="receptionNumber" name="receptionNumber"/>
+			<section>
+				<label style="color: white;font-weight: bold">Edit Reception</label>
+				<input type="text" th:value="${reception.reception_number}" id="receptionNumber" name="receptionNumber"/>
 			</section>
 
 			<section>

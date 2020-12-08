@@ -13,6 +13,9 @@ public interface ReceptionService {
 
     List<Reception> getReception(Long id);
 
+    int getCreatedReceptionById(Long receptionNbr);
+
+    void updateCloseCreationValue(Long receptionNbr);
 
     Reception findById(Long id);
 
@@ -24,5 +27,13 @@ public interface ReceptionService {
 
     List<Reception> openedReceptions(Long id, String username);
 
+    int qtyOfOpenedReceptions(Long id, String username);
+
     List<Integer> pallets();
+
+    void finished(Long id);
+
+    void closeCreation(Long id);
+
+    void openCreation(Long id);
 }
