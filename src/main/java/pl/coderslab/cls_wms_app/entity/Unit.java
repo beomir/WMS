@@ -45,4 +45,16 @@ public class Unit {
         this.last_update = last_update;
         this.active = active;
     }
+
+    @Override
+    public String toString() {
+        return "Unit{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", created='" + created + '\'' +
+                ", last_update='" + last_update + '\'' +
+                ", active=" + active +
+                '}';
+    }
 }

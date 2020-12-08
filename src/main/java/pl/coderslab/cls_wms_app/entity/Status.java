@@ -37,4 +37,10 @@ public class Status {
     @OneToMany(mappedBy="status")
     private List<Stock> stockList = new ArrayList<>();
 
+    @OneToMany(mappedBy="status")
+    private List<Reception> receptionList = new ArrayList<>();
+
+    @OneToMany(mappedBy="status")
+    private List<Shipment> shipmentList = new ArrayList<>();
+
 }

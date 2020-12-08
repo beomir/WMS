@@ -38,6 +38,17 @@ public class ReceptionServiceImpl implements ReceptionService{
 
 
     @Override
+    public void updateFinishedReceptionValue(Long receptionNbrtoFinish) {
+            receptionRepository.updateFinishedReceptionValue(receptionNbrtoFinish);
+    }
+
+    @Override
+    public void insertDataToStockAfterFinishedReception(Long receptionNbr) {
+        receptionRepository.insertDataToStockAfterFinishedReception(receptionNbr);
+    }
+
+
+    @Override
     public List<Reception> getReceptions(Long id,String username) {
         return receptionRepository.getReceptions(id, username);
     }
@@ -49,7 +60,7 @@ public class ReceptionServiceImpl implements ReceptionService{
 
     @Override
     public Reception findById(Long id) {
-        return null;
+        return receptionRepository.getOne(id);
     }
 
 
@@ -66,6 +77,11 @@ public class ReceptionServiceImpl implements ReceptionService{
     @Override
     public Long lastReception() {
         return receptionRepository.lastReception();
+    }
+
+    @Override
+    public Long nextPalletNbr() {
+        return receptionRepository.nextPalletNbr();
     }
 
 
@@ -89,12 +105,13 @@ public class ReceptionServiceImpl implements ReceptionService{
         return ret;
     }
 
-    @Override
-    public void finished(Long id) {
-        Reception reception = receptionRepository.getOne(id);
-        reception.setFinished(true);
-        receptionRepository.save(reception);
-    }
+    //set finished reception line --> only one line
+//    @Override
+//    public void finished(Long id) {
+//        Reception reception = receptionRepository.getOne(id);
+//        reception.setFinished(true);
+//        receptionRepository.save(reception);
+//    }
 
     @Override
     public void closeCreation(Long id) {

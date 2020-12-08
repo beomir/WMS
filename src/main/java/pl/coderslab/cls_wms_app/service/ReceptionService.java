@@ -17,6 +17,10 @@ public interface ReceptionService {
 
     void updateCloseCreationValue(Long receptionNbr);
 
+    void updateFinishedReceptionValue(Long receptionNbrtoFinish);
+
+    void insertDataToStockAfterFinishedReception(Long receptionNbr);
+
     Reception findById(Long id);
 
     void delete(Long id);
@@ -25,13 +29,16 @@ public interface ReceptionService {
 
     Long lastReception();
 
+    Long nextPalletNbr();
+
     List<Reception> openedReceptions(Long id, String username);
 
     int qtyOfOpenedReceptions(Long id, String username);
 
     List<Integer> pallets();
 
-    void finished(Long id);
+    //set finished reception line --> only one line
+//    void finished(Long id);
 
     void closeCreation(Long id);
 

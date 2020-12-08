@@ -34,4 +34,18 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
     @Transactional
     @Query(value = "update receptions SET creation_closed = true where reception_number = ?1",nativeQuery = true)
     void updateCloseCreationValue(Long receptionNbr);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update receptions SET finished = true where reception_number = ?1",nativeQuery = true)
+    void updateFinishedReceptionValue(Long receptionNbr);
+
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO storage (created, hd_number, last_update, pieces_qty, quality, article_id, company_id, status_id, unit_id, warehouse_id) select localtime,hd_number,localtime,pieces_qty,quality,article_id,company_id,status_id,unit_id,warehouse_id from receptions where reception_number = (?1);",nativeQuery = true)
+    void insertDataToStockAfterFinishedReception(Long receptionNbr);
+
+    @Query(value = "Select a.hd_number + 1 from ( Select hd_number from receptions union select hd_number from storage) a order by 1 desc LIMIT 1;",nativeQuery = true)
+    Long nextPalletNbr();
+
 }

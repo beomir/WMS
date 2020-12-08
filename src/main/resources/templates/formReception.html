@@ -52,7 +52,7 @@
 
 			<section  th:if="${qtyOfOpenedReceptions == 0}" >
 				<label style="color: white;font-weight: bold">New Reception</label>
-				<input type="text" th:value="${lastReceptionNumber}" id="receptionNumber" name="receptionNumber"/>
+				<input type="text" th:value="${lastReceptionNumber}" id="receptionNumber" name="receptionNumber" readonly/>
 			</section>
 
 			<section>
@@ -65,6 +65,7 @@
 				<input th:unless="${#request.remoteUser.contains('admin')}" type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
 				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
 				<input type="hidden" th:value="false" id="reception.finished" name="reception.finished"/>
+				<input type="hidden" th:value="1" id="status" name="status"/>
 			</section>
 
 			<section th:if="${#request.remoteUser.contains('admin')}">
@@ -87,10 +88,10 @@
 
 			<section>
 				<label style="color: white;font-weight: bold">Unit</label>
-				<select class="select-css" th:field="*{reception.unit}">
+				<select class="select-css" th:field="*{reception.unit}" >
 					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.name}">
 				</select><br/>
-
+			</section>
 			<section>
 				<label style="color: white;font-weight: bold">How many handle devices?</label>
 				<select class="select-css">
@@ -102,8 +103,13 @@
 
 			<section>
 				<label style="color: white;font-weight: bold">How many pieces on handle devices?</label>
-				<input type="number" th:field="*{reception.pieces_qty}"/>
+				<input type="number" th:field="*{reception.pieces_qty}" required="required" min="1" max="6666666"/>
 			</section>
+
+			<section>
+				<label style="color: white;font-weight: bold">Handle Device</label>
+				<input type="number" th:value="${nextPalletNbr}" id="hd_number" name="hd_number" readonly/>
+			</section><br/>
 
 			<section>
 				<label style="color: white;font-weight: bold">Vendor</label>

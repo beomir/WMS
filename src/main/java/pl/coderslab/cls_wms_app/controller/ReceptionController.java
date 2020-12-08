@@ -54,6 +54,7 @@ public class ReceptionController {
         List<Warehouse> warehouses = warehouseService.getWarehouse(warehouseId);
         int qtyOfOpenedReceptions = receptionService.qtyOfOpenedReceptions(warehouseId,SecurityUtils.username());
         model.addAttribute("lastReceptionNumber", receptionService.lastReception());
+        model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
         model.addAttribute("reception", new Reception());
         model.addAttribute("articles", articles);
         model.addAttribute("vendors", vendors);
@@ -77,7 +78,9 @@ public class ReceptionController {
 
     @GetMapping("/finishedReception/{id}")
     public String finishedReception(@PathVariable Long id) {
-        receptionService.finished(id);
+        Long getReceptionById = receptionService.findById(id).getReceptionNumber();
+        receptionService.updateFinishedReceptionValue(getReceptionById);
+        receptionService.insertDataToStockAfterFinishedReception(getReceptionById);
         return "redirect:/reception";
     }
 

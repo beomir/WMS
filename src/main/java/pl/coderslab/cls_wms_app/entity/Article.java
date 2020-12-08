@@ -56,4 +56,19 @@ public class Article {
 
     @OneToMany(mappedBy="article")
     private List<Shipment> shipmentList = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "id=" + id +
+                ", article_number=" + article_number +
+                ", article_desc='" + article_desc + '\'' +
+                ", article_logistic_variant='" + article_logistic_variant + '\'' +
+                ", pieces_per_carton=" + pieces_per_carton +
+                ", company=" + company +
+                ", created='" + created + '\'' +
+                ", last_update='" + last_update + '\'' +
+                ", active=" + active +
+                '}';
+    }
 }

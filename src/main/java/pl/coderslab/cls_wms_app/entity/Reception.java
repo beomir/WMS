@@ -51,7 +51,11 @@ public class Reception {
 
     private boolean finished;
 
-    public Reception(Long id, Article article, Company company,  Long pieces_qty, Unit unit, Long hd_number, String quality, Vendor vendor, Warehouse warehouse, boolean creation_closed, Long receptionNumber ,boolean finished) {
+    @NotNull
+    @ManyToOne
+    private Status status;
+
+    public Reception(Long id, Article article, Company company,  Long pieces_qty, Unit unit, Long hd_number, String quality, Vendor vendor, Warehouse warehouse, boolean creation_closed, Long receptionNumber ,boolean finished, Status status) {
         this.id = id;
         this.article = article;
         this.company = company;
@@ -65,5 +69,6 @@ public class Reception {
         this.creation_closed = creation_closed;
         this.receptionNumber = receptionNumber;
         this.finished = finished;
+        this.status = status;
     }
 }
