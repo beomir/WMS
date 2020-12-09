@@ -37,6 +37,9 @@ public class Unit {
     @OneToMany(mappedBy="unit")
     private List<Shipment> shipmentList = new ArrayList<>();
 
+    @OneToMany(mappedBy="unit")
+    private List<ShipmentInCreation> ShipmentInCreationList = new ArrayList<>();
+
     public Unit(Long id, String name, String description, String created, String last_update, boolean active) {
         this.id = id;
         this.name = name;

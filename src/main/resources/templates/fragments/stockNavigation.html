@@ -12,7 +12,18 @@
         <a th:href="@{/formReception}"><div class="button">Declare Reception</div></a>
         <a th:href="@{/reception}"><div class="button">Check Receptions</div></a>
         <a th:href="@{/formShipment}"><div class="button">Declare Shipment</div></a>
-        <a th:href="@{/shipment}"><div class="button">Check Shipments</div></a>
+        <a th:href="@{/shipment}">
+            <ol class="button"><div style="color: white;font-weight: normal">Check Shipments</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:href="@{/shipmentInCreation}">Check Shipments in Creation</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+<!--            <div class="button">Check Shipments</div>-->
+        </a>
         <a th:href="@{/warehouse}"><div class="button">Choose Warehouse</div></a>
         <a th:href="@{/logout}"><div class="button">Logout</div></a>
     </div>

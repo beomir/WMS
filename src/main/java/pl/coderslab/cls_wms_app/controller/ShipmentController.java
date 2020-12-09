@@ -4,10 +4,7 @@ package pl.coderslab.cls_wms_app.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.CompanyService;
@@ -46,24 +43,6 @@ public class ShipmentController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         return "shipment";
-    }
-
-    @GetMapping("/formShipment")
-    public String shipmentForm(Model model,@SessionAttribute Long warehouseId){
-        List<Company> companies = companyService.getCompany();
-        List<Shipment> shipment = shipmentService.getShipments();
-        model.addAttribute("shipment", new Shipment());
-        model.addAttribute("companies", companies);
-        model.addAttribute("shipment", shipment);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        return "formShipment";
-    }
-
-    @PostMapping("formShipment")
-    public String add(Shipment shipment) {
-        shipmentService.add(shipment);
-        return "redirect:/shipment";
     }
 
 

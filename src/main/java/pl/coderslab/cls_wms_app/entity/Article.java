@@ -57,6 +57,9 @@ public class Article {
     @OneToMany(mappedBy="article")
     private List<Shipment> shipmentList = new ArrayList<>();
 
+    @OneToMany(mappedBy="article")
+    private List<ShipmentInCreation> ShipmentInCreationList = new ArrayList<>();
+
     @Override
     public String toString() {
         return "Article{" +

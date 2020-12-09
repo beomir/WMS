@@ -25,43 +25,28 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form  method="post" th:action="@{/formShipment}">
+		<form  method="post" th:action="@{/editShipment}">
 
 			<span th:if="${#request.remoteUser.contains('admin')}">
-			<div th:if="${qtyOfOpenedShipmentsInCreation > 0}" style="color: white;font-weight: bold;text-align: center;font-size: 25px">Add to opened Shipment</div><br/><br/>
-			<div th:if="${qtyOfOpenedShipmentsInCreation == 0}" style="color: white;font-weight: bold;text-align: center;font-size: 25px">Create a new Shipment</div><br/><br/>
+			<div  style="color: white;font-weight: bold;text-align: center;font-size: 25px">Edit Shipment</div><br/><br/>
 			</span>
 
 			<span th:unless="${#request.remoteUser.contains('admin')}">
-				<span th:if="${qtyOfOpenedShipmentsInCreation > 0}" >
-					<div th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Add to opened Shipment for company: ' + ${companys.name}"></div><br/>
-				</span>
-
-				<span  th:if="${qtyOfOpenedShipmentsInCreation == 0}">
-					<div  th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Create a new Shipment for company: ' + ${companys.name}"></div><br/>
-				</span>
+				<div  th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Edit Shipment for company: ' + ${companys.name}"></div><br/>
 			</span>
 
-			<section  th:if="${qtyOfOpenedShipmentsInCreation > 0}">
-				<label style="color: white;font-weight: bold">Fullfill opened Shipment</label>
-				<select class="select-css" th:field="*{shipment.shipmentNumber}">
-					<option th:each="i : ${openedShipments}" th:value="${i.shipmentNumber}" th:text="${i.shipmentNumber}">
-					</option>
-				</select><br/>
-			</section>
-
-			<section  th:if="${qtyOfOpenedShipmentsInCreation == 0}" >
-				<label style="color: white;font-weight: bold">New Shipment</label>
-				<input type="text" th:value="${lastShipmentNumber}" id="shipmentNumber" name="shipmentNumber" readonly/>
+			<section>
+				<label style="color: white;font-weight: bold">Edit Shipment</label>
+				<input type="text" th:field="*{shipmentInCreation.shipmentNumber}" readonly/>
 			</section>
 
 			<section>
 				<label style="color: white;font-weight: bold">Article</label>
-				<select class="select-css" th:field="*{shipment.article}">
+				<select class="select-css" th:field="*{shipmentInCreation.article}">
 					<option th:each="i : ${articles}" th:value="${i.id}" th:text="${i.article_number}">
 					</option>
 				</select>
-				<input type="hidden" th:field="*{shipment.id}"/>
+				<input type="hidden" th:field="*{shipmentInCreation.id}"/>
 				<input th:unless="${#request.remoteUser.contains('admin')}" type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
 				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
 				<input type="hidden" th:value="false" id="reception.finished" name="reception.finished"/>
@@ -70,7 +55,7 @@
 
 			<section th:if="${#request.remoteUser.contains('admin')}">
 				<label style="color: white;font-weight: bold">Company</label>
-				<select class="select-css" th:field="*{shipment.company}">
+				<select class="select-css" th:field="*{shipmentInCreation.company}">
 					<option th:each="i : ${companys}" th:value="${i.id}" th:text="${i.name}">
 					</option>
 				</select>
@@ -78,7 +63,7 @@
 
 			<section>
 				<label style="color: white;font-weight: bold">Quality</label>
-				<select class="select-css" th:field="*{shipment.quality}">
+				<select class="select-css" th:field="*{shipmentInCreation.quality}">
 					<option th:value="EU1">Europen Union first grade</option>
 					<option th:value="EU2">Europen Union second grade</option>
 					<option th:value="BW1">Bonded Warehouse first grade</option>
@@ -88,7 +73,7 @@
 
 			<section>
 				<label style="color: white;font-weight: bold">Unit</label>
-				<select class="select-css" th:field="*{shipment.unit}" >
+				<select class="select-css" th:field="*{shipmentInCreation.unit}" >
 					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.name}">
 				</select><br/>
 			</section>
@@ -104,12 +89,12 @@
 
 			<section>
 				<label style="color: white;font-weight: bold">How many do you want sent?</label>
-				<input type="number" th:field="*{shipment.pieces_qty}" required="required" min="1" max="6666666"/>
+				<input type="number" th:field="*{shipmentInCreation.pieces_qty}" required="required" min="1" max="6666666"/>
 			</section>
 
 			<section>
 				<label style="color: white;font-weight: bold">Customer</label>
-				<select class="select-css" th:field="*{shipment.customer}">
+				<select class="select-css" th:field="*{shipmentInCreation.customer}">
 					<option th:each="i : ${customers}" th:value="${i.id}" th:text="${i.name}">
 					</option>
 				</select>
@@ -117,7 +102,7 @@
 
 			<section>
 				<label style="color: white;font-weight: bold">Ship Method</label>
-				<select class="select-css" th:field="*{shipment.shipMethod}">
+				<select class="select-css" th:field="*{shipmentInCreation.shipMethod}">
 					<option th:each="i : ${shipMethods}" th:value="${i.id}" th:text="${i.method_desc}">
 					</option>
 				</select>
@@ -125,7 +110,7 @@
 
 			<section style="float: right">
 				<label style="color: white;font-weight: bold">Close Creation?</label>
-				<input type="checkbox" th:field="*{shipment.creation_closed}" th:value="true"/>
+				<input type="checkbox" th:field="*{shipmentInCreation.creation_closed}" th:value="true"/>
 			</section><br/><br/>
 
 			<section>

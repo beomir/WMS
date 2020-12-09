@@ -56,4 +56,7 @@ public class Warehouse {
 
     @OneToMany(mappedBy="warehouse")
     private List<Reception> receptionList = new ArrayList<>();
+
+    @OneToMany(mappedBy="warehouse")
+    private List<ShipmentInCreation> ShipmentInCreationList = new ArrayList<>();
 }

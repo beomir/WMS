@@ -65,5 +65,18 @@ public class Stock {
     @ManyToOne
     private Unit unit;
 
-
+    @Override
+    public String toString() {
+        return "Stock{" +
+                "id=" + id +
+                ", hd_number=" + hd_number +
+                ", comment='" + comment + '\'' +
+                ", article=" + article +
+                ", pieces_qty=" + pieces_qty +
+                ", status=" + status +
+                ", quality='" + quality + '\'' +
+                ", created='" + created + '\'' +
+                ", last_update='" + last_update + '\'' +
+                '}';
+    }
 }

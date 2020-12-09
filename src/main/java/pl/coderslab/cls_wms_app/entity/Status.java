@@ -43,4 +43,7 @@ public class Status {
     @OneToMany(mappedBy="status")
     private List<Shipment> shipmentList = new ArrayList<>();
 
+    @OneToMany(mappedBy="status")
+    private List<ShipmentInCreation> ShipmentInCreationList = new ArrayList<>();
+
 }

@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,6 +30,7 @@ public class Customer {
     private String post_code;
     private String country;
     private boolean european_union;
+
 
     public Customer(Long id, Company company, String city, String street, String post_code, String country, boolean european_union, String name, boolean active) {
         this.id = id;

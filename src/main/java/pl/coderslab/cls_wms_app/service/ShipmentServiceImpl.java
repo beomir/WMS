@@ -34,7 +34,7 @@ public class ShipmentServiceImpl implements ShipmentService{
 
     @Override
     public Shipment findById(Long id) {
-        return null;
+        return shipmentRepository.getOne(id);
     }
 
     @Override
