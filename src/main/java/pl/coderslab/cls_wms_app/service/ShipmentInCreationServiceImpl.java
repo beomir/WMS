@@ -109,6 +109,8 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
 
             }
         }
+        log.debug(String.valueOf(shipmentReadyToCloseCreation));
+        System.out.println(shipmentReadyToCloseCreation);
         return shipmentReadyToCloseCreation;
     }
 

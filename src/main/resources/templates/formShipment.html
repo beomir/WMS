@@ -64,7 +64,7 @@
 				<input type="hidden" th:field="*{shipment.id}"/>
 				<input th:unless="${#request.remoteUser.contains('admin')}" type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
 				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
-				<input type="hidden" th:value="false" id="reception.finished" name="reception.finished"/>
+				<input type="hidden" th:value="false" id="shipment.creation_closed" name="shipment.creation_closed"/>
 				<input type="hidden" th:value="1" id="status" name="status"/>
 			</section>
 
@@ -123,10 +123,6 @@
 				</select>
 			</section><br/>
 
-			<section style="float: right">
-				<label style="color: white;font-weight: bold">Close Creation?</label>
-				<input type="checkbox" th:field="*{shipment.creation_closed}" th:value="true"/>
-			</section><br/><br/>
 
 			<section>
 				<br/><button class="button" type="submit">Save</button>
