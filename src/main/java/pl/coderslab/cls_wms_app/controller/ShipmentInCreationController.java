@@ -14,6 +14,7 @@ import java.util.List;
 @RequestMapping("")
 public class ShipmentInCreationController {
 
+
     private ShipmentInCreationService shipmentInCreationService;
     private ShipMethodService shipMethodService;
     private WarehouseService warehouseService;
@@ -35,7 +36,7 @@ public class ShipmentInCreationController {
     }
 
     @GetMapping("/shipmentInCreation")
-    public String list(Model model, @SessionAttribute Long warehouseId) {
+    public String list(Model model, @SessionAttribute Long warehouseId,String massage) {
         List<ShipmentInCreation> getShipmentInCreation = shipmentInCreationService.getShipmentInCreationById(warehouseId);
         List<ShipMethod> shipMethod = shipMethodService.getShipMethod();
         List<Warehouse> warehouse = warehouseService.getWarehouse(warehouseId);
@@ -50,13 +51,16 @@ public class ShipmentInCreationController {
         model.addAttribute("stockDifferencesQty", stockDifferencesQty);
         List<Long> shipmentCreationSummary = shipmentInCreationService.shipmentCreationSummary(warehouseId,SecurityUtils.username());
         model.addAttribute("shipmentCreationSummary", shipmentCreationSummary);
+
+
+        String messages = shipmentInCreationService.resultOfShipmentCreationValidation(massage);
+        model.addAttribute("messages", messages);
         return "shipmentInCreation";
     }
 
     @GetMapping("/formShipment")
     public String shipmentForm(Model model,@SessionAttribute Long warehouseId){
         model.addAttribute("shipment", new ShipmentInCreation());
-
         List<Customer> customers = customerService.getCustomer(SecurityUtils.username());
         model.addAttribute("customers", customers);
 
@@ -130,6 +134,12 @@ public class ShipmentInCreationController {
     @GetMapping("/closeCreationShipment/{id}")
     public String closeCreationShipment(@PathVariable Long id, @SessionAttribute Long warehouseId) {
         shipmentInCreationService.closeCreationShipment(id,warehouseId);
+        return "redirect:/shipmentInCreation";
+    }
+
+    @GetMapping("/deleteShipmentLine/{id}")
+    public String deleteShipmentLine(@PathVariable Long id) {
+        shipmentInCreationService.remove(id);
         return "redirect:/shipmentInCreation";
     }
 

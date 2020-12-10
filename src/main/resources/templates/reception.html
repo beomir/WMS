@@ -49,7 +49,7 @@
 								<ul>
 									<li th:if="${reception.finished == false && reception.creation_closed != false}"><a th:href="@{/finishedReception/{id}(id=${reception.id})}">Finish</a></li>
 									<li th:if="${reception.creation_closed == true && reception.finished == false }"><a th:href="@{/openCreationReception/{id}(id=${reception.id})}">Open Creation</a></li>
-
+									<li th:if="${reception.creation_closed == false && reception.finished == false }"><a th:href="@{/closeCreationReception/{id}(id=${reception.id})}">Close Creation</a></li>
 								</ul>
 							</li>
 						</ol>

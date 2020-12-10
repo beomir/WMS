@@ -47,11 +47,11 @@
 							<ol><div th:text="${storage.hd_number}"></div>
 								<li>
 									<ul>
-										<li><a th:href="@{/changeStatusStock/{id}(id=${storage.id})}">Change Status</a></li>
-										<li><a th:href="@{/changeQualityStock/{id}(id=${storage.id})}">Change Quality</a></li>
-										<li><a th:href="@{/changeQtyStock/{id}(id=${storage.id})}">Change Qty</a></li>
-										<li><a th:href="@{/changeArticleNumberStock/{id}(id=${storage.id})}">Change Article number</a></li>
-										<li><a th:href="@{/changeUnitStock/{id}(id=${storage.id})}">Change Unit</a></li>
+										<li><a th:if="${storage.status != 2}" th:href="@{/changeStatusStock/{id}(id=${storage.id})}">Change Status</a></li>
+										<li><a th:if="${storage.status != 2}" th:href="@{/changeQualityStock/{id}(id=${storage.id})}">Change Quality</a></li>
+										<li><a th:if="${storage.status != 2}" th:href="@{/changeQtyStock/{id}(id=${storage.id})}">Change Qty</a></li>
+										<li><a th:if="${storage.status != 2}" th:href="@{/changeArticleNumberStock/{id}(id=${storage.id})}">Change Article number</a></li>
+										<li><a th:if="${storage.status != 2}" th:href="@{/changeUnitStock/{id}(id=${storage.id})}">Change Unit</a></li>
 										<li><a th:href="@{/addCommentStock/{id}(id=${storage.id})}">Add coment</a></li>
 									</ul>
 								</li>

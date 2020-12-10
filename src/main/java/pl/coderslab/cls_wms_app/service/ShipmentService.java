@@ -16,9 +16,5 @@ public interface ShipmentService {
     Shipment findById(Long id);
 
 
-    Shipment get(Long id);
-
-    void delete(Long id);
-
-    void update(Shipment shipment);
+    void finishShipment(Long id);
 }

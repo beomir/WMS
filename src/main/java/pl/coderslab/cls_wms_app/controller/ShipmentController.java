@@ -45,5 +45,11 @@ public class ShipmentController {
         return "shipment";
     }
 
+    @GetMapping("/finishedShipment/{id}")
+    public String finishShipment(@PathVariable Long id) {
+        Long getShipmentById = shipmentService.findById(id).getShipmentNumber();
+        shipmentService.finishShipment(getShipmentById);
+        return "redirect:/shipment";
+    }
 
 }

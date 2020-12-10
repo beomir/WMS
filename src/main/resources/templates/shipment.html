@@ -49,8 +49,9 @@
 							<ol><div th:text="${shipments.shipmentNumber}"></div>
 								<li>
 									<ul>
-										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a th:href="@{/finishedShipment/{id}(id=${c.id})}">Finish</a></li>
-										<li th:if="${shipments.creation_closed == true && shipments.finished == false }"><a th:href="@{/openCreationShipment/{id}(id=${shipments.id})}">Open Creation</a></li>
+										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a th:href="@{/finishedShipment/{id}(id=${shipments.id})}">Finish</a></li>
+										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a th:href="@{/addCommentShipment/{id}(id=${shipments.id})}">Add comment</a></li>
+<!--										<li th:if="${shipments.creation_closed == true && shipments.finished == false }"><a th:href="@{/openCreationShipment/{id}(id=${shipments.id})}">Open Creation</a></li>-->
 									</ul>
 								</li>
 							</ol>

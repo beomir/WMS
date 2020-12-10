@@ -24,4 +24,8 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query(value = "update shipments SET finished = true where shipment_number = ?1",nativeQuery = true)
     void updateFinishedShipmentValue(Long shipmentNbr);
 
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE s.* from storage s inner join shipments shi on shi.shipment_number = s.shipment_number where shi.shipment_number = ?1 and shi.finished = true",nativeQuery = true)
+    void deleteStockAfterFinishShipment(Long shipmentNbr);
 }

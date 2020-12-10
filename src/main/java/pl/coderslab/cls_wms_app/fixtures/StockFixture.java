@@ -20,20 +20,20 @@ public class StockFixture {
     private UnitService unitService;
 
     private List<Stock> stockList = Arrays.asList(
-            new Stock(null, 202000000000000000L, null, 24L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000001L, null, 10L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000002L, null,  18L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000003L, null,  20L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000004L, null,  20L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000005L, null,  40L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000006L, null,  20L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000007L, null,  44L,null,null,"BW1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000008L, null,  20L,null,null,"BW1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000009L, null,  75L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000010L, null,  21L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000011L, null,  20L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000012L, null,  43L,null,null,"EU2",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null),
-            new Stock(null, 202000000000000013L, null,  123L,null,null,"EU2",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null)
+            new Stock(null, 202000000000000000L, null, 24L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000001L, null, 10L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000002L, null,  18L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000003L, null,  20L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000004L, null,  20L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000005L, null,  40L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000006L, null,  20L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000007L, null,  44L,null,null,"BW1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000008L, null,  20L,null,null,"BW1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000009L, null,  75L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000010L, null,  21L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000011L, null,  20L,null,null,"EU1",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000012L, null,  43L,null,null,"EU2",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null),
+            new Stock(null, 202000000000000013L, null,  123L,null,null,"EU2",null,"2020-11-28:T10:00:00","2020-11-28:T10:00:00",null,null,null,null)
     );
 
 
@@ -50,14 +50,13 @@ public class StockFixture {
     public void loadIntoDB() {
         List<Company> companies = companyService.getCompany();
         List<Warehouse> warehouses = warehouseService.getWarehouse();
-        List<Status> statuses = statusService.getStatus();
+        List<Status> status = statusService.getStatus();
         List<Article> articles = articleService.getArticles();
         List<Unit> unit = unitService.getUnit();
         Random rand = new Random();
 
         for (Stock storage : stockList) {
             storage.setWarehouse(warehouses.get(rand.nextInt(warehouses.size())));
-            storage.setStatus(statuses.get(rand.nextInt(statuses.size())));
             stockService.add(storage);
         }
 
@@ -120,6 +119,21 @@ public class StockFixture {
         stock12.setUnit(unit.get(0));
         stock13.setUnit(unit.get(0));
         stock14.setUnit(unit.get(0));
+
+        stock1.setStatus(status.get(0));
+        stock2.setStatus(status.get(0));
+        stock3.setStatus(status.get(0));
+        stock4.setStatus(status.get(0));
+        stock5.setStatus(status.get(0));
+        stock6.setStatus(status.get(0));
+        stock7.setStatus(status.get(0));
+        stock8.setStatus(status.get(0));
+        stock9.setStatus(status.get(0));
+        stock10.setStatus(status.get(0));
+        stock11.setStatus(status.get(0));
+        stock12.setStatus(status.get(0));
+        stock13.setStatus(status.get(0));
+        stock14.setStatus(status.get(0));
 
         stockService.add(stock1);
         stockService.add(stock2);

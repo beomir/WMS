@@ -34,7 +34,11 @@ public class Stock {
 
     private String quality;
 
-    public Stock(Long id, Long hd_number, Article article,  Long pieces_qty,Unit unit, Status status, String quality, Warehouse warehouse, String created, String last_update, Company company,String comment) {
+    private Long shipmentNumber;
+
+    private Long receptionNumber;
+
+    public Stock(Long id, Long hd_number, Article article,  Long pieces_qty,Unit unit, Status status, String quality, Warehouse warehouse, String created, String last_update, Company company,String comment,Long shipmentNumber, Long receptionNumber) {
         this.id = id;
         this.hd_number = hd_number;
         this.article = article;
@@ -47,6 +51,8 @@ public class Stock {
         this.last_update = last_update;
         this.company = company;
         this.comment = comment;
+        this.shipmentNumber = shipmentNumber;
+        this.receptionNumber = receptionNumber;
     }
 
     @NotNull

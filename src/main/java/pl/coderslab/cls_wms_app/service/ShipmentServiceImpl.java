@@ -38,17 +38,10 @@ public class ShipmentServiceImpl implements ShipmentService{
     }
 
     @Override
-    public Shipment get(Long id) {
-        return null;
+    public void finishShipment(Long shipmentNbrtoFinish) {
+        shipmentRepository.updateFinishedShipmentValue(shipmentNbrtoFinish);
+        shipmentRepository.deleteStockAfterFinishShipment(shipmentNbrtoFinish);
     }
 
-    @Override
-    public void delete(Long id) {
 
-    }
-
-    @Override
-    public void update(Shipment shipment) {
-
-    }
 }

@@ -89,13 +89,26 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
     @Override
     public void closeCreationShipment(Long id, @SessionAttribute Long warehouseId) {
         ShipmentInCreation shipmentInCreation = shipmentInCreationRepository.getOne(id);
+        String failedAttempt = "Change red underlined qty to pass the validation";
+        String attemptSuccessful = "Validation passed succesfully. Your goods were transfer to shipment, status of marked pieces on stock were changed ";
         if(validateTheCorrectnessOfShipment(warehouseId)) {
             shipmentInCreation.setCreation_closed(true);
             Long shipmentNmbr = shipmentInCreationRepository.getOne(id).getShipmentNumber();
             shipmentInCreationRepository.updateCloseCreationShipmentValue(shipmentNmbr);
+            shipmentInCreationRepository.insertDataToShipmentAfterCloseCreation(warehouseId,SecurityUtils.username());
+            shipmentInCreationRepository.insertDataToStockAfterCloseCreationWithCorrectStatus(warehouseId,SecurityUtils.username());
+            shipmentInCreationRepository.updateStockDataAboutShipmentQty(warehouseId,SecurityUtils.username());
+            shipmentInCreationRepository.deleteQtyAfterCloseCreation(warehouseId,SecurityUtils.username());
+
+            resultOfShipmentCreationValidation(attemptSuccessful);
+        }
+        else{
+            resultOfShipmentCreationValidation(failedAttempt);
+            System.out.println("check failedAttempt: " + failedAttempt);
         }
 
     }
+
 
     @Override
     public boolean validateTheCorrectnessOfShipment(@SessionAttribute Long warehouseId) {
@@ -106,12 +119,24 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
             System.out.println(checkShipments.get(i));
             if (checkShipments.get(i) < 0) {
                 shipmentReadyToCloseCreation = false;
-
             }
         }
         log.debug(String.valueOf(shipmentReadyToCloseCreation));
         System.out.println(shipmentReadyToCloseCreation);
         return shipmentReadyToCloseCreation;
+    }
+
+    @Override
+    public String resultOfShipmentCreationValidation(String message){
+        String messageValidation = message;
+        log.debug(message);
+        System.out.println("message!: " + message);
+        return messageValidation;
+    }
+
+    @Override
+    public void remove(Long id) {
+        shipmentInCreationRepository.deleteById(id);
     }
 
 }

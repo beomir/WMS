@@ -30,7 +30,9 @@
 				<div th:each="warehouse: ${warehouse}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Your Shipments during Creation in ' + ${warehouse.city}"></div><br/>
 				<div th:unless="${#request.remoteUser.contains('admin')}">
 					<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companys.name}"></div>
-				</div><br/><br/>
+				</div>
+				<div style="color: darkred;font-weight: bold;text-align: center" th:text="${messages}"></div>
+				<br/>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
 						<th class="tables">Shipment Number</th>
@@ -48,6 +50,7 @@
 									<ul>
 										<li><a th:href="@{/closeCreationShipment/{id}(id=${shipments.id})}">Close Creation</a></li>
 										<li><a th:href="@{/editShipment/{id}(id=${shipments.id})}">Edit</a></li>
+										<li><a th:href="@{/deleteShipmentLine/{id}(id=${shipments.id})}">Delete</a></li>
 									</ul>
 								</li>
 							</ol>
@@ -82,7 +85,7 @@
 						<th>Difference to Stock:</th>
 					</tr>
 					<tr th:each="stockDifferencesQty: ${stockDifferencesQty}">
-						<td th:title="${stockDifferencesQty<0} == TRUE ? 'Not enough goods for send! Edit one of shipment line to make proper quantity' : 'Enough quantity to send'" th:style="${stockDifferencesQty<0} == TRUE ? 'background: red'" class="tables" th:text="${stockDifferencesQty}"></td>
+						<td th:title="${stockDifferencesQty<0} == TRUE ? 'Not enough goods for send! Edit or Delete one of shipment line to make proper quantity' : 'Enough quantity to send'" th:style="${stockDifferencesQty<0} == TRUE ? 'background: red'" class="tables" th:text="${stockDifferencesQty}"></td>
 					</tr>
 				</table>
 			</div>
