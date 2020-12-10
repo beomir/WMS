@@ -1,8 +1,6 @@
 package pl.coderslab.cls_wms_app.service;
 
-import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Users;
-import pl.coderslab.cls_wms_app.entity.Warehouse;
 
 import java.util.List;
 

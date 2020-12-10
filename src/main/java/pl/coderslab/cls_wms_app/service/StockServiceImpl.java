@@ -1,20 +1,17 @@
 package pl.coderslab.cls_wms_app.service;
 
-import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.repository.StockRepository;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class StockServiceImpl implements StockService {
-    private StockRepository stockRepository;
+    private final StockRepository stockRepository;
     public List<Stock> storage = new ArrayList<>();
 
     @Autowired

@@ -3,16 +3,14 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.coderslab.cls_wms_app.entity.Customer;
 import pl.coderslab.cls_wms_app.entity.Vendor;
-import pl.coderslab.cls_wms_app.repository.CustomerRepository;
 import pl.coderslab.cls_wms_app.repository.VendorRepository;
 
 import java.util.List;
 
 @Service
 public class VendorServiceImpl implements VendorService{
-    private VendorRepository vendorRepository;
+    private final VendorRepository vendorRepository;
 
     @Autowired
     public VendorServiceImpl(VendorRepository vendorRepository) {
@@ -65,8 +63,5 @@ public class VendorServiceImpl implements VendorService{
         vendorRepository.save(vendor);
     }
 
-    @Override
-    public void update(Vendor vendor) {
 
-    }
 }

@@ -1,7 +1,5 @@
 package pl.coderslab.cls_wms_app.service;
 
-import pl.coderslab.cls_wms_app.entity.Article;
-import pl.coderslab.cls_wms_app.entity.Customer;
 import pl.coderslab.cls_wms_app.entity.Vendor;
 
 import java.util.List;
@@ -25,5 +23,4 @@ public interface VendorService {
 
     void activate(Long id);
 
-    void update(Vendor vendor);
 }

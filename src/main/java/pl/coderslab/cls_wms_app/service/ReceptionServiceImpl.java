@@ -3,7 +3,6 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Reception;
 import pl.coderslab.cls_wms_app.repository.ReceptionRepository;
 
@@ -64,15 +63,6 @@ public class ReceptionServiceImpl implements ReceptionService{
     }
 
 
-    @Override
-    public void delete(Long id) {
-
-    }
-
-    @Override
-    public void update(Reception reception) {
-
-    }
 
     @Override
     public Long lastReception() {

@@ -18,11 +18,9 @@ public interface CustomerService {
 
     Customer findById(Long id);
 
-    Customer get(Long id);
 
     void delete(Long id);
 
     void activate(Long id);
 
-    void update(Customer article);
 }

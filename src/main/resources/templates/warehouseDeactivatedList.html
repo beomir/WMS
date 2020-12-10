@@ -45,10 +45,17 @@
 						<th class="tables">Steward</th>
 						<th class="tables">Created</th>
 						<th class="tables">Last Update</th>
-						<th class="tables">Action</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="warehouses: ${warehouseDeactivated}">
-						<td class="tables" th:text="${warehouses.name}"></td>
+						<td class="tables" style="padding-bottom: 2px">
+							<ol><div th:text="${warehouses.name}"></div>
+								<li>
+									<ul>
+										<li><a th:href="@{/activateWarehouse/{id}(id=${warehouses.id})}">ACTIVATE</a></li>
+									</ul>
+								</li>
+							</ol>
+						</td>
 						<td class="tables" th:text="${warehouses.city}"></td>
 				        <td class="tables" th:text="${warehouses.street}"></td>
 						<td class="tables" th:text="${warehouses.post_code}"></td>
@@ -58,13 +65,7 @@
 				        <td class="tables" th:text="${warehouses.created}"></td>
 				        <td class="tables" th:text="${warehouses.last_update}"></td>
 						<td style="cursor:pointer;" class="tables">
-							<ol>
-								<li>
-									<ul>
-										<li><a th:href="@{/activateWarehouse/{id}(id=${warehouses.id})}">ACTIVATE</a></li>
-									</ul>
-								</li>
-							</ol>
+
 						</td>
 				    </tr>
 				</table>

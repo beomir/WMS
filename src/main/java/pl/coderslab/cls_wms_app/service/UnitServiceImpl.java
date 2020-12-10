@@ -59,8 +59,4 @@ public class UnitServiceImpl implements UnitService{
         unitRepository.save(unit);
     }
 
-    @Override
-    public void update(Unit unit) {
-
-    }
 }

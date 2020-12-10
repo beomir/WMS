@@ -4,10 +4,7 @@ package pl.coderslab.cls_wms_app.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.entity.Article;
-import pl.coderslab.cls_wms_app.entity.Company;
-import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.repository.ArticleRepository;
-import pl.coderslab.cls_wms_app.repository.CompanyRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -44,10 +41,6 @@ public class ArticleServiceImpl implements ArticleService{
         return articleRepository.getOne(id);
     }
 
-    @Override
-    public Article get(Long id) {
-        return null;
-    }
 
     @Override
     public void delete(Long id) {
@@ -70,8 +63,5 @@ public class ArticleServiceImpl implements ArticleService{
         return articleRepository.getDeactivatedArticle();
     }
 
-    @Override
-    public void update(Article article) {
 
-    }
 }

@@ -50,8 +50,6 @@ public interface ShipmentInCreationRepository extends JpaRepository<ShipmentInCr
     @Query(value = "update shipment_in_creation SET creation_closed = true where shipment_number = ?1",nativeQuery = true)
     void updateCloseCreationShipmentValue(Long shipmentNbr);
 
-
-
     //insert to shipments after close creation
     @Modifying
     @Transactional
@@ -69,7 +67,7 @@ public interface ShipmentInCreationRepository extends JpaRepository<ShipmentInCr
     @Query(value = "update storage s inner join shipment_in_creation sic on s.article_id = s.article_id and s.article_id = sic.article_id join company c on s.company_id = c.id inner join users u on u.company = c.name set s.pieces_qty =  if(s.pieces_qty >= sic.pieces_qty and s.status_id=1 and s.warehouse_id = ?1 and u.username like ?2,s.pieces_qty-sic.pieces_qty,s.pieces_qty), s.last_update = if(s.pieces_qty >= sic.pieces_qty and s.status_id=1 and s.warehouse_id = ?1 and u.username like ?2,localtime,s.last_update)",nativeQuery = true)
     void updateStockDataAboutShipmentQty(Long id, String username);
 
-    //clean Shipment_in_creation
+    //cleaning Shipment_in_creation
     @Modifying
     @Transactional
     @Query(value = "DELETE sic.* FROM shipment_in_creation sic inner join company c on sic.company_id = c.id inner join users u on u.company = c.name where sic.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)

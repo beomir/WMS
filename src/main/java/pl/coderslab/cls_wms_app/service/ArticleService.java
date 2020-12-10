@@ -18,11 +18,8 @@ public interface ArticleService {
     Article findById(Long id);
 
 
-    Article get(Long id);
-
     void delete(Long id);
 
     void activate(Long id);
 
-    void update(Article article);
 }

@@ -36,10 +36,6 @@ public class UsersServiceImpl implements UsersService{
         return usersRepository.getUser(id);
     }
 
-//    @Override
-//    public void edit(long id, String phone) {
-//        usersRepository(id, phone);
-//    }
 
     @Override
     public List<Users> getUsers() {

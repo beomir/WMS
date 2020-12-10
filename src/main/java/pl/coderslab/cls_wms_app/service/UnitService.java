@@ -1,7 +1,5 @@
 package pl.coderslab.cls_wms_app.service;
 
-import pl.coderslab.cls_wms_app.entity.Customer;
-import pl.coderslab.cls_wms_app.entity.Status;
 import pl.coderslab.cls_wms_app.entity.Unit;
 
 import java.util.List;
@@ -21,5 +19,4 @@ public interface UnitService {
 
     void activate(Long id);
 
-    void update(Unit unit);
 }

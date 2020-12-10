@@ -3,11 +3,7 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.coderslab.cls_wms_app.entity.Company;
-import pl.coderslab.cls_wms_app.entity.Stock;
-import pl.coderslab.cls_wms_app.entity.Vendor;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.repository.CompanyRepository;
 import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 
 import java.time.LocalDateTime;
@@ -16,7 +12,7 @@ import java.util.List;
 
 @Service
 public class WareohuseServiceImpl implements WarehouseService{
-    private WarehouseRepository warehouseRepository;
+    private final WarehouseRepository warehouseRepository;
 
     @Autowired
     public WareohuseServiceImpl(WarehouseRepository warehouseRepository) {
@@ -69,8 +65,4 @@ public class WareohuseServiceImpl implements WarehouseService{
         warehouseRepository.save(warehouse);
     }
 
-    @Override
-    public void update(Warehouse warehouse) {
-
-    }
 }

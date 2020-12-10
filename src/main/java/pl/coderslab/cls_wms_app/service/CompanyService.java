@@ -21,7 +21,6 @@ public interface CompanyService {
 
     void activate(Long id);
 
-    void update(Company company);
 
     List<Company> getCompanyByUsername(String username);
 }

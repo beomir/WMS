@@ -3,9 +3,7 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Customer;
-import pl.coderslab.cls_wms_app.repository.CompanyRepository;
 import pl.coderslab.cls_wms_app.repository.CustomerRepository;
 
 import java.util.List;
@@ -44,10 +42,6 @@ public class CustomerServiceImpl implements CustomerService{
         return customerRepository.getOne(id);
     }
 
-    @Override
-    public Customer get(Long id) {
-        return null;
-    }
 
     @Override
     public void delete(Long id) {
@@ -65,8 +59,4 @@ public class CustomerServiceImpl implements CustomerService{
         customerRepository.save(customer);
     }
 
-    @Override
-    public void update(Customer customer) {
-
-    }
 }

@@ -59,11 +59,6 @@ public class CompanyServiceImpl implements CompanyService{
         companyRepository.save(company);
     }
 
-    @Override
-    public void update(Company company) {
-
-    }
-
 
     @Override
     public List<Company> getCompanyByUsername(String username) {
