@@ -47,12 +47,13 @@
 							<ol><div th:text="${storage.hd_number}"></div>
 								<li>
 									<ul>
-										<li><a th:if="${storage.status != 2}" th:href="@{/changeStatusStock/{id}(id=${storage.id})}">Change Status</a></li>
-										<li><a th:if="${storage.status != 2}" th:href="@{/changeQualityStock/{id}(id=${storage.id})}">Change Quality</a></li>
-										<li><a th:if="${storage.status != 2}" th:href="@{/changeQtyStock/{id}(id=${storage.id})}">Change Qty</a></li>
-										<li><a th:if="${storage.status != 2}" th:href="@{/changeArticleNumberStock/{id}(id=${storage.id})}">Change Article number</a></li>
-										<li><a th:if="${storage.status != 2}" th:href="@{/changeUnitStock/{id}(id=${storage.id})}">Change Unit</a></li>
-										<li><a th:href="@{/addCommentStock/{id}(id=${storage.id})}">Add coment</a></li>
+
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:href="@{/formChangeStatus/{id}(id=${storage.id})}">Change Status</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:href="@{/formChangeQuality/{id}(id=${storage.id})}">Change Quality</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/formChangeQty/{id}(id=${storage.id})}">Change Qty</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/formChangeArticleNumber/{id}(id=${storage.id})}">Change Article number</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/formChangeUnit/{id}(id=${storage.id})}">Change Unit</a></li>
+										<li><a th:href="@{/formAddComment/{id}(id=${storage.id})}">Add coment</a></li>
 									</ul>
 								</li>
 							</ol>
@@ -64,17 +65,18 @@
 				        <td class="tables" th:text="${storage.status.status}"></td>
 						<td th:if="${#request.remoteUser.contains('admin')}" class="tables" th:text="${storage.company.name}"></td>
 				    </tr>
+
 				</table>
-			</div>
+
+				<a th:href="@{/formStock}"><div class="buttonik" style="float: right;max-width: 20%;">Create Stock</div></a>
+
+			</div><br/><br/>
 			<div th:include="fragments/footer :: footer"></div>
 		</div>
 		<div class="w3copyright-agile">
 			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 		</div>
 	</div>
-
-
-
 	<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
 	<script>

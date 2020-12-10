@@ -46,4 +46,14 @@ public class Status {
     @OneToMany(mappedBy="status")
     private List<ShipmentInCreation> ShipmentInCreationList = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Status{" +
+                "id=" + id +
+                ", status='" + status + '\'' +
+                ", status_desc='" + status_desc + '\'' +
+                ", created='" + created + '\'' +
+                ", last_update='" + last_update + '\'' +
+                '}';
+    }
 }
