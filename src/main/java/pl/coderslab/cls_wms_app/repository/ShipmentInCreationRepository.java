@@ -59,7 +59,7 @@ public interface ShipmentInCreationRepository extends JpaRepository<ShipmentInCr
     //modification on stock after close creation -- optimistic version
     @Modifying
     @Transactional
-    @Query(value = "insert into storage (comment,created,hd_number,last_update,pieces_qty,quality,article_id,company_id,status_id,unit_id,warehouse_id,shipment_number) select 'transfer to send',localtime,DENSE_RANK() OVER (ORDER BY sic.id DESC) + (select hd_number from shipments order by hd_number desc limit 1) + 900000000 as hd_number,localtime,pieces_qty,quality,article_id,company_id,2,unit_id,warehouse_id,sic.shipment_number from shipment_in_creation sic inner join company c on sic.company_id = c.id inner join users u on u.company = c.name where sic.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)
+    @Query(value = "insert into storage (comment,created,hd_number,last_update,pieces_qty,quality,article_id,company_id,status_id,unit_id,warehouse_id,shipment_number)  select concat('transfered to send in shipment: ',(select distinct shipment_number from shipment_in_creation sic inner join company c on sic.company_id = c.id inner join users u on u.company = c.name where sic.warehouse_id = ?1 and u.username like ?2 order by 1 desc )) ,localtime,DENSE_RANK() OVER (ORDER BY sic.id DESC) + (select hd_number from shipments order by hd_number desc limit 1) + 900000000 as hd_number,localtime,pieces_qty,quality,article_id,company_id,2,unit_id,warehouse_id,sic.shipment_number from shipment_in_creation sic inner join company c on sic.company_id = c.id inner join users u on u.company = c.name where sic.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)
     void insertDataToStockAfterCloseCreationWithCorrectStatus(Long id, String username);
 
     @Modifying
@@ -72,4 +72,10 @@ public interface ShipmentInCreationRepository extends JpaRepository<ShipmentInCr
     @Transactional
     @Query(value = "DELETE sic.* FROM shipment_in_creation sic inner join company c on sic.company_id = c.id inner join users u on u.company = c.name where sic.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)
     void deleteQtyAfterCloseCreation(Long id, String username);
+
+    //delete zeros on stock
+    @Modifying
+    @Transactional
+    @Query(value = "Delete s.* from storage s inner join company c on s.company_id = c.id inner join users u on u.company = c.name where pieces_qty = 0 and status_id = 1 and s.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)
+    void deleteZerosOnStock(Long id, String username);
 }

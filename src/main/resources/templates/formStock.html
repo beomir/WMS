@@ -67,7 +67,7 @@
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Handle Device number</label>
-				<input type="number" th:field="*{hd_number}" min="100000000000000000" max="999999999999999999"/>
+				<input type="number" th:value="${nextPalletNbr}" name="hd_number" id="hd_number" readonly/>
 			</section><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Quantity</label>

@@ -198,6 +198,7 @@ public class StockController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("companys", companys);
+        model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
         return "formStock";
     }
 

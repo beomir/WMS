@@ -43,5 +43,10 @@ public class ShipmentServiceImpl implements ShipmentService{
         shipmentRepository.deleteStockAfterFinishShipment(shipmentNbrtoFinish);
     }
 
+    @Override
+    public int checkHowManyNotfinishedShipments(Long id, String username) {
+        return shipmentRepository.checkHowManyNotfinishedShipments(id,username);
+    }
+
 
 }

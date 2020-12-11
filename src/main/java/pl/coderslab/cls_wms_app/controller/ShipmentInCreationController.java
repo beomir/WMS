@@ -22,9 +22,10 @@ public class ShipmentInCreationController {
     private ArticleService articleService;
     private UnitService unitService;
     private CustomerService customerService;
+    private ShipmentService shipmentService;
 
     @Autowired
-    public ShipmentInCreationController(ShipmentInCreationService shipmentInCreationService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, ArticleService articleService, UnitService unitService, CustomerService customerService) {
+    public ShipmentInCreationController(ShipmentInCreationService shipmentInCreationService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, ArticleService articleService, UnitService unitService, CustomerService customerService, ShipmentService shipmentService) {
 
         this.shipMethodService = shipMethodService;
         this.warehouseService = warehouseService;
@@ -33,10 +34,11 @@ public class ShipmentInCreationController {
         this.articleService = articleService;
         this.unitService = unitService;
         this.customerService = customerService;
+        this.shipmentService = shipmentService;
     }
 
     @GetMapping("/shipmentInCreation")
-    public String list(Model model, @SessionAttribute Long warehouseId,String massage) {
+    public String list(Model model, @SessionAttribute Long warehouseId) {
         List<ShipmentInCreation> getShipmentInCreation = shipmentInCreationService.getShipmentInCreationById(warehouseId);
         List<ShipMethod> shipMethod = shipMethodService.getShipMethod();
         List<Warehouse> warehouse = warehouseService.getWarehouse(warehouseId);
@@ -52,9 +54,14 @@ public class ShipmentInCreationController {
         List<Long> shipmentCreationSummary = shipmentInCreationService.shipmentCreationSummary(warehouseId,SecurityUtils.username());
         model.addAttribute("shipmentCreationSummary", shipmentCreationSummary);
 
-
-        String messages = shipmentInCreationService.resultOfShipmentCreationValidation(massage);
+        List<Shipment> shipments = shipmentService.getShipment(warehouseId);
+        model.addAttribute("shipment", shipments);
+        String messages = shipmentInCreationService.resultOfShipmentCreationValidation(warehouseId);
         model.addAttribute("messages", messages);
+
+        int checkHowManyNotFinishedShipments = shipmentService.checkHowManyNotfinishedShipments(warehouseId,SecurityUtils.username());
+        model.addAttribute("cHMNFS", checkHowManyNotFinishedShipments);
+
         return "shipmentInCreation";
     }
 

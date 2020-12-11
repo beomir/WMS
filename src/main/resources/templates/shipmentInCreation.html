@@ -31,8 +31,12 @@
 				<div th:unless="${#request.remoteUser.contains('admin')}">
 					<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companys.name}"></div>
 				</div>
-				<div style="color: darkred;font-weight: bold;text-align: center" th:text="${messages}"></div>
-				<br/>
+
+				<div th:unless="${stockDifferences.isEmpty()}" th:style="${messages.equals('Change red underlined qty to pass the validation')} == TRUE ? 'color: darkred;font-weight: bold;text-align: center' : 'color: green;font-weight: bold;text-align: center'"  th:text="${messages}"></div>
+				<span>
+					<div th:if="${stockDifferences.isEmpty() && cHMNFS>0}" style="color: green;font-weight: bold;text-align: center">Your Shipment passed successfully. You can find it in Shipments. Aritcles marked here to ship changed status on stock</div>
+				</span>
+					<br/>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
 						<th class="tables">Shipment Number</th>
@@ -88,7 +92,10 @@
 						<td th:title="${stockDifferencesQty<0} == TRUE ? 'Not enough goods for send! Edit or Delete one of shipment line to make proper quantity' : 'Enough quantity to send'" th:style="${stockDifferencesQty<0} == TRUE ? 'background: red'" class="tables" th:text="${stockDifferencesQty}"></td>
 					</tr>
 				</table>
-			</div>
+
+				<a th:href="@{/formShipment}"><div class="buttonik" style="float: right;max-width: 20%;">Add to Shipment</div></a>
+
+			</div><br/><br/>
 			<div th:include="fragments/footer :: footer"></div>
 		</div>
 		<div class="w3copyright-agile">

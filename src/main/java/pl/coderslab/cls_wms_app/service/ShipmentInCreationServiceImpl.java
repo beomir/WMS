@@ -89,8 +89,6 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
     @Override
     public void closeCreationShipment(Long id, @SessionAttribute Long warehouseId) {
         ShipmentInCreation shipmentInCreation = shipmentInCreationRepository.getOne(id);
-        String failedAttempt = "Change red underlined qty to pass the validation";
-        String attemptSuccessful = "Validation passed succesfully. Your goods were transfer to shipment, status of marked pieces on stock were changed ";
         if(validateTheCorrectnessOfShipment(warehouseId)) {
             shipmentInCreation.setCreation_closed(true);
             Long shipmentNmbr = shipmentInCreationRepository.getOne(id).getShipmentNumber();
@@ -99,19 +97,14 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
             shipmentInCreationRepository.insertDataToStockAfterCloseCreationWithCorrectStatus(warehouseId,SecurityUtils.username());
             shipmentInCreationRepository.updateStockDataAboutShipmentQty(warehouseId,SecurityUtils.username());
             shipmentInCreationRepository.deleteQtyAfterCloseCreation(warehouseId,SecurityUtils.username());
+            shipmentInCreationRepository.deleteZerosOnStock(warehouseId,SecurityUtils.username());
 
-            resultOfShipmentCreationValidation(attemptSuccessful);
-        }
-        else{
-            resultOfShipmentCreationValidation(failedAttempt);
-            System.out.println("check failedAttempt: " + failedAttempt);
         }
 
     }
 
-
     @Override
-    public boolean validateTheCorrectnessOfShipment(@SessionAttribute Long warehouseId) {
+    public Boolean validateTheCorrectnessOfShipment(@SessionAttribute Long warehouseId) {
         List<Long> checkShipments = shipmentInCreationRepository.stockDifferenceQty(warehouseId, SecurityUtils.username());
         boolean shipmentReadyToCloseCreation = true;
         for (int i = 0; i < checkShipments.size(); i++) {
@@ -127,16 +120,25 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
     }
 
     @Override
-    public String resultOfShipmentCreationValidation(String message){
-        String messageValidation = message;
-        log.debug(message);
-        System.out.println("message!: " + message);
-        return messageValidation;
+    public String resultOfShipmentCreationValidation(@SessionAttribute Long warehouseId){
+        String failedAttempt = "Change red underlined qty to pass the validation";
+        String attemptSuccessful = "Validation passed succesfully. You can close creation without problem";
+        if(validateTheCorrectnessOfShipment(warehouseId)){
+            return attemptSuccessful;
+        }
+        else{
+            return failedAttempt;
+        }
     }
 
     @Override
     public void remove(Long id) {
         shipmentInCreationRepository.deleteById(id);
     }
+
+//    @Override
+//    public void deleteZerosOnStock(@SessionAttribute Long warehouseId, String username)
+//    { shipmentInCreationRepository.deleteZerosOnStock(warehouseId,username);
+//    }
 
 }

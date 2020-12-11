@@ -36,9 +36,11 @@ public interface ShipmentInCreationService {
 
     void closeCreationShipment(Long id,@SessionAttribute Long warehouseId);
 
-    boolean validateTheCorrectnessOfShipment(@SessionAttribute Long warehouseId);
+    Boolean validateTheCorrectnessOfShipment(@SessionAttribute Long warehouseId);
 
     void remove(Long id);
 
-    String resultOfShipmentCreationValidation(String message);
+    String resultOfShipmentCreationValidation(Long id);
+
+//    void deleteZerosOnStock(@SessionAttribute Long warehouseId,String username);
 }

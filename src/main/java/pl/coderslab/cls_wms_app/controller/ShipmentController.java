@@ -42,6 +42,7 @@ public class ShipmentController {
         model.addAttribute("warehouse", warehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+
         return "shipment";
     }
 

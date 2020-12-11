@@ -17,4 +17,6 @@ public interface ShipmentService {
 
 
     void finishShipment(Long id);
+
+    int checkHowManyNotfinishedShipments(Long id,String username);
 }

@@ -45,7 +45,7 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
     @Query(value = "INSERT INTO storage (created, hd_number, last_update, pieces_qty, quality, article_id, company_id, status_id, unit_id, warehouse_id) select localtime,hd_number,localtime,pieces_qty,quality,article_id,company_id,status_id,unit_id,warehouse_id from receptions where reception_number = (?1);",nativeQuery = true)
     void insertDataToStockAfterFinishedReception(Long receptionNbr);
 
-    @Query(value = "Select a.hd_number + 1 from ( Select hd_number from receptions union select hd_number from storage) a order by 1 desc LIMIT 1;",nativeQuery = true)
+    @Query(value = "Select a.hd_number + 1 from ( Select hd_number from receptions union select hd_number from storage where hd_number < 202000001800000000) a order by 1 desc LIMIT 1;",nativeQuery = true)
     Long nextPalletNbr();
 
 }
