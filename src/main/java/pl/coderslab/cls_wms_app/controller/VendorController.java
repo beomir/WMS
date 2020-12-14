@@ -12,6 +12,7 @@ import pl.coderslab.cls_wms_app.entity.Vendor;
 import pl.coderslab.cls_wms_app.service.CompanyService;
 import pl.coderslab.cls_wms_app.service.VendorService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -49,7 +50,7 @@ public class VendorController {
     @GetMapping("formVendor")
     public String vendorForm(Model model){
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
-//        model.addAttribute("localDateTime", LocalDateTime.now());
+        model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("vendor", new Vendor());
         model.addAttribute("companies", companies);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -81,7 +82,7 @@ public class VendorController {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute(vendor);
         model.addAttribute("companies", companies);
-//        model.addAttribute("localDateTime", LocalDateTime.now());
+        model.addAttribute("localDateTime", LocalDateTime.now());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         return "formEditVendor";

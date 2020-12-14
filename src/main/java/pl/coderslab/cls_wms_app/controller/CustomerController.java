@@ -52,7 +52,7 @@ public class CustomerController {
     @GetMapping("formCustomer")
     public String customerForm(Model model){
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
-//        model.addAttribute("localDateTime", LocalDateTime.now());
+        model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("customer", new Customer());
         model.addAttribute("companies", companies);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -85,7 +85,7 @@ public class CustomerController {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute(customer);
         model.addAttribute("companies", companies);
-//        model.addAttribute("localDateTime", LocalDateTime.now());
+        model.addAttribute("localDateTime", LocalDateTime.now());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         return "formEditCustomer";

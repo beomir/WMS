@@ -32,9 +32,10 @@ public class Warehouse {
     private String created;
 
     private String last_update;
+    private String changeBy;
 
 
-    public Warehouse(Long id, String name, String steward, String city, String street, String post_code, String country, boolean european_union, String created, String last_update, boolean active) {
+    public Warehouse(Long id, String name, String steward, String city, String street, String post_code, String country, boolean european_union, String created, String last_update, boolean active,String changeBy) {
         this.id = id;
         this.steward = steward;
         this.city = city;
@@ -46,6 +47,7 @@ public class Warehouse {
         this.last_update = last_update;
         this.name = name;
         this.active = active;
+        this.changeBy = changeBy;
     }
 
     @OneToMany(mappedBy="warehouse")

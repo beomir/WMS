@@ -66,6 +66,9 @@
 				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
 				<input type="hidden" th:value="false" id="shipment.creation_closed" name="shipment.creation_closed"/>
 				<input type="hidden" th:value="1" id="status" name="status"/>
+				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
+				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
+				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
 			</section>
 
 			<section th:if="${#request.remoteUser.contains('admin')}">

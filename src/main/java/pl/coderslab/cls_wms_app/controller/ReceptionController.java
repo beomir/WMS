@@ -9,6 +9,7 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -65,6 +66,7 @@ public class ReceptionController {
         model.addAttribute("openedReception", openedReceptions);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        model.addAttribute("localDateTime", LocalDateTime.now());
         return "formReception";
     }
 
@@ -114,6 +116,7 @@ public class ReceptionController {
         model.addAttribute("pallets", pallets);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        model.addAttribute("localDateTime", LocalDateTime.now());
         return "editReceptionLine";
     }
 

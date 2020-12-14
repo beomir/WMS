@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.fixtures;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.service.CompanyService;
 
@@ -15,13 +16,13 @@ public class CompanyFixture {
 
 
     private List<Company> companyList = Arrays.asList(
-            new Company(null, "Strojem", "Kharkiv", "Kołhoznaja 13", "33-444", "Ukraine",false,true),
-            new Company(null, "buDUJEm", "Wrocław", "Krzycka 13", "83-444", "Poland",true,true),
-            new Company(null, "BuildMate", "London", "TimesSquere 13", "33-444", "UK",false,true),
-            new Company(null, "Fábrica Nacional de Munições de Armas Ligeiras", "Lisbon", "Salazara 13", "83-444", "Portugal",true,true),
-            new Company(null, "Eni", "Milan", "Mussoliniego 13", "33-444", "Italy",true,true),
-            new Company(null, "Hesteel Serbia", "Belgrad", "Mladica 13", "83-444", "Serbia",false,true),
-            new Company(null, "all", "all", "all", "all", "all",false,true)
+            new Company(null, "Strojem", "Kharkiv", "Kołhoznaja 13", "33-444", "Ukraine",false,true, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Company(null, "buDUJEm", "Wrocław", "Krzycka 13", "83-444", "Poland",true,true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Company(null, "BuildMate", "London", "TimesSquere 13", "33-444", "UK",false,true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Company(null, "Fábrica Nacional de Munições de Armas Ligeiras", "Lisbon", "Salazara 13", "83-444", "Portugal",true,true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Company(null, "Eni", "Milan", "Mussoliniego 13", "33-444", "Italy",true,true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Company(null, "Hesteel Serbia", "Belgrad", "Mladica 13", "83-444", "Serbia",false,true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Company(null, "all", "all", "all", "all", "all",false,true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
     );
 
     @Autowired

@@ -25,13 +25,15 @@ public class Status {
     private String created;
 
     private String last_update;
+    private String changeBy;
 
-    public Status(Long id, String status, String status_desc, String created, String last_update) {
+    public Status(Long id, String status, String status_desc, String created, String last_update,String changeBy) {
         this.id = id;
         this.status = status;
         this.status_desc = status_desc;
         this.created = created;
         this.last_update = last_update;
+        this.changeBy = changeBy;
     }
 
     @OneToMany(mappedBy="status")

@@ -35,8 +35,9 @@ public class Article {
     private String last_update;
 
     private boolean active;
+    private String changeBy;
 
-    public Article(Long id, Long article_number, String article_desc, String article_logistic_variant, Long pieces_per_carton, Company company, String created, String last_update,boolean active) {
+    public Article(Long id, Long article_number, String article_desc, String article_logistic_variant, Long pieces_per_carton, Company company, String created, String last_update,boolean active,String changeBy) {
         this.id = id;
         this.article_number = article_number;
         this.article_desc = article_desc;
@@ -46,6 +47,7 @@ public class Article {
         this.created = created;
         this.last_update = last_update;
         this.active = active;
+        this.changeBy = changeBy;
     }
 
     @OneToMany(mappedBy="article")

@@ -43,6 +43,10 @@
 						<th class="tables">Post Code</th>
 						<th class="tables">Country</th>
 						<th class="tables">Europen Union</th>
+						<th class="tables">Company</th>
+						<th class="tables">Created</th>
+						<th class="tables">Last update</th>
+						<th class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="vendors: ${vendor}">
 						<td class="tables" style="padding-bottom: 2px">
@@ -60,6 +64,10 @@
 						<td class="tables" th:text="${vendors.post_code}"></td>
 				        <td class="tables" th:text="${vendors.country}"></td>
 				        <td class="tables" th:text="${vendors.european_union}"></td>
+						<td class="tables" th:text="${vendors.company.name}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(vendors.created,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(vendors.last_update,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${vendors.changeBy}"></td>
 				    </tr>
 				</table>
 			</div>

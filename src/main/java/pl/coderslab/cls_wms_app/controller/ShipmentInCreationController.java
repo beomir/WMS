@@ -8,6 +8,7 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -96,7 +97,7 @@ public class ShipmentInCreationController {
 
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-
+        model.addAttribute("localDateTime", LocalDateTime.now());
         return "formShipment";
     }
 
@@ -110,7 +111,7 @@ public class ShipmentInCreationController {
     public String updateShipment(@PathVariable Long id, Model model, @SessionAttribute Long warehouseId) {
         ShipmentInCreation shipmentInCreation = shipmentInCreationService.findById(id);
         model.addAttribute(shipmentInCreation);
-
+        model.addAttribute("localDateTime", LocalDateTime.now());
         List<Customer> customers = customerService.getCustomer(SecurityUtils.username());
         model.addAttribute("customers", customers);
 

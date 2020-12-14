@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Customer;
 import pl.coderslab.cls_wms_app.entity.Status;
 import pl.coderslab.cls_wms_app.entity.Unit;
@@ -48,6 +49,7 @@ public class UnitServiceImpl implements UnitService{
         Unit unit = unitRepository.getOne(id);
         unit.setActive(false);
         unit.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        unit.setChangeBy(SecurityUtils.usernameForActivations());
         unitRepository.save(unit);
     }
 
@@ -55,7 +57,8 @@ public class UnitServiceImpl implements UnitService{
     public void activate(Long id) {
         Unit unit = unitRepository.getOne(id);
         unit.setActive(true);
-//        company.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        unit.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        unit.setChangeBy(SecurityUtils.usernameForActivations());
         unitRepository.save(unit);
     }
 

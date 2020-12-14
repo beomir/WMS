@@ -39,6 +39,7 @@
 				<input type="hidden" th:value="1" id="status" name="status"/>
 				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
+				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
 			</section>
 
 			<section th:if="${#request.remoteUser.contains('admin')}">

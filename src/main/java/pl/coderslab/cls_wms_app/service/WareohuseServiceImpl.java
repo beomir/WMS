@@ -3,6 +3,7 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 
@@ -54,6 +55,7 @@ public class WareohuseServiceImpl implements WarehouseService{
         Warehouse warehouse = warehouseRepository.getOne(id);
         warehouse.setActive(false);
         warehouse.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        warehouse.setChangeBy(SecurityUtils.usernameForActivations());
         warehouseRepository.save(warehouse);
     }
 
@@ -62,6 +64,7 @@ public class WareohuseServiceImpl implements WarehouseService{
         Warehouse warehouse = warehouseRepository.getOne(id);
         warehouse.setActive(true);
         warehouse.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        warehouse.setChangeBy(SecurityUtils.usernameForActivations());
         warehouseRepository.save(warehouse);
     }
 

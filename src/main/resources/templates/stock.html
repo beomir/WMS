@@ -41,6 +41,9 @@
 						<th class="tables">Quality</th>
 						<th class="tables">Status</th>
 						<th th:if="${#request.remoteUser.contains('admin')}" class="tables">Company</th>
+						<th class="tables">Created</th>
+						<th class="tables">Last update</th>
+						<th class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="storage: ${stock}">
 						<td th:title="${storage.comment != null} == TRUE ? ${storage.comment}" th:style="${storage.comment != null && storage.comment != ''} == TRUE ? 'background: gray;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" style="padding-bottom: 2px">
@@ -64,6 +67,10 @@
 				        <td class="tables" th:text="${storage.quality}"></td>
 				        <td class="tables" th:text="${storage.status.status}"></td>
 						<td th:if="${#request.remoteUser.contains('admin')}" class="tables" th:text="${storage.company.name}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(storage.created,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(storage.last_update,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${storage.changeBy}"></td>
+					</tr>
 				    </tr>
 
 				</table>

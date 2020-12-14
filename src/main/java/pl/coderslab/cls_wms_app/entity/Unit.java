@@ -25,6 +25,7 @@ public class Unit {
 
     private String created;
     private String last_update;
+    private String changeBy;
     private boolean active;
 
 
@@ -40,13 +41,14 @@ public class Unit {
     @OneToMany(mappedBy="unit")
     private List<ShipmentInCreation> ShipmentInCreationList = new ArrayList<>();
 
-    public Unit(Long id, String name, String description, String created, String last_update, boolean active) {
+    public Unit(Long id, String name, String description, String created, String last_update, boolean active,String changeBy) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.created = created;
         this.last_update = last_update;
         this.active = active;
+        this.changeBy = changeBy;
     }
 
     @Override

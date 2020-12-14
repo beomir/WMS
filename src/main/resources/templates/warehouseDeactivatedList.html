@@ -45,6 +45,7 @@
 						<th class="tables">Steward</th>
 						<th class="tables">Created</th>
 						<th class="tables">Last Update</th>
+						<th class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="warehouses: ${warehouseDeactivated}">
 						<td class="tables" style="padding-bottom: 2px">
@@ -62,8 +63,9 @@
 				        <td class="tables" th:text="${warehouses.country}"></td>
 				        <td class="tables" th:text="${warehouses.european_union}"></td>
 				        <td class="tables" th:text="${warehouses.steward}"></td>
-				        <td class="tables" th:text="${warehouses.created}"></td>
-				        <td class="tables" th:text="${warehouses.last_update}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(warehouses.created,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(warehouses.last_update,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${warehouses.changeBy}"></td>
 						<td style="cursor:pointer;" class="tables">
 
 						</td>

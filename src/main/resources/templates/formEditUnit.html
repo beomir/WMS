@@ -41,6 +41,7 @@
 				<input type="hidden" th:field="*{created}"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
 				<input type="hidden" th:value="true" id="active" name="active"/>
+				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Description</label>

@@ -46,6 +46,9 @@
 						<th th:if="${#request.remoteUser.contains('admin')}" class="tables">Company</th>
 						<th class="tables">Quality</th>
 						<th class="tables">Ship method</th>
+						<th class="tables">Created</th>
+						<th class="tables">Last update</th>
+						<th class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="shipments: ${shipments}">
 						<td class="tables" style="padding-bottom: 2px">
@@ -65,6 +68,9 @@
 						<td th:if="${#request.remoteUser.contains('admin')}" class="tables" th:text="${shipments.company.name}"></td>
 				        <td class="tables" th:text="${shipments.quality}"></td>
 				        <td class="tables" th:text="${shipments.shipMethod.method}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(shipments.created,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(shipments.last_update,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${shipments.changeBy}"></td>
 				    </tr>
 				</table>
 				<div style="color: white;text-align: center;width: 100%;font-weight: bold;font-size: 25px">Shipment summary:</div>

@@ -38,8 +38,6 @@
 				<label style="color: white;font-weight: bold">Change Quantity</label>
 				<input type="number" th:field="*{pieces_qty}" min="1" max="6666666"/>
 				<input type="hidden" th:field="*{id}"/>
-<!--				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>-->
-<!--				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>-->
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
 				<input type="hidden" th:field="*{created}" />
 				<input type="hidden" th:field="*{hd_number}" />
@@ -52,6 +50,7 @@
 				<input type="hidden" th:field="*{unit}" />
 				<input type="hidden" th:field="*{warehouse}" />
 				<input type="hidden" th:field="*{comment}" />
+				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
 			</section><br/>
 			<section>
 				<br/><button class="button" type="submit">Save</button>

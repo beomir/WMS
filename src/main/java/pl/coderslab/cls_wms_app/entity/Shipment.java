@@ -55,11 +55,16 @@ public class Shipment {
 
     private boolean finished;
 
+    private String created;
+
+    private String last_update;
+    private String changeBy;
+
     @NotNull
     @ManyToOne
     private Status status;
 
-    public Shipment(Long id, Article article, Company company, Long pieces_qty, Unit unit, Long hd_number, String quality, Customer customer, ShipMethod shipMethod,Warehouse warehouse, boolean creation_closed,Long shipmentNumber, boolean finished, Status status) {
+    public Shipment(Long id, Article article, Company company, Long pieces_qty, Unit unit, Long hd_number, String quality, Customer customer, ShipMethod shipMethod,Warehouse warehouse, boolean creation_closed,Long shipmentNumber, boolean finished, Status status,String created,String last_update, String changeBy) {
         this.id = id;
         this.article = article;
         this.company = company;
@@ -74,5 +79,8 @@ public class Shipment {
         this.shipmentNumber = shipmentNumber;
         this.finished = finished;
         this.status = status;
+        this.created = created;
+        this.last_update = last_update;
+        this.changeBy = changeBy;
     }
 }

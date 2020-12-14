@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.fixtures;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.ShipMethod;
 import pl.coderslab.cls_wms_app.service.CompanyService;
@@ -15,9 +16,9 @@ public class ShipMethodFixture {
     private ShipMethodService shipMethodService;
 
     private List<ShipMethod> shipMethodList = Arrays.asList(
-            new ShipMethod(null, "LIFO", "Last in First out"),
-            new ShipMethod(null, "FIFO", "First in First out"),
-            new ShipMethod(null, "FEFO", "First expired First out")
+            new ShipMethod(null, "LIFO", "Last in First out", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new ShipMethod(null, "FIFO", "First in First out",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new ShipMethod(null, "FEFO", "First expired First out",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
     );
 
     @Autowired

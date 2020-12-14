@@ -3,6 +3,7 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.repository.ArticleRepository;
 
@@ -47,6 +48,7 @@ public class ArticleServiceImpl implements ArticleService{
         Article article = articleRepository.getOne(id);
         article.setActive(false);
         article.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        article.setChangeBy(SecurityUtils.usernameForActivations());
         articleRepository.save(article);
     }
 
@@ -55,6 +57,7 @@ public class ArticleServiceImpl implements ArticleService{
         Article article = articleRepository.getOne(id);
         article.setActive(true);
         article.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        article.setChangeBy(SecurityUtils.usernameForActivations());
         articleRepository.save(article);
     }
 

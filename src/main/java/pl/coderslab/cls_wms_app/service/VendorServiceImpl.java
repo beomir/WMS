@@ -3,9 +3,12 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Vendor;
 import pl.coderslab.cls_wms_app.repository.VendorRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -51,7 +54,8 @@ public class VendorServiceImpl implements VendorService{
     public void delete(Long id) {
         Vendor vendor = vendorRepository.getOne(id);
         vendor.setActive(false);
-//        company.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        vendor.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        vendor.setChangeBy(SecurityUtils.usernameForActivations());
         vendorRepository.save(vendor);
     }
 
@@ -59,7 +63,8 @@ public class VendorServiceImpl implements VendorService{
     public void activate(Long id) {
         Vendor vendor = vendorRepository.getOne(id);
         vendor.setActive(true);
-//        company.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        vendor.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        vendor.setChangeBy(SecurityUtils.usernameForActivations());
         vendorRepository.save(vendor);
     }
 

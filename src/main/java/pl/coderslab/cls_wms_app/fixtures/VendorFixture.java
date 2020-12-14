@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.fixtures;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Vendor;
@@ -21,10 +22,10 @@ public class VendorFixture {
 
 
     private List<Vendor> vendorList = Arrays.asList(
-            new Vendor(null, null, "Yokohama","Tokugawa 12","10-555","Japan", false,"Sharpico",true),
-            new Vendor(null, null, "Istanbul","Altaturk 33","33-444","Turkey", false,"Kebabini",true),
-            new Vendor(null, null, "Ciechocinek","Słowacka 122","77-777","Poland", true,"Ustrowiczanka",true),
-            new Vendor(null, null, "Bydgoszcz","Kopernika 12","44-343","Poland", true,"LekkoAtletico",true)
+            new Vendor(null, null, "Yokohama","Tokugawa 12","10-555","Japan", false,"Sharpico",true, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Vendor(null, null, "Istanbul","Altaturk 33","33-444","Turkey", false,"Kebabini",true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Vendor(null, null, "Ciechocinek","Słowacka 122","77-777","Poland", true,"Ustrowiczanka",true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Vendor(null, null, "Bydgoszcz","Kopernika 12","44-343","Poland", true,"LekkoAtletico",true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
     );
 
     @Autowired

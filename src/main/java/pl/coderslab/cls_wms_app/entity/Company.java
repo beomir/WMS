@@ -24,10 +24,15 @@ public class Company {
     private String post_code;
     private String country;
     private boolean european_union;
-
     private boolean active;
+    private String created;
 
-    public Company(Long id, String name, String city, String street, String post_code, String country, boolean european_union, boolean active) {
+    private String last_update;
+    private String changeBy;
+
+
+
+    public Company(Long id, String name, String city, String street, String post_code, String country, boolean european_union, boolean active,String created,String last_update,String changeBy) {
         this.id = id;
         this.name = name;
         this.city = city;
@@ -36,6 +41,9 @@ public class Company {
         this.country = country;
         this.european_union = european_union;
         this.active = active;
+        this.created = created;
+        this.last_update = last_update;
+        this.changeBy = changeBy;
     }
 
     @OneToMany(mappedBy="company")
@@ -61,6 +69,7 @@ public class Company {
                 ", country='" + country + '\'' +
                 ", european_union=" + european_union +
                 ", active=" + active +
+                ", changeBy=" + changeBy +
                 '}';
     }
 }

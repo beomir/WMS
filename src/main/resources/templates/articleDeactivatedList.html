@@ -42,6 +42,7 @@
 					<th class="tables">Company</th>
 					<th class="tables">Created</th>
 					<th class="tables">Last Update</th>
+					<th class="tables">Changed by</th>
 				</tr>
 				<tr style="border: solid 1px" th:each="article: ${article}">
 					<td class="tables" style="padding-bottom: 2px">
@@ -55,8 +56,9 @@
 					</td>
 					<td class="tables" th:text="${article.article_desc}"></td>
 					<td class="tables" th:text="${article.company.name}"></td>
-					<td class="tables" th:text="${article.created}"></td>
-					<td class="tables" th:text="${article.last_update}"></td>
+					<td class="tables" th:text="${#strings.replace(#strings.substring(article.created,0,19),'T',' ')}"></td>
+					<td class="tables" th:text="${#strings.replace(#strings.substring(article.last_update,0,19),'T',' ')}"></td>
+					<td class="tables" th:text="${article.changeBy}"></td>
 				</tr>
 			</table>
 		</div>

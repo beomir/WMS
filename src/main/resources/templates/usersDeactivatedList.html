@@ -43,6 +43,7 @@
 						<th class="tables">Company</th>
 						<th class="tables">Created</th>
 						<th class="tables">Last Update</th>
+						<th class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="users: ${user}">
 						<td class="tables" style="padding-bottom: 2px">
@@ -57,11 +58,12 @@
 							</ol>
 						</td>
 						<td class="tables" th:text="${users.email}"></td>
-				        <td class="tables" th:text="${users.role}"></td>
+						<td class="tables" th:text="${users.usersRoles.role}"></td>
 						<td class="tables" th:text="${users.company}"></td>
-				        <td class="tables" th:text="${users.created}"></td>
-				        <td class="tables" th:text="${users.last_update}"></td>
-				    </tr>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(users.created,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(users.last_update,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${users.changeBy}"></td>
+					</tr>
 				</table>
 			</div>
 

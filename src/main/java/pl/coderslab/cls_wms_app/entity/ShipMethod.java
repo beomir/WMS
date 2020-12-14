@@ -31,9 +31,17 @@ public class ShipMethod {
     @OneToMany(mappedBy="shipMethod")
     private List<ShipmentInCreation> ShipmentInCreationList = new ArrayList<>();
 
-    public ShipMethod(Long id, String method, String method_desc) {
+    private String created;
+
+    private String last_update;
+    private String changeBy;
+
+    public ShipMethod(Long id, String method, String method_desc,String created,String last_update,String changeBy) {
         this.id = id;
         this.method = method;
         this.method_desc = method_desc;
+        this.created = created;
+        this.last_update = last_update;
+        this.changeBy = changeBy;
     }
 }

@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.fixtures;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Reception;
@@ -20,21 +21,21 @@ public class ArticleFixture {
 
 
     private List<Article> articleList = Arrays.asList(
-            new Article(null, 1234567890123455L, "bicycle",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 1234567890123456L, "sandbag",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 1234567890123457L, "cement",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 1234567890123458L, "glue",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 1234567890123459L, "wheel",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 1234567890123460L, "electric cables",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 3234567890123458L, "tv",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 3234567890123458L, "laptop",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 4234567890123458L, "screw",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 7234567890123458L, "propeller",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 5234567890123458L, "trousers",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 6234567890123458L, "socks",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 5234567890123423L, "jewelry",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 1234567890123475L, "mini-parts",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Article(null, 9234567890123455L, "wooden box",null,null,null, "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true)
+            new Article(null, 1234567890123455L, "bicycle",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 1234567890123456L, "sandbag",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 1234567890123457L, "cement",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 1234567890123458L, "glue",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 1234567890123459L, "wheel",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 1234567890123460L, "electric cables",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 3234567890123458L, "tv",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 3234567890123458L, "laptop",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 4234567890123458L, "screw",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 7234567890123458L, "propeller",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 5234567890123458L, "trousers",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 6234567890123458L, "socks",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 5234567890123423L, "jewelry",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 1234567890123475L, "mini-parts",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Article(null, 9234567890123455L, "wooden box",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system")
     );
 
     @Autowired

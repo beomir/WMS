@@ -29,7 +29,12 @@ public class Vendor {
     private boolean european_union;
     private boolean active;
 
-    public Vendor(Long id, Company company, String city, String street, String post_code, String country, boolean european_union, String name, boolean active) {
+    private String created;
+
+    private String last_update;
+    private String changeBy;
+
+    public Vendor(Long id, Company company, String city, String street, String post_code, String country, boolean european_union, String name, boolean active,String created,String last_update,String changeBy) {
         this.id = id;
         this.company = company;
         this.city = city;
@@ -39,6 +44,9 @@ public class Vendor {
         this.european_union = european_union;
         this.name = name;
         this.active = active;
+        this.created = created;
+        this.last_update = last_update;
+        this.changeBy = changeBy;
     }
 }
 

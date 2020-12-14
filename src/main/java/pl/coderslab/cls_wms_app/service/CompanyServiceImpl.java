@@ -3,9 +3,12 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.repository.CompanyRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -47,7 +50,8 @@ public class CompanyServiceImpl implements CompanyService{
     public void delete(Long id) {
         Company company = companyRepository.getOne(id);
         company.setActive(false);
-//        company.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        company.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        company.setChangeBy(SecurityUtils.usernameForActivations());
         companyRepository.save(company);
     }
 
@@ -55,7 +59,8 @@ public class CompanyServiceImpl implements CompanyService{
     public void activate(Long id) {
         Company company = companyRepository.getOne(id);
         company.setActive(true);
-//        company.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        company.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        company.setChangeBy(SecurityUtils.usernameForActivations());
         companyRepository.save(company);
     }
 

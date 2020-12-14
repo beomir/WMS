@@ -1,12 +1,15 @@
 package pl.coderslab.cls_wms_app.service;
 
 import pl.coderslab.cls_wms_app.entity.Users;
+import pl.coderslab.cls_wms_app.entity.UsersRoles;
 
 import java.util.List;
 
 public interface UsersService {
 
     void add(Users users);
+
+    void addWithoutCodePass(Users users);
 
 //    void edit(Users users);
 
@@ -23,5 +26,8 @@ public interface UsersService {
     void remove(Long id);
 
     void activate(Long id);
+
+    //To think about solution for this
+//    void updateRole(Users users);
 
 }

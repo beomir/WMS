@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.fixtures;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Customer;
 import pl.coderslab.cls_wms_app.service.CompanyService;
@@ -16,10 +17,10 @@ public class CustomerFixture {
     private CompanyService companyService;
 
     private List<Customer> customerList = Arrays.asList(
-            new Customer(null,null, "Berlin", "Hermana 12", "56-765", "Germany",true,"Muzeum 2 wojny",true),
-            new Customer(null,null, "Stuttgart", "Rudlofa 56", "32-323", "Germany", true,"Mercedes",true),
-            new Customer(null,null, "Bonn", "Hermenegildy 12", "77-656", "Germany", true,"Muzeum Stolicy RFN",true),
-            new Customer(null,null, "Hamburg", "Brunhildy 19", "99-767", "Germany", true,"Stoczna parowców",true)
+            new Customer(null,null, "Berlin", "Hermana 12", "56-765", "Germany",true,"Muzeum 2 wojny",true, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Customer(null,null, "Stuttgart", "Rudlofa 56", "32-323", "Germany", true,"Mercedes",true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Customer(null,null, "Bonn", "Hermenegildy 12", "77-656", "Germany", true,"Muzeum Stolicy RFN",true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Customer(null,null, "Hamburg", "Brunhildy 19", "99-767", "Germany", true,"Stoczna parowców",true,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
     );
 
     @Autowired

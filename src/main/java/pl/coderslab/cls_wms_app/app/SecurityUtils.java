@@ -12,4 +12,8 @@ public class SecurityUtils {
         }
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
+
+    public static String usernameForActivations() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 }

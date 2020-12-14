@@ -44,6 +44,9 @@
 						<th class="tables">Post Code</th>
 						<th class="tables">Country</th>
 						<th class="tables">European union</th>
+						<th class="tables">Created</th>
+						<th class="tables">Last update</th>
+						<th class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="company: ${company}">
 						<td class="tables" style="padding-bottom: 2px">
@@ -60,6 +63,9 @@
 						<td class="tables" th:text="${company.post_code}"></td>
 				        <td class="tables" th:text="${company.country}"></td>
 				        <td class="tables" th:text="${company.european_union}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(company.created,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(company.last_update,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${company.changeBy}"></td>
 				    </tr>
 				</table>
 			</div>

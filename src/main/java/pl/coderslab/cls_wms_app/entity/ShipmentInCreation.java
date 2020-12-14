@@ -49,12 +49,17 @@ public class ShipmentInCreation {
 
     private boolean creation_closed;
 
+    private String created;
+
+    private String last_update;
+    private String changeBy;
+
 
     @NotNull
     @ManyToOne
     private Status status;
 
-    public ShipmentInCreation(Long id, Article article, Company company, Long pieces_qty, Unit unit,  String quality, Customer customer, ShipMethod shipMethod,Warehouse warehouse, boolean creation_closed,Long shipmentNumber, Status status) {
+    public ShipmentInCreation(Long id, Article article, Company company, Long pieces_qty, Unit unit,  String quality, Customer customer, ShipMethod shipMethod,Warehouse warehouse, boolean creation_closed,Long shipmentNumber, Status status,String created, String last_update,String changeBy) {
         this.id = id;
         this.article = article;
         this.company = company;
@@ -67,5 +72,8 @@ public class ShipmentInCreation {
         this.creation_closed = creation_closed;
         this.shipmentNumber = shipmentNumber;
         this.status = status;
+        this.created = created;
+        this.last_update = last_update;
+        this.changeBy = changeBy;
     }
 }

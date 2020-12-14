@@ -11,8 +11,10 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Users;
 
+import pl.coderslab.cls_wms_app.entity.UsersRoles;
 import pl.coderslab.cls_wms_app.service.CompanyService;
 
+import pl.coderslab.cls_wms_app.service.UsersRolesService;
 import pl.coderslab.cls_wms_app.service.UsersService;
 
 import java.time.LocalDateTime;
@@ -26,13 +28,14 @@ public class UserController {
 
     private UsersService usersService;
     private CompanyService companyService;
+    private UsersRolesService usersRolesService;
 
 
     @Autowired
-    public UserController(UsersService usersService, CompanyService companyService) {
+    public UserController(UsersService usersService, CompanyService companyService, UsersRolesService usersRolesService) {
         this.usersService = usersService;
         this.companyService = companyService;
-
+        this.usersRolesService = usersRolesService;
     }
 
     @GetMapping("formUserCreation")
@@ -43,6 +46,9 @@ public class UserController {
         model.addAttribute("companies", companies);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+
+        List<UsersRoles> usersRolesList = usersRolesService.getUsersRoles();
+        model.addAttribute("users_Roles", usersRolesList);
         return "formUserCreation";
     }
 
@@ -73,6 +79,9 @@ public class UserController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+
+        List<UsersRoles> usersRolesList = usersRolesService.getUsersRoles();
+        model.addAttribute("users_Roles", usersRolesList);
         return "formUserEdit";
     }
 

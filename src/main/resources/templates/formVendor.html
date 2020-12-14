@@ -38,9 +38,10 @@
 				<label style="color: white;font-weight: bold">Vendor name</label>
 				<input type="text" th:field="*{name}" />
 				<input type="hidden" th:field="*{id}"/>
-<!--				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>-->
-<!--				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>-->
+				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
+				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
 				<input type="hidden" th:value="true" id="active" name="active"/>
+				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Country</label>

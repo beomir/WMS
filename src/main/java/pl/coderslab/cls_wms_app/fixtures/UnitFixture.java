@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.fixtures;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Unit;
@@ -19,11 +20,11 @@ public class UnitFixture {
 
 
     private List<Unit> unitList = Arrays.asList(
-            new Unit(null, "EA", "each of piece", "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Unit(null, "CAR", "carton", "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Unit(null, "PAL", "pallet", "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Unit(null, "KG", "kilogram", "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true),
-            new Unit(null, "T", "ton", "2020-11-28:T10:00:00","2020-11-28:T10:00:00",true)
+            new Unit(null, "EA", "each of piece", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Unit(null, "CAR", "carton", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Unit(null, "PAL", "pallet", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Unit(null, "KG", "kilogram", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system"),
+            new Unit(null, "T", "ton", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system")
     );
 
     @Autowired

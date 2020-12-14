@@ -51,11 +51,16 @@ public class Reception {
 
     private boolean finished;
 
+    private String created;
+
+    private String last_update;
+    private String changeBy;
+
     @NotNull
     @ManyToOne
     private Status status;
 
-    public Reception(Long id, Article article, Company company,  Long pieces_qty, Unit unit, Long hd_number, String quality, Vendor vendor, Warehouse warehouse, boolean creation_closed, Long receptionNumber ,boolean finished, Status status) {
+    public Reception(Long id, Article article, Company company,  Long pieces_qty, Unit unit, Long hd_number, String quality, Vendor vendor, Warehouse warehouse, boolean creation_closed, Long receptionNumber ,boolean finished, Status status,String created,String last_update, String changeBy) {
         this.id = id;
         this.article = article;
         this.company = company;
@@ -70,5 +75,8 @@ public class Reception {
         this.receptionNumber = receptionNumber;
         this.finished = finished;
         this.status = status;
+        this.created = created;
+        this.last_update = last_update;
+        this.changeBy = changeBy;
     }
 }

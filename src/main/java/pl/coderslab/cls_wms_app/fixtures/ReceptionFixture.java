@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.fixtures;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.*;
 
@@ -22,10 +23,10 @@ public class ReceptionFixture {
 
 
     private List<Reception> receptionList = Arrays.asList(
-            new Reception(null, null,null,12L, null,202000000000000006L,"BW1",null,null, false ,20200001L ,false,null),
-            new Reception(null, null,null,12L, null,202000000000000007L,"EU1",null,null, false,20200002L,false,null),
-            new Reception(null, null,null,12L, null,202000000000000008L,"EU1",null,null, false,20200003L,false,null),
-            new Reception(null, null,null,10L, null,202000000000000005L,"EU1",null,null,false,20200004L,false,null)
+            new Reception(null, null,null,12L, null,202000000000000006L,"BW1",null,null, false ,20200001L ,false,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Reception(null, null,null,12L, null,202000000000000007L,"EU1",null,null, false,20200002L,false,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Reception(null, null,null,12L, null,202000000000000008L,"EU1",null,null, false,20200003L,false,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Reception(null, null,null,10L, null,202000000000000005L,"EU1",null,null,false,20200004L,false,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
     );
 
     @Autowired

@@ -20,9 +20,10 @@ public class LoadFixtures {
     private CustomerFixture customerFixture;
     private ShipmentFixture shipmentFixture;
     private UnitFixture unitFixture;
+    private UsersRolesFixture usersRolesFixture;
 
     @Autowired
-    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture) {
+    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture) {
         this.stockFixture = stockFixture;
         this.companyFixture = companyFixture;
         this.usersFixture = usersFixture;
@@ -36,6 +37,7 @@ public class LoadFixtures {
         this.customerFixture = customerFixture;
         this.shipmentFixture = shipmentFixture;
         this.unitFixture = unitFixture;
+        this.usersRolesFixture = usersRolesFixture;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -43,6 +45,7 @@ public class LoadFixtures {
 
         companyFixture.loadIntoDB();
         unitFixture.loadIntoDB();
+        usersRolesFixture.loadIntoDB();
         usersFixture.loadIntoDB();
 //        usersDetailsFixture.loadIntoDB();
         warehouseFixture.loadIntoDB();

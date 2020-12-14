@@ -41,6 +41,7 @@
 				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
 				<input type="hidden" th:value="true" id="active" name="active"/>
+				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Password</label>
@@ -59,9 +60,8 @@
 			</section><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Permissions</label>
-				<select class="select-css" th:field="*{role}">
-					<option th:value="ROLE_USER">USER</option>
-					<option th:value="ROLE_ADMIN">ADMIN</option>
+				<select class="select-css" th:field="*{usersRoles}">
+					<option th:each="i : ${users_Roles}" th:value="${i.id}" th:text="${i.role}">
 				</select>
 			</section>
 			<section>
