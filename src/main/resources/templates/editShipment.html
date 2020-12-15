@@ -52,7 +52,7 @@
 				<input type="hidden" th:value="false" id="shipment.creation_closed" name="shipment.creation_closed"/>
 				<input type="hidden" th:value="1" id="status" name="status"/>
 				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
-				<input type="hidden" th:field="*{created}"/>
+				<input type="hidden" th:field="*{shipmentInCreation.created}"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
 			</section>
 

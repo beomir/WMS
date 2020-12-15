@@ -68,7 +68,7 @@
 				        <td class="tables" th:text="${reception.finished}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.created,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.last_update,0,19),'T',' ')}"></td>
-						<td class="tables" th:text="${reception.}"></td>
+						<td class="tables" th:text="${reception.changeBy}"></td>
 				    </tr>
 				</table>
 
