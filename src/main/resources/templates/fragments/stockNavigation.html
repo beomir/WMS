@@ -5,19 +5,20 @@
     <div style="float: left" class="login-form">
 
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="'Hello: '  + ${#request.remoteUser}"></div><br/>
-        <div th:unless="${#request.remoteUser.equals('admin')}">
-        <div th:each="companys: ${companys}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="'Company: ' + ${companys.name}"></div>
+        <div sec:authorize="!hasRole('ROLE_ADMIN')">
+        <div th:each="companys: ${companys}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="'Company: ' + ${companys.name}"></div><br/>
         </div>
+        <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span sec:authentication="principal.authorities"></span></div><br/>
         <a th:href="@{/stock}"><div class="button">Check Stock</div></a>
-        <a th:href="@{/formReception}"><div class="button">Declare Reception</div></a>
-        <a th:href="@{/reception}"><div class="button">Check Receptions</div></a>
-        <a th:href="@{/formShipment}"><div class="button">Declare Shipment</div></a>
-        <a th:href="@{/shipment}">
+        <a th:href="@{/reception/formReception}"><div class="button">Declare Reception</div></a>
+        <a th:href="@{/reception/reception}"><div class="button">Check Receptions</div></a>
+        <a th:href="@{/shipment/formShipment}"><div class="button">Declare Shipment</div></a>
+        <a th:href="@{/shipment/shipment}">
             <ol class="button"><div style="color: white;font-weight: normal">Check Shipments</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:href="@{/shipmentInCreation}">Check Shipments in Creation</a>
+                            <a th:href="@{/shipment/shipmentInCreation}">Check Shipments in Creation</a>
                         </li>
                     </ul>
                 </li>

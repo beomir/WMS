@@ -12,18 +12,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("")
+@RequestMapping("/shipment")
 public class ShipmentInCreationController {
 
 
-    private ShipmentInCreationService shipmentInCreationService;
-    private ShipMethodService shipMethodService;
-    private WarehouseService warehouseService;
-    private CompanyService companyService;
-    private ArticleService articleService;
-    private UnitService unitService;
-    private CustomerService customerService;
-    private ShipmentService shipmentService;
+    private final ShipmentInCreationService shipmentInCreationService;
+    private final ShipMethodService shipMethodService;
+    private final WarehouseService warehouseService;
+    private final CompanyService companyService;
+    private final ArticleService articleService;
+    private final UnitService unitService;
+    private final CustomerService customerService;
+    private final ShipmentService shipmentService;
 
     @Autowired
     public ShipmentInCreationController(ShipmentInCreationService shipmentInCreationService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, ArticleService articleService, UnitService unitService, CustomerService customerService, ShipmentService shipmentService) {
@@ -104,7 +104,7 @@ public class ShipmentInCreationController {
     @PostMapping("formShipment")
     public String add(ShipmentInCreation shipmentInCreation) {
         shipmentInCreationService.addShipmentInCreation(shipmentInCreation);
-        return "redirect:/shipmentInCreation";
+        return "redirect:/shipment/shipmentInCreation";
     }
 
     @GetMapping("/editShipment/{id}")
@@ -136,19 +136,19 @@ public class ShipmentInCreationController {
     @PostMapping("editShipment")
     public String updateShipmentPost(ShipmentInCreation shipmentInCreation) {
         shipmentInCreationService.addShipmentInCreation(shipmentInCreation);
-        return "redirect:/shipmentInCreation";
+        return "redirect:/shipment/shipmentInCreation";
     }
 
     @GetMapping("/closeCreationShipment/{id}")
     public String closeCreationShipment(@PathVariable Long id, @SessionAttribute Long warehouseId) {
         shipmentInCreationService.closeCreationShipment(id,warehouseId);
-        return "redirect:/shipmentInCreation";
+        return "redirect:/shipment/shipmentInCreation";
     }
 
     @GetMapping("/deleteShipmentLine/{id}")
     public String deleteShipmentLine(@PathVariable Long id) {
         shipmentInCreationService.remove(id);
-        return "redirect:/shipmentInCreation";
+        return "redirect:/shipment/shipmentInCreation";
     }
 
 }

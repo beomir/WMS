@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Unit;
@@ -16,10 +17,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
+@RequestMapping("/config")
 public class UnitController {
 
-    private UnitService unitService;
-    private CompanyService companyService;
+    private final UnitService unitService;
+    private final CompanyService companyService;
 
 
     @Autowired
@@ -59,19 +61,19 @@ public class UnitController {
     @PostMapping("formUnitCreation")
     public String unitAdd(Unit unit) {
         unitService.add(unit);
-        return "redirect:/unit";
+        return "redirect:/config/unit";
     }
 
     @GetMapping("/deleteUnit/{id}")
     public String removeUnit(@PathVariable Long id) {
         unitService.delete(id);
-        return "redirect:/unit";
+        return "redirect:/config/unit";
     }
 
     @GetMapping("/activateUnit/{id}")
     public String activateUnit(@PathVariable Long id) {
         unitService.activate(id);
-        return "redirect:/unitDeactivatedList";
+        return "redirect:/config/unitDeactivatedList";
     }
 
 
@@ -88,6 +90,6 @@ public class UnitController {
     @PostMapping("formEditUnit")
     public String edit(Unit unit) {
         unitService.add(unit);
-        return "redirect:/unit";
+        return "redirect:/config/unit";
     }
 }

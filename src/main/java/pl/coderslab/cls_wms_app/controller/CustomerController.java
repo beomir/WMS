@@ -6,11 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Customer;
-import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.service.CompanyService;
 import pl.coderslab.cls_wms_app.service.CustomerService;
 
@@ -20,8 +18,8 @@ import java.util.List;
 @Controller
 public class CustomerController {
 
-    private CustomerService customerService;
-    private CompanyService companyService;
+    private final CustomerService customerService;
+    private final CompanyService companyService;
 
     @Autowired
     public CustomerController(CustomerService customerService, CompanyService companyService) {
@@ -30,7 +28,7 @@ public class CustomerController {
         this.companyService = companyService;
     }
 
-    @GetMapping("customer")
+    @GetMapping("/shipment/customer")
     public String list(Model model) {
         List<Customer> customers = customerService.getCustomer(SecurityUtils.username());
         model.addAttribute("customers", customers);
@@ -39,7 +37,7 @@ public class CustomerController {
         return "customer";
     }
 
-    @GetMapping("customerDeactivatedList")
+    @GetMapping("/config/customerDeactivatedList")
     public String customerDeactivatedList(Model model) {
         List<Customer> customersList = customerService.getDeactivatedCustomer();
         model.addAttribute("customers", customersList);
@@ -49,7 +47,7 @@ public class CustomerController {
     }
 
 
-    @GetMapping("formCustomer")
+    @GetMapping("/shipment/formCustomer")
     public String customerForm(Model model){
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("localDateTime", LocalDateTime.now());
@@ -60,26 +58,26 @@ public class CustomerController {
         return "formCustomer";
     }
 
-    @PostMapping("formCustomer")
+    @PostMapping("/shipment/formCustomer")
     public String customerAdd(Customer customer) {
         customerService.add(customer);
-        return "redirect:/customer";
+        return "redirect:/shipment/customer";
     }
 
-    @GetMapping("/deleteCustomer/{id}")
+    @GetMapping("/shipment/deleteCustomer/{id}")
     public String removeCustomer(@PathVariable Long id) {
         customerService.delete(id);
-        return "redirect:/customer";
+        return "redirect:/shipment/customer";
     }
 
-    @GetMapping("/activateCustomer/{id}")
+    @GetMapping("/config/activateCustomer/{id}")
     public String activateCustomer(@PathVariable Long id) {
         customerService.activate(id);
-        return "redirect:/customerDeactivatedList";
+        return "redirect:/config/customerDeactivatedList";
     }
 
 
-    @GetMapping("/formEditCustomer/{id}")
+    @GetMapping("/shipment/formEditCustomer/{id}")
     public String updateCustomer(@PathVariable Long id, Model model) {
         Customer customer = customerService.findById(id);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -91,11 +89,11 @@ public class CustomerController {
         return "formEditCustomer";
     }
 
-    @PostMapping("formEditCustomer")
+    @PostMapping("/shipment/formEditCustomer")
     public String edit(Customer customer) {
         customerService.add(customer);
 //        usersDetailsService.add(usersDetails);
-        return "redirect:/customer";
+        return "redirect:/shipment/customer";
     }
 
 

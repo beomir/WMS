@@ -24,7 +24,7 @@
 	</div>
 
 	<div id="content" class="mainw3-agileinfo">
-		<div style="width: 1000px" class="login-form">
+		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
 				<div th:each="warehouse: ${warehouse}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Your Shipment in ' + ${warehouse.city}"></div><br/>
@@ -52,8 +52,8 @@
 							<ol><div th:text="${shipments.shipmentNumber}"></div>
 								<li>
 									<ul>
-										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a th:href="@{/finishedShipment/{id}(id=${shipments.id})}">Finish</a></li>
-										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a th:href="@{/addCommentShipment/{id}(id=${shipments.id})}">Add comment</a></li>
+										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a th:href="@{/shipment/finishedShipment/{id}(id=${shipments.id})}">Finish</a></li>
+										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a th:href="@{/shipment/addCommentShipment/{id}(id=${shipments.id})}">Add comment</a></li>
 <!--										<li th:if="${shipments.creation_closed == true && shipments.finished == false }"><a th:href="@{/openCreationShipment/{id}(id=${shipments.id})}">Open Creation</a></li>-->
 									</ul>
 								</li>

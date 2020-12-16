@@ -4,25 +4,30 @@ package pl.coderslab.cls_wms_app.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
-import pl.coderslab.cls_wms_app.entity.*;
+import pl.coderslab.cls_wms_app.entity.Company;
+import pl.coderslab.cls_wms_app.entity.ShipMethod;
+import pl.coderslab.cls_wms_app.entity.Shipment;
+import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.service.CompanyService;
 import pl.coderslab.cls_wms_app.service.ShipMethodService;
 import pl.coderslab.cls_wms_app.service.ShipmentService;
 import pl.coderslab.cls_wms_app.service.WarehouseService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("")
+@RequestMapping("/shipment")
 public class ShipmentController {
 
-    private ShipmentService shipmentService;
-    private ShipMethodService shipMethodService;
-    private WarehouseService warehouseService;
-    private CompanyService companyService;
+    private final ShipmentService shipmentService;
+    private final ShipMethodService shipMethodService;
+    private final WarehouseService warehouseService;
+    private final CompanyService companyService;
 
     @Autowired
     public ShipmentController(ShipmentService shipmentService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService) {
@@ -50,7 +55,7 @@ public class ShipmentController {
     public String finishShipment(@PathVariable Long id) {
         Long getShipmentById = shipmentService.findById(id).getShipmentNumber();
         shipmentService.finishShipment(getShipmentById);
-        return "redirect:/shipment";
+        return "redirect:/shipment/shipment";
     }
 
 }

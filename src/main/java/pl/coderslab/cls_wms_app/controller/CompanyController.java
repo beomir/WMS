@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
-import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Company;
-import pl.coderslab.cls_wms_app.service.ArticleService;
 import pl.coderslab.cls_wms_app.service.CompanyService;
 
 import java.time.LocalDateTime;
@@ -18,11 +16,11 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/config")
 public class CompanyController {
 
 
-    private CompanyService companyService;
+    private final CompanyService companyService;
 
     @Autowired
     public CompanyController(CompanyService companyService) {
@@ -60,19 +58,19 @@ public class CompanyController {
     @PostMapping("formCompany")
     public String addCompany(Company company) {
         companyService.add(company);
-        return "redirect:/company";
+        return "redirect:/config/company";
     }
 
     @GetMapping("/deleteCompany/{id}")
     public String removeCompany(@PathVariable Long id) {
         companyService.delete(id);
-        return "redirect:/company";
+        return "redirect:/config/company";
     }
 
     @GetMapping("/activateCompany/{id}")
     public String activateCompany(@PathVariable Long id) {
         companyService.activate(id);
-        return "redirect:/companyDeactivatedList";
+        return "redirect:/config/companyDeactivatedList";
     }
 
     @GetMapping("/formEditCompany/{id}")
@@ -89,7 +87,7 @@ public class CompanyController {
     public String edit(Company company) {
         companyService.add(company);
 //        usersDetailsService.add(usersDetails);
-        return "redirect:/company";
+        return "redirect:/config/company";
     }
 
 

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<body>
+<span th:fragment="whichNavPanelF">
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+    <div th:include="fragments/adminNavigation :: adminNavigation"></div>
+</div>
+
+<div sec:authorize="!hasRole('ROLE_ADMIN')">
+    <div th:include="fragments/userNavigation :: userNavigation"></div>
+</div>
+</span>
+</body>
+</html>

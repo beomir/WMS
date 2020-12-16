@@ -21,18 +21,12 @@
 </div>
 
 <div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
-	<div th:if="${#request.remoteUser.contains('admin')}">
-		<div th:include="fragments/adminNavigation :: adminNavigation"></div>
-	</div>
-
-	<div th:unless="${#request.remoteUser.contains('admin')}">
-		<div th:include="fragments/userNavigation :: userNavigation"></div>
-	</div>
+	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
 </div>
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form th:object="${users}" method="post" th:action="@{/formUserCreation}">
+		<form th:object="${users}" method="post" th:action="@{/config/formUserCreation}">
 			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Create a new User</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Login</label>

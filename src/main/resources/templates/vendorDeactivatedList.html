@@ -21,17 +21,11 @@
 	</div>
 	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
 
-		<div th:if="${#request.remoteUser.contains('admin')}">
-			<div th:include="fragments/adminNavigation :: adminNavigation"></div>
-		</div>
-
-		<div th:unless="${#request.remoteUser.contains('admin')}">
-			<div th:include="fragments/userNavigation :: userNavigation"></div>
-		</div>
+		<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
 	</div>
 
 	<div id="content" class="mainw3-agileinfo">
-		<div style="width: 1000px" class="login-form">
+		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px">
 				<div th:unless="${#request.remoteUser.contains('admin')}" th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Deactivated Vendors for company: ' + ${companys.name}"></div><br/><br/>
 				<div  th:if="${#request.remoteUser.contains('admin')}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" text="Deactivated Vendors"></div><br/><br/>
@@ -53,7 +47,7 @@
 							<ol><div th:text="${vendors.name}"></div>
 								<li>
 									<ul>
-										<li><a th:href="@{/activateVendor/{id}(id=${vendors.id})}">ACTIVATE</a></li>
+										<li><a th:href="@{/config/activateVendor/{id}(id=${vendors.id})}">ACTIVATE</a></li>
 									</ul>
 								</li>
 							</ol>

@@ -13,11 +13,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("/")
 public class ArticleController {
 
-    private ArticleService articleService;
-    private CompanyService companyService;
+    private final ArticleService articleService;
+    private final CompanyService companyService;
 
     @Autowired
     public ArticleController(ArticleService articleService, CompanyService companyService) {
@@ -34,7 +33,7 @@ public class ArticleController {
         return "article";
     }
 
-    @GetMapping("articleDeactivatedList")
+    @GetMapping("/config/articleDeactivatedList")
     public String articleDeactivatedList(Model model) {
         List<Article> article = articleService.getDeactivatedArticle();
         model.addAttribute("article", article);
@@ -63,10 +62,10 @@ public class ArticleController {
         return "redirect:/article";
     }
 
-    @GetMapping("/activateArticle/{id}")
+    @GetMapping("/config/activateArticle/{id}")
     public String activateArticle(@PathVariable Long id) {
         articleService.activate(id);
-        return "redirect:/articleDeactivatedList";
+        return "redirect:/config/articleDeactivatedList";
     }
 
     @GetMapping("/formEditArticle/{id}")

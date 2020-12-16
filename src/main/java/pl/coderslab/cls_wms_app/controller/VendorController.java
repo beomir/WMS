@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Vendor;
@@ -28,7 +29,7 @@ public class VendorController {
         this.companyService = companyService;
     }
 
-    @GetMapping("vendor")
+    @GetMapping("/reception/vendor")
     public String list(Model model) {
         List<Vendor> vendor = vendorService.getVendor(SecurityUtils.username());
         model.addAttribute("vendor", vendor);
@@ -37,7 +38,7 @@ public class VendorController {
         return "vendor";
     }
 
-    @GetMapping("vendorDeactivatedList")
+    @GetMapping("/config/vendorDeactivatedList")
     public String vendorDeactivatedList(Model model) {
         List<Vendor> vendor = vendorService.getDeactivatedVendor();
         model.addAttribute("vendor", vendor);
@@ -47,7 +48,7 @@ public class VendorController {
     }
 
 
-    @GetMapping("formVendor")
+    @GetMapping("/reception/formVendor")
     public String vendorForm(Model model){
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("localDateTime", LocalDateTime.now());
@@ -58,25 +59,25 @@ public class VendorController {
         return "formVendor";
     }
 
-    @PostMapping("formVendor")
+    @PostMapping("/reception/formVendor")
     public String vendorAdd(Vendor vendor) {
         vendorService.add(vendor);
-        return "redirect:/vendor";
+        return "redirect:/reception/vendor";
     }
 
-    @GetMapping("/deleteVendor/{id}")
+    @GetMapping("/reception/deleteVendor/{id}")
     public String removeVendor(@PathVariable Long id) {
         vendorService.delete(id);
-        return "redirect:/vendor";
+        return "redirect:/reception/vendor";
     }
 
-    @GetMapping("/activateVendor/{id}")
+    @GetMapping("/config/activateVendor/{id}")
     public String activateVendor(@PathVariable Long id) {
         vendorService.activate(id);
-        return "redirect:/vendorDeactivatedList";
+        return "redirect:/config/vendorDeactivatedList";
     }
 
-    @GetMapping("/formEditVendor/{id}")
+    @GetMapping("/reception/formEditVendor/{id}")
     public String updateVendor(@PathVariable Long id, Model model) {
         Vendor vendor = vendorService.findById(id);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -88,11 +89,11 @@ public class VendorController {
         return "formEditVendor";
     }
 
-    @PostMapping("formEditVendor")
+    @PostMapping("/reception/formEditVendor")
     public String editVendor(Vendor vendor) {
         vendorService.add(vendor);
 //        usersDetailsService.add(usersDetails);
-        return "redirect:/vendor";
+        return "redirect:/reception/vendor";
     }
 
 

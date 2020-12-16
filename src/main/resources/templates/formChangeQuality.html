@@ -21,18 +21,12 @@
 </div>
 
 <div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
-	<div th:if="${#request.remoteUser.contains('admin')}">
-		<div th:include="fragments/adminNavigation :: adminNavigation"></div>
-	</div>
-
-	<div th:unless="${#request.remoteUser.contains('admin')}">
-		<div th:include="fragments/userNavigation :: userNavigation"></div>
-	</div>
+	<div th:include="fragments/stockNavigation :: stockNavigation"></div>
 </div>
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form th:object="${stock}" method="post" th:action="@{/formChangeQuality}">
+		<form th:object="${stock}" method="post" th:action="@{/storage/formChangeQuality}">
 			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Change Quality</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Change quality</label>

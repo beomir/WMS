@@ -24,6 +24,12 @@ public class StartController {
         return "index";
     }
 
+    @GetMapping("/accessDenied")
+    public String accessDenied() {
+        return "accessDenied";
+    }
+
+
 //    @PostMapping("/index")
 //    public String loginGoNext() {
 //        return "redirect:/warehouse";

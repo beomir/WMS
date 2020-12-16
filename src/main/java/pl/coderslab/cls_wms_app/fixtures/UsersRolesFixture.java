@@ -24,9 +24,9 @@ public class UsersRolesFixture {
 
     private List<UsersRoles> usersRolesList = Arrays.asList(
             new UsersRoles(null, "ROLE_USER", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to all options within Company","system"),
-            new UsersRoles(null, "ROLE_USERRECEPTION", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to receptions modules within Company","system"),
-            new UsersRoles(null, "ROLE_USERSHIPMENT", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to shipment modules within Company","system"),
-            new UsersRoles(null, "ROLE_USERSTOCK", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to stock modules within Company","system"),
+            new UsersRoles(null, "ROLE_RECEPTION_USER", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to receptions modules within Company","system"),
+            new UsersRoles(null, "ROLE_SHIPMENT_USER", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to shipment modules within Company","system"),
+            new UsersRoles(null, "ROLE_STOCK_USER", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to stock modules within Company","system"),
             new UsersRoles(null, "ROLE_ADMIN", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to all options","system")
     );
 

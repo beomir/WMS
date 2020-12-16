@@ -21,14 +21,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("")
+@RequestMapping("/config")
 public class UserController {
 
 
 
-    private UsersService usersService;
-    private CompanyService companyService;
-    private UsersRolesService usersRolesService;
+    private final UsersService usersService;
+    private final CompanyService companyService;
+    private final UsersRolesService usersRolesService;
 
 
     @Autowired
@@ -55,7 +55,7 @@ public class UserController {
     @PostMapping("formUserCreation")
     public String add(Users users) {
         usersService.add(users);
-        return "redirect:/userList";
+        return "redirect:/config/userList";
     }
 
 
@@ -89,7 +89,7 @@ public class UserController {
     public String edit(Users users) {
         usersService.add(users);
 //        usersDetailsService.add(usersDetails);
-        return "redirect:/userList";
+        return "redirect:/config/userList";
     }
 
 
@@ -108,19 +108,19 @@ public class UserController {
     @GetMapping("/deleteUser/{id}")
     public String deactivateUser(@PathVariable Long id) {
         usersService.delete(id);
-        return "redirect:/userList";
+        return "redirect:/config/userList";
     }
 
     @GetMapping("/removeUser/{id}")
     public String removeUser(@PathVariable Long id) {
         usersService.remove(id);
-        return "redirect:/userList";
+        return "redirect:/config/userList";
     }
 
     @GetMapping("/activateUser/{id}")
     public String activateUser(@PathVariable Long id) {
         usersService.activate(id);
-        return "redirect:/usersDeactivatedList";
+        return "redirect:/config/usersDeactivatedList";
     }
 
 }

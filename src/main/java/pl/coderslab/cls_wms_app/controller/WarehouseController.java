@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("")
 public class WarehouseController {
 
     private WarehouseService warehouseService;
@@ -53,26 +52,26 @@ public class WarehouseController {
 
 
 
-    @GetMapping("/warehouseList")
+    @GetMapping("/config/warehouseList")
     public String warehousesList(Model model) {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        return "/warehouseList";
+        return "warehouseList";
     }
 
-    @GetMapping("/warehouseDeactivatedList")
+    @GetMapping("/config/warehouseDeactivatedList")
     public String warehouseDeactivatedList(Model model) {
         List<Warehouse> warehouseDeactivated = warehouseService.getDeactivatedWarehouse();
         model.addAttribute("warehouseDeactivated", warehouseDeactivated);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        return "/warehouseDeactivatedList";
+        return "warehouseDeactivatedList";
     }
 
 
-    @GetMapping("/formWarehouseCreation")
+    @GetMapping("/config/formWarehouseCreation")
     public String warehouseForm(Model model){
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("warehouse", new Warehouse());
@@ -81,25 +80,25 @@ public class WarehouseController {
         return "formWarehouseCreation";
     }
 
-    @PostMapping("formWarehouseCreation")
+    @PostMapping("/config/formWarehouseCreation")
     public String warehouseAdd(Warehouse warehouse) {
         warehouseService.add(warehouse);
-        return "redirect:/warehouseList";
+        return "redirect:/config/warehouseList";
     }
 
-    @GetMapping("/deleteWarehouse/{id}")
+    @GetMapping("/config/deleteWarehouse/{id}")
     public String removeWarehouse(@PathVariable Long id) {
         warehouseService.delete(id);
-        return "redirect:/warehouseList";
+        return "redirect:/config/warehouseList";
     }
 
-    @GetMapping("/activateWarehouse/{id}")
+    @GetMapping("/config/activateWarehouse/{id}")
     public String activateWarehouse(@PathVariable Long id) {
         warehouseService.activate(id);
-        return "redirect:/warehouseDeactivatedList";
+        return "redirect:/config/warehouseDeactivatedList";
     }
 
-    @GetMapping("/formEditWarehouse/{id}")
+    @GetMapping("/config/formEditWarehouse/{id}")
     public String updateWarehouse(@PathVariable Long id, Model model) {
         Warehouse warehouse = warehouseService.findById(id);
         model.addAttribute(warehouse);
@@ -109,10 +108,10 @@ public class WarehouseController {
         return "formEditWarehouse";
     }
 
-    @PostMapping("formEditWarehouse")
+    @PostMapping("/config/formEditWarehouse")
     public String edit(Warehouse warehouse) {
         warehouseService.add(warehouse);
-        return "redirect:/warehouseList";
+        return "redirect:/config/warehouseList";
     }
 
 

@@ -24,13 +24,13 @@
 	</div>
 
 	<div id="content" class="mainw3-agileinfo">
-		<div style="width: 1000px" class="login-form">
+		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
 				<div th:each="warehouse: ${warehouse}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Your Shipments during Creation in ' + ${warehouse.city}"></div><br/>
-				<div th:unless="${#request.remoteUser.contains('admin')}">
+				<span sec:authorize="!hasRole('ROLE_ADMIN')">
 					<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companys.name}"></div>
-				</div>
+				</span>
 
 				<div th:unless="${stockDifferences.isEmpty()}" th:style="${messages.equals('Change red underlined qty to pass the validation')} == TRUE ? 'color: darkred;font-weight: bold;text-align: center' : 'color: green;font-weight: bold;text-align: center'"  th:text="${messages}"></div>
 				<span>
@@ -55,9 +55,9 @@
 							<ol><div th:text="${shipments.shipmentNumber}"></div>
 								<li>
 									<ul>
-										<li><a th:href="@{/closeCreationShipment/{id}(id=${shipments.id})}">Close Creation</a></li>
-										<li><a th:href="@{/editShipment/{id}(id=${shipments.id})}">Edit</a></li>
-										<li><a th:href="@{/deleteShipmentLine/{id}(id=${shipments.id})}">Delete</a></li>
+										<li><a th:href="@{/shipment/closeCreationShipment/{id}(id=${shipments.id})}">Close Creation</a></li>
+										<li><a th:href="@{/shipment/editShipment/{id}(id=${shipments.id})}">Edit</a></li>
+										<li><a th:href="@{/shipment/deleteShipmentLine/{id}(id=${shipments.id})}">Delete</a></li>
 									</ul>
 								</li>
 							</ol>
@@ -99,7 +99,7 @@
 					</tr>
 				</table>
 
-				<a th:href="@{/formShipment}"><div class="buttonik" style="float: right;max-width: 20%;">Add to Shipment</div></a>
+				<a th:href="@{/shipment/formShipment}"><div class="buttonik" style="float: right;max-width: 20%;">Add to Shipment</div></a>
 
 			</div><br/><br/>
 			<div th:include="fragments/footer :: footer"></div>

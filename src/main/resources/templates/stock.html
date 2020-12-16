@@ -24,7 +24,7 @@
 	</div>
 
 	<div id="content" class="mainw3-agileinfo">
-		<div style="width: 1000px" class="login-form">
+		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 				<div th:each="warehouse: ${warehouse}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Stock in ' + ${warehouse.city}"></div><br/>
 
@@ -51,11 +51,11 @@
 								<li>
 									<ul>
 
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:href="@{/formChangeStatus/{id}(id=${storage.id})}">Change Status</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:href="@{/formChangeQuality/{id}(id=${storage.id})}">Change Quality</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/formChangeQty/{id}(id=${storage.id})}">Change Qty</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/formChangeArticleNumber/{id}(id=${storage.id})}">Change Article number</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/formChangeUnit/{id}(id=${storage.id})}">Change Unit</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:href="@{/storage/formChangeStatus/{id}(id=${storage.id})}">Change Status</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:href="@{/storage/formChangeQuality/{id}(id=${storage.id})}">Change Quality</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/storage/formChangeQty/{id}(id=${storage.id})}">Change Qty</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/storage/formChangeArticleNumber/{id}(id=${storage.id})}">Change Article number</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/storage/formChangeUnit/{id}(id=${storage.id})}">Change Unit</a></li>
 										<li><a th:href="@{/formAddComment/{id}(id=${storage.id})}">Add coment</a></li>
 									</ul>
 								</li>
@@ -75,7 +75,7 @@
 
 				</table>
 
-				<a th:href="@{/formStock}"><div class="buttonik" style="float: right;max-width: 20%;">Create Stock</div></a>
+				<a th:href="@{/storage/formStock}"><div class="buttonik" style="float: right;max-width: 20%;">Create Stock</div></a>
 
 			</div><br/><br/>
 			<div th:include="fragments/footer :: footer"></div>

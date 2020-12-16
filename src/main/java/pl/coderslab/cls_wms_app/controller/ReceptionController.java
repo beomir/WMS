@@ -13,15 +13,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/reception")
 public class ReceptionController {
 
-    private ReceptionService receptionService;
-    private WarehouseService warehouseService;
-    private ArticleService articleService;
-    private VendorService vendorService;
-    private CompanyService companyService;
-    private UnitService unitService;
+    private final ReceptionService receptionService;
+    private final WarehouseService warehouseService;
+    private final ArticleService articleService;
+    private final VendorService vendorService;
+    private final CompanyService companyService;
+    private final UnitService unitService;
 
     @Autowired
     public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService) {
@@ -75,7 +75,7 @@ public class ReceptionController {
         receptionService.add(reception);
         receptionService.getCreatedReceptionById(reception.getReceptionNumber());
         receptionService.updateCloseCreationValue(reception.getReceptionNumber());
-        return "redirect:/reception";
+        return "redirect:/reception/reception";
     }
 
     @GetMapping("/finishedReception/{id}")
@@ -83,19 +83,19 @@ public class ReceptionController {
         Long getReceptionById = receptionService.findById(id).getReceptionNumber();
         receptionService.updateFinishedReceptionValue(getReceptionById);
         receptionService.insertDataToStockAfterFinishedReception(getReceptionById);
-        return "redirect:/reception";
+        return "redirect:/reception/reception";
     }
 
     @GetMapping("/closeCreationReception/{id}")
     public String closeCreationReception(@PathVariable Long id) {
         receptionService.closeCreation(id);
-        return "redirect:/reception";
+        return "redirect:/reception/reception";
     }
 
     @GetMapping("/openCreationReception/{id}")
     public String openCreationReception(@PathVariable Long id) {
         receptionService.openCreation(id);
-        return "redirect:/reception";
+        return "redirect:/reception/reception";
     }
 
     //edit
@@ -125,7 +125,7 @@ public class ReceptionController {
         receptionService.add(reception);
         receptionService.getCreatedReceptionById(reception.getReceptionNumber());
         receptionService.updateCloseCreationValue(reception.getReceptionNumber());
-        return "redirect:/reception";
+        return "redirect:/reception/reception";
     }
 
 }

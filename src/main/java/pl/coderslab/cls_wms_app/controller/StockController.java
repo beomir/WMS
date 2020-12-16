@@ -13,16 +13,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("")
 public class StockController {
-    private StockService stockService;
-    private ShipmentService shipmentService;
-    private ReceptionService receptionService;
-    private WarehouseService warehouseService;
-    private CompanyService companyService;
-    private StatusService statusService;
-    private ArticleService articleService;
-    private UnitService unitService;
+    private final StockService stockService;
+    private final ShipmentService shipmentService;
+    private final ReceptionService receptionService;
+    private final WarehouseService warehouseService;
+    private final CompanyService companyService;
+    private final StatusService statusService;
+    private final ArticleService articleService;
+    private final UnitService unitService;
 
 
     @Autowired
@@ -48,36 +47,8 @@ public class StockController {
         return "stock";
     }
 
-    @GetMapping("/receptionForm")
-    public String receptionForm(Model model) {
-        model.addAttribute("reception", new Reception());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        return "formReception";
-    }
-
-    @PostMapping("/receptionForm")
-    public String addReception(Reception reception) {
-        receptionService.add(reception);
-        return "redirect:/reception";
-    }
-
-    @GetMapping("/shipmentForm")
-    public String formShipment(Model model) {
-        model.addAttribute("shipment", new Shipment());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        return "formShipment";
-    }
-
-    @PostMapping("/shipmentForm")
-    public String addShipment(Shipment shipment) {
-        shipmentService.add(shipment);
-        return "redirect:/shipment";
-    }
-
 //change status
-    @GetMapping("/formChangeStatus/{id}")
+    @GetMapping("/storage/formChangeStatus/{id}")
     public String updateStockChangeStatus(@PathVariable Long id, Model model) {
         Stock stock = stockService.findById(id);
         List<Status> statuses = statusService.getStatus();
@@ -87,13 +58,13 @@ public class StockController {
         return "formChangeStatus";
     }
 
-    @PostMapping("formChangeStatus")
+    @PostMapping("/storage/formChangeStatus")
     public String updateStockChangeStatusPost(Stock stock) {
         stockService.add(stock);
         return "redirect:/stock";
     }
     //change article number
-    @GetMapping("/formChangeArticleNumber/{id}")
+    @GetMapping("/storage/formChangeArticleNumber/{id}")
     public String updateStockChangeArticleNumber(@PathVariable Long id, Model model) {
         Stock stock = stockService.findById(id);
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
@@ -103,7 +74,7 @@ public class StockController {
         return "formChangeArticleNumber";
     }
 
-    @PostMapping("formChangeArticleNumber")
+    @PostMapping("/storage/formChangeArticleNumber")
     public String updateStockChangeArticleNumberPost(Stock stock) {
         stockService.add(stock);
         return "redirect:/stock";
@@ -111,7 +82,7 @@ public class StockController {
 
     //Change Quantity
 
-    @GetMapping("/formChangeQty/{id}")
+    @GetMapping("/storage/formChangeQty/{id}")
     public String updateStockChangeQuantity(@PathVariable Long id, Model model) {
         Stock stock = stockService.findById(id);
         model.addAttribute(stock);
@@ -119,7 +90,7 @@ public class StockController {
         return "formChangeQty";
     }
 
-    @PostMapping("formChangeQty")
+    @PostMapping("/storage/formChangeQty")
     public String updateStockChangeQuantityPost(Stock stock) {
         stockService.add(stock);
         return "redirect:/stock";
@@ -127,7 +98,7 @@ public class StockController {
 
     //Change Quality
 
-    @GetMapping("/formChangeQuality/{id}")
+    @GetMapping("/storage/formChangeQuality/{id}")
     public String updateStockChangeQuality(@PathVariable Long id, Model model) {
         Stock stock = stockService.findById(id);
         model.addAttribute(stock);
@@ -135,7 +106,7 @@ public class StockController {
         return "formChangeQuality";
     }
 
-    @PostMapping("formChangeQuality")
+    @PostMapping("/storage/formChangeQuality")
     public String updateStockChangeQualityPost(Stock stock) {
         stockService.add(stock);
         return "redirect:/stock";
@@ -143,7 +114,7 @@ public class StockController {
 
     //Change Unit
 
-    @GetMapping("/formChangeUnit/{id}")
+    @GetMapping("/storage/formChangeUnit/{id}")
     public String updateStockChangeUnit(@PathVariable Long id, Model model) {
         Stock stock = stockService.findById(id);
         List<Unit> units = unitService.getUnit();
@@ -153,7 +124,7 @@ public class StockController {
         return "formChangeUnit";
     }
 
-    @PostMapping("formChangeUnit")
+    @PostMapping("/storage/formChangeUnit")
     public String updateStockChangeUnitPost(Stock stock) {
         stockService.add(stock);
         return "redirect:/stock";
@@ -169,7 +140,7 @@ public class StockController {
         return "formAddComment";
     }
 
-    @PostMapping("formAddComment")
+    @PostMapping("/formAddComment")
     public String updateStockAddCommentPost(Stock stock) {
         stockService.add(stock);
         return "redirect:/stock";
@@ -186,7 +157,7 @@ public class StockController {
 
     //Create Stock
 
-    @GetMapping("formStock")
+    @GetMapping("/storage/formStock")
     public String stockForm(Model model,@SessionAttribute Long warehouseId){
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         List<Unit> units = unitService.getUnit();
@@ -202,7 +173,7 @@ public class StockController {
         return "formStock";
     }
 
-    @PostMapping("formStock")
+    @PostMapping("/storage/formStock")
     public String stockFormPost(Stock stock) {
         stockService.add(stock);
         return "redirect:/stock";
