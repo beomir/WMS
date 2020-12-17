@@ -7,6 +7,7 @@ import pl.coderslab.cls_wms_app.entity.Shipment;
 import pl.coderslab.cls_wms_app.repository.ShipmentRepository;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ShipmentServiceImpl implements ShipmentService{
@@ -23,8 +24,8 @@ public class ShipmentServiceImpl implements ShipmentService{
     }
 
     @Override
-    public List<Shipment> getShipment(Long id) {
-        return shipmentRepository.getShipment(id);
+    public List<Shipment> getShipment(Long id, String username) {
+        return shipmentRepository.getShipment(id,username);
     }
 
     @Override
@@ -46,6 +47,11 @@ public class ShipmentServiceImpl implements ShipmentService{
     @Override
     public int checkHowManyNotfinishedShipments(Long id, String username) {
         return shipmentRepository.checkHowManyNotfinishedShipments(id,username);
+    }
+
+    @Override
+    public Map<String, Integer> surveyMap(Long id, String username) {
+        return shipmentRepository.surveyMap(id,username);
     }
 
 

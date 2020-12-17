@@ -2,7 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>WMS CLS app</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="ISO-8859-1" />
+	<link rel="stylesheet"
+		  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+	<!-- Optional theme -->
+	<link rel="stylesheet"
+		  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="" />
 
@@ -73,12 +82,15 @@
 						<td class="tables" th:text="${shipments.changeBy}"></td>
 
 				    </tr>
-				</table>
+				</table><br/><br/>
+					<div align="center">
+						<span th:include="fragments/barGraph :: barGraph"></span>
+					</div>
 			</div>
 			<div th:include="fragments/footer :: footer"></div>
 		</div>
 		<div class="w3copyright-agile">
-			<p>Â© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 		</div>
 	</div>
 

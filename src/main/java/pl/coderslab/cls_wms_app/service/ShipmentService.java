@@ -1,15 +1,15 @@
 package pl.coderslab.cls_wms_app.service;
 
-import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Shipment;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ShipmentService {
 
     void add(Shipment shipment);
 
-    List<Shipment> getShipment(Long id);
+    List<Shipment> getShipment(Long id, String username);
 
     List<Shipment> getShipments();
 
@@ -19,4 +19,6 @@ public interface ShipmentService {
     void finishShipment(Long id);
 
     int checkHowManyNotfinishedShipments(Long id,String username);
+
+    Map<String,Integer> surveyMap(Long id, String username);
 }

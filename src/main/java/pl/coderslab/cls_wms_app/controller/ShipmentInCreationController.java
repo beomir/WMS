@@ -55,7 +55,7 @@ public class ShipmentInCreationController {
         List<Long> shipmentCreationSummary = shipmentInCreationService.shipmentCreationSummary(warehouseId,SecurityUtils.username());
         model.addAttribute("shipmentCreationSummary", shipmentCreationSummary);
 
-        List<Shipment> shipments = shipmentService.getShipment(warehouseId);
+        List<Shipment> shipments = shipmentService.getShipment(warehouseId,SecurityUtils.username());
         model.addAttribute("shipment", shipments);
         String messages = shipmentInCreationService.resultOfShipmentCreationValidation(warehouseId);
         model.addAttribute("messages", messages);

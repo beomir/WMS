@@ -19,6 +19,7 @@ import pl.coderslab.cls_wms_app.service.ShipmentService;
 import pl.coderslab.cls_wms_app.service.WarehouseService;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/shipment")
@@ -39,7 +40,7 @@ public class ShipmentController {
 
     @GetMapping("/shipment")
     public String list(Model model,@SessionAttribute Long warehouseId) {
-        List<Shipment> shipments = shipmentService.getShipment(warehouseId);
+        List<Shipment> shipments = shipmentService.getShipment(warehouseId,SecurityUtils.username());
         List<ShipMethod> shipMethod = shipMethodService.getShipMethod();
         List<Warehouse> warehouse = warehouseService.getWarehouse(warehouseId);
         model.addAttribute("shipments", shipments);
@@ -47,6 +48,9 @@ public class ShipmentController {
         model.addAttribute("warehouse", warehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+
+        Map<String,Integer> surveyMap =  shipmentService.surveyMap(warehouseId,SecurityUtils.username());
+        model.addAttribute("surveyMap",surveyMap);
 
         return "shipment";
     }
@@ -57,5 +61,16 @@ public class ShipmentController {
         shipmentService.finishShipment(getShipmentById);
         return "redirect:/shipment/shipment";
     }
+
+//    @GetMapping("/displayBarGraph")
+//    public String barGraph(Model model){
+//        Map<String,Integer> surveyMap = new HashMap<>();
+//        surveyMap.put("Java",40);
+//        surveyMap.put("Dev oops",20);
+//        surveyMap.put("Python",15);
+//        surveyMap.put(".Net",10);
+//        model.addAttribute("surveyMap",surveyMap);
+//        return "barGraph";
+//    }
 
 }
