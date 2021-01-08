@@ -83,11 +83,5 @@ public class UsersServiceImpl implements UsersService{
         usersRepository.save(users);
     }
 
-    //To think about solution for this
-//    @Override
-//    public void updateRole(Users users) {
-//        usersRepository.updateRole(users);
-//    }
-
 
 }

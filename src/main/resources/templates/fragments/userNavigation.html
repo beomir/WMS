@@ -42,6 +42,17 @@
                 </li>
             </ol>
         </a>
+        <a th:href="@{/emailRecipients}" style="min-width: 100%">
+            <ol class="button"><div style="color: white;font-weight: normal">Emails Recipients list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a sec:authorize="hasRole('ROLE_USER')" th:href="@{/user/formEmailRecipients}">Create New email recipient</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
         <a th:href="@{/logout}"><div class="button">Logout</div></a>
     </div>
 </div>

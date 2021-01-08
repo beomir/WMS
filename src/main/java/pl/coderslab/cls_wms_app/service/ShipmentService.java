@@ -2,6 +2,8 @@ package pl.coderslab.cls_wms_app.service;
 
 import pl.coderslab.cls_wms_app.entity.Shipment;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +18,7 @@ public interface ShipmentService {
     Shipment findById(Long id);
 
 
-    void finishShipment(Long id);
+    void finishShipment(Long id) throws IOException, MessagingException;
 
     int checkHowManyNotfinishedShipments(Long id,String username);
 

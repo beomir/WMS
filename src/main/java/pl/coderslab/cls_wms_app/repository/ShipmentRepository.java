@@ -36,4 +36,13 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     @Query(value = "select  c2.name, sum(pieces_qty) from shipments s join company c on s.company_id = c.id join users u on u.company = c.name join customers c2 on c2.id = s.customer_id where creation_closed = true and finished = true and  s.warehouse_id = ?1 and u.username like ?2 group by c2.name",nativeQuery = true)
     Map<String,Integer> surveyMap(Long id, String username);
+
+    @Query("Select s from Shipment s where s.shipmentNumber = ?1")
+    List<Shipment> getShipmentByShipmentNumber(Long shipmentNbr);
+
+    @Query(value="Select distinct c.name from shipments s inner join company c on s.company_id = c.id where s.shipment_number = ?1",nativeQuery = true)
+    String getOneShipmentByShipmentNumber(Long shipmentNbr);
+
+    @Query(value="Select distinct w.name from shipments s inner join warehouse w on s.warehouse_id = w.id where s.shipment_number = ?1",nativeQuery = true)
+    String getWarehouseByShipmentNumber(Long shipmentNbr);
 }

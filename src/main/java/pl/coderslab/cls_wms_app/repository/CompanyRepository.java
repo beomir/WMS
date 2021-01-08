@@ -27,4 +27,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("SELECT distinct c FROM Users u JOIN Company c on u.company = c.name WHERE u.username like ?1 order by c.name")
     List<Company> getCompanyByUsername(String username);
 
+    @Query("select distinct c FROM Users u JOIN Company c on u.company = c.name WHERE u.username = ?1 ")
+    Company getOneCompanyByUsername(String username);
+
 }

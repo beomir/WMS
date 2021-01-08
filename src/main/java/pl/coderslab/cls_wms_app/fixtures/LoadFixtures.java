@@ -13,7 +13,6 @@ public class LoadFixtures {
     private StatusFixture statusFixture;
     private ArticleFixture articleFixture;
     private UsersFixture usersFixture;
-//    private UsersDetailsFixture usersDetailsFixture;
     private VendorFixture vendorFixture;
     private ReceptionFixture receptionFixture;
     private ShipMethodFixture shipMethodFixture;
@@ -21,16 +20,16 @@ public class LoadFixtures {
     private ShipmentFixture shipmentFixture;
     private UnitFixture unitFixture;
     private UsersRolesFixture usersRolesFixture;
+    private EmailRecipientsFixture emailRecipientsFixture;
 
     @Autowired
-    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture) {
+    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailRecipientsFixture emailRecipientsFixture) {
         this.stockFixture = stockFixture;
         this.companyFixture = companyFixture;
         this.usersFixture = usersFixture;
         this.warehouseFixture = warehouseFixture;
         this.statusFixture = statusFixture;
         this.articleFixture = articleFixture;
-//        this.usersDetailsFixture = usersDetailsFixture;
         this.vendorFixture = vendorFixture;
         this.receptionFixture = receptionFixture;
         this.shipMethodFixture = shipMethodFixture;
@@ -38,6 +37,7 @@ public class LoadFixtures {
         this.shipmentFixture = shipmentFixture;
         this.unitFixture = unitFixture;
         this.usersRolesFixture = usersRolesFixture;
+        this.emailRecipientsFixture = emailRecipientsFixture;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -47,7 +47,6 @@ public class LoadFixtures {
         unitFixture.loadIntoDB();
         usersRolesFixture.loadIntoDB();
         usersFixture.loadIntoDB();
-//        usersDetailsFixture.loadIntoDB();
         warehouseFixture.loadIntoDB();
         statusFixture.loadIntoDB();
         articleFixture.loadIntoDB();
@@ -56,9 +55,7 @@ public class LoadFixtures {
         shipMethodFixture.loadIntoDB();
         customerFixture.loadIntoDB();
         shipmentFixture.loadIntoDB();
-
         stockFixture.loadIntoDB();
-
-
+        emailRecipientsFixture.loadIntoDB();
     }
 }

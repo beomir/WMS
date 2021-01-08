@@ -58,6 +58,9 @@ public class Company {
     @OneToMany(mappedBy="company")
     private List<Stock> stockList = new ArrayList<>();
 
+    @OneToMany(mappedBy="company")
+    private List<EmailRecipients> emailRecipientsList = new ArrayList<>();
+
     @Override
     public String toString() {
         return "Company{" +

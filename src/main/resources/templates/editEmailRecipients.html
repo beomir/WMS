@@ -26,51 +26,47 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form th:object="${users}" method="post" th:action="@{/config/formUserEdit}">
-			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Create a new User</div><br/>
-			<section>
-				<label th:text="'Login: ' + *{username}" style="color: white;font-weight: bold"></label>
-				<input type="hidden" th:field="*{username}"/>
-				<input type="hidden" th:field="*{id}"/>
-				<input type="hidden" th:field="*{created}"/>
-				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
-				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
-			</section><br/>
-			<section>
-				<label style="color: white;font-weight: bold">Password</label>
-				<input type="password" th:field="*{password}"/>
-			</section>
+		<form th:object="${emailRecipients}" method="post" th:action="@{/editEmailRecipients}">
+			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Edit Email Recipient</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Email</label>
 				<input type="text" th:field="*{email}"/>
+				<input type="hidden" th:field="*{token}"/>
 			</section>
 			<section>
+				<label style="color: white;font-weight: bold">Name</label>
+				<input type="text" th:field="*{name}"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold">Last name</label>
+				<input type="text" th:field="*{lastname}"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold">Phone number</label>
+				<input type="text" th:field="*{phone}"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold">Type</label>
+				<select class="select-css" th:field="*{type}">
+					<option th:value="Shipment">After Shipment</option>
+					<option th:value="Reception">After Reception</option>
+					<option th:value="Stock">Daily Stock</option>
+				</select><br/>
+			</section>
+			<section sec:authorize="hasRole('ROLE_ADMIN')">
 				<label style="color: white;font-weight: bold">Company</label>
 				<select class="select-css" th:field="*{company}">
-					<option th:each="i : ${companies}" th:value="${i.name}" th:text="${i.name}">
+					<option th:each="i : ${companies}" th:value="${i.id}" th:text="${i.name}">
 					</option>
 				</select>
 			</section><br/>
-			<section>
-				<label style="color: white;font-weight: bold">Permissions</label>
-				<select class="select-css" th:field="*{usersRoles}">
-					<option th:each="i : ${users_Roles}" th:value="${i.id}" th:text="${i.role}">
-				</select>
-			</section><br/>
-			<section>
-				<label style="color: white;font-weight: bold">Status</label>
-				<select class="select-css" th:field="*{active}">
-				<option th:value="true">Active</option>
-				<option th:value="false">Deactive</option>
-				</select>
-			</section>
 			<section>
 				<br/><button class="button" type="submit">Save</button>
 			</section>
 		</form>
 
-
 	</div>
+
 	<div th:include="fragments/footer :: footer"></div>
 
 </div>
@@ -80,28 +76,8 @@
 </div>
 
 
-
 <script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 <script type="text/javascript" th:src="@{/js/logo.js}"></script>
-<script>
-	superplaceholder({
-		el: input1,
-		sentences: [ 'Write your Username', 'For example:', 'SuperUserStrojem','or', 'SuperUserbUDUJem' ],
-		options: {
-			loop: true,
-			startOnFocus: false
-		}
-	})
-	superplaceholder({
-		el: input2,
-		sentences: [ 'Write your Password', 'For example:', 'SuperUserStrojem','**', 'SuperUserbUDUJem' ],
-		options: {
-			loop: true,
-			startOnFocus: false
-		}
-	})
-</script>
-
 </body>
 
 

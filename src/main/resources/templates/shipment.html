@@ -37,7 +37,7 @@
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
 				<div th:each="warehouse: ${warehouse}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Your Shipment in ' + ${warehouse.city}"></div><br/>
-				<div th:unless="${#request.remoteUser.contains('admin')}">
+				<div sec:authorize="!hasRole('ROLE_ADMIN')">
 					<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companys.name}"></div>
 				</div><br/><br/>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
@@ -47,7 +47,7 @@
 						<th class="tables">Article</th>
 						<th class="tables">Unit</th>
 						<th class="tables">Pieces Qty</th>
-						<th th:if="${#request.remoteUser.contains('admin')}" class="tables">Company</th>
+						<th sec:authorize="hasRole('ROLE_ADMIN')" class="tables">Company</th>
 						<th class="tables">Quality</th>
 						<th class="tables">Ship method</th>
 						<th class="tables">Creation closed</th>
@@ -72,7 +72,7 @@
 						<td class="tables" th:text="${shipments.article.article_number}"></td>
 				        <td class="tables" th:text="${shipments.unit.name}"></td>
 				        <td class="tables" th:text="${shipments.pieces_qty}"></td>
-						<td th:if="${#request.remoteUser.contains('admin')}" class="tables" th:text="${shipments.company.name}"></td>
+						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${shipments.company.name}"></td>
 				        <td class="tables" th:text="${shipments.quality}"></td>
 				        <td class="tables" th:text="${shipments.shipMethod.method}"></td>
 						<td class="tables" th:text="${shipments.creation_closed}"></td>
@@ -83,9 +83,9 @@
 
 				    </tr>
 				</table><br/><br/>
-					<div align="center">
-						<span th:include="fragments/barGraph :: barGraph"></span>
-					</div>
+<!--					<div align="center">-->
+<!--						<span th:include="fragments/barGraph :: barGraph"></span>-->
+<!--					</div>-->
 			</div>
 			<div th:include="fragments/footer :: footer"></div>
 		</div>
@@ -98,24 +98,7 @@
 
 	<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
-	<script>
-	superplaceholder({
-			el: input1,
-			sentences: [ 'Write your Username', 'For example:', 'SuperUserStrojem','or', 'SuperUserbUDUJem' ],
-			options: {
-				loop: true,
-				startOnFocus: false
-			}
-		})
-		superplaceholder({
-			el: input2,
-			sentences: [ 'Write your Password', 'For example:', 'SuperUserStrojem','**', 'SuperUserbUDUJem' ],
-			options: {
-				loop: true,
-				startOnFocus: false 
-			}
-		})
-	</script>
+
 
 </body>
 </html>

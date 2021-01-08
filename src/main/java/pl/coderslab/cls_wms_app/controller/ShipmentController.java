@@ -18,6 +18,8 @@ import pl.coderslab.cls_wms_app.service.ShipMethodService;
 import pl.coderslab.cls_wms_app.service.ShipmentService;
 import pl.coderslab.cls_wms_app.service.WarehouseService;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -49,14 +51,14 @@ public class ShipmentController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
 
-        Map<String,Integer> surveyMap =  shipmentService.surveyMap(warehouseId,SecurityUtils.username());
-        model.addAttribute("surveyMap",surveyMap);
+//        Map<String,Integer> surveyMap =  shipmentService.surveyMap(warehouseId,SecurityUtils.username());
+//        model.addAttribute("surveyMap",surveyMap);
 
         return "shipment";
     }
 
     @GetMapping("/finishedShipment/{id}")
-    public String finishShipment(@PathVariable Long id) {
+    public String finishShipment(@PathVariable Long id) throws IOException, MessagingException {
         Long getShipmentById = shipmentService.findById(id).getShipmentNumber();
         shipmentService.finishShipment(getShipmentById);
         return "redirect:/shipment/shipment";
