@@ -2,9 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <header th:fragment="header">
+    <section style="float: left;position: absolute">
+        <span><a th:href="@{''(lang=ru)}"><img th:src="@{/images/ru2.png}"/></a></span>
+        <span><a th:href="@{''(lang=pl)}"><img th:src="@{/images/pl2.png}"/></a> </span>
+        <span><a th:href="@{''(lang=en)}"><img th:src="@{/images/gb2.png}"/></a></span>
+        <span><a th:href="@{''(lang=fr)}"><img th:src="@{/images/fr2.png}"/></a></span>
+    </section>
     <div id="div1" class="logo-big"></div><br>
-    <div id="div2" class="logo-small"></div><br>
-    <div id="div3" class="logo-small"></div>
+    <div th:text="#{app.logo.d1}" id="div2" class="logo-small"></div><br>
+    <div th:text="#{app.logo.d2}" id="div3" class="logo-small"></div>
 </header>
 </body>
 </html>

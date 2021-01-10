@@ -37,6 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // zasady bezpieczeństwa są dopasowywane od góry do pierwszego pasującego
                 .antMatchers("/").permitAll()
+                .antMatchers("/index").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/js/**", "/css/**", "/fonts/**", "/images/**", "/templates/fragments/**").permitAll()
                 .antMatchers("/shipment", "/shipment/**").hasAnyRole("USER", "ADMIN","SHIPMENT_USER")

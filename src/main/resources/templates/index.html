@@ -26,22 +26,22 @@
 					<form method="post" th:action="@{/index}">
 						<fieldset>
 							<legend>
-								<p>Please Login</p>
+								<p th:text="#{app.index.p1}">Please Login</p>
 							</legend>
 							<div th:if="${param.error}">
-								<p>Invalid username and password</p>
+								<p th:text="#{app.index.p2}">Invalid username and password</p>
 							</div>
 							<div th:if="${param.logout}">
-								<p>You have been logged out</p>
+								<p >You have been logged out</p>
 							</div>
 						</fieldset>
 						<br/>
-						<p>Username </p>
+						<p th:text="#{app.index.p3}">Username </p>
 						<input id="input1" type="text" class="name" name="username" placeholder="Username" required=""/>
-						<p>Password</p>
+						<p th:text="#{app.index.p4}">Password</p>
 						<input id="input2" type="password" class="password" name="password" placeholder="*********" required=""/>
 
-						<input type="submit" value="Login">
+						<input th:text="#{app.index.login}" type="submit" value="Login">
 
 					</form> 	
 				</div>
