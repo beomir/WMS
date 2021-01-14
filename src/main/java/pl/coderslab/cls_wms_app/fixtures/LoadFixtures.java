@@ -20,10 +20,12 @@ public class LoadFixtures {
     private ShipmentFixture shipmentFixture;
     private UnitFixture unitFixture;
     private UsersRolesFixture usersRolesFixture;
+    private EmailTypesFixture emailTypesFixture;
     private EmailRecipientsFixture emailRecipientsFixture;
 
+
     @Autowired
-    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailRecipientsFixture emailRecipientsFixture) {
+    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture) {
         this.stockFixture = stockFixture;
         this.companyFixture = companyFixture;
         this.usersFixture = usersFixture;
@@ -37,7 +39,9 @@ public class LoadFixtures {
         this.shipmentFixture = shipmentFixture;
         this.unitFixture = unitFixture;
         this.usersRolesFixture = usersRolesFixture;
+        this.emailTypesFixture = emailTypesFixture;
         this.emailRecipientsFixture = emailRecipientsFixture;
+
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -56,6 +60,8 @@ public class LoadFixtures {
         customerFixture.loadIntoDB();
         shipmentFixture.loadIntoDB();
         stockFixture.loadIntoDB();
+        emailTypesFixture.loadIntoDB();
         emailRecipientsFixture.loadIntoDB();
+
     }
 }

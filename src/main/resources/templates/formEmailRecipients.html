@@ -47,11 +47,10 @@
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Type</label>
-				<select class="select-css" th:field="*{type}">
-					<option th:value="Shipment">After Shipment</option>
-					<option th:value="Reception">After Reception</option>
-					<option th:value="Stock">Daily Stock</option>
-				</select><br/>
+				<label style="color: white;font-weight: bold" th:each="i : ${emailTypes}"><br/>
+					<input type="checkbox" th:field="*{emailTypes}"  th:value="${i.id}" id="emailTypes"/>
+					<span style="font-weight: bold" th:text="${i.type}" th:value="${i.id}" class="title"></span><br/>
+				</label>
 			</section>
 			<section sec:authorize="hasRole('ROLE_ADMIN')">
 				<label style="color: white;font-weight: bold">Company</label>

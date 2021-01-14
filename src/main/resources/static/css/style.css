@@ -811,3 +811,7 @@ tr:hover > td{
 .select-css:disabled:hover, .select-css[aria-disabled=true] {
     border-color: #aaa;
 }
+
+.d-none {
+    display: none;
+}

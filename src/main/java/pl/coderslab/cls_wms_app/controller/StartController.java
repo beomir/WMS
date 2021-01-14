@@ -29,16 +29,11 @@ public class StartController {
         return "accessDenied";
     }
 
-
-//    @PostMapping("/index")
-//    public String loginGoNext() {
-//        return "redirect:/warehouse";
-//    }
-
-//    @PostMapping("/index")
-//    public String get(@Auto String username, HttpSession session) {
-//        session.setAttribute("username", username);
-//        return "redirect:/warehouse";
+//    @PostMapping("contactForm")
+//    public String contactForm( String message, String name, String surname, String email) {
+//        sendEmailService.sendEmailFromContactForm("<span style=\"font-size: 16px;\"><b>Name: </b><i>" + name + "</i><br/><b> Surname:</b><i> " + surname + "</i><br/><b>Email:</b> " + email + "<br/><br/><b>Message:</b><i></span> " + message + "</i>");
+//        sendEmailService.sendEmail(email,"Witaj " + name + " " + surname + ", otrzymaliśmy od Ciebię prośbę o kontakt. Skontaktujemy sie z Tobą tak szybko jak będzie to możliwe","Potwierdzenie prośby o kontakt");
+//        return "redirect:/contactForm-confirmation";
 //    }
 
     @RequestMapping(value="/logout", method = RequestMethod.GET)

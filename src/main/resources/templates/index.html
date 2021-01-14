@@ -8,7 +8,6 @@
 
 	<script src ="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
-
 	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
 	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
 
@@ -40,10 +39,24 @@
 						<input id="input1" type="text" class="name" name="username" placeholder="Username" required=""/>
 						<p th:text="#{app.index.p4}">Password</p>
 						<input id="input2" type="password" class="password" name="password" placeholder="*********" required=""/>
-
-						<input th:text="#{app.index.login}" type="submit" value="Login">
-
-					</form> 	
+						<input th:value="#{app.index.login}" type="submit"/>
+					</form>
+					<br/><br/>
+					<form>
+						<input type="checkbox" id="accountRequest"/>
+						<label style="letter-spacing: 2px;color: white">Click to display a request form for account</label>
+					</form><br/>
+					<div id="accountRequestFrom">
+					<form  method="post" th:action="@{/contactForm}">
+						<label style="color: white;font-weight: normal">Imię:</label>
+						<input id="name" type="text"/>
+						<label style="color: white;font-weight: normal">Nazwisko:</label>
+						<input id="surname" type="text"/>
+						<label style="color: white;font-weight: normal">Email:</label>
+						<input id="email" type="text"/>
+						<input type="submit" value="Send request"/>
+					</form>
+					</div>
 				</div>
 				<div th:include="fragments/footer :: footer"></div>
 			</div> 
@@ -73,6 +86,19 @@
 				startOnFocus: false 
 			}
 		})
+
+	const hide = document.getElementById("accountRequestFrom")
+	const accountRequest = document.getElementById("accountRequest")
+
+	hide.classList.add("d-none")
+
+	accountRequest.addEventListener("click", function (e) {
+		if (!this.checked) {
+			hide.classList.add("d-none")
+		} else {
+			hide.classList.remove("d-none")
+		}
+	})
 	</script>
 
 </body>

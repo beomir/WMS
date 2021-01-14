@@ -61,11 +61,11 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     public void finishShipment(Long shipmentNbrtoFinish)  {
         List<Shipment> finishedShipment = shipmentRepository.getShipmentByShipmentNumber(shipmentNbrtoFinish);
-        List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyAndType(shipmentRepository.getOneShipmentByShipmentNumber(shipmentNbrtoFinish),"Shipment");
+        List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForShipmentType(shipmentRepository.getOneShipmentByShipmentNumber(shipmentNbrtoFinish),"Shipment");
         String shipmentNbr = shipmentNbrtoFinish.toString();
         String warehouse = shipmentRepository.getWarehouseByShipmentNumber(shipmentNbrtoFinish);
         File shipment = new File("outbound/" + shipmentNbr + ".txt");
-        if (shipment.exists()) {
+        while (shipment.exists()) {
             int random = new Random().nextInt(100);
             shipment = new File("outbound/" + shipmentNbr + "duplicateNbr" + random + ".txt");
         }

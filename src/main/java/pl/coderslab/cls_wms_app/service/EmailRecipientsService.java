@@ -22,6 +22,10 @@ public interface EmailRecipientsService {
 
     void activate(String token);
 
-    List<EmailRecipients> getEmailRecipientsByCompanyAndType(String company, String type);
+    List<EmailRecipients> getEmailRecipientsByCompanyForShipmentType(String company, String type);
+
+    List<EmailRecipients> getEmailRecipientsByCompanyForReceptionType(String company, String type);
+
+    List<EmailRecipients> getEmailRecipientsByCompanyForStockType(String company, String type);
 
 }

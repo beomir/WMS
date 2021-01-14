@@ -59,7 +59,7 @@
 						<td th:if="${emailRecipients.active==true}" class="tables" th:text="${emailRecipients.lastname}"></td>
 						<td th:if="${emailRecipients.active==true}" class="tables" th:text="${emailRecipients.phone}"></td>
 						<td th:if="${emailRecipients.active==true}" class="tables" th:text="${emailRecipients.company.name}"></td>
-						<td th:if="${emailRecipients.active==true}" class="tables" th:text="${emailRecipients.type}"></td>
+						<td th:if="${emailRecipients.active==true}" class="tables"><span th:each="a,i : *{emailRecipients.emailTypes}"  th:text="${!i.last} ? ${a.type} + ',' : ${a.type}"></span></td>
 						<td th:if="${emailRecipients.active==true}" class="tables" th:text="${#strings.replace(#strings.substring(emailRecipients.created,0,19),'T',' ')}"></td>
 						<td th:if="${emailRecipients.active==true}" class="tables" th:text="${#strings.replace(#strings.substring(emailRecipients.last_update,0,19),'T',' ')}"></td>
 						<td th:if="${emailRecipients.active==true}" class="tables" th:text="${emailRecipients.changeBy}"></td>

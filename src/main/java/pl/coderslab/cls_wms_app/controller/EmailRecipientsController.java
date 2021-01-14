@@ -7,11 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
-import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.EmailRecipients;
+import pl.coderslab.cls_wms_app.entity.EmailTypes;
 import pl.coderslab.cls_wms_app.service.CompanyService;
 import pl.coderslab.cls_wms_app.service.EmailRecipientsService;
+import pl.coderslab.cls_wms_app.service.EmailTypesService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,11 +22,13 @@ public class EmailRecipientsController {
 
     private final CompanyService companyService;
     private final EmailRecipientsService emailRecipientsService;
+    private final EmailTypesService emailTypesService;
 
     @Autowired
-    public EmailRecipientsController(CompanyService companyService, EmailRecipientsService emailRecipientsService) {
+    public EmailRecipientsController(CompanyService companyService, EmailRecipientsService emailRecipientsService, EmailTypesService emailTypesService) {
         this.companyService = companyService;
         this.emailRecipientsService = emailRecipientsService;
+        this.emailTypesService = emailTypesService;
     }
 
     @GetMapping("emailRecipients")
@@ -41,6 +44,10 @@ public class EmailRecipientsController {
     public String emailRecipientsDeactivatedList(Model model) {
         List<EmailRecipients> emailRecipients = emailRecipientsService.getEmailRecipients();
         model.addAttribute("emailRecipients", emailRecipients);
+
+        List<EmailTypes> emailTypes = emailTypesService.getEmailTypes();
+        model.addAttribute("emailTypes", emailTypes);
+
         return "emailRecipientsDeactivatedList";
     }
 
@@ -48,6 +55,8 @@ public class EmailRecipientsController {
     @GetMapping("/user/formEmailRecipients")
     public String emailRecipientsForm(Model model){
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        List<EmailTypes> emailTypes = emailTypesService.getEmailTypes();
+        model.addAttribute("emailTypes", emailTypes);
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("emailRecipients", new EmailRecipients());
         model.addAttribute("companies", companies);
@@ -76,6 +85,8 @@ public class EmailRecipientsController {
     public String updateEmailRecipients(@PathVariable String token, Model model) {
         EmailRecipients emailRecipients = emailRecipientsService.findByToken(token);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        List<EmailTypes> emailTypes = emailTypesService.getEmailTypes();
+        model.addAttribute("emailTypes", emailTypes);
         model.addAttribute(emailRecipients);
         model.addAttribute("companies", companies);
         model.addAttribute("localDateTime", LocalDateTime.now());
