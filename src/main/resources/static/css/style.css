@@ -350,6 +350,7 @@ input.checkbox:checked:after {
 
 .logo-big {
     /*display: none;*/
+    visibility: hidden;
     text-align: center;
     color: #00BCD4;
     font-size: 50px;
@@ -358,6 +359,7 @@ input.checkbox:checked:after {
 
 .logo-small {
     /*display: none;*/
+    visibility: hidden;
     text-align: center;
     color: #00BCD4;
     font-size: 18px;
