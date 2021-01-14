@@ -11,6 +11,7 @@ import pl.coderslab.cls_wms_app.service.UsersService;
 import java.util.Arrays;
 import java.util.List;
 
+@Profile("local")
 @Component
 public class UsersFixture {
     private UsersService usersService;

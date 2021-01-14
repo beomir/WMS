@@ -11,6 +11,7 @@ import pl.coderslab.cls_wms_app.service.ShipMethodService;
 import java.util.Arrays;
 import java.util.List;
 
+@Profile("local")
 @Component
 public class ShipMethodFixture {
     private ShipMethodService shipMethodService;
