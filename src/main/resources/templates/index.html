@@ -14,18 +14,10 @@
 <link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
 
 </head>
-<body>
+<body onload="logo()">
 
 	<div class="main-agileits">
-		<section style="float: left;position: absolute">
-			<span><a th:href="@{''(lang=ru)}"><img th:src="@{/images/ru2.png}"/></a></span>
-			<span><a th:href="@{''(lang=pl)}"><img th:src="@{/images/pl2.png}"/></a> </span>
-			<span><a th:href="@{''(lang=en)}"><img th:src="@{/images/gb2.png}"/></a></span>
-			<span><a th:href="@{''(lang=fr)}"><img th:src="@{/images/fr2.png}"/></a></span>
-		</section>
-		<div class="logo-big">CLS</div><br>
-		<div th:text="#{app.logo.d1}"  class="logo-small"></div><br>
-		<div th:text="#{app.logo.d2}"  class="logo-small"></div>
+		<div th:include="fragments/header :: header"></div>
 		<div class="mainw3-agileinfo">
 
 			<div class="login-form">  
@@ -107,7 +99,6 @@
 			hide.classList.remove("d-none")
 		}
 	})
-
 	</script>
 
 </body>
