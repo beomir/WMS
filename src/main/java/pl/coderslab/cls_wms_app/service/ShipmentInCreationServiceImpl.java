@@ -98,9 +98,7 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
             shipmentInCreationRepository.updateStockDataAboutShipmentQty(warehouseId,SecurityUtils.username());
             shipmentInCreationRepository.deleteQtyAfterCloseCreation(warehouseId,SecurityUtils.username());
             shipmentInCreationRepository.deleteZerosOnStock(warehouseId,SecurityUtils.username());
-
         }
-
     }
 
     @Override
