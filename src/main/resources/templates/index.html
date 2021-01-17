@@ -44,17 +44,17 @@
 					<br/><br/>
 					<form>
 						<input type="checkbox" id="accountRequest"/>
-						<label style="letter-spacing: 2px;color: white">Click to display a request form for account</label>
+						<label th:text="#{app.index.acr1}" style="letter-spacing: 2px;color: white">Click to display a request form for account</label>
 					</form><br/>
 					<div id="accountRequestFrom">
 					<form  method="post" th:action="@{/contactForm}">
-						<label style="color: white;font-weight: normal">Imię:</label>
-						<input id="name" type="text"/>
-						<label style="color: white;font-weight: normal">Nazwisko:</label>
+						<label th:text="#{app.index.acr2}" style="color: white;font-weight: normal">Imię:</label>
+						<input id="name" name="name" type="text"/>
+						<label th:text="#{app.index.acr3}" style="color: white;font-weight: normal">Nazwisko:</label>
 						<input id="surname" type="text"/>
-						<label style="color: white;font-weight: normal">Email:</label>
-						<input id="email" type="text"/>
-						<input type="submit" value="Send request"/>
+						<label th:text="#{app.index.acr4}" style="color: white;font-weight: normal">Email:</label>
+						<input id="email" name="email" type="text"/>
+						<input type="submit" th:value="#{app.index.acr5}"/>
 					</form>
 					</div>
 				</div>

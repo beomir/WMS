@@ -91,7 +91,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         Path path = Paths.get(filePath);
         if(Files.exists(path)) {
             for (EmailRecipients value : mailGroup) {
-                sendEmailService.sendEmail(value.getEmail(), "Dear client, Warehouse: " + warehouse + " prepared, Shipment number: " + shipmentNbr + ". Truck is loading now. After couple of minutes we will send your goods", "Shipment " + shipmentNbr, filePath);
+                sendEmailService.sendEmail(value.getEmail(), "Dear client,<br/><br/> Warehouse: <b>" + warehouse + "</b> prepared, Shipment number: <b>" + shipmentNbr + "</b>. Truck is loading now. After couple of minutes we will send your goods", "Shipment " + shipmentNbr, filePath);
             }
         }
         else{

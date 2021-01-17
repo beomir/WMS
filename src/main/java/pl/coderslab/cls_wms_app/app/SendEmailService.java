@@ -22,11 +22,11 @@ public class SendEmailService {
     }
 
 
-    public void sendEmailFromContactForm(String body){
+    public void sendEmailFromContactForm(String body, String email){
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
             message.setFrom("clswarehousemanagementsystem@gmail.com");
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress("beomir89@gmail.com"));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
             message.setSubject("Contact Form");
             message.setText(body, "UTF-8", "html");
         } catch (MessagingException e) {
@@ -44,7 +44,8 @@ public class SendEmailService {
             helper.setFrom("clswarehousemanagementsystem@gmail.com");
             helper.setTo(to);
             helper.setSubject(topic);
-            helper.setText(body);
+//            helper.setText(body);
+            helper.setText(body,true);
 
             FileSystemResource file = new FileSystemResource(fileName);
             helper.addAttachment(file.getFilename(),file);

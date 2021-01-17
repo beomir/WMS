@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
+import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Users;
 
@@ -31,11 +32,13 @@ public class UserController {
     private final UsersRolesService usersRolesService;
 
 
+
     @Autowired
     public UserController(UsersService usersService, CompanyService companyService, UsersRolesService usersRolesService) {
         this.usersService = usersService;
         this.companyService = companyService;
         this.usersRolesService = usersRolesService;
+
     }
 
     @GetMapping("formUserCreation")
@@ -122,5 +125,6 @@ public class UserController {
         usersService.activate(id);
         return "redirect:/config/usersDeactivatedList";
     }
+
 
 }

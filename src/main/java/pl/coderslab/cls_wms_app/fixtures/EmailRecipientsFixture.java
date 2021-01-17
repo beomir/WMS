@@ -48,6 +48,7 @@ public class EmailRecipientsFixture {
 
         emailRecipients1.getEmailTypes().add(emailTypes.get(1));
         emailRecipients1.getEmailTypes().add(emailTypes.get(2));
+        emailRecipients2.getEmailTypes().add(emailTypes.get(0));
         emailRecipients2.getEmailTypes().add(emailTypes.get(1));
 
         emailRecipients1.setCompany(companies.get(0));
