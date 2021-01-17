@@ -2,6 +2,8 @@ package pl.coderslab.cls_wms_app.service;
 
 import pl.coderslab.cls_wms_app.entity.Reception;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.List;
 
 public interface ReceptionService {
@@ -22,6 +24,7 @@ public interface ReceptionService {
 
     Reception findById(Long id);
 
+    void finishReception(Long receptionNmbr) throws IOException, MessagingException;
 
     Long lastReception();
 

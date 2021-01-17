@@ -9,6 +9,8 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.*;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -79,10 +81,11 @@ public class ReceptionController {
     }
 
     @GetMapping("/finishedReception/{id}")
-    public String finishedReception(@PathVariable Long id) {
+    public String finishedReception(@PathVariable Long id) throws IOException, MessagingException {
         Long getReceptionById = receptionService.findById(id).getReceptionNumber();
         receptionService.updateFinishedReceptionValue(getReceptionById);
         receptionService.insertDataToStockAfterFinishedReception(getReceptionById);
+        receptionService.finishReception(getReceptionById);
         return "redirect:/reception/reception";
     }
 

@@ -3,19 +3,25 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coderslab.cls_wms_app.entity.EmailRecipients;
 import pl.coderslab.cls_wms_app.entity.Reception;
+import pl.coderslab.cls_wms_app.repository.EmailRecipientsRepository;
 import pl.coderslab.cls_wms_app.repository.ReceptionRepository;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ReceptionServiceImpl implements ReceptionService{
     private ReceptionRepository receptionRepository;
+    private EmailRecipientsRepository emailRecipientsRepository;
 
     @Autowired
-    public ReceptionServiceImpl(ReceptionRepository receptionRepository) {
+    public ReceptionServiceImpl(ReceptionRepository receptionRepository, EmailRecipientsRepository emailRecipientsRepository) {
         this.receptionRepository = receptionRepository;
+        this.emailRecipientsRepository = emailRecipientsRepository;
     }
 
     @Override
@@ -62,6 +68,11 @@ public class ReceptionServiceImpl implements ReceptionService{
         return receptionRepository.getOne(id);
     }
 
+    @Override
+    public void finishReception(Long receptionNmbr) throws IOException, MessagingException {
+        List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForShipmentType(receptionRepository.getCompanyNameByReceptionNumber(receptionNmbr),"Reception");
+//TODO send email logic
+    }
 
 
     @Override
