@@ -44,7 +44,6 @@ public class SendEmailService {
             helper.setFrom("clswarehousemanagementsystem@gmail.com");
             helper.setTo(to);
             helper.setSubject(topic);
-//            helper.setText(body);
             helper.setText(body,true);
 
             FileSystemResource file = new FileSystemResource(fileName);

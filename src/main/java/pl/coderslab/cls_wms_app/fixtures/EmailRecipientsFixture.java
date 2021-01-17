@@ -44,7 +44,6 @@ public class EmailRecipientsFixture {
         EmailRecipients emailRecipients1 = emailRecipientsList.get(0);
         EmailRecipients emailRecipients2 = emailRecipientsList.get(1);
 
-        System.out.println("Przed" + emailRecipients1);
 
         emailRecipients1.getEmailTypes().add(emailTypes.get(1));
         emailRecipients1.getEmailTypes().add(emailTypes.get(2));
@@ -57,7 +56,6 @@ public class EmailRecipientsFixture {
         emailRecipientsService.add(emailRecipients1);
         emailRecipientsService.add(emailRecipients2);
 
-        System.out.println("Po " + emailRecipients1);
     }
 }
 
