@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
-
+@RequestMapping("")
 public class StartController {
 
     private final SendEmailService sendEmailService;
@@ -45,9 +45,9 @@ public class StartController {
     }
 
     @PostMapping("contactForm")
-    public String contactFormPost(String email,String name,String surname) {
+    public String contactFormPost(String email,String name,String lastname) {
         sendEmailService.sendEmailFromContactForm("<b>PL</b><br/><br/><i>Dzięki " + name + " za wypełnienie formularza. Właśnie zajmujemy się Twoim zgłoszeniem</i><br/><br/><b>GB</b><br/><br/><i>Thanks " + name + " for filling out the form. We are currently dealing with your application</i><br/><br/><b>FR</b><br/><br/><i>Merci  " + name + " de remplir le formulaire. Nous traitons actuellement votre candidature</i><br/><br/><b>ру</b><br/><br/><i>Спасибо " + name + " за заполнение формы. В настоящее время мы занимаемся вашей заявкой</i><br/><br/>",email);
-        sendEmailService.sendEmailFromContactForm("Please create account for: <b>" + name + "</b>, <b>" + surname + "</b>,<b>" + email +"</b>", "beomir89@gmail.com");
+        sendEmailService.sendEmailFromContactForm("Please create account for: <b>" + name + "</b>, <b>" + lastname + "</b>,<b>" + email +"</b>", "beomir89@gmail.com");
         return "redirect:/contactForm";
     }
 
