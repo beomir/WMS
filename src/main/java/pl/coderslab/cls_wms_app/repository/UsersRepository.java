@@ -30,4 +30,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
     @Query(value="Select activate_token from users where username = ?1",nativeQuery = true)
     String FindUsernameByToken(String username);
+
+    @Query("Select u from Users u where u.email = ?1")
+    Users getByEmail(String email);
 }

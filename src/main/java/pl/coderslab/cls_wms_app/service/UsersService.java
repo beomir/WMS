@@ -33,4 +33,11 @@ public interface UsersService {
 
     String FindUsernameByToken(String username);
 
+    Users getByEmail(String email);
+
+    void setActivateUserAfterEmailValidation(String activateToken);
+
+    boolean resetPasswordStatus();
+
+    void resetPassword(Users users,String password2);
 }

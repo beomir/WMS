@@ -22,12 +22,12 @@ public class SendEmailService {
     }
 
 
-    public void sendEmailFromContactForm(String body, String email){
+    public void sendEmailFromContactForm(String body, String email,String subject){
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
             message.setFrom("clswarehousemanagementsystem@gmail.com");
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-            message.setSubject("Contact Form");
+            message.setSubject(subject);
             message.setText(body, "UTF-8", "html");
         } catch (MessagingException e) {
             e.printStackTrace();

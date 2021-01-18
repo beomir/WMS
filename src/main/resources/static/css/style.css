@@ -815,3 +815,37 @@ tr:hover > td{
 .d-none {
     display: none;
 }
+
+.hovery:hover {
+    color: blueviolet;
+}
+
+
+.btn {
+    color: #fff;
+    background: #00BCD4;
+    border: 1px solid #00BCD4;
+    outline: none;
+    cursor: pointer;
+    padding: .7em 1em;
+    margin-top: 2em;
+    -webkit-appearance: none;
+    width: 96%;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    font-size: 1em;
+    letter-spacing: 1px;
+}
+
+.btn:hover {
+    background: transparent;
+    color: #00BCD4;
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+}
