@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.service.CompanyService;
+import pl.coderslab.cls_wms_app.service.UsersService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,10 +22,12 @@ public class CompanyController {
 
 
     private final CompanyService companyService;
+    private final UsersService usersService;
 
     @Autowired
-    public CompanyController(CompanyService companyService) {
+    public CompanyController(CompanyService companyService, UsersService usersService) {
         this.companyService = companyService;
+        this.usersService = usersService;
     }
 
     @GetMapping("company")
@@ -33,6 +36,7 @@ public class CompanyController {
         model.addAttribute("companies", company);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "company";
     }
 
@@ -42,6 +46,7 @@ public class CompanyController {
         model.addAttribute("company", company);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "companyDeactivatedList";
     }
 
@@ -52,6 +57,7 @@ public class CompanyController {
         model.addAttribute("company", new Company());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "formCompany";
     }
 
@@ -77,7 +83,6 @@ public class CompanyController {
     public String updateCompany(@PathVariable Long id, Model model) {
         Company company = companyService.findById(id);
         model.addAttribute(company);
-//        model.addAttribute("localDateTime", LocalDateTime.now());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         return "formEditCompany";
@@ -86,7 +91,6 @@ public class CompanyController {
     @PostMapping("formEditCompany")
     public String edit(Company company) {
         companyService.add(company);
-//        usersDetailsService.add(usersDetails);
         return "redirect:/config/company";
     }
 

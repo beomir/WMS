@@ -8,6 +8,7 @@
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="'Hello: ' + ${#request.remoteUser} "></div><br/>
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span sec:authentication="principal.authorities"></span></div><br/>
 
+        <a th:href="@{/users/myProfile/{token}(token=${token})}"><div class="button">My Profile</div></a>
         <a th:href="@{/warehouse}"><div class="button">Choose Warehouse</div></a>
         <a th:href="@{/reception/vendor}" style="min-width: 100%">
             <ol class="button"><div style="color: white;font-weight: normal">Vendor list</div>

@@ -39,6 +39,7 @@ public class WarehouseController {
         model.addAttribute("companys", companys);
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("users", users);
+        usersService.loggedUserData(model);
         return "warehouse";
     }
 
@@ -58,6 +59,7 @@ public class WarehouseController {
         model.addAttribute("warehouses", warehouses);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "warehouseList";
     }
 
@@ -67,6 +69,7 @@ public class WarehouseController {
         model.addAttribute("warehouseDeactivated", warehouseDeactivated);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "warehouseDeactivatedList";
     }
 
@@ -77,6 +80,7 @@ public class WarehouseController {
         model.addAttribute("warehouse", new Warehouse());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "formWarehouseCreation";
     }
 
@@ -105,6 +109,7 @@ public class WarehouseController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "formEditWarehouse";
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 @Controller
 public class StockController {
     private final StockService stockService;
-    private final ShipmentService shipmentService;
+    private final UsersService usersService;
     private final ReceptionService receptionService;
     private final WarehouseService warehouseService;
     private final CompanyService companyService;
@@ -25,9 +25,9 @@ public class StockController {
 
 
     @Autowired
-    public StockController(StockService stockService, ShipmentService shipmentService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService) {
+    public StockController(StockService stockService, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService) {
         this.stockService = stockService;
-        this.shipmentService = shipmentService;
+        this.usersService = usersService;
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.companyService = companyService;
@@ -44,6 +44,7 @@ public class StockController {
         model.addAttribute("warehouse", warehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "stock";
     }
 
@@ -54,7 +55,7 @@ public class StockController {
         List<Status> statuses = statusService.getStatus();
         model.addAttribute("statuses", statuses);
         model.addAttribute(stock);
-        model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         return "formChangeStatus";
     }
 
@@ -70,7 +71,7 @@ public class StockController {
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         model.addAttribute("articles", articles);
         model.addAttribute(stock);
-        model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         return "formChangeArticleNumber";
     }
 
@@ -86,7 +87,7 @@ public class StockController {
     public String updateStockChangeQuantity(@PathVariable Long id, Model model) {
         Stock stock = stockService.findById(id);
         model.addAttribute(stock);
-        model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         return "formChangeQty";
     }
 
@@ -102,7 +103,7 @@ public class StockController {
     public String updateStockChangeQuality(@PathVariable Long id, Model model) {
         Stock stock = stockService.findById(id);
         model.addAttribute(stock);
-        model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         return "formChangeQuality";
     }
 
@@ -120,7 +121,7 @@ public class StockController {
         List<Unit> units = unitService.getUnit();
         model.addAttribute("units", units);
         model.addAttribute(stock);
-        model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         return "formChangeUnit";
     }
 
@@ -136,7 +137,7 @@ public class StockController {
     public String updateStockAddComment(@PathVariable Long id, Model model) {
         Stock stock = stockService.findById(id);
         model.addAttribute(stock);
-        model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         return "formAddComment";
     }
 
@@ -170,6 +171,8 @@ public class StockController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("companys", companys);
         model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
+
+        usersService.loggedUserData(model);
         return "formStock";
     }
 

@@ -24,9 +24,10 @@ public class ShipmentInCreationController {
     private final UnitService unitService;
     private final CustomerService customerService;
     private final ShipmentService shipmentService;
+    private final UsersService usersService;
 
     @Autowired
-    public ShipmentInCreationController(ShipmentInCreationService shipmentInCreationService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, ArticleService articleService, UnitService unitService, CustomerService customerService, ShipmentService shipmentService) {
+    public ShipmentInCreationController(ShipmentInCreationService shipmentInCreationService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, ArticleService articleService, UnitService unitService, CustomerService customerService, ShipmentService shipmentService, UsersService usersService) {
 
         this.shipMethodService = shipMethodService;
         this.warehouseService = warehouseService;
@@ -36,6 +37,7 @@ public class ShipmentInCreationController {
         this.unitService = unitService;
         this.customerService = customerService;
         this.shipmentService = shipmentService;
+        this.usersService = usersService;
     }
 
     @GetMapping("/shipmentInCreation")
@@ -62,7 +64,7 @@ public class ShipmentInCreationController {
 
         int checkHowManyNotFinishedShipments = shipmentService.checkHowManyNotfinishedShipments(warehouseId,SecurityUtils.username());
         model.addAttribute("cHMNFS", checkHowManyNotFinishedShipments);
-
+        usersService.loggedUserData(model);
         return "shipmentInCreation";
     }
 
@@ -97,7 +99,7 @@ public class ShipmentInCreationController {
 
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         return "formShipment";
     }
 
@@ -130,6 +132,7 @@ public class ShipmentInCreationController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
 
+        usersService.loggedUserData(model);
         return "editShipment";
     }
 

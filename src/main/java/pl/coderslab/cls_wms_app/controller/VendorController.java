@@ -6,11 +6,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Vendor;
 import pl.coderslab.cls_wms_app.service.CompanyService;
+import pl.coderslab.cls_wms_app.service.UsersService;
 import pl.coderslab.cls_wms_app.service.VendorService;
 
 import java.time.LocalDateTime;
@@ -22,11 +22,13 @@ public class VendorController {
 
     private final VendorService vendorService;
     private final CompanyService companyService;
+    private final UsersService usersService;
 
     @Autowired
-    public VendorController(VendorService vendorService, CompanyService companyService) {
+    public VendorController(VendorService vendorService, CompanyService companyService, UsersService usersService) {
         this.vendorService = vendorService;
         this.companyService = companyService;
+        this.usersService = usersService;
     }
 
     @GetMapping("/reception/vendor")
@@ -35,6 +37,7 @@ public class VendorController {
         model.addAttribute("vendor", vendor);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "vendor";
     }
 
@@ -44,6 +47,7 @@ public class VendorController {
         model.addAttribute("vendor", vendor);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "vendorDeactivatedList";
     }
 
@@ -56,6 +60,7 @@ public class VendorController {
         model.addAttribute("companies", companies);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "formVendor";
     }
 
@@ -86,13 +91,13 @@ public class VendorController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "formEditVendor";
     }
 
     @PostMapping("/reception/formEditVendor")
     public String editVendor(Vendor vendor) {
         vendorService.add(vendor);
-//        usersDetailsService.add(usersDetails);
         return "redirect:/reception/vendor";
     }
 

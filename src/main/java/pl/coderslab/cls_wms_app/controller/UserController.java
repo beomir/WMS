@@ -18,7 +18,6 @@ import pl.coderslab.cls_wms_app.service.CompanyService;
 import pl.coderslab.cls_wms_app.service.UsersRolesService;
 import pl.coderslab.cls_wms_app.service.UsersService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -30,21 +29,22 @@ public class UserController {
     private final UsersService usersService;
     private final CompanyService companyService;
     private final UsersRolesService usersRolesService;
+    private final SendEmailService sendEmailService;
 
 
 
     @Autowired
-    public UserController(UsersService usersService, CompanyService companyService, UsersRolesService usersRolesService) {
+    public UserController(UsersService usersService, CompanyService companyService, UsersRolesService usersRolesService, SendEmailService sendEmailService) {
         this.usersService = usersService;
         this.companyService = companyService;
         this.usersRolesService = usersRolesService;
-
+        this.sendEmailService = sendEmailService;
     }
 
     @GetMapping("formUserCreation")
     public String form(Model model) {
         List<Company> companies = companyService.getCompany();
-        model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         model.addAttribute("users", new Users());
         model.addAttribute("companies", companies);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -57,6 +57,7 @@ public class UserController {
 
     @PostMapping("formUserCreation")
     public String add(Users users) {
+        sendEmailService.sendEmailFromContactForm("<p><span style='font-size:18px;color:darkslategray'>Twoje konto zostało utworzone z poniższymi danymi:</span><br/><b> Nazwa użytkownika:</b>" + users.getUsername() + "<br/><br/> <b>Email:</b>" + users.getEmail() + "<br/><br/><b>Hasło:</b>" + users.getPassword() + "<br/><i>Zaleca się zmienić hasło po zalogowaniu wchodząc w opcje <b>my profile</b></i></p><br/><p><span style='font-size:18px;color:darkslategray'>Your account was created with below data:</span><br/><b> Username:</b>" + users.getUsername() + "<br/><br/> <b>Email:</b>" + users.getEmail() + "<br/><br/><b>Password:</b>" + users.getPassword() + "<br/><i>It is recommended to change the password after entering the options <b>my profile</b></i></p><br/><p><span style='font-size:18px;color:darkslategray'>Ваша учетная запись была создана с использованием следующих данных:</span><br/><b> Имя пользователя:</b>" + users.getUsername() + "<br/><br/> <b>Эл. адрес:</b>" + users.getEmail() + "<br/><br/><b>пароль:</b>" + users.getPassword() + "<br/><i>После ввода параметров рекомендуется сменить пароль <b>my profile</b></i></p><br/><p><span style='font-size:18px;color:darkslategray'>Votre compte a été créé avec les données ci-dessous:</span><br/><b> Nom d'utilisateur:</b>" + users.getUsername() + "<br/><br/> <b>Email:</b>" + users.getEmail() + "<br/><br/><b>Mot de passe:</b>" + users.getPassword() + "<br/><i>Il est recommandé de changer le mot de passe après avoir saisi les options <b>my profile</b></i></p>",users.getEmail());
         usersService.add(users);
         return "redirect:/config/userList";
     }
@@ -70,28 +71,28 @@ public class UserController {
         model.addAttribute("user", users);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "userList";
     }
 
-    @GetMapping("/formUserEdit/{id}")
-    public String updateUser(@PathVariable Long id, Model model) {
-        Users user = usersService.findById(id);
+    @GetMapping("/formUserEdit/{activateToken}")
+    public String updateUser(@PathVariable String activateToken, Model model) {
+        Users user = usersService.getUserByActivateToken(activateToken);
         List<Company> companies = companyService.getCompany();
         model.addAttribute(user);
         model.addAttribute("companies", companies);
-        model.addAttribute("localDateTime", LocalDateTime.now());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
 
         List<UsersRoles> usersRolesList = usersRolesService.getUsersRoles();
         model.addAttribute("users_Roles", usersRolesList);
+        usersService.loggedUserData(model);
         return "formUserEdit";
     }
 
     @PostMapping("formUserEdit")
     public String edit(Users users) {
         usersService.add(users);
-//        usersDetailsService.add(usersDetails);
         return "redirect:/config/userList";
     }
 
@@ -104,13 +105,15 @@ public class UserController {
         model.addAttribute("user", users);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+
+        usersService.loggedUserData(model);
         return "usersDeactivatedList";
     }
 
 
-    @GetMapping("/deleteUser/{id}")
-    public String deactivateUser(@PathVariable Long id) {
-        usersService.delete(id);
+    @GetMapping("/deleteUser/{activateToken}")
+    public String deactivateUser(@PathVariable String activateToken) {
+        usersService.delete(activateToken);
         return "redirect:/config/userList";
     }
 
@@ -120,11 +123,12 @@ public class UserController {
         return "redirect:/config/userList";
     }
 
-    @GetMapping("/activateUser/{id}")
-    public String activateUser(@PathVariable Long id) {
-        usersService.activate(id);
+    @GetMapping("/activateUser/{activateToken}")
+    public String activateUser(@PathVariable String activateToken) {
+        usersService.activate(activateToken);
         return "redirect:/config/usersDeactivatedList";
     }
+
 
 
 }

@@ -17,14 +17,14 @@ public class UsersFixture {
     private UsersRolesService usersRolesService;
 
     private List<Users> usersList = Arrays.asList(
-             new Users(null, "MagdaM", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"StrojemMagdaM@meta.ua",true,"Strojem","system"),
-             new Users(null, "PiotrP", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"buDUJEmPiotrP@wp.pl",true,"buDUJEm","system"),
-             new Users(null, "GawelG", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"buDUJEmGawelG@wp.pl",true,"buDUJEm","system"),
-             new Users(null, "RuslanR", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"RuslanR@BuldMate.com",true,"BuildMate","system"),
-             new Users(null, "FernandosF", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"FernandosF@FNdMdAL.pt",true,"Fábrica Nacional de Munições de Armas Ligeiras","system"),
-             new Users(null, "BenitoB", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"BenitoB@Eni.it",true,"Eni","system"),
-             new Users(null, "ZladkoZ", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"ZladkoZ@HS.sb",true,"Hesteel Serbia","system"),
-             new Users(null, "admin", "admin", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"beomir89@gmail.com",true,"all","system")
+             new Users(null, "MagdaM", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"StrojemMagdaM@meta.ua",true,"Strojem","system",null),
+             new Users(null, "PiotrP", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"buDUJEmPiotrP@wp.pl",true,"buDUJEm","system",null),
+             new Users(null, "GawelG", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"buDUJEmGawelG@wp.pl",true,"buDUJEm","system",null),
+             new Users(null, "RuslanR", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"RuslanR@BuldMate.com",true,"BuildMate","system",null),
+             new Users(null, "FernandosF", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"FernandosF@FNdMdAL.pt",true,"Fábrica Nacional de Munições de Armas Ligeiras","system",null),
+             new Users(null, "BenitoB", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"BenitoB@Eni.it",true,"Eni","system",null),
+             new Users(null, "ZladkoZ", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"ZladkoZ@HS.sb",true,"Hesteel Serbia","system",null),
+             new Users(null, "admin", "admin", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"beomir89@gmail.com",true,"all","system",null)
     );
 
     @Autowired

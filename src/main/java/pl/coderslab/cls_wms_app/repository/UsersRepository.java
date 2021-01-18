@@ -16,7 +16,6 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     @Query("Select u from Users u where u.active = false")
     List<Users> getDeactivatedUsers();
 
-
     boolean existsByUsername(String username);
     Users getByUsername(String username);
 
@@ -25,4 +24,10 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
     @Query("Select u from Users u where u.username = ?1")
     Users getUsersbyUsername(String username);
+
+    @Query("Select u from Users u where u.activateToken = ?1")
+    Users getUserByActivateToken(String activateToken);
+
+    @Query(value="Select activate_token from users where username = ?1",nativeQuery = true)
+    String FindUsernameByToken(String username);
 }

@@ -25,16 +25,11 @@ public class Users {
     private String password;
     private String email;
 
-//    private String role;
 
     private String created;
 
     private String last_update;
     private boolean active;
-
-//    @Transient
-//    @OneToOne(mappedBy = "users")
-//    private UsersDetails usersDetails;
 
     @ManyToOne
     private UsersRoles usersRoles;
@@ -42,7 +37,8 @@ public class Users {
     private String company;
     private String changeBy;
 
-    public Users(Long id, String username, String password, String created, String last_update, UsersRoles usersRoles,String email, boolean active, String company, String changeBy) {
+    private String activateToken;
+    public Users(Long id, String username, String password, String created, String last_update, UsersRoles usersRoles,String email, boolean active, String company, String changeBy,String activateToken) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -53,6 +49,7 @@ public class Users {
         this.active = active;
         this.company = company;
         this.changeBy = changeBy;
+        this.activateToken = activateToken;
     }
 
 

@@ -24,15 +24,17 @@ public class ReceptionController {
     private final VendorService vendorService;
     private final CompanyService companyService;
     private final UnitService unitService;
+    private final UsersService usersService;
 
     @Autowired
-    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService) {
+    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService) {
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.articleService = articleService;
         this.vendorService = vendorService;
         this.companyService = companyService;
         this.unitService = unitService;
+        this.usersService = usersService;
     }
 
 
@@ -44,6 +46,7 @@ public class ReceptionController {
         model.addAttribute("warehouse", warehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "reception";
     }
 
@@ -68,7 +71,7 @@ public class ReceptionController {
         model.addAttribute("openedReception", openedReceptions);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         return "formReception";
     }
 
@@ -120,6 +123,7 @@ public class ReceptionController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         return "editReceptionLine";
     }
 

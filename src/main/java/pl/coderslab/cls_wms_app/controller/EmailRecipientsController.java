@@ -13,8 +13,7 @@ import pl.coderslab.cls_wms_app.entity.EmailTypes;
 import pl.coderslab.cls_wms_app.service.CompanyService;
 import pl.coderslab.cls_wms_app.service.EmailRecipientsService;
 import pl.coderslab.cls_wms_app.service.EmailTypesService;
-
-import java.time.LocalDateTime;
+import pl.coderslab.cls_wms_app.service.UsersService;
 import java.util.List;
 
 @Controller
@@ -23,12 +22,14 @@ public class EmailRecipientsController {
     private final CompanyService companyService;
     private final EmailRecipientsService emailRecipientsService;
     private final EmailTypesService emailTypesService;
+    private final UsersService usersService;
 
     @Autowired
-    public EmailRecipientsController(CompanyService companyService, EmailRecipientsService emailRecipientsService, EmailTypesService emailTypesService) {
+    public EmailRecipientsController(CompanyService companyService, EmailRecipientsService emailRecipientsService, EmailTypesService emailTypesService, UsersService usersService) {
         this.companyService = companyService;
         this.emailRecipientsService = emailRecipientsService;
         this.emailTypesService = emailTypesService;
+        this.usersService = usersService;
     }
 
     @GetMapping("emailRecipients")
@@ -37,6 +38,7 @@ public class EmailRecipientsController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("emailRecipients", emailRecipients);
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "emailRecipients";
     }
 
@@ -47,6 +49,7 @@ public class EmailRecipientsController {
 
         List<EmailTypes> emailTypes = emailTypesService.getEmailTypes();
         model.addAttribute("emailTypes", emailTypes);
+        usersService.loggedUserData(model);
 
         return "emailRecipientsDeactivatedList";
     }
@@ -57,9 +60,9 @@ public class EmailRecipientsController {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         List<EmailTypes> emailTypes = emailTypesService.getEmailTypes();
         model.addAttribute("emailTypes", emailTypes);
-        model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("emailRecipients", new EmailRecipients());
         model.addAttribute("companies", companies);
+        usersService.loggedUserData(model);
         return "formEmailRecipients";
     }
 
@@ -89,7 +92,7 @@ public class EmailRecipientsController {
         model.addAttribute("emailTypes", emailTypes);
         model.addAttribute(emailRecipients);
         model.addAttribute("companies", companies);
-        model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         return "editEmailRecipients";
     }
 

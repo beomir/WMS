@@ -12,6 +12,7 @@ import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Unit;
 import pl.coderslab.cls_wms_app.service.CompanyService;
 import pl.coderslab.cls_wms_app.service.UnitService;
+import pl.coderslab.cls_wms_app.service.UsersService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,12 +23,14 @@ public class UnitController {
 
     private final UnitService unitService;
     private final CompanyService companyService;
+    private final UsersService usersService;
 
 
     @Autowired
-    public UnitController(UnitService unitService, CompanyService companyService) {
+    public UnitController(UnitService unitService, CompanyService companyService, UsersService usersService) {
         this.unitService = unitService;
         this.companyService = companyService;
+        this.usersService = usersService;
     }
 
     @GetMapping("unit")
@@ -36,6 +39,8 @@ public class UnitController {
         model.addAttribute("units", units);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+
+        usersService.loggedUserData(model);
         return "unit";
     }
 
@@ -45,6 +50,8 @@ public class UnitController {
         model.addAttribute("units", unitList);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+
+        usersService.loggedUserData(model);
         return "unitDeactivatedList";
     }
 
@@ -55,6 +62,8 @@ public class UnitController {
         model.addAttribute("unit", new Unit());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+
+        usersService.loggedUserData(model);
         return "formUnitCreation";
     }
 
@@ -84,6 +93,8 @@ public class UnitController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+
+        usersService.loggedUserData(model);
         return "formEditUnit";
     }
 

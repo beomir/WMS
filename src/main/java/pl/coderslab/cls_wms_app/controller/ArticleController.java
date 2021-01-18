@@ -8,6 +8,7 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.ArticleService;
 import pl.coderslab.cls_wms_app.service.CompanyService;
+import pl.coderslab.cls_wms_app.service.UsersService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,11 +18,13 @@ public class ArticleController {
 
     private final ArticleService articleService;
     private final CompanyService companyService;
+    private final UsersService usersService;
 
     @Autowired
-    public ArticleController(ArticleService articleService, CompanyService companyService) {
+    public ArticleController(ArticleService articleService, CompanyService companyService, UsersService usersService) {
         this.articleService = articleService;
         this.companyService = companyService;
+        this.usersService = usersService;
     }
 
     @GetMapping("article")
@@ -30,6 +33,7 @@ public class ArticleController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("article", article);
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "article";
     }
 
@@ -47,6 +51,7 @@ public class ArticleController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("article", new Article());
         model.addAttribute("companies", companies);
+        usersService.loggedUserData(model);
         return "formArticle";
     }
 
@@ -75,6 +80,7 @@ public class ArticleController {
         model.addAttribute(article);
         model.addAttribute("companies", companies);
         model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
         return "formEditArticle";
     }
 

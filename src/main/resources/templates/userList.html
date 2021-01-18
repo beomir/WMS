@@ -44,8 +44,8 @@
 							<ol><div th:utext="${users.username}"></div>
 								<li>
 									<ul>
-										<li><a th:href="@{/config/deleteUser/{id}(id=${users.id})}">DEACTIVATE</a></li>
-										<li><a th:href="@{/config/formUserEdit/{id}(id=${users.id})}">EDIT</a></li>
+										<li><a th:href="@{/config/deleteUser/{activateToken}(activateToken=${users.activateToken})}">DEACTIVATE</a></li>
+										<li><a th:href="@{/config/formUserEdit/{activateToken}(activateToken=${users.activateToken})}">EDIT</a></li>
 									</ul>
 								</li>
 							</ol>
@@ -69,24 +69,5 @@
 
 	<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
-	<script>
-	superplaceholder({
-			el: input1,
-			sentences: [ 'Write your Username', 'For example:', 'SuperUserStrojem','or', 'SuperUserbUDUJem' ],
-			options: {
-				loop: true,
-				startOnFocus: false
-			}
-		})
-		superplaceholder({
-			el: input2,
-			sentences: [ 'Write your Password', 'For example:', 'SuperUserStrojem','**', 'SuperUserbUDUJem' ],
-			options: {
-				loop: true,
-				startOnFocus: false 
-			}
-		})
-	</script>
-
 </body>
 </html>

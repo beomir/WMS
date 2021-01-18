@@ -11,6 +11,7 @@ import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Customer;
 import pl.coderslab.cls_wms_app.service.CompanyService;
 import pl.coderslab.cls_wms_app.service.CustomerService;
+import pl.coderslab.cls_wms_app.service.UsersService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,12 +21,13 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final CompanyService companyService;
+    private final UsersService usersService;
 
     @Autowired
-    public CustomerController(CustomerService customerService, CompanyService companyService) {
+    public CustomerController(CustomerService customerService, CompanyService companyService, UsersService usersService) {
         this.customerService = customerService;
-
         this.companyService = companyService;
+        this.usersService = usersService;
     }
 
     @GetMapping("/shipment/customer")
@@ -34,6 +36,7 @@ public class CustomerController {
         model.addAttribute("customers", customers);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "customer";
     }
 
@@ -43,6 +46,7 @@ public class CustomerController {
         model.addAttribute("customers", customersList);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "customerDeactivatedList";
     }
 
@@ -55,6 +59,7 @@ public class CustomerController {
         model.addAttribute("companies", companies);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "formCustomer";
     }
 
@@ -86,13 +91,13 @@ public class CustomerController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
         return "formEditCustomer";
     }
 
     @PostMapping("/shipment/formEditCustomer")
     public String edit(Customer customer) {
         customerService.add(customer);
-//        usersDetailsService.add(usersDetails);
         return "redirect:/shipment/customer";
     }
 

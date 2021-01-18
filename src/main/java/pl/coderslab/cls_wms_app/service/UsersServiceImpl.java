@@ -4,6 +4,7 @@ package pl.coderslab.cls_wms_app.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.repository.UsersRepository;
@@ -29,11 +30,13 @@ public class UsersServiceImpl implements UsersService{
     @Override
     public void add(Users users) {
         users.setPassword(passwordEncoder.encode(users.getPassword()));
+        users.setActivateToken(SecurityUtils.uuidToken());
         usersRepository.save(users);
     }
 
     @Override
     public void addWithoutCodePass(Users users) {
+        users.setActivateToken(SecurityUtils.uuidToken());
         usersRepository.save(users);
     }
 
@@ -59,10 +62,15 @@ public class UsersServiceImpl implements UsersService{
         return usersRepository.getOne(id);
     }
 
+    @Override
+    public Users getUserByActivateToken(String activateToken) {
+        return usersRepository.getUserByActivateToken(activateToken);
+    }
+
 
     @Override
-    public void delete(Long id) {
-        Users users = usersRepository.getOne(id);
+    public void delete(String activateToken) {
+        Users users = usersRepository.getUserByActivateToken(activateToken);
         users.setActive(false);
         users.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         users.setChangeBy(SecurityUtils.usernameForActivations());
@@ -75,13 +83,24 @@ public class UsersServiceImpl implements UsersService{
         }
 
     @Override
-    public void activate(Long id) {
-        Users users = usersRepository.getOne(id);
+    public void activate(String activateToken) {
+        Users users = usersRepository.getUserByActivateToken(activateToken);
         users.setActive(true);
         users.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         users.setChangeBy(SecurityUtils.usernameForActivations());
         usersRepository.save(users);
     }
 
+    @Override
+    public void loggedUserData(Model model) {
+        String token = FindUsernameByToken(SecurityUtils.username());
+        model.addAttribute("token", token);
+        model.addAttribute("localDateTime", LocalDateTime.now());
+    }
+
+    @Override
+    public String FindUsernameByToken(String username) {
+        return usersRepository.FindUsernameByToken(username);
+    }
 
 }

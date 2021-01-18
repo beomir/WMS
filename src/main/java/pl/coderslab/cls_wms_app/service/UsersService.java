@@ -1,5 +1,6 @@
 package pl.coderslab.cls_wms_app.service;
 
+import org.springframework.ui.Model;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.entity.UsersRoles;
 
@@ -11,7 +12,6 @@ public interface UsersService {
 
     void addWithoutCodePass(Users users);
 
-//    void edit(Users users);
 
     List<Users> getUsers();
 
@@ -19,15 +19,18 @@ public interface UsersService {
 
     Users findById(Long id);
 
+    Users getUserByActivateToken(String activateToken);
+
     List<Users> getUser(Long id);
 
-    void delete(Long id);
+    void delete(String activateToken);
 
     void remove(Long id);
 
-    void activate(Long id);
+    void activate(String activateToken);
 
-    //To think about solution for this
-//    void updateRole(Users users);
+    void loggedUserData(Model model);
+
+    String FindUsernameByToken(String username);
 
 }

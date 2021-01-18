@@ -13,15 +13,11 @@ import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.ShipMethod;
 import pl.coderslab.cls_wms_app.entity.Shipment;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.CompanyService;
-import pl.coderslab.cls_wms_app.service.ShipMethodService;
-import pl.coderslab.cls_wms_app.service.ShipmentService;
-import pl.coderslab.cls_wms_app.service.WarehouseService;
+import pl.coderslab.cls_wms_app.service.*;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/shipment")
@@ -31,13 +27,15 @@ public class ShipmentController {
     private final ShipMethodService shipMethodService;
     private final WarehouseService warehouseService;
     private final CompanyService companyService;
+    private final UsersService usersService;
 
     @Autowired
-    public ShipmentController(ShipmentService shipmentService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService) {
+    public ShipmentController(ShipmentService shipmentService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, UsersService usersService) {
         this.shipmentService = shipmentService;
         this.shipMethodService = shipMethodService;
         this.warehouseService = warehouseService;
         this.companyService = companyService;
+        this.usersService = usersService;
     }
 
     @GetMapping("/shipment")
@@ -50,6 +48,7 @@ public class ShipmentController {
         model.addAttribute("warehouse", warehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
 
 //        Map<String,Integer> surveyMap =  shipmentService.surveyMap(warehouseId,SecurityUtils.username());
 //        model.addAttribute("surveyMap",surveyMap);

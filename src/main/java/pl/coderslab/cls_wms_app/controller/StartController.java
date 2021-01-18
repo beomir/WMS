@@ -4,23 +4,27 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
+import pl.coderslab.cls_wms_app.entity.Users;
+import pl.coderslab.cls_wms_app.service.UsersService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("")
 public class StartController {
 
     private final SendEmailService sendEmailService;
+    private final UsersService usersService;
 
-    public StartController(SendEmailService sendEmailService) {
+    public StartController(SendEmailService sendEmailService, UsersService usersService) {
         this.sendEmailService = sendEmailService;
+        this.usersService = usersService;
     }
 
 
@@ -56,4 +60,24 @@ public class StartController {
         return "contactForm";
     }
 
+    @GetMapping("/users/myProfile/{token}")
+    public String userPanel(@PathVariable String token, Model model) {
+        Users users = usersService.getUserByActivateToken(token);
+        model.addAttribute(users);
+
+        model.addAttribute("localDateTime", LocalDateTime.now());
+        return "myProfile";
+    }
+
+    @PostMapping("/users/myProfile")
+    public String usersDataChanges(Users users,String email) {
+            sendEmailService.sendEmailFromContactForm("<p>Twoje dane po dokonanych zmianach:<br/><br/><b> Nazwa użytkownika:</b>" + users.getUsername() + "<br/><br/> <b>Email:</b>" + users.getEmail() + "<br/><br/><b>Hasło:</b>" + users.getPassword() + "</p><p>Your data after changes:<br/><br/><b> Username:</b>" + users.getUsername() + "<br/><br/> <b>Email:</b>" + users.getEmail() + "<br/><br/><b>Password:</b>" + users.getPassword() + "</p><p>Ваши данные после изменений:<br/><b> Имя пользователя:</b>" + users.getUsername() + "<br/><br/> <b>Эл. адрес:</b>" + users.getEmail() + "<br/><br/><b>пароль:</b>" + users.getPassword() + "</p><p>Vos données après modifications:<br/><b> Nom d'utilisateur:</b>" + users.getUsername() + "<br/><br/> <b>Email:</b>" + users.getEmail() + "<br/><br/><b>Mot de passe:</b>" + users.getPassword() + "</p>",email);
+            usersService.add(users);
+            return "redirect:/users/data-changed";
+    }
+
+    @RequestMapping("/users/data-changed")
+    public String data_changed(){
+        return "data-changed";
+    }
 }
