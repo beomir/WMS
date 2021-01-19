@@ -24,7 +24,11 @@ public class UsersFixture {
              new Users(null, "FernandosF", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"FernandosF@FNdMdAL.pt",true,"Fábrica Nacional de Munições de Armas Ligeiras","system",null),
              new Users(null, "BenitoB", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"BenitoB@Eni.it",true,"Eni","system",null),
              new Users(null, "ZladkoZ", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"ZladkoZ@HS.sb",true,"Hesteel Serbia","system",null),
-             new Users(null, "admin", "admin", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"beomir89@gmail.com",true,"all","system",null)
+             new Users(null, "admin", "admin", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"beomir89@gmail.com",true,"all","system",null),
+             new Users(null, "Osakar", "Capy", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"3osakar@gmail.com",true,"Strojem","system",null),
+             new Users(null, "OsakarAdmin", "Capy", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"3osakar@gmail.com",true,"Strojem","system",null),
+            new Users(null, "Palpatine", "Arek", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"arek6891@interia.pl",true,"Strojem","system",null),
+            new Users(null, "PalpatineAdmin", "Arek", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"arek6891@interia.pl",true,"Strojem","system",null)
     );
 
     @Autowired
@@ -49,6 +53,10 @@ public class UsersFixture {
         Users users6 = usersList.get(5);
         Users users7 = usersList.get(6);
         Users users8 = usersList.get(7);
+        Users users9 = usersList.get(8);
+        Users users10 = usersList.get(9);
+        Users users11 = usersList.get(10);
+        Users users12 = usersList.get(11);
 //
         users1.setUsersRoles(usersRolesList.get(0));
         users2.setUsersRoles(usersRolesList.get(1));
@@ -58,6 +66,10 @@ public class UsersFixture {
         users6.setUsersRoles(usersRolesList.get(0));
         users7.setUsersRoles(usersRolesList.get(2));
         users8.setUsersRoles(usersRolesList.get(4));
+        users9.setUsersRoles(usersRolesList.get(0));
+        users10.setUsersRoles(usersRolesList.get(4));
+        users11.setUsersRoles(usersRolesList.get(0));
+        users12.setUsersRoles(usersRolesList.get(4));
 //
         usersService.addWithoutCodePass(users1);
         usersService.addWithoutCodePass(users2);
@@ -67,5 +79,9 @@ public class UsersFixture {
         usersService.addWithoutCodePass(users6);
         usersService.addWithoutCodePass(users7);
         usersService.addWithoutCodePass(users8);
+        usersService.addWithoutCodePass(users9);
+        usersService.addWithoutCodePass(users10);
+        usersService.addWithoutCodePass(users11);
+        usersService.addWithoutCodePass(users12);
     }
 }
