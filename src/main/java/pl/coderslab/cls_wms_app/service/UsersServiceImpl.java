@@ -119,6 +119,16 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public void blockAccountAfterUnforeseenRestartPass(String activateToken) {
+        Users user = usersRepository.getUserByActivateToken(activateToken);
+        user.setActive(false);
+        user.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        user.setChangeBy("Deactivated by User");
+        user.setActivateToken(SecurityUtils.uuidToken());
+        usersRepository.save(user);
+    }
+
+    @Override
     public boolean resetPasswordStatus() {
         return resetPassword;
     }

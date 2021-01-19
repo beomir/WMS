@@ -29,27 +29,31 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px">
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
-				<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Articles for company: ' + ${companys.name}"></div><br/><br/>
+				<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.articlesFC} + ': ' + ${companys.name}"></div>
+				<a th:href="@{/formArticle}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.addArticle}"></div></a>
+				<br/><br/>
 				</span>
 				<span sec:authorize="hasRole('ROLE_ADMIN')">
-				<div  style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="Articles"></div><br/><br/>
+				<div  style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.articles}"></div>
+					<a th:href="@{/formArticle}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.addArticle}"></div></a>
+					<br/><br/>
 					</span>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
-						<th class="tables">Article number</th>
-						<th class="tables">Article description</th>
-						<th class="tables">Company</th>
-						<th class="tables">Created</th>
-						<th class="tables">Last Update</th>
-						<th class="tables">Changed by</th>
+						<th  th:text="#{app.articleNumber}" style="font-weight: bold" class="tables">Article number</th>
+						<th  th:text="#{app.articleDescription}" style="font-weight: bold" class="tables">Article description</th>
+						<th th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
+						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
+						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="article: ${article}">
 						<td class="tables" style="padding-bottom: 2px">
 							<ol><div th:text="${article.article_number}"></div>
 								<li>
 									<ul>
-										<li><a th:href="@{/deleteArticle/{id}(id=${article.id})}">DEACTIVATE</a></li>
-										<li><a th:href="@{/formEditArticle/{id}(id=${article.id})}">EDIT</a></li>
+										<li><a th:text="#{app.deactivate}" th:href="@{/deleteArticle/{id}(id=${article.id})}">DEACTIVATE</a></li>
+										<li><a th:text="#{app.edit}" th:href="@{/formEditArticle/{id}(id=${article.id})}">EDIT</a></li>
 									</ul>
 								</li>
 							</ol>
@@ -61,6 +65,8 @@
 						<td class="tables" th:text="${article.changeBy}"></td>
 				    </tr>
 				</table>
+
+				<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/config/articleDeactivatedList}"><div th:text="#{app.deactivatedList}" class="buttonik" style="float: right;max-width: 20%;">Deactivated List</div></a>
 			</div>
 
 			<div th:include="fragments/footer :: footer"></div>

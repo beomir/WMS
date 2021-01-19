@@ -27,21 +27,21 @@
 	<div id="content" class="mainw3-agileinfo">
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px">
-				<div style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Deactivated Units'"></div><br/><br/>
+				<div style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.deactivateUnit}"></div><br/><br/>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
-						<th class="tables">Unit name</th>
-						<th class="tables">Description</th>
-						<th class="tables">Created</th>
-						<th class="tables">Last update</th>
-						<th class="tables">Changed by</th>
+						<th th:text="#{app.unitName}" style="font-weight: bold" class="tables">Unit name</th>
+						<th th:text="#{app.description}" style="font-weight: bold" class="tables">Description</th>
+						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
+						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="units: ${units}">
 						<td class="tables" style="padding-bottom: 2px">
 							<ol><div th:text="${units.name}"> </div>
 								<li>
 									<ul>
-										<li><a th:href="@{/config/activateUnit/{id}(id=${units.id})}">ACTIVATE</a></li>
+										<li><a th:text="#{app.activate}" th:href="@{/config/activateUnit/{id}(id=${units.id})}">ACTIVATE</a></li>
 									</ul>
 								</li>
 							</ol>
@@ -52,6 +52,7 @@
 						<td class="tables" th:text="${units.changeBy}"></td>
 				    </tr>
 				</table>
+				<a th:href="@{/config/unit}"><div th:text="#{app.activatedList}" class="buttonik" style="float: right;max-width: 20%;">Activated List</div></a>
 			</div>
 
 			<div th:include="fragments/footer :: footer"></div>
@@ -63,24 +64,6 @@
 
 	<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
-	<script>
-	superplaceholder({
-			el: input1,
-			sentences: [ 'Write your Username', 'For example:', 'SuperUserStrojem','or', 'SuperUserbUDUJem' ],
-			options: {
-				loop: true,
-				startOnFocus: false
-			}
-		})
-		superplaceholder({
-			el: input2,
-			sentences: [ 'Write your Password', 'For example:', 'SuperUserStrojem','**', 'SuperUserbUDUJem' ],
-			options: {
-				loop: true,
-				startOnFocus: false 
-			}
-		})
-	</script>
 
 </body>
 </html>

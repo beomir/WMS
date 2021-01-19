@@ -27,26 +27,26 @@
 	<div id="content" class="mainw3-agileinfo">
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px">
-				<div style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Deactivated warehouses'"></div><br/><br/>
+				<div style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.deactivateWarehouse}"></div><br/><br/>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
-						<th class="tables">Warehouse name</th>
-						<th class="tables">City</th>
-						<th class="tables">Street</th>
-						<th class="tables">Post Code</th>
-						<th class="tables">Country</th>
-						<th class="tables">European Union</th>
-						<th class="tables">Steward</th>
-						<th class="tables">Created</th>
-						<th class="tables">Last Update</th>
-						<th class="tables">Changed by</th>
+						<th th:text="#{app.warehouseName}" style="font-weight: bold" class="tables">Warehouse name</th>
+						<th th:text="#{app.city}" style="font-weight: bold" class="tables">City</th>
+						<th th:text="#{app.street}" style="font-weight: bold" class="tables">Street</th>
+						<th th:text="#{app.postCode}" style="font-weight: bold" class="tables">Post Code</th>
+						<th th:text="#{app.country}" style="font-weight: bold" class="tables">Country</th>
+						<th th:text="#{app.europenUnion}" style="font-weight: bold" class="tables">Europen Union</th>
+						<th th:text="#{app.steward}" style="font-weight: bold" class="tables">Steward</th>
+						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
+						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="warehouses: ${warehouseDeactivated}">
 						<td class="tables" style="padding-bottom: 2px">
 							<ol><div th:text="${warehouses.name}"></div>
 								<li>
 									<ul>
-										<li><a th:href="@{/config/activateWarehouse/{id}(id=${warehouses.id})}">ACTIVATE</a></li>
+										<li><a th:text="#{app.activate}" th:href="@{/config/activateWarehouse/{id}(id=${warehouses.id})}">ACTIVATE</a></li>
 									</ul>
 								</li>
 							</ol>
@@ -65,6 +65,7 @@
 						</td>
 				    </tr>
 				</table>
+				<a th:href="@{/config/warehouseList}"><div th:text="#{app.activatedList}" class="buttonik" style="float: right;max-width: 20%;">Activated List</div></a>
 			</div>
 
 			<div th:include="fragments/footer :: footer"></div>

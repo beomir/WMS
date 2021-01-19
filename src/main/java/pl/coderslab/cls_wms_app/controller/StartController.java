@@ -22,6 +22,7 @@ public class StartController {
     private final UsersService usersService;
     private boolean userExists;
     private boolean activateTokenActive;
+    private boolean unforeseenRestartPass;
 
     public StartController(SendEmailService sendEmailService, UsersService usersService) {
         this.sendEmailService = sendEmailService;
@@ -91,7 +92,7 @@ public class StartController {
     @PostMapping("/blog/resetPassword")
     public String resetPasswordPost(String email) {
         try {
-            sendEmailService.sendEmailFromContactForm("<p>W celu zresetowania hasla kliknij: <a href='https://cls-wms.herokuapp.com/blog/passwordRestarted/" + usersService.getByEmail(email).getActivateToken() + "'>Tutaj</a></p>", email,"Reset Password");
+            sendEmailService.sendEmailFromContactForm("<p>W celu zresetowania hasla kliknij: <a href='https://cls-wms.herokuapp.com/blog/passwordRestarted/" + usersService.getByEmail(email).getActivateToken() + "'>Tutaj</a></p><br/><p>To reset your password, click: <a href='https://cls-wms.herokuapp.com/blog/passwordRestarted/" + usersService.getByEmail(email).getActivateToken() + "'>Here</a></p><br/><p>Чтобы сбросить пароль, нажмите: <a href='https://cls-wms.herokuapp.com/blog/passwordRestarted/" + usersService.getByEmail(email).getActivateToken() + "'>Вот</a></p><br/><p>Pour réinitialiser votre mot de passe, cliquez sur: <a href='https://cls-wms.herokuapp.com/blog/passwordRestarted/" + usersService.getByEmail(email).getActivateToken() + "'>Ici</a></p>", email,"Reset Password");
             userExists = true;
             return "redirect:/blog/resetPassword-confirmation";
         }
@@ -128,7 +129,7 @@ public class StartController {
     public String passwordRestartedPost(Users users,String password2) {
         usersService.resetPassword(users, password2);
         if(usersService.resetPasswordStatus()) {
-            sendEmailService.sendEmailFromContactForm( "<p>Twoje nowe hasło to: <b>" + password2 + "</b>.<br/><br/>Jeżeli nie resetowałeś hasła kliknij: <a href='http://localhost:8080/blockMyAccount/" + usersService.getByEmail(users.getEmail()).getActivateToken() + "'>Tutaj</a></p>",users.getEmail(), "Nowe Hasło");
+            sendEmailService.sendEmailFromContactForm( "<p>Twoje nowe hasło to: <b>" + password2 + "</b>.<br/><br/>Jeżeli nie resetowałeś hasła kliknij: <a href='https://cls-wms.herokuapp.com/blog/blockMyAccount/" + usersService.getByEmail(users.getEmail()).getActivateToken() + "'>Tutaj</a></p><br/><p>Your new password is: <b>" + password2 + "</b>.<br/><br/>If you didnt restart your password click here: <a href='https://cls-wms.herokuapp.com/blog/blockMyAccount/" + usersService.getByEmail(users.getEmail()).getActivateToken() + "'>Here</a><br/><p>Your new password is: <b>" + password2 + "</b>.<br/><br/>Si vous n'avez pas redémarré votre mot de passe, cliquez ici: <a href='https://cls-wms.herokuapp.com/blog/blockMyAccount/" + usersService.getByEmail(users.getEmail()).getActivateToken() + "'>Ici</a><br/><p>Votre nouveau mot de passe est: <b>" + password2 + "</b>.<br/><br/>Если вы не перезапускали пароль, нажмите здесь: <a href='https://cls-wms.herokuapp.com/blog/blockMyAccount/" + usersService.getByEmail(users.getEmail()).getActivateToken() + "'>Вот</a><br/><p>Ваш новый пароль:: <b>" + password2 + "</b>.</p>",users.getEmail(), "New Password");
         }
         return "redirect:/blog/passwordRestartedStep2";
     }
@@ -137,5 +138,22 @@ public class StartController {
     public String passwordRestartedFinish(Model model){
         model.addAttribute("resetPassword", usersService.resetPasswordStatus());
         return "passwordRestartedStep2";
+    }
+
+    @GetMapping("/blog/blockMyAccount/{activateToken}")
+    public String blockAccountAfterUnforeseenRestartPass(@PathVariable String activateToken, Model model){
+        try {
+            Users user = usersService.getUserByActivateToken(activateToken);
+            model.addAttribute("user", user);
+            usersService.blockAccountAfterUnforeseenRestartPass(activateToken);
+            unforeseenRestartPass = true;
+            model.addAttribute("unforeseenRestartPass", unforeseenRestartPass);
+            return "blockMyAccount";
+        }
+        catch(NullPointerException e) {
+            unforeseenRestartPass = false;
+            model.addAttribute("unforeseenRestartPass", unforeseenRestartPass);
+            return "blockMyAccount";
+        }
     }
 }

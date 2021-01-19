@@ -4,30 +4,29 @@
 <div th:fragment="stockNavigation">
     <div style="float: left" class="login-form">
 
-        <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="'Hello: '  + ${#request.remoteUser}"></div><br/>
+        <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.hello} + ': ' + ${#request.remoteUser} "></div><br/>
         <div sec:authorize="!hasRole('ROLE_ADMIN')">
-        <div th:each="companys: ${companys}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="'Company: ' + ${companys.name}"></div><br/>
+            <div th:each="companys: ${companys}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': ' + ${companys.name}"></div><br/>
         </div>
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span sec:authentication="principal.authorities"></span></div><br/>
-        <a th:href="@{/users/myProfile/{token}(token=${token})}"><div class="button">My Profile</div></a>
-        <a th:href="@{/stock}"><div class="button">Check Stock</div></a>
-        <a th:href="@{/reception/formReception}"><div class="button">Declare Reception</div></a>
-        <a th:href="@{/reception/reception}"><div class="button">Check Receptions</div></a>
-        <a th:href="@{/shipment/formShipment}"><div class="button">Declare Shipment</div></a>
+        <a th:href="@{/users/myProfile/{token}(token=${token})}"><div th:text="#{app.myProfile}" class="button">My Profile</div></a>
+        <a th:href="@{/stock}" ><div th:text="#{app.checkStock}" class="button">Check Stock</div></a>
+        <a th:href="@{/reception/formReception}"><div th:text="#{app.declareReception}" class="button">Declare Reception</div></a>
+        <a th:href="@{/reception/reception}"><div th:text="#{app.checkReceptions}" class="button">Check Receptions</div></a>
+        <a th:href="@{/shipment/formShipment}"><div th:text="#{app.declareShipment}" class="button">Declare Shipment</div></a>
         <a th:href="@{/shipment/shipment}">
-            <ol class="button"><div style="color: white;font-weight: normal">Check Shipments</div >
+            <ol class="button"><div th:text="#{app.checkShipment}" style="color: white;font-weight: normal">Check Shipments</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:href="@{/shipment/shipmentInCreation}">Check Shipments in Creation</a>
+                            <a th:text="#{app.checkShipmentInCreation}" th:href="@{/shipment/shipmentInCreation}">Check Shipments in Creation</a>
                         </li>
                     </ul>
                 </li>
             </ol>
-<!--            <div class="button">Check Shipments</div>-->
         </a>
-        <a th:href="@{/warehouse}"><div class="button">Choose Warehouse</div></a>
-        <a th:href="@{/logout}"><div class="button">Logout</div></a>
+        <a th:href="@{/warehouse}"><div th:text="#{app.chWarehouse}" class="button">Choose Warehouse</div></a>
+        <a  th:href="@{/logout}"><div th:text="#{app.logout}" class="button">Logout</div></a>
     </div>
 </div>
 </body>

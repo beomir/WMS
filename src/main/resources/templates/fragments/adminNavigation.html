@@ -5,102 +5,102 @@
 <div th:fragment="adminNavigation">
     <div style="float: left" class="login-form">
 
-        <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="'Hello: ' + ${#request.remoteUser} "></div><br/>
+        <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.hello} + ': ' + ${#request.remoteUser} "></div><br/>
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span sec:authentication="principal.authorities"></span></div><br/>
 
-        <a th:href="@{/users/myProfile/{token}(token=${token})}"><div class="button">My Profile</div></a>
-        <a th:href="@{/warehouse}"><div class="button">Choose Warehouse</div></a>
+        <a th:href="@{/users/myProfile/{token}(token=${token})}"><div th:text="#{app.myProfile}" class="button">My Profile</div></a>
+        <a th:href="@{/warehouse}"><div th:text="#{app.chWarehouse}" class="button">Choose Warehouse</div></a>
         <a th:href="@{/reception/vendor}" style="min-width: 100%">
-            <ol class="button"><div style="color: white;font-weight: normal">Vendor list</div>
+            <ol class="button"><div th:text="#{app.vendorList}" style="color: white;font-weight: normal">Vendor list</div>
             <li style="min-width: 100%;">
                 <ul>
                     <li>
-                        <a th:href="@{/reception/formVendor}">Create New Vendor</a>
-                    <li><a th:href="@{/config/vendorDeactivatedList}">Deactivated vendor list</a></li>
+                        <a th:text="#{app.addVendor}" th:href="@{/reception/formVendor}">Create New Vendor</a>
+                    <li><a th:text="#{app.deactivateVendor}" th:href="@{/config/vendorDeactivatedList}">Deactivated vendor list</a></li>
                     </li>
                 </ul>
             </li>
         </ol>
         </a>
         <a th:href="@{/shipment/customer}" style="min-width: 100%">
-            <ol class="button"><div style="color: white;font-weight: normal">Customer list</div >
+            <ol class="button"><div th:text="#{app.customerList}" style="color: white;font-weight: normal">Customer list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:href="@{/shipment/formCustomer}">Create New Customer</a>
-                        <li><a th:href="@{/config/customerDeactivatedList}">Deactivated customer list</a></li>
+                            <a th:text="#{app.addCustomer}" th:href="@{/shipment/formCustomer}">Create New Customer</a>
+                        <li><a th:text="#{app.deactivateCustomer}" th:href="@{/config/customerDeactivatedList}">Deactivated customer list</a></li>
                         </li>
                     </ul>
                 </li>
             </ol>
         </a>
         <a th:href="@{/article}" style="min-width: 100%">
-            <ol class="button"><div style="color: white;font-weight: normal">Article list</div >
+            <ol class="button"><div th:text="#{app.articleList}" style="color: white;font-weight: normal">Article list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:href="@{formArticle}">Create New Article</a>
-                        <li><a th:href="@{/config/articleDeactivatedList}">Deactivated article list</a></li>
+                            <a th:text="#{app.addArticle}" th:href="@{formArticle}">Create New Article</a>
+                        <li><a th:text="#{app.deactivateArticle}" th:href="@{/config/articleDeactivatedList}">Deactivated article list</a></li>
                         </li>
                     </ul>
                 </li>
             </ol>
         </a>
         <a th:href="@{/config/unit}" style="min-width: 100%">
-            <ol class="button"><div style="color: white;font-weight: normal">Units list</div >
+            <ol class="button"><div th:text="#{app.unitsList}" style="color: white;font-weight: normal">Units list</div >
                 <li style="min-width: 100%;">
                     <ul>
-                        <li><a th:href="@{/config/formUnitCreation}">Create New Unit</a></li>
-                        <li><a th:href="@{/config/unitDeactivatedList}">Deactivated units list</a></li>
+                        <li><a th:text="#{app.addUnit}" th:href="@{/config/formUnitCreation}">Create New Unit</a></li>
+                        <li><a th:text="#{app.deactivateUnit}" th:href="@{/config/unitDeactivatedList}">Deactivated units list</a></li>
                     </ul>
                 </li>
             </ol>
         </a>
         <a th:href="@{/config/company}" style="min-width: 100%">
-            <ol class="button"><div style="color: white;font-weight: normal">Companies list</div >
+            <ol class="button"><div th:text="#{app.companiesList}" style="color: white;font-weight: normal">Companies list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:href="@{/config/formCompany}">Create New Company</a>
-                        <li><a th:href="@{/config/companyDeactivatedList}">Deactivated company list</a></li>
+                            <a th:text="#{app.addCompany}" th:href="@{/config/formCompany}">Create New Company</a>
+                        <li><a th:text="#{app.deactivateCompany}" th:href="@{/config/companyDeactivatedList}">Deactivated company list</a></li>
                         </li>
                     </ul>
                 </li>
             </ol>
         </a>
         <a th:href="@{/config/userList}" style="min-width: 100%">
-            <ol class="button"><div style="color: white;font-weight: normal">User list</div >
+            <ol class="button"><div th:text="#{app.userList}" style="color: white;font-weight: normal">User list</div >
                 <li style="min-width: 100%;">
                     <ul>
-                        <li><a th:href="@{/config/formUserCreation}">Create New User</a></li>
-                        <li><a th:href="@{/config/usersDeactivatedList}">Deactivated users list</a></li>
+                        <li><a th:text="#{app.addUser}" th:href="@{/config/formUserCreation}">Create New User</a></li>
+                        <li><a th:text="#{app.deactivateUsers}" th:href="@{/config/usersDeactivatedList}">Deactivated users list</a></li>
                     </ul>
                 </li>
             </ol>
         </a>
         <a th:href="@{/config/warehouseList}" style="min-width: 100%">
-            <ol class="button"><div style="color: white;font-weight: normal">Warehouses list</div >
+            <ol class="button"><div th:text="#{app.warehousesList}" style="color: white;font-weight: normal">Warehouses list</div >
                 <li style="min-width: 100%;">
                     <ul>
-                        <li><a th:href="@{/config/formWarehouseCreation}">Create New Warehouse</a></li>
-                        <li><a th:href="@{/config/warehouseDeactivatedList}">Deactivated warehouses list</a></li>
+                        <li><a th:text="#{app.addWarehouse}" th:href="@{/config/formWarehouseCreation}">Create New Warehouse</a></li>
+                        <li><a th:text="#{app.deactivateWarehouse}"  th:href="@{/config/warehouseDeactivatedList}">Deactivated warehouses list</a></li>
                     </ul>
                 </li>
             </ol>
         </a>
         <a th:href="@{/emailRecipients}" style="min-width: 100%">
-            <ol class="button"><div style="color: white;font-weight: normal">Emails Recipients list</div >
+            <ol class="button"><div th:text="#{app.emailRecipientsList}" style="color: white;font-weight: normal">Emails Recipients list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:href="@{/user/formEmailRecipients}">Create New email recipient</a></li>
-                        <li><a th:href="@{/config/emailRecipientsDeactivatedList}">Deactivated email recipients</a>
+                            <a th:text="#{app.addRecipientsList}" th:href="@{/user/formEmailRecipients}">Create New email recipient</a></li>
+                        <li><a th:text="#{app.deactivateRecipientsList}" th:href="@{/config/emailRecipientsDeactivatedList}">Deactivated email recipients</a>
                         </li>
                     </ul>
                 </li>
             </ol>
         </a>
-        <a th:href="@{/logout}"><div class="button">Logout</div></a>
+        <a th:href="@{/logout}"><div th:text="#{app.logout}" class="button">Logout</div></a>
     </div>
 </div>
 </body>

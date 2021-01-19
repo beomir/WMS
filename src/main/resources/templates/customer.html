@@ -28,31 +28,35 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px">
 				<span sec:authorize="!hasRole('ROLE_ADMIN')">
-				<div  th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Customers for company: ' + ${companys.name}"></div><br/><br/>
+				<div  th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.customersFC} + ': ' + ${companys.name}"></div>
+					<a th:href="@{/shipment/formCustomer}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.addCustomer}"></div></a>
+					<br/><br/>
 					</span>
 				<span sec:authorize="hasRole('ROLE_ADMIN')">
-				<div  style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="Customers"></div><br/><br/>
+				<div  style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.customers}"></div>
+					<a th:href="@{/shipment/formCustomer}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.addCustomer}"></div></a>
+					<br/><br/>
 				</span>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
-						<th class="tables">Customer name</th>
-						<th class="tables">City</th>
-						<th class="tables">Street</th>
-						<th class="tables">Post Code</th>
-						<th class="tables">Country</th>
-						<th class="tables">Europen Union</th>
-						<th class="tables">Company</th>
-						<th class="tables">Created</th>
-						<th class="tables">Last update</th>
-						<th class="tables">Changed by</th>
+						<th th:text="#{app.customersName}" style="font-weight: bold" class="tables">Customer name</th>
+						<th th:text="#{app.city}" style="font-weight: bold" class="tables">City</th>
+						<th th:text="#{app.street}" style="font-weight: bold" class="tables">Street</th>
+						<th th:text="#{app.postCode}" style="font-weight: bold" class="tables">Post Code</th>
+						<th th:text="#{app.country}" style="font-weight: bold" class="tables">Country</th>
+						<th th:text="#{app.europenUnion}" style="font-weight: bold" class="tables">Europen Union</th>
+						<th th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
+						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
+						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="customers: ${customers}">
 						<td class="tables" style="padding-bottom: 2px">
 							<ol><div th:text="${customers.name}"></div>
 								<li>
 									<ul>
-										<li><a th:href="@{/shipment/deleteCustomer/{id}(id=${customers.id})}">DEACTIVATE</a></li>
-										<li><a th:href="@{/shipment/formEditCustomer/{id}(id=${customers.id})}">EDIT</a></li>
+										<li><a th:text="#{app.deactivate}" th:href="@{/shipment/deleteCustomer/{id}(id=${customers.id})}">DEACTIVATE</a></li>
+										<li><a th:text="#{app.edit}" th:href="@{/shipment/formEditCustomer/{id}(id=${customers.id})}">EDIT</a></li>
 									</ul>
 								</li>
 							</ol>
@@ -68,6 +72,7 @@
 						<td class="tables" th:text="${customers.changeBy}"></td>
 				    </tr>
 				</table>
+				<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/config/customerDeactivatedList}"><div th:text="#{app.deactivatedList}" class="buttonik" style="float: right;max-width: 20%;">Deactivated List</div></a>
 			</div>
 
 			<div th:include="fragments/footer :: footer"></div>

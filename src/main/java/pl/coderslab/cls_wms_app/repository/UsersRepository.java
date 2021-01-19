@@ -33,4 +33,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
     @Query("Select u from Users u where u.email = ?1")
     Users getByEmail(String email);
+
+    @Query(value = "Select count(username) from users where username = ?1",nativeQuery = true)
+    int checkIfUserExists(String username);
 }

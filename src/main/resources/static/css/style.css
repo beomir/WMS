@@ -849,3 +849,25 @@ tr:hover > td{
     -o-transition: 0.5s all;
     -ms-transition: 0.5s all;
 }
+
+.buttonik2 {
+    font-size: 1em;
+    color: #fff;
+    background: #0066d4;
+    border: 1px solid #002ed4;
+    cursor: pointer;
+    padding: .7em 1em;
+    margin-top: 2em;
+    width: 100%;
+    border-radius: 2px;
+}
+
+.buttonik2:hover {
+    background: transparent;
+    color: #0066d4;
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+}

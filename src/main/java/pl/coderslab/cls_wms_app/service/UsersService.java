@@ -37,6 +37,8 @@ public interface UsersService {
 
     void setActivateUserAfterEmailValidation(String activateToken);
 
+    void blockAccountAfterUnforeseenRestartPass(String activateToken);
+
     boolean resetPasswordStatus();
 
     void resetPassword(Users users,String password2);

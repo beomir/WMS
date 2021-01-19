@@ -28,12 +28,12 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form  method="post"  th:action="@{/stock}"  style="text-align: center; color:white;">
-			<label>In which warehouse are Your goods?</label><br/><br/>
+			<label th:text="#{app.whichWarehouse}">In which warehouse are Your goods?</label><br/><br/>
 			<select th:name="id">
 				<option th:each="i : ${warehouses}" th:value="${i.id}" th:text="${i.city}">
 				</option>
 			</select>
-			<input type="submit" value="Display my stock">
+			<input type="submit" th:value="#{app.displayMyStock}">
 		</form>
 
 		<div th:include="fragments/footer :: footer"></div>
