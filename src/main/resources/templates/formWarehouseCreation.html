@@ -27,7 +27,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${warehouse}" method="post" th:action="@{/config/formWarehouseCreation}">
-			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Create a new Warehouse</div><br/>
+			<div class="titleList">Create a new Warehouse</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Warehouse name</label>
 				<input type="text" th:field="*{name}" />

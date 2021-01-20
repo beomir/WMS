@@ -2,16 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="userNavigation">
-    <div style="float: left" class="login-form">
-
+    <button class="hamburger hamburger--active">
+            <span class="hamburger_box">
+                <span class="hamburger__inner"></span>
+            </span>
+    </button>
+    <div  class="navigation navigation--active">
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.hello} + ': ' + ${#request.remoteUser} "></div><br/>
         <div th:each="companys: ${companys}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': ' + ${companys.name}"></div><br/>
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span sec:authentication="principal.authorities"></span></div><br/>
 
-        <a th:href="@{/users/myProfile/{token}(token=${token})}"><div th:text="#{app.myProfile}" class="button">My Profile</div></a>
-        <a th:href="@{/warehouse}"><div th:text="#{app.chWarehouse}" class="button">Choose Warehouse</div></a>
+
+        <a th:href="@{/warehouse}"><div th:text="#{app.chWarehouse}" class="btn">Choose Warehouse</div></a>
         <a th:href="@{/reception/vendor}" style="min-width: 100%">
-            <ol class="button"><div th:text="#{app.vendorList}" style="color: white;font-weight: normal">Vendor list</div >
+            <ol class="btn"><div th:text="#{app.vendorList}" style="color: white;font-weight: normal">Vendor list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
@@ -22,7 +26,7 @@
             </ol>
         </a>
         <a th:href="@{/shipment/customer}" style="min-width: 100%">
-            <ol class="button"><div th:text="#{app.customerList}" style="color: white;font-weight: normal">Customer list</div >
+            <ol class="btn"><div th:text="#{app.customerList}" style="color: white;font-weight: normal">Customer list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
@@ -33,7 +37,7 @@
             </ol>
         </a>
         <a th:href="@{/article}" style="min-width: 100%">
-            <ol class="button"><div th:text="#{app.articleList}" style="color: white;font-weight: normal">Article list</div >
+            <ol class="btn"><div th:text="#{app.articleList}" style="color: white;font-weight: normal">Article list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
@@ -44,7 +48,7 @@
             </ol>
         </a>
         <a th:href="@{/emailRecipients}" style="min-width: 100%">
-            <ol class="button"><div th:text="#{app.emailRecipientsList}" style="color: white;font-weight: normal">Emails Recipients list</div >
+            <ol class="btn"><div th:text="#{app.emailRecipientsList}" style="color: white;font-weight: normal">Emails Recipients list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
@@ -54,7 +58,7 @@
                 </li>
             </ol>
         </a>
-        <a  th:href="@{/logout}"><div th:text="#{app.logout}" class="button">Logout</div></a>
+
     </div>
 </div>
 </body>

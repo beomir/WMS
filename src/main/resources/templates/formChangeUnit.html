@@ -27,7 +27,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${stock}" method="post" th:action="@{/storage/formChangeUnit}">
-			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Change Unit</div><br/>
+			<div class="titleList">Change Unit</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Change unit</label>
 				<select class="select-css" th:field="*{unit}" >

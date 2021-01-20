@@ -27,7 +27,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${stock}" method="post" th:action="@{/storage/formChangeArticleNumber}">
-			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Change Article Number</div><br/>
+			<div class="titleList">Change Article Number</div><br/>
 			<section>
 				<select class="select-css" th:field="*{article}">
 					<option th:each="i : ${articles}" th:value="${i.id}" th:text="${i.article_number}">

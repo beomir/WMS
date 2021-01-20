@@ -27,7 +27,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${stock}" method="post" th:action="@{/storage/formChangeQuality}">
-			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Change Quality</div><br/>
+			<div class="titleList">Change Quality</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Change quality</label>
 				<select class="select-css" th:field="*{quality}">

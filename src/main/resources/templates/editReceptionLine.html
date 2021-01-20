@@ -28,7 +28,7 @@
 		<form  method="post" th:action="@{/reception/editReceptionLine}">
 
 			<span sec:authorize="hasRole('ROLE_ADMIN')">
-			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Edit a new Reception</div><br/><br/>
+			<div class="titleList">Edit a new Reception</div><br/><br/>
 			</span>
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">

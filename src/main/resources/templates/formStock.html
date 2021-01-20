@@ -26,7 +26,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${stock}" method="post" th:action="@{/storage/formStock}">
-			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Create New Stock line</div><br/>
+			<div class="titleList">Create New Stock line</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Article</label>
 				<select class="select-css" th:field="*{article}">

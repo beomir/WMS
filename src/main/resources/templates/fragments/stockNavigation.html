@@ -2,20 +2,30 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="stockNavigation">
-    <div style="float: left" class="login-form">
+    <button class="hamburger hamburger--active">
+            <span class="hamburger_box">
+                <span class="hamburger__inner"></span>
+            </span>
+    </button>
+    <div class="navigation navigation--active">
 
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.hello} + ': ' + ${#request.remoteUser} "></div><br/>
         <div sec:authorize="!hasRole('ROLE_ADMIN')">
             <div th:each="companys: ${companys}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': ' + ${companys.name}"></div><br/>
         </div>
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span sec:authentication="principal.authorities"></span></div><br/>
-        <a th:href="@{/users/myProfile/{token}(token=${token})}"><div th:text="#{app.myProfile}" class="button">My Profile</div></a>
-        <a th:href="@{/stock}" ><div th:text="#{app.checkStock}" class="button">Check Stock</div></a>
-        <a th:href="@{/reception/formReception}"><div th:text="#{app.declareReception}" class="button">Declare Reception</div></a>
-        <a th:href="@{/reception/reception}"><div th:text="#{app.checkReceptions}" class="button">Check Receptions</div></a>
-        <a th:href="@{/shipment/formShipment}"><div th:text="#{app.declareShipment}" class="button">Declare Shipment</div></a>
+        <a th:href="@{/warehouse}"><div th:text="#{app.chWarehouse}" class="btn">Choose Warehouse</div></a>
+        <a th:href="@{/stock}" ><div th:text="#{app.checkStock}" class="btn">Check Stock</div></a>
+        <div th:text="#{app.receptionMenu}" class="btn" id="reception"></div>
+        <span id="receptionBtn" class="d-none">
+        <a th:href="@{/reception/formReception}"><div th:text="#{app.declareReception}" class="btn2">Declare Reception</div></a>
+        <a th:href="@{/reception/reception}"><div th:text="#{app.checkReceptions}" class="btn2">Check Receptions</div></a>
+            </span>
+        <div th:text="#{app.shipmentMenu}" class="btn" id="shipment"></div>
+        <span id="shipmentBtn" class="d-none">
+        <a th:href="@{/shipment/formShipment}"><div th:text="#{app.declareShipment}" class="btn2">Declare Shipment</div></a>
         <a th:href="@{/shipment/shipment}">
-            <ol class="button"><div th:text="#{app.checkShipment}" style="color: white;font-weight: normal">Check Shipments</div >
+            <ol class="btn2"><div th:text="#{app.checkShipment}" style="color: white;font-weight: normal">Check Shipments</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
@@ -25,9 +35,29 @@
                 </li>
             </ol>
         </a>
-        <a th:href="@{/warehouse}"><div th:text="#{app.chWarehouse}" class="button">Choose Warehouse</div></a>
-        <a  th:href="@{/logout}"><div th:text="#{app.logout}" class="button">Logout</div></a>
+            </span>
+
+
     </div>
+    <script>
+        const reception = document.getElementById("reception");
+        const receptionButtons = document.getElementById("receptionBtn");
+
+        const handleClickReception = () => {
+            receptionButtons.classList.toggle('d-none');
+        }
+
+        reception.addEventListener('click', handleClickReception);
+
+        const shipment = document.getElementById("shipment");
+        const shipmentButtons = document.getElementById("shipmentBtn");
+
+        const handleClickShipment = () => {
+            shipmentButtons.classList.toggle('d-none');
+        }
+
+        shipment.addEventListener('click', handleClickShipment);
+    </script>
 </div>
 </body>
 </html>

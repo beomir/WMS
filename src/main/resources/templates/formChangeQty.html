@@ -27,7 +27,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${stock}" method="post" th:action="@{/storage/formChangeQty}">
-			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Change Quantity</div><br/>
+			<div class="titleList">Change Quantity</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Change Quantity</label>
 				<input type="number" th:field="*{pieces_qty}" min="1" max="6666666"/>

@@ -28,17 +28,17 @@
 		<form  method="post" th:action="@{/shipment/formShipment}">
 
 			<span sec:authorize="hasRole('ROLE_ADMIN')">
-			<div th:if="${qtyOfOpenedShipmentsInCreation > 0}" style="color: white;font-weight: bold;text-align: center;font-size: 25px">Add to opened Shipment</div><br/><br/>
-			<div th:if="${qtyOfOpenedShipmentsInCreation == 0}" style="color: white;font-weight: bold;text-align: center;font-size: 25px">Create a new Shipment</div><br/><br/>
+			<div th:if="${qtyOfOpenedShipmentsInCreation > 0}" class="titleList">Add to opened Shipment</div><br/><br/>
+			<div th:if="${qtyOfOpenedShipmentsInCreation == 0}" class="titleList">Create a new Shipment</div><br/><br/>
 			</span>
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
 				<span th:if="${qtyOfOpenedShipmentsInCreation > 0}" >
-					<div th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Add to opened Shipment for company: ' + ${companys.name}"></div><br/>
+					<div th:each="companys: ${companys}"  class="titleList" th:text="'Add to opened Shipment for company: ' + ${companys.name}"></div><br/>
 				</span>
 
 				<span  th:if="${qtyOfOpenedShipmentsInCreation == 0}">
-					<div  th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Create a new Shipment for company: ' + ${companys.name}"></div><br/>
+					<div  th:each="companys: ${companys}"  class="titleList" th:text="'Create a new Shipment for company: ' + ${companys.name}"></div><br/>
 				</span>
 			</span>
 

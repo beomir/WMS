@@ -27,7 +27,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${users}" method="post" th:action="@{/users/myProfile}">
-			<div th:text="'My Profile is assigned to company: ' + ${users.company}" style="color: white;font-weight: bold;text-align: center;font-size: 25px"></div><br/>
+			<div th:text="'My Profile is assigned to company: ' + ${users.company}" class="titleList"></div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Login</label><br/><br/>
 				<label th:text="${users.username}"  style="color: white;font-weight: bold;font-size: 22px"></label>

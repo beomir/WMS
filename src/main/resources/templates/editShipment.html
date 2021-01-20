@@ -28,7 +28,7 @@
 		<form  method="post" th:action="@{/shipment/editShipment}">
 
 			<span sec:authorize="hasRole('ROLE_ADMIN')">
-			<div  style="color: white;font-weight: bold;text-align: center;font-size: 25px">Edit Shipment</div><br/><br/>
+			<div  class="titleList">Edit Shipment</div><br/><br/>
 			</span>
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">

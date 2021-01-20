@@ -27,7 +27,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${article}" method="post" th:action="@{/formEditArticle}">
-			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Edit Article</div><br/>
+			<div class="titleList">Edit Article</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Article number (16 digits)</label>
 				<input type="number" th:field="*{article_number}" min="1000000000000000"/>

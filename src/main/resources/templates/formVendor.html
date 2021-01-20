@@ -27,7 +27,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${vendor}" method="post" th:action="@{/reception/formVendor}">
-			<div style="color: white;font-weight: bold;text-align: center;font-size: 25px">Create a new Vendor</div><br/>
+			<div class="titleList">Create a new Vendor</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Vendor name</label>
 				<input type="text" th:field="*{name}" />

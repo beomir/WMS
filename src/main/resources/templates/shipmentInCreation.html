@@ -27,7 +27,7 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
-				<div th:each="warehouse: ${warehouse}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Your Shipments during Creation in ' + ${warehouse.city}"></div><br/>
+				<div th:each="warehouse: ${warehouse}" class="titleList" th:text="'Your Shipments during Creation in ' + ${warehouse.city}"></div><br/>
 				<span sec:authorize="!hasRole('ROLE_ADMIN')">
 					<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companys.name}"></div>
 				</span>

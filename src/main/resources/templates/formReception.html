@@ -28,17 +28,17 @@
 		<form  method="post" th:action="@{/reception/formReception}">
 
 			<span sec:authorize="hasRole('ROLE_ADMIN')">
-			<div th:if="${qtyOfOpenedReceptions > 0}" style="color: white;font-weight: bold;text-align: center;font-size: 25px">Add to opened Reception</div><br/><br/>
-			<div th:if="${qtyOfOpenedReceptions == 0}" style="color: white;font-weight: bold;text-align: center;font-size: 25px">Create a new Reception</div><br/><br/>
+			<div th:if="${qtyOfOpenedReceptions > 0}" class="titleList">Add to opened Reception</div><br/><br/>
+			<div th:if="${qtyOfOpenedReceptions == 0}" class="titleList">Create a new Reception</div><br/><br/>
 			</span>
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
 				<span th:if="${qtyOfOpenedReceptions > 0}" >
-					<div th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Add to opened Reception for company: ' + ${companys.name}"></div><br/>
+					<div th:each="companys: ${companys}"  class="titleList" th:text="'Add to opened Reception for company: ' + ${companys.name}"></div><br/>
 				</span>
 
 				<span  th:if="${qtyOfOpenedReceptions == 0}">
-					<div  th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Create a new Reception for company: ' + ${companys.name}"></div><br/>
+					<div  th:each="companys: ${companys}"  class="titleList" th:text="'Create a new Reception for company: ' + ${companys.name}"></div><br/>
 				</span>
 			</span>
 
