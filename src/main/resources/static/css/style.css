@@ -925,25 +925,24 @@ tr:hover > td{
 }
 
 
-*, *::before, *::after {
-    box-sizing: inherit;
-}
+
 
 .hamburger {
-    padding: 10px;
+    vertical-align: top;
     display: inline-block;
     cursor: pointer;
     background-color: transparent;
     border: 0;
     margin: 0;
+
 }
 
 .hamburger, .navigation {
-    transition: transform .3s .1s ease-in-out;
+    transition: transform .5s .1s ease-in-out;
 }
 
 .hamburger--active {
-    transform: translatex(365px);
+    transform: translatex(380px);
 }
 
 .hamburger__box {
@@ -951,30 +950,33 @@ tr:hover > td{
     height: 24px;
     display: inline-block;
     position: relative;
+
 }
 
 
 
 .hamburger__inner {
-    width: 35px;
+    width: 100%;
     height: 3px;
     background-color:  #FFFFFF;
     position: absolute;
     left: 0;
+    top: 50%;
     transform: translateY(-50%);
-    transition: background-color .1s .2s ease-in-out;
+    transition: background-color .2s .4s ease-in-out;
+
 }
 
 .hamburger__inner::before,
 .hamburger__inner::after {
-    width: 35px;
+    width: 100%;
     height: 3px;
     background-color:  #FFFFFF;
     position: absolute;
 
     content: '';
     left: 0;
-    transition: transform .2s .2s ease-in-out;
+    transition: transform .4s .2s ease-in-out;
 }
 
 .hamburger__inner::before {
@@ -998,9 +1000,9 @@ tr:hover > td{
 }
 
 .navigation {
-    width:300px;
-    transform: translateX(-450px);
-
+    width:400px;
+    transform: translateX(-550px);
+    display: inline-block;
     background: rgba(18, 39, 23, 0.2);
     padding: 2em;
     background-size: cover;
@@ -1009,7 +1011,7 @@ tr:hover > td{
     -o-box-shadow: 0px 5px 9px 0px rgba(0, 0, 0, 0.68);
     -ms-box-shadow: 0px 5px 9px 0px rgba(0, 0, 0, 0.68);
     box-shadow: 0px 5px 9px 0px rgba(0, 0, 0, 0.68);
-    text-align: left;
+    float:left;
     border: 1px solid rgba(255, 255, 255, 0.52);
 }
 .navigation--active{

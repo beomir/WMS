@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="userNavigation">
-    <button class="hamburger hamburger--active">
-            <span class="hamburger_box">
+<span th:fragment="userNavigation">
+    <div class="hamburger hamburger--active">
+            <span class="hamburger__box">
                 <span class="hamburger__inner"></span>
             </span>
-    </button>
+    </div>
     <div  class="navigation navigation--active">
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.hello} + ': ' + ${#request.remoteUser} "></div><br/>
         <div th:each="companys: ${companys}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': ' + ${companys.name}"></div><br/>
@@ -60,6 +60,6 @@
         </a>
 
     </div>
-</div>
+</span>
 </body>
 </html>

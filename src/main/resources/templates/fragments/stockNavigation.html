@@ -2,11 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="stockNavigation">
-    <button class="hamburger hamburger--active">
-            <span class="hamburger_box">
+    <div style="display: flex">
+    <div class="hamburger hamburger--active">
+            <span class="hamburger__box">
                 <span class="hamburger__inner"></span>
             </span>
-    </button>
+    </div>
     <div class="navigation navigation--active">
 
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.hello} + ': ' + ${#request.remoteUser} "></div><br/>
@@ -37,7 +38,7 @@
         </a>
             </span>
 
-
+    </div>
     </div>
     <script>
         const reception = document.getElementById("reception");
