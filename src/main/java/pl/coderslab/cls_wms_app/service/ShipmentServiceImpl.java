@@ -4,17 +4,16 @@ package pl.coderslab.cls_wms_app.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.entity.EmailRecipients;
 import pl.coderslab.cls_wms_app.entity.Shipment;
-import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.repository.EmailRecipientsRepository;
 import pl.coderslab.cls_wms_app.repository.ShipmentRepository;
-import pl.coderslab.cls_wms_app.repository.UsersRepository;
 
-import javax.mail.MessagingException;
-import java.io.*;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,15 +24,14 @@ import java.util.Random;
 @Service
 @Slf4j
 public class ShipmentServiceImpl implements ShipmentService {
-    private ShipmentRepository shipmentRepository;
-    private UsersRepository usersRepository;
-    private SendEmailService sendEmailService;
-    private EmailRecipientsRepository emailRecipientsRepository;
+    private final ShipmentRepository shipmentRepository;
+
+    private final SendEmailService sendEmailService;
+    private final EmailRecipientsRepository emailRecipientsRepository;
 
     @Autowired
-    public ShipmentServiceImpl(ShipmentRepository shipmentRepository, UsersRepository usersRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository) {
+    public ShipmentServiceImpl(ShipmentRepository shipmentRepository,  SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository) {
         this.shipmentRepository = shipmentRepository;
-        this.usersRepository = usersRepository;
         this.sendEmailService = sendEmailService;
         this.emailRecipientsRepository = emailRecipientsRepository;
     }
@@ -64,10 +62,10 @@ public class ShipmentServiceImpl implements ShipmentService {
         List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForShipmentType(shipmentRepository.getOneShipmentByShipmentNumber(shipmentNbrtoFinish),"Shipment");
         String shipmentNbr = shipmentNbrtoFinish.toString();
         String warehouse = shipmentRepository.getWarehouseByShipmentNumber(shipmentNbrtoFinish);
-        File shipment = new File("outbound/" + shipmentNbr + ".txt");
+        File shipment = new File("outbound/outbound" + shipmentNbr + ".txt");
         while (shipment.exists()) {
             int random = new Random().nextInt(100);
-            shipment = new File("outbound/" + shipmentNbr + "duplicateNbr" + random + ".txt");
+            shipment = new File("outbound/outbound" + shipmentNbr + "duplicateNbr" + random + ".txt");
         }
         try (FileWriter fileWriter = new FileWriter(shipment, true)) {
             fileWriter.append("Shipment_Number:" + shipmentNbr + "\n");

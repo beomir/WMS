@@ -24,7 +24,7 @@ public interface ReceptionService {
 
     Reception findById(Long id);
 
-    void finishReception(Long receptionNmbr) throws IOException, MessagingException;
+    void finishReception(Long receptionNmbr) ;
 
     Long lastReception();
 

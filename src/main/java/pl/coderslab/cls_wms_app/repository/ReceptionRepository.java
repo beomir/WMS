@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cls_wms_app.entity.Reception;
+import pl.coderslab.cls_wms_app.entity.Shipment;
 
 import java.util.List;
 
@@ -50,5 +51,11 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
 
     @Query(value="Select distinct c.name from receptions r inner join company c on r.company_id = c.id where r.reception_number = ?1",nativeQuery = true)
     String getCompanyNameByReceptionNumber(Long receptionNmbr);
+
+    @Query("Select r from Reception r where r.receptionNumber = ?1")
+    List<Reception> getReceptionByReceptionNumber(Long receptionNbr);
+
+    @Query(value="Select distinct w.name from receptions r inner join warehouse w on r.warehouse_id = w.id where r.reception_number = ?1",nativeQuery = true)
+    String getWarehouseByReceptionNumber(Long receptionNbr);
 
 }

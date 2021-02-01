@@ -1,2 +1,0 @@
-Shipment_Number:20200006
-ArticleNumber:1234567890123455,ArticleDescription:bicycle,HandleDeviceNumber:202000001800000010,PiecesQuantity4,CustomerNameMuzeum 2 wojny,CustomerAddress:Berlin,Hermana 12,GermanyUnit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:MagdaM
