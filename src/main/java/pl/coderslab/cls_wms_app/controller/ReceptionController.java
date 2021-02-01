@@ -84,7 +84,7 @@ public class ReceptionController {
     }
 
     @GetMapping("/finishedReception/{id}")
-    public String finishedReception(@PathVariable Long id) throws IOException, MessagingException {
+    public String finishedReception(@PathVariable Long id) {
         Long getReceptionById = receptionService.findById(id).getReceptionNumber();
         receptionService.updateFinishedReceptionValue(getReceptionById);
         receptionService.insertDataToStockAfterFinishedReception(getReceptionById);
