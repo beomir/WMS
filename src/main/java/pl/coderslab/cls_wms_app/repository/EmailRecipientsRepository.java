@@ -22,8 +22,8 @@ public interface EmailRecipientsRepository extends JpaRepository<EmailRecipients
     @Query("Select distinct er from EmailRecipients er join fetch er.company c join fetch er.emailTypes et where c.name = ?1 and et.type like ?2")
     List<EmailRecipients> getEmailRecipientsByCompanyForReceptionType(String company , String type);
 
-    @Query("Select distinct er from EmailRecipients er join fetch er.company c join fetch er.emailTypes et where c.name = ?1 and et.type like ?2")
-    List<EmailRecipients> getEmailRecipientsByCompanyForStockType(String company , String type);
+    @Query("Select distinct er from EmailRecipients er join fetch er.company c join fetch er.emailTypes et where et.type like ?1")
+    List<EmailRecipients> getEmailRecipientsByCompanyForStockType(String type);
 
     @Query("Select distinct er from EmailRecipients er where er.token = ?1")
     EmailRecipients getEmailRecipientsByToken(String token);
