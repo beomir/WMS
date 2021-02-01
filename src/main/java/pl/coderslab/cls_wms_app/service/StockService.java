@@ -23,5 +23,7 @@ public interface StockService {
     void delete(Long id);
 
     void update(Stock stock);
+
+    void sendStock();
 }
 

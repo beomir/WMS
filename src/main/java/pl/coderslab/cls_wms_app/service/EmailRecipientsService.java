@@ -26,6 +26,6 @@ public interface EmailRecipientsService {
 
     List<EmailRecipients> getEmailRecipientsByCompanyForReceptionType(String company, String type);
 
-    List<EmailRecipients> getEmailRecipientsByCompanyForStockType(String company, String type);
+    List<EmailRecipients> getEmailRecipientsByCompanyForStockType(String type);
 
 }

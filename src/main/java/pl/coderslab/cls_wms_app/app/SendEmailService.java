@@ -15,12 +15,10 @@ public class SendEmailService {
 
     private final JavaMailSender javaMailSender;
 
-
     public SendEmailService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
 
     }
-
 
     public void sendEmailFromContactForm(String body, String email,String subject){
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -40,19 +38,16 @@ public class SendEmailService {
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message,true);
-
             helper.setFrom("clswarehousemanagementsystem@gmail.com");
             helper.setTo(to);
             helper.setSubject(topic);
             helper.setText(body,true);
-
             FileSystemResource file = new FileSystemResource(fileName);
             helper.addAttachment(file.getFilename(),file);
             javaMailSender.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-
     }
 
 

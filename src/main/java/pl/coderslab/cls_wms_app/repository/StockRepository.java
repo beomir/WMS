@@ -18,4 +18,7 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("Select distinct w from Warehouse w where w.id =?1")
     List<Warehouse> getWarehouse(Long id);
 
+    @Query("Select distinct s from Stock s left outer join fetch Reception r on s.receptionNumber = r.receptionNumber where s.company.name = ?1")
+    List<Stock> getStockByCompanyName(String name);
+
 }
