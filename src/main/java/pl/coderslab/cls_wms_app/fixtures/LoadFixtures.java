@@ -22,10 +22,11 @@ public class LoadFixtures {
     private UsersRolesFixture usersRolesFixture;
     private EmailTypesFixture emailTypesFixture;
     private EmailRecipientsFixture emailRecipientsFixture;
+    private SchedulerFixture schedulerFixture;
 
 
     @Autowired
-    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture) {
+    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture) {
         this.stockFixture = stockFixture;
         this.companyFixture = companyFixture;
         this.usersFixture = usersFixture;
@@ -41,7 +42,7 @@ public class LoadFixtures {
         this.usersRolesFixture = usersRolesFixture;
         this.emailTypesFixture = emailTypesFixture;
         this.emailRecipientsFixture = emailRecipientsFixture;
-
+        this.schedulerFixture = schedulerFixture;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -62,6 +63,6 @@ public class LoadFixtures {
         stockFixture.loadIntoDB();
         emailTypesFixture.loadIntoDB();
         emailRecipientsFixture.loadIntoDB();
-
+        schedulerFixture.loadIntoDB();
     }
 }

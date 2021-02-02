@@ -28,7 +28,7 @@
 	<div style="width: 1200px" class="login-form">
 		<div style="background-color: #00BCD4;border-radius: 3px">
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
-				<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'Deactivated articles for company: ' + ${companys.name}"></div><br/><br/>
+				<div th:each="companys: ${companys}" class="titleList" th:text="'Deactivated articles for company: ' + ${companys.name}"></div><br/><br/>
 				</span>
 			<span sec:authorize="hasRole('ROLE_ADMIN')">
 				<div  class="titleList" th:text="#{app.deactivateArticle}"></div><br/><br/>
@@ -72,24 +72,7 @@
 
 <script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 <script type="text/javascript" th:src="@{/js/logo.js}"></script>
-<script>
-	superplaceholder({
-		el: input1,
-		sentences: [ 'Write your Username', 'For example:', 'SuperUserStrojem','or', 'SuperUserbUDUJem' ],
-		options: {
-			loop: true,
-			startOnFocus: false
-		}
-	})
-	superplaceholder({
-		el: input2,
-		sentences: [ 'Write your Password', 'For example:', 'SuperUserStrojem','**', 'SuperUserbUDUJem' ],
-		options: {
-			loop: true,
-			startOnFocus: false
-		}
-	})
-</script>
+
 
 </body>
 </html>

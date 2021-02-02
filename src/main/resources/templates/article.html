@@ -34,7 +34,7 @@
 				<br/><br/>
 				</span>
 				<span sec:authorize="hasRole('ROLE_ADMIN')">
-				<div  style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.articles}"></div>
+				<div  class="titleList" th:text="#{app.articles}"></div>
 					<a th:href="@{/formArticle}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.addArticle}"></div></a>
 					<br/><br/>
 					</span>
@@ -78,24 +78,6 @@
 
 	<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
-	<script>
-	superplaceholder({
-			el: input1,
-			sentences: [ 'Write your Username', 'For example:', 'SuperUserStrojem','or', 'SuperUserbUDUJem' ],
-			options: {
-				loop: true,
-				startOnFocus: false
-			}
-		})
-		superplaceholder({
-			el: input2,
-			sentences: [ 'Write your Password', 'For example:', 'SuperUserStrojem','**', 'SuperUserbUDUJem' ],
-			options: {
-				loop: true,
-				startOnFocus: false 
-			}
-		})
-	</script>
 
 </body>
 </html>

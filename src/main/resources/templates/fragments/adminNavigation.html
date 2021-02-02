@@ -114,6 +114,19 @@
             </ol>
         </a>
         </span>
+        <div th:text="#{app.config}" class="btn" id="configuration"></div>
+        <span id="configBtn" class="d-none">
+        <a th:href="@{/user/scheduler}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.scheduler}" style="color: white;font-weight: normal">Scheduler</div>
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li><a th:text="#{app.addScheduler}" th:href="@{/user/formScheduler}">Create Scheduler</a></li>
+                        <li><a th:text="#{app.deactivateSchedulers}" th:href="@{/config/schedulersDeactivatedList}">Deactivated schedulers list</a></li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+        </span>
     </div>
     <script>
         const companyMenu = document.getElementById("companyMenu");
@@ -143,6 +156,16 @@
         }
 
         userThings.addEventListener('click', handleClickUser);
+
+        const configuration = document.getElementById("configuration");
+        const configBtn = document.getElementById("configBtn");
+
+        const handleClickConfiguration = () => {
+            configBtn.classList.toggle('d-none');
+        }
+
+        configuration.addEventListener('click', handleClickConfiguration);
+
     </script>
 </div>
 </body>
