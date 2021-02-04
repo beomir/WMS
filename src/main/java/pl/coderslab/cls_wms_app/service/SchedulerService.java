@@ -8,6 +8,8 @@ public interface SchedulerService {
 
     void add(Scheduler scheduler);
 
+    void addFixture(Scheduler scheduler);
+
     List<Scheduler> getScheduler(String scheduler);
 
     List<Scheduler> getDeactivatedScheduler();

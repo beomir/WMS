@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
+import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Scheduler;
@@ -54,6 +55,7 @@ public class SchedulerController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("scheduler", new Scheduler());
         model.addAttribute("companies", companies);
+        model.addAttribute("weekDays", TimeUtils.dayOfWeeks());
         usersService.loggedUserData(model);
         return "formScheduler";
     }
@@ -83,13 +85,14 @@ public class SchedulerController {
         model.addAttribute(scheduler);
         model.addAttribute("companies", companies);
         model.addAttribute("localDateTime", LocalDateTime.now());
+        model.addAttribute("weekDays", TimeUtils.dayOfWeeks());
         usersService.loggedUserData(model);
         return "formEditScheduler";
     }
 
     @PostMapping("formEditScheduler")
     public String edit(Scheduler scheduler) {
-        schedulerService.add(scheduler);
+        schedulerService.addFixture(scheduler);
         return "redirect:/user/scheduler";
     }
 

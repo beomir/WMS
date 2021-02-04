@@ -17,12 +17,12 @@ public class SchedulerFixture {
     private final CompanyService companyService;
 
     private List<Scheduler> schedulerList = Arrays.asList(
-            new Scheduler(null, "Stock", "30", "11", "MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY,SUNDAY", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
-            new Scheduler(null, "Stock", "35", "19", "MONDAY,TUESDAY,WEDNESDAY,FRIDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
-            new Scheduler(null, "Stock", "40", "21", "MONDAY,FRIDAY,SUNDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
-            new Scheduler(null, "Stock", "35", "23", "MONDAY,FRIDAY,SATURDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
-            new Scheduler(null, "Stock", "21", "00", "TUESDAY,THURSDAY,SATURDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
-            new Scheduler(null, "Stock", "22", "03", "WEDNESDAY,FRIDAY,SATURDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null)
+            new Scheduler(null, "Stock", "11:30", "MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY,SUNDAY", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,0,null),
+            new Scheduler(null, "Stock", "19:35", "MONDAY,TUESDAY,WEDNESDAY,FRIDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,0,null),
+            new Scheduler(null, "Stock", "20:40", "MONDAY,FRIDAY,SUNDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,0,null),
+            new Scheduler(null, "Stock", "20:17", "MONDAY,FRIDAY,SATURDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,0,null),
+            new Scheduler(null, "Stock", "21:13", "TUESDAY,THURSDAY,SATURDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,0,null),
+            new Scheduler(null, "Stock", "18:22", "WEDNESDAY,FRIDAY,SATURDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,0,null)
     );
 
     @Autowired
@@ -33,7 +33,7 @@ public class SchedulerFixture {
 
     public void loadIntoDB() {
         for (Scheduler scheduler : schedulerList) {
-            schedulerService.add(scheduler);
+            schedulerService.addFixture(scheduler);
         }
         List<Company> companies = companyService.getCompany();
         Scheduler scheduler1 = schedulerList.get(0);
@@ -50,12 +50,12 @@ public class SchedulerFixture {
         scheduler5.setCompany(companies.get(4));
         scheduler6.setCompany(companies.get(5));
 
-        schedulerService.add(scheduler1);
-        schedulerService.add(scheduler2);
-        schedulerService.add(scheduler3);
-        schedulerService.add(scheduler4);
-        schedulerService.add(scheduler5);
-        schedulerService.add(scheduler6);
+        schedulerService.addFixture(scheduler1);
+        schedulerService.addFixture(scheduler2);
+        schedulerService.addFixture(scheduler3);
+        schedulerService.addFixture(scheduler4);
+        schedulerService.addFixture(scheduler5);
+        schedulerService.addFixture(scheduler6);
 
     }
 }

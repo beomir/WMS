@@ -1,0 +1,2 @@
+Reception_Number:20200006
+ArticleNumber:5234567890123458,ArticleDescription:trousers,HandleDeviceNumber:202000000000000015,PiecesQuantity:6,VendorName:Sharpico,VendorAddress:Yokohama,Tokugawa 12,JapanUnit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:MagdaM

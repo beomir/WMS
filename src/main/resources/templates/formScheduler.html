@@ -30,52 +30,32 @@
 			<div class="titleList">Create a new Scheduler</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Scheduler type</label>
-				<input type="text" th:field="*{type}"/>
+				<select id="selectid" class="select-css" th:field="*{type}">
+					<option  th:value="Stock">Stock</option>
+					<option th:value="Reception">Reception</option>
+					<option th:value="Shipment">Shipment</option>
+				</select>
 				<input type="hidden" th:field="*{id}"/>
 				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
 				<input type="hidden" th:value="true" id="active" name="active"/>
 				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
-			</section>
+			</section><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Trigger hour</label>
-				<input type="text" th:field="*{hour}"/>
+				<input type="time" th:field="*{hour}"/>
+			</section><br/>
+			<section id="howManyDaysBack">
+				<label title="From how many days back do you want generate the report?" style="color: white;font-weight: bold">From how many days back</label>
+				<input type="number" th:field="*{howManyDaysBack}"/>
 			</section>
 			<section>
-				<label style="color: white;font-weight: bold">Trigger minutes</label>
-				<input type="text" th:field="*{minutes}"/>
-			</section>
-			<section>
-				<label style="color: white;font-weight: bold">Trigger day of week</label><br/>
-				<label style="color: white;font-weight: bold">
-					<input type="checkbox" th:field="*{dayOfWeek}" th:value="'MONDAY'"/>
-					<span style="font-weight: bold" th:text="'Monday'" th:value="'MONDAY'" class="title"></span><br/>
+				<label style="color: white;font-weight: bold">Trigger day of week</label><br/><br/>
+				<label th:each="i: ${weekDays}" style="color: white;font-weight: bold">
+					<input type="checkbox" th:field="*{dayOfWeek}" th:value="${i}"/>
+					<span style="font-weight: bold" th:text="${i}" th:value="${i}" class="title"></span><br/>
 				</label>
-				<label style="color: white;font-weight: bold">
-					<input type="checkbox" th:field="*{dayOfWeek}" th:value="'TUESDAY'"/>
-					<span style="font-weight: bold" th:text="'Tuesday'" th:value="'TUESDAY'" class="title"></span><br/>
-				</label>
-				<label style="color: white;font-weight: bold">
-					<input type="checkbox" th:field="*{dayOfWeek}" th:value="'WEDNESDAY'"/>
-					<span style="font-weight: bold" th:text="'Wednesday'" th:value="'WEDNESDAY'" class="title"></span><br/>
-				</label>
-				<label style="color: white;font-weight: bold">
-					<input type="checkbox" th:field="*{dayOfWeek}" th:value="'THURSDAY'"/>
-					<span style="font-weight: bold" th:text="'Thursday'" th:value="'THURSDAY'" class="title"></span><br/>
-				</label>
-				<label style="color: white;font-weight: bold">
-					<input type="checkbox" th:field="*{dayOfWeek}" th:value="'FRIDAY'"/>
-					<span style="font-weight: bold" th:text="'Friday'" th:value="'FRIDAY'" class="title"></span><br/>
-				</label>
-				<label style="color: white;font-weight: bold">
-					<input type="checkbox" th:field="*{dayOfWeek}" th:value="'SATURDAY'"/>
-					<span style="font-weight: bold" th:text="'Saturday'" th:value="'SATURDAY'" class="title"></span><br/>
-				</label>
-				<label style="color: white;font-weight: bold">
-					<input type="checkbox" th:field="*{dayOfWeek}" th:value="'SUNDAY'"/>
-					<span style="font-weight: bold" th:text="'Sunday'" th:value="'SUNDAY'" class="title"></span><br/>
-				</label>
-			</section><br/><br/>
+			</section><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Company</label>
 				<select class="select-css" th:field="*{company}">
@@ -91,7 +71,9 @@
 	</div>
 
 	<div th:include="fragments/footer :: footer"></div>
+<script>
 
+</script>
 </div>
 <div class="w3copyright-agile">
 	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
@@ -102,20 +84,15 @@
 <script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 <script type="text/javascript" th:src="@{/js/logo.js}"></script>
 <script>
-	superplaceholder({
-		el: input1,
-		sentences: [ 'Write your Username', 'For example:', 'SuperUserStrojem','or', 'SuperUserbUDUJem' ],
-		options: {
-			loop: true,
-			startOnFocus: false
-		}
-	})
-	superplaceholder({
-		el: input2,
-		sentences: [ 'Write your Password', 'For example:', 'SuperUserStrojem','**', 'SuperUserbUDUJem' ],
-		options: {
-			loop: true,
-			startOnFocus: false
+	var hide = document.getElementById("howManyDaysBack")
+	var select = document.getElementById('selectid')
+	hide.classList.add("d-none")
+
+	select.addEventListener("change", function () {
+		if(document.getElementById('selectid').value == "Stock") {
+			hide.classList.add("d-none")
+		} else {
+			hide.classList.remove("d-none")
 		}
 	})
 </script>

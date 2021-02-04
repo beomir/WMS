@@ -58,4 +58,8 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
     @Query(value="Select distinct w.name from receptions r inner join warehouse w on r.warehouse_id = w.id where r.reception_number = ?1",nativeQuery = true)
     String getWarehouseByReceptionNumber(Long receptionNbr);
 
+    @Query("Select r from Reception r where substring(r.last_update,1,10) >= ?1 and r.company.name = ?2 order by r.warehouse.name")
+    List<Reception> getReceptionsFromXDayBack(String dateBack, String company);
+
+
 }

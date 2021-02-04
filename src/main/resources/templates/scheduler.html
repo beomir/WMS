@@ -30,7 +30,7 @@
 			<div style="background-color: #00BCD4;border-radius: 3px">
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
 				<div th:each="companys: ${companys}" class="titleList" th:text="#{app.schedulersFC} + ': ' + ${companys.name}"></div>
-				<a th:href="@{/formScheduler}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.addScheduler}"></div></a>
+				<a th:href="@{/user/formScheduler}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.addScheduler}"></div></a>
 				<br/><br/>
 				</span>
 				<span sec:authorize="hasRole('ROLE_ADMIN')">
@@ -43,6 +43,7 @@
 						<th  th:text="#{app.schedulerType}" style="font-weight: bold" class="tables">Scheduler type</th>
 						<th  th:text="#{app.triggerTime}" style="font-weight: bold" class="tables">Trigger time</th>
 						<th  th:text="#{app.triggerDays}" style="font-weight: bold" class="tables">Trigger days</th>
+						<th  th:text="#{app.howManyDaysBack}" style="font-weight: bold" class="tables">How many days back</th>
 						<th th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
 						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
 						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
@@ -59,8 +60,12 @@
 								</li>
 							</ol>
 						</td>
-						<td class="tables" th:text="${scheduler.hour} + ' : ' + ${scheduler.minutes}"></td>
-						<td class="tables" th:text="${scheduler.dayOfWeek}"></td>
+						<td class="tables" th:text="${scheduler.hour}"></td>
+						<td th:if="${scheduler.dayOfWeek == 'MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY,SUNDAY'}" class="tables" th:text="#{app.eachDay}"></td>
+						<td th:if="${scheduler.dayOfWeek == 'MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY'}" class="tables" th:text="#{app.workDay}"></td>
+						<td th:if="${scheduler.dayOfWeek != 'MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY' && scheduler.dayOfWeek != 'MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY,SUNDAY'}  " class="tables" th:text="${scheduler.dayOfWeek}"></td>
+						<td th:if="${scheduler.type != 'Stock'}" class="tables" th:text="${scheduler.howManyDaysBack}"></td>
+						<td th:if="${scheduler.type == 'Stock'}" class="tables" th:text="#{app.notApplicable}"></td>
 						<td class="tables" th:text="${scheduler.company.name}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(scheduler.created,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(scheduler.last_update,0,19),'T',' ')}"></td>

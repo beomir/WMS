@@ -36,10 +36,9 @@ public interface ReceptionService {
 
     List<Integer> pallets();
 
-    //set finished reception line --> only one line
-//    void finished(Long id);
-
     void closeCreation(Long id);
 
     void openCreation(Long id);
+
+    void sendReceptions(String company);
 }

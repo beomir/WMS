@@ -22,7 +22,32 @@ public class SchedulerServiceImpl implements SchedulerService{
 
     @Override
     public void add(Scheduler scheduler) {
-        schedulerRepository.save(scheduler);
+        if(schedulerRepository.getSchedulerByCompanyName(scheduler.getCompany().getName(),scheduler.getType()).size()<1) {
+            if (scheduler.getType().equals("Stock")) {
+                scheduler.setHowManyDaysBack(0);
+            }
+            if (scheduler.getHour() == null || scheduler.getHour().equals("")) {
+                scheduler.setHour("00:00");
+            }
+            if (scheduler.getDayOfWeek() == null || scheduler.getDayOfWeek().equals("")) {
+                scheduler.setDayOfWeek("Monday");
+            }
+            schedulerRepository.save(scheduler);
+        }
+    }
+
+    @Override
+    public void addFixture(Scheduler scheduler) {
+            if (scheduler.getType().equals("Stock")) {
+                scheduler.setHowManyDaysBack(0);
+            }
+            if (scheduler.getHour() == null || scheduler.getHour().equals("")) {
+                scheduler.setHour("00:00");
+            }
+            if (scheduler.getDayOfWeek() == null || scheduler.getDayOfWeek().equals("")) {
+                scheduler.setDayOfWeek("Monday");
+            }
+            schedulerRepository.save(scheduler);
     }
 
     @Override
