@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -72,24 +73,22 @@ public class StockServiceImpl implements StockService {
         return stockRepository.getOne(id);
     }
 
-    public void sendStock() {
-        List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForStockType("%Stock%");
+    public void sendStock(String company) {
+        List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForStockType("%Stock%",company);
         for(EmailRecipients value : mailGroup)
         {
             List<Stock> stockForCompany = stockRepository.getStockByCompanyName(value.getCompany().getName());
-            String companyName = "";
             String warehouse = "";
             for(Stock data : stockForCompany){
-                companyName = data.getCompany().getName();
                 warehouse = data.getWarehouse().getName();
             }
-            File stock = new File("stock/stockFor" + companyName + LocalDate.now() + ".txt");
+            File stock = new File("stock/stockFor" + company + LocalDate.now() + ".txt");
             while (stock.exists()) {
                 int random = new Random().nextInt(100);
-                stock = new File("stock/stockFor" + companyName + LocalDate.now() + random + ".txt");
+                stock = new File("stock/stockFor" + company + LocalDate.now() + random + ".txt");
             }
             try (FileWriter fileWriter = new FileWriter(stock, true)) {
-                fileWriter.append("Stock for: " + companyName +"\n");
+                fileWriter.append("Stock for: " + company +"\n");
                 for (Stock values : stockForCompany) {
                     fileWriter.append("ArticleNumber:" + values.getArticle().getArticle_number().toString() + ",");
                     fileWriter.append("ArticleDescription:" + values.getArticle().getArticle_desc() + ",");
@@ -110,7 +109,13 @@ public class StockServiceImpl implements StockService {
             Path path = Paths.get(filePath);
             if(Files.exists(path)) {
                 for (EmailRecipients valuess : mailGroup) {
-                    sendEmailService.sendEmail(valuess.getEmail(), "Dear client,<br/><br/> goods for Company: <b>" + companyName + "</b> on: " + LocalDate.now() + ". Data in attachment", "Stock for: " + companyName + " in: " +warehouse, filePath);
+                    if(warehouse.equals("")){
+                        sendEmailService.sendEmail(valuess.getEmail(), "Dear client,<br/><br/> For Company: <b>" + company + "</b> on: " + LocalDate.now() + ", " + String.valueOf(LocalTime.now()).substring(0,8) + ", we don't have goods in our Warehouses", "Stock for: " + company + " in our Warehouses", filePath);
+                    }
+                    else{
+                        sendEmailService.sendEmail(valuess.getEmail(), "Dear client,<br/><br/> goods for Company: <b>" + company + "</b> on: " + LocalDate.now() + ", " + String.valueOf(LocalTime.now()).substring(0,8) + ". Data in attachment", "Stock for: " + company + " in: " +warehouse, filePath);
+                    }
+
                 }
             }
             else{

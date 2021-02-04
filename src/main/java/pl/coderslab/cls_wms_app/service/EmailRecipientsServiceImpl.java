@@ -104,7 +104,7 @@ public class EmailRecipientsServiceImpl implements EmailRecipientsService{
     }
 
     @Override
-    public List<EmailRecipients> getEmailRecipientsByCompanyForStockType(String type) {
-        return emailRecipientsRepository.getEmailRecipientsByCompanyForStockType(type);
+    public List<EmailRecipients> getEmailRecipientsByCompanyForStockType(String type, String company) {
+        return emailRecipientsRepository.getEmailRecipientsByCompanyForStockType(type,company);
     }
 }

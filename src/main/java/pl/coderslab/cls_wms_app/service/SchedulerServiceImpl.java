@@ -26,8 +26,8 @@ public class SchedulerServiceImpl implements SchedulerService{
     }
 
     @Override
-    public List<Scheduler> getScheduler() {
-        return schedulerRepository.getScheduler();
+    public List<Scheduler> getScheduler(String scheduler) {
+        return schedulerRepository.getScheduler(scheduler);
     }
 
 

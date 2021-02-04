@@ -8,7 +8,7 @@ public interface SchedulerService {
 
     void add(Scheduler scheduler);
 
-    List<Scheduler> getScheduler();
+    List<Scheduler> getScheduler(String scheduler);
 
     List<Scheduler> getDeactivatedScheduler();
 

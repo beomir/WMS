@@ -13,18 +13,16 @@ import java.util.List;
 
 @Component
 public class SchedulerFixture {
-    private SchedulerService schedulerService;
-    private CompanyService companyService;
-
-
+    private final SchedulerService schedulerService;
+    private final CompanyService companyService;
 
     private List<Scheduler> schedulerList = Arrays.asList(
-            new Scheduler(null, "Stock", "30", "11", "1,2,3,4,5,6,7", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
-            new Scheduler(null, "Stock", "35", "19", "1,2,3,5",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
-            new Scheduler(null, "Stock", "40", "21", "1,5,7",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
-            new Scheduler(null, "Stock", "35", "23", "1,6,7",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
-            new Scheduler(null, "Stock", "21", "00", "2,4,6",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
-            new Scheduler(null, "Stock", "22", "03", "3,5,7",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null)
+            new Scheduler(null, "Stock", "30", "11", "MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY,SUNDAY", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
+            new Scheduler(null, "Stock", "35", "19", "MONDAY,TUESDAY,WEDNESDAY,FRIDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
+            new Scheduler(null, "Stock", "40", "21", "MONDAY,FRIDAY,SUNDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
+            new Scheduler(null, "Stock", "35", "23", "MONDAY,FRIDAY,SATURDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
+            new Scheduler(null, "Stock", "21", "00", "TUESDAY,THURSDAY,SATURDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null),
+            new Scheduler(null, "Stock", "22", "03", "WEDNESDAY,FRIDAY,SATURDAY",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",true,null)
     );
 
     @Autowired

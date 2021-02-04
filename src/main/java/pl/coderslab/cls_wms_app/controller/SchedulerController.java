@@ -33,7 +33,7 @@ public class SchedulerController {
 
     @GetMapping("/user/scheduler")
     public String list(Model model) {
-        List<Scheduler> scheduler = schedulerService.getScheduler();
+        List<Scheduler> scheduler = schedulerService.getScheduler(SecurityUtils.username());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("scheduler", scheduler);
         model.addAttribute("companys", companys);
