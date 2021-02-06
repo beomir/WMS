@@ -47,14 +47,27 @@ public class DataUpdater {
         String day = "%" + LocalDate.now().getDayOfWeek() + "%";
         System.out.println(time);
         System.out.println(day);
-        System.out.println(schedulerRepository.getSchedulers(time,day).size());
-        if(schedulerRepository.getSchedulers(time,day).size()>0){
-            List<Scheduler> schedulers = schedulerRepository.getSchedulers(time,day);
+        System.out.println("Reception" + schedulerRepository.getSchedulers(time,day,"Reception").size());
+        System.out.println("Stock" + schedulerRepository.getSchedulers(time,day,"Stock").size());
+        System.out.println("Shipment" + schedulerRepository.getSchedulers(time,day,"Shipment").size());
+        if(schedulerRepository.getSchedulers(time,day,"Reception").size()>0){
+            List<Scheduler> schedulers = schedulerRepository.getSchedulers(time,day,"Reception");
             for(Scheduler value : schedulers){
-                stockService.sendStock(value.getCompany().getName());
                 receptionService.sendReceptions(value.getCompany().getName());
-                //TODO add parameter to recognise which mails should be sent
             }
         }
+        else if(schedulerRepository.getSchedulers(time,day,"Stock").size()>0){
+            List<Scheduler> schedulers = schedulerRepository.getSchedulers(time,day,"Stock");
+            for(Scheduler value : schedulers){
+                stockService.sendStock(value.getCompany().getName());
+            }
+        }
+        //TODO scheduler for Shipment files
+//        else if(schedulerRepository.getSchedulers(time,day,"Shipment").size()>0){
+//            List<Scheduler> schedulers = schedulerRepository.getSchedulers(time,day,"Shipment");
+//            for(Scheduler value : schedulers){
+//                stockService.sendStock(value.getCompany().getName());
+//            }
+//        }
     }
 }

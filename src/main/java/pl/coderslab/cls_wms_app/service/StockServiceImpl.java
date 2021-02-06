@@ -75,9 +75,7 @@ public class StockServiceImpl implements StockService {
 
     public void sendStock(String company) {
         List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForStockType("%Stock%",company);
-        for(EmailRecipients value : mailGroup)
-        {
-            List<Stock> stockForCompany = stockRepository.getStockByCompanyName(value.getCompany().getName());
+            List<Stock> stockForCompany = stockRepository.getStockByCompanyName(company);
             String warehouse = "";
             for(Stock data : stockForCompany){
                 warehouse = data.getWarehouse().getName();
@@ -122,7 +120,7 @@ public class StockServiceImpl implements StockService {
                 log.debug(path + " is empty, cannot send the email");
             }
 
-        }
+
 
     }
 

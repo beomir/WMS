@@ -188,9 +188,9 @@ public class ReceptionServiceImpl implements ReceptionService {
                 receptions = new File("receptions/receptionsFor" + company + "From" + dateBack + "To" + LocalDate.now() + random + ".txt");
             }
             try (FileWriter fileWriter = new FileWriter(receptions, true)) {
-                fileWriter.append("Receptions for: " + company + ", from: " + dateBack + ", to: " + LocalDate.now() + "\n");
+                fileWriter.append("Receptions for: " + company + ", from: " + dateBack + ", to: " + LocalDate.now() + "\n" + "\n");
                 for (Reception values : receptionForCompany) {
-                    fileWriter.append("Reception Number:" + values.getReceptionNumber().toString() + "\n" + "\n");
+                    fileWriter.append("\n" +"Reception Number:" + values.getReceptionNumber().toString() + "\n");
                     fileWriter.append("Article Number:" + values.getArticle().getArticle_number().toString() + "\n");
                     fileWriter.append("Article Description:" + values.getArticle().getArticle_desc() + "\n");
                     fileWriter.append("Handle Device Number:" + values.getHd_number().toString() + "\n");
@@ -198,9 +198,24 @@ public class ReceptionServiceImpl implements ReceptionService {
                     fileWriter.append("Vendor Name:" + values.getVendor().getName() + ", ").append("Vendor Address:" + values.getVendor().getCity() + ", " + values.getVendor().getStreet() + ", " + values.getVendor().getCountry() + "\n");
                     fileWriter.append("Unit:" + values.getUnit().getName() + "\n");
                     fileWriter.append("Company:" + values.getCompany().getName() + "\n");
-                    fileWriter.append("FromWarehouse:" + values.getWarehouse().getName() + "\n");
-                    fileWriter.append("Closed:" + values.getLast_update() + "\n");
-                    fileWriter.append("Closed by:" + values.getChangeBy() + "\n");
+                    fileWriter.append("Warehouse:" + values.getWarehouse().getName() + "\n");
+                    if(values.isCreation_closed() && !values.isFinished())
+                    {
+                        fileWriter.append("Reception status: Closed - Goods are on reception locations and checking is started" + "\n");
+                        fileWriter.append("Closed:" + values.getLast_update() + "\n");
+                        fileWriter.append("Closed by:" + values.getChangeBy() + "\n");
+                    }
+                    else if(values.isFinished()){
+                        fileWriter.append("Reception status: Finished - Goods were counted properly and starts be available on stock" + "\n");
+                        fileWriter.append("Finished:" + values.getLast_update() + "\n");
+                        fileWriter.append("Finished by:" + values.getChangeBy() + "\n");
+                    }
+                    else if(!values.isCreation_closed() && !values.isFinished()) {
+                        fileWriter.append("Reception status: Created - Reception created but physically are not in warehouse yet" + "\n");
+                        fileWriter.append("Created:" + values.getLast_update() + "\n");
+                        fileWriter.append("Created by:" + values.getChangeBy() + "\n");
+                    }
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();

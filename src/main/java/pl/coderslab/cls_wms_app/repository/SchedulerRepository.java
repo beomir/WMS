@@ -21,8 +21,8 @@ public interface SchedulerRepository extends JpaRepository<Scheduler, Long> {
     @Query("SELECT distinct c FROM Users u JOIN Company c on u.company = c.name join Scheduler s on s.company.id = c.id WHERE u.username like ?1 order by c.name")
     List<Scheduler> getSchedulerByUsername(String username);
 
-    @Query("Select distinct s From Scheduler s where s.hour = ?1 and s.dayOfWeek like ?2")
-    List<Scheduler> getSchedulers(String hours,String dayOfWeek);
+    @Query("Select distinct s From Scheduler s where s.hour = ?1 and s.dayOfWeek like ?2 and s.type = ?3")
+    List<Scheduler> getSchedulers(String hours,String dayOfWeek,String type);
 
     @Query("Select s from Scheduler s where s.company.name = ?1 and s.type = ?2")
     List<Scheduler> getSchedulerByCompanyName(String companyName, String type);
