@@ -30,7 +30,9 @@ public class UsersFixture {
             new Users(null, "Palpatine", "Arek", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"arek6891@interia.pl",true,"Strojem","system",null),
             new Users(null, "PalpatineAdmin", "Arek", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"arek6891@interia.pl",true,"Strojem","system",null),
             new Users(null, "Reeze", "Rap", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"reeze1602@gmail.com",true,"Strojem","system",null),
-            new Users(null, "ReezeAdmin", "Rap", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"reeze1602@gmail.com",true,"Strojem","system",null)
+            new Users(null, "ReezeAdmin", "Rap", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"reeze1602@gmail.com",true,"Strojem","system",null),
+            new Users(null, "AraggornAdmin", "Olus124", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"zerelik@gmail.com",true,"Strojem","system",null),
+            new Users(null, "Araggorn", "Olek157", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"zerelik@gmail.com",true,"Strojem","system",null)
     );
 
     @Autowired
@@ -61,6 +63,8 @@ public class UsersFixture {
         Users users12 = usersList.get(11);
         Users users13 = usersList.get(12);
         Users users14 = usersList.get(13);
+        Users users15 = usersList.get(13);
+        Users users16 = usersList.get(13);
 //
         users1.setUsersRoles(usersRolesList.get(0));
         users2.setUsersRoles(usersRolesList.get(1));
@@ -76,6 +80,8 @@ public class UsersFixture {
         users12.setUsersRoles(usersRolesList.get(4));
         users13.setUsersRoles(usersRolesList.get(0));
         users14.setUsersRoles(usersRolesList.get(4));
+        users15.setUsersRoles(usersRolesList.get(4));
+        users16.setUsersRoles(usersRolesList.get(0));
 //
         usersService.addWithoutCodePass(users1);
         usersService.addWithoutCodePass(users2);
@@ -91,5 +97,7 @@ public class UsersFixture {
         usersService.addWithoutCodePass(users12);
         usersService.addWithoutCodePass(users13);
         usersService.addWithoutCodePass(users14);
+        usersService.addWithoutCodePass(users15);
+        usersService.addWithoutCodePass(users16);
     }
 }
