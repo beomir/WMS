@@ -45,11 +45,11 @@ public class DataUpdater {
         }
         String time = hour + ":" + minutes;
         String day = "%" + LocalDate.now().getDayOfWeek() + "%";
-        System.out.println(time);
-        System.out.println(day);
-        System.out.println("Reception" + schedulerRepository.getSchedulers(time,day,"Reception").size());
-        System.out.println("Stock" + schedulerRepository.getSchedulers(time,day,"Stock").size());
-        System.out.println("Shipment" + schedulerRepository.getSchedulers(time,day,"Shipment").size());
+//        System.out.println(time);
+//        System.out.println(day);
+//        System.out.println("Reception" + schedulerRepository.getSchedulers(time,day,"Reception").size());
+//        System.out.println("Stock" + schedulerRepository.getSchedulers(time,day,"Stock").size());
+//        System.out.println("Shipment" + schedulerRepository.getSchedulers(time,day,"Shipment").size());
         if(schedulerRepository.getSchedulers(time,day,"Reception").size()>0){
             List<Scheduler> schedulers = schedulerRepository.getSchedulers(time,day,"Reception");
             for(Scheduler value : schedulers){
