@@ -63,8 +63,8 @@ public class UsersFixture {
         Users users12 = usersList.get(11);
         Users users13 = usersList.get(12);
         Users users14 = usersList.get(13);
-        Users users15 = usersList.get(13);
-        Users users16 = usersList.get(13);
+        Users users15 = usersList.get(14);
+        Users users16 = usersList.get(15);
 //
         users1.setUsersRoles(usersRolesList.get(0));
         users2.setUsersRoles(usersRolesList.get(1));
