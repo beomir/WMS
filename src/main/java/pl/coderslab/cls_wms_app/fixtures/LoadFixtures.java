@@ -45,24 +45,24 @@ public class LoadFixtures {
         this.schedulerFixture = schedulerFixture;
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void runAfterStartup() {
-
-        companyFixture.loadIntoDB();
-        unitFixture.loadIntoDB();
-        usersRolesFixture.loadIntoDB();
-        usersFixture.loadIntoDB();
-        warehouseFixture.loadIntoDB();
-        statusFixture.loadIntoDB();
-        articleFixture.loadIntoDB();
-        vendorFixture.loadIntoDB();
-        receptionFixture.loadIntoDB();
-        shipMethodFixture.loadIntoDB();
-        customerFixture.loadIntoDB();
-        shipmentFixture.loadIntoDB();
-        stockFixture.loadIntoDB();
-        emailTypesFixture.loadIntoDB();
-        emailRecipientsFixture.loadIntoDB();
-        schedulerFixture.loadIntoDB();
-    }
+//    @EventListener(ApplicationReadyEvent.class)
+//    public void runAfterStartup() {
+//
+//        companyFixture.loadIntoDB();
+//        unitFixture.loadIntoDB();
+//        usersRolesFixture.loadIntoDB();
+//        usersFixture.loadIntoDB();
+//        warehouseFixture.loadIntoDB();
+//        statusFixture.loadIntoDB();
+//        articleFixture.loadIntoDB();
+//        vendorFixture.loadIntoDB();
+//        receptionFixture.loadIntoDB();
+//        shipMethodFixture.loadIntoDB();
+//        customerFixture.loadIntoDB();
+//        shipmentFixture.loadIntoDB();
+//        stockFixture.loadIntoDB();
+//        emailTypesFixture.loadIntoDB();
+//        emailRecipientsFixture.loadIntoDB();
+//        schedulerFixture.loadIntoDB();
+//    }
 }
