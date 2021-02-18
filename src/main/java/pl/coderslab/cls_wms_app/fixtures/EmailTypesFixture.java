@@ -10,6 +10,7 @@ import pl.coderslab.cls_wms_app.service.EmailTypesService;
 import java.util.Arrays;
 import java.util.List;
 
+@Profile("local")
 @Component
 @Profile("local")
 public class EmailTypesFixture {

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+@Profile("local")
 @Component
 @Profile("local")
 public class LoadFixtures {
