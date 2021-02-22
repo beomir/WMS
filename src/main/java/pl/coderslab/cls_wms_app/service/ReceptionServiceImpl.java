@@ -225,7 +225,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         Path path = Paths.get(filePath);
         if(Files.exists(path)) {
             for (EmailRecipients valuess : mailGroup) {
-                    sendEmailService.sendEmail(valuess.getEmail(), "Dear client,<br/><br/> receptions Company: <b>" + company + "</b> from: " + dateBack + ", to:" + LocalDate.now() + ". Data in attachment", "Receptions for: " + company + ", from: " + dateBack + ", to: " + LocalDate.now(), filePath);
+                    sendEmailService.sendEmail(valuess.getEmail(), "Dear client,<br/><br/> receptions for Company: <b>" + company + "</b> from: " + dateBack + ", to:" + LocalDate.now() + ". Data in attachment", "Receptions for: " + company + ", from: " + dateBack + ", to: " + LocalDate.now(), filePath);
             }
         }
         else{

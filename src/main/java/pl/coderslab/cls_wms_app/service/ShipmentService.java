@@ -23,4 +23,6 @@ public interface ShipmentService {
     int checkHowManyNotfinishedShipments(Long id,String username);
 
     Map<String,Integer> surveyMap(Long id, String username);
+
+    void sentShipments(String company);
 }

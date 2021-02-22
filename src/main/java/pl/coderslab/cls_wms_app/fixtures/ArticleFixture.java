@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+@Component
 @Profile("local")
 public class ArticleFixture {
 

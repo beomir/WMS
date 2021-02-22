@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cls_wms_app.entity.Reception;
+import pl.coderslab.cls_wms_app.entity.Shipment;
 import pl.coderslab.cls_wms_app.entity.ShipmentInCreation;
 
 import java.util.List;
@@ -78,4 +79,7 @@ public interface ShipmentInCreationRepository extends JpaRepository<ShipmentInCr
     @Transactional
     @Query(value = "Delete s.* from storage s inner join company c on s.company_id = c.id inner join users u on u.company = c.name where pieces_qty = 0 and status_id = 1 and s.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)
     void deleteZerosOnStock(Long id, String username);
+
+    @Query("Select sic from ShipmentInCreation sic where substring(sic.last_update,1,10) >= ?1 and sic.company.name = ?2 order by sic.warehouse.name")
+    List<ShipmentInCreation> getShipmentsInCreationFromXDayBack(String dateBack, String company);
 }
