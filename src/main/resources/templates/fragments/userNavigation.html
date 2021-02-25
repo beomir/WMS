@@ -14,51 +14,10 @@
 
 
         <a th:href="@{/warehouse}"><div th:text="#{app.chWarehouse}" class="btn">Choose Warehouse</div></a>
-        <a th:href="@{/reception/vendor}" style="min-width: 100%">
-            <ol class="btn"><div th:text="#{app.vendorList}" style="color: white;font-weight: normal">Vendor list</div >
-                <li style="min-width: 100%;">
-                    <ul>
-                        <li>
-                            <a th:text="#{app.addVendor}" th:href="@{/reception/formVendor}">Create New Vendor</a>
-                        </li>
-                    </ul>
-                </li>
-            </ol>
-        </a>
-        <a th:href="@{/shipment/customer}" style="min-width: 100%">
-            <ol class="btn"><div th:text="#{app.customerList}" style="color: white;font-weight: normal">Customer list</div >
-                <li style="min-width: 100%;">
-                    <ul>
-                        <li>
-                            <a th:text="#{app.addCustomer}" th:href="@{/shipment/formCustomer}">Create New Customer</a>
-                        </li>
-                    </ul>
-                </li>
-            </ol>
-        </a>
-        <a th:href="@{/article}" style="min-width: 100%">
-            <ol class="btn"><div th:text="#{app.articleList}" style="color: white;font-weight: normal">Article list</div >
-                <li style="min-width: 100%;">
-                    <ul>
-                        <li>
-                            <a th:text="#{app.addArticle}" th:href="@{/formArticle}">Create New Article</a>
-                        </li>
-                    </ul>
-                </li>
-            </ol>
-        </a>
-        <a th:href="@{/emailRecipients}" style="min-width: 100%">
-            <ol class="btn"><div th:text="#{app.emailRecipientsList}" style="color: white;font-weight: normal">Emails Recipients list</div >
-                <li style="min-width: 100%;">
-                    <ul>
-                        <li>
-                            <a sec:authorize="hasRole('ROLE_USER')" th:text="#{app.addRecipientsList}" th:href="@{/user/formEmailRecipients}">Create New email recipient</a>
-                        </li>
-                    </ul>
-                </li>
-            </ol>
-        </a>
-         <div th:text="#{app.config}" class="btn" id="configuration"></div>
+         <div class="btn" id="configuration">
+              <span th:text="#{app.config}"></span>
+            <img id="configImg" th:src="@{/images/list.png}" class="right"/>
+         </div>
         <span id="configBtn" class="d-none">
         <a th:href="@{/user/scheduler}" style="min-width: 100%">
             <ol class="btn2"><div th:text="#{app.scheduler}" style="color: white;font-weight: normal">Scheduler</div>
@@ -69,14 +28,71 @@
                 </li>
             </ol>
         </a>
+            <a th:href="@{/emailRecipients}" style="min-width: 100%">
+             <ol class="btn2"><div th:text="#{app.emailRecipientsList}" style="color: white;font-weight: normal">Emails Recipients list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a sec:authorize="hasRole('ROLE_USER')" th:text="#{app.addRecipientsList}" th:href="@{/user/formEmailRecipients}">Create New email recipient</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            </a>
+            <a th:href="@{/article}" style="min-width: 100%">
+             <ol class="btn2"><div th:text="#{app.articleList}" style="color: white;font-weight: normal">Article list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:text="#{app.addArticle}" th:href="@{/formArticle}">Create New Article</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+             <a th:href="@{/shipment/customer}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.customerList}" style="color: white;font-weight: normal">Customer list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:text="#{app.addCustomer}" th:href="@{/shipment/formCustomer}">Create New Customer</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+            <a th:href="@{/reception/vendor}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.vendorList}" style="color: white;font-weight: normal">Vendor list</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:text="#{app.addVendor}" th:href="@{/reception/formVendor}">Create New Vendor</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
         </span>
         <script>
              const configuration = document.getElementById("configuration");
              const configBtn = document.getElementById("configBtn");
+             var switcher = 0;
 
              const handleClickConfiguration = () => {
                  configBtn.classList.toggle('d-none');
+                 switcher = switcher + 1;
+                 imgSwitcher();
              }
+
+             function imgSwitcher(){
+                 if (switcher % 2 == 0) {
+                     document.getElementById('configImg').src  = '/images/list.png';
+                 }
+                 else {
+                     document.getElementById('configImg').src = '/images/close.png';
+                 }
+             }
+
 
              configuration.addEventListener('click', handleClickConfiguration);
 

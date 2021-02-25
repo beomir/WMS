@@ -812,10 +812,6 @@ tr:hover > td{
     border-color: #aaa;
 }
 
-.d-none {
-    transition: transform .3s .1s ease-in-out;
-    display: none;
-}
 
 .hovery:hover {
     color: blueviolet;
@@ -924,7 +920,40 @@ tr:hover > td{
     font-weight: bold;
 }
 
+.btn3 {
+    color: #fff;
+    background: #024594;
+    border: 1px solid #052083;
+    outline: none;
+    cursor: pointer;
+    padding: .7em 1em;
+    margin-top: 2em;
+    -webkit-appearance: none;
+    width: 96%;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    font-size: 1em;
+    letter-spacing: 1px;
+}
 
+.btn3:hover {
+    background: transparent;
+    color: #024594;
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+}
+
+
+.d-none {
+    transition: transform .5s .1s ease-in-out;
+    display: none;
+}
 
 
 .hamburger {
@@ -1078,4 +1107,7 @@ input[type=time]::-webkit-inner-spin-button {
     display: none;
 }
 
+.right {
+    float: right;
+}
 
