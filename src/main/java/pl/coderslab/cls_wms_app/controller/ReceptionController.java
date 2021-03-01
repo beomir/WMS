@@ -1,19 +1,25 @@
 package pl.coderslab.cls_wms_app.controller;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.*;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
+@Slf4j
 @Controller
 @RequestMapping("/reception")
 public class ReceptionController {
@@ -48,6 +54,56 @@ public class ReceptionController {
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
         return "reception";
+    }
+
+    @PostMapping("receptionFile")
+    public String receptionFile(@RequestParam("receptionFile") MultipartFile file)
+    {
+        if(!file.isEmpty()) {
+            try {
+                String filePath = "input/receptions/";
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                byte[] bytes = file.getBytes();
+                File fsFile = new File(filePath + fileName);
+                while(fsFile.exists()){
+                    int random = new Random().nextInt(100);
+                    fsFile = new File(filePath + random + fileName);
+                }
+                fsFile.createNewFile();
+                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fsFile));
+                stream.write(bytes);
+                stream.close();
+
+                log.info("File {} has been successfully uploaded as {}", file.getOriginalFilename(), fileName);
+                receptionService.insertFileContentToDB(fsFile);
+            } catch (Exception e) {
+                log.error("File has not been uploaded", e);
+            }
+        }
+            else {
+                log.error("Uploaded file is empty");
+            }
+
+
+
+
+//        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+//        String uploadDir = "input/receptions/" + fileName;
+//        Path uploadPath = Paths.get(uploadDir);
+//
+//        if(Files.exists(uploadPath)){
+//            Files.createDirectories(uploadPath);
+//        }
+//
+//        try (InputStream inputStream = multipartFile.getInputStream()){
+//            Path filePath = uploadPath.resolve(fileName);
+//            Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
+//        } catch (IOException e) {
+//            throw new IOException("Couldn't save uploaded file: " + fileName);
+
+
+
+        return "redirect:/reception/reception";
     }
 
     @GetMapping("formReception")

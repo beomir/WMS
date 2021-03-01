@@ -22,5 +22,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query("Select a from Article a")
     List<Article> getArticles();
 
+    @Query("Select a from Article a where a.article_number = ?1")
+    Article findArticleByArticle_number(Long articleNbr);
 
 }
