@@ -1,2 +1,0 @@
-Reception_Number:20200001,ArticleNumber:1234567890123457,ArticleDescription:bicycle,HandleDeviceNumber:202000000000000006,PiecesQuantity:12,VendorName:Sharpico,VendorAddress:Yokohama,Tokugawa 12,JapanUnit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:system
-Reception_Number:20200001,ArticleNumber:1234567890123459,ArticleDescription:bicycle,HandleDeviceNumber:202000000000000014,PiecesQuantity:12,VendorName:Sharpico,VendorAddress:Yokohama,Tokugawa 12,JapanUnit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:MagdaM

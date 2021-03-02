@@ -25,10 +25,11 @@ public class LoadFixtures {
     private EmailTypesFixture emailTypesFixture;
     private EmailRecipientsFixture emailRecipientsFixture;
     private SchedulerFixture schedulerFixture;
+    private TransactionFixture transactionFixture;
 
 
     @Autowired
-    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture) {
+    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture, TransactionFixture transactionFixture) {
         this.stockFixture = stockFixture;
         this.companyFixture = companyFixture;
         this.usersFixture = usersFixture;
@@ -45,6 +46,7 @@ public class LoadFixtures {
         this.emailTypesFixture = emailTypesFixture;
         this.emailRecipientsFixture = emailRecipientsFixture;
         this.schedulerFixture = schedulerFixture;
+        this.transactionFixture = transactionFixture;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -66,5 +68,6 @@ public class LoadFixtures {
         emailTypesFixture.loadIntoDB();
         emailRecipientsFixture.loadIntoDB();
         schedulerFixture.loadIntoDB();
+        transactionFixture.loadIntoDB();
     }
 }

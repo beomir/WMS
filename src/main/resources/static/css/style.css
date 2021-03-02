@@ -1111,3 +1111,14 @@ input[type=time]::-webkit-inner-spin-button {
     float: right;
 }
 
+table.criteria th {
+    background-color: #6495ED;
+    margin-right: 5px;
+    padding: 2px 2px 2px 2px;
+}
+
+table.criteria {
+    border-collapse: separate;
+    border-spacing: 10px;
+
+}
