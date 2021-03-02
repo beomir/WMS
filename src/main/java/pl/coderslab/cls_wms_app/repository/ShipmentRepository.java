@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import pl.coderslab.cls_wms_app.entity.Reception;
 import pl.coderslab.cls_wms_app.entity.Shipment;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 
@@ -44,4 +45,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     @Query(value="Select distinct w.name from shipments s inner join warehouse w on s.warehouse_id = w.id where s.shipment_number = ?1",nativeQuery = true)
     String getWarehouseByShipmentNumber(Long shipmentNbr);
+
+    @Query("Select r from Shipment r where substring(r.last_update,1,10) >= ?1 and r.company.name = ?2 order by r.warehouse.name")
+    List<Shipment> getShipmentsFromXDayBack(String dateBack, String company);
 }

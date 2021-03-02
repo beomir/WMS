@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cls_wms_app.entity.Reception;
+import pl.coderslab.cls_wms_app.entity.Shipment;
 import pl.coderslab.cls_wms_app.entity.ShipmentInCreation;
 
 import java.util.List;
@@ -53,13 +54,13 @@ public interface ShipmentInCreationRepository extends JpaRepository<ShipmentInCr
     //insert to shipments after close creation
     @Modifying
     @Transactional
-    @Query(value = "insert into shipments (creation_closed, finished, hd_number, pieces_qty, quality, shipment_number, article_id, company_id, customer_id, ship_method_id, status_id, unit_id, warehouse_id,last_update,created,change_by) select creation_closed,false,DENSE_RANK() OVER (ORDER BY s.id DESC) + (select hd_number from shipments order by hd_number desc limit 1) + 900000000 as hd_number,pieces_qty,quality,shipment_number,article_id,company_id,customer_id,ship_method_id,status_id,unit_id,warehouse_id,localtime,localtime,s.change_by from shipment_in_creation s inner join company c on s.company_id = c.id  inner join users u on u.company = c.name where s.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)
+    @Query(value = "insert into shipments (creation_closed, finished, hd_number, pieces_qty, quality, shipment_number, article_id, company_id, customer_id, ship_method_id, status_id, unit_id, warehouse_id,last_update,created,change_by) select creation_closed,false,s.id + (select hd_number from shipments order by hd_number desc limit 1) + 900000000 as hd_number,pieces_qty,quality,shipment_number,article_id,company_id,customer_id,ship_method_id,status_id,unit_id,warehouse_id,localtime,localtime,s.change_by from shipment_in_creation s inner join company c on s.company_id = c.id  inner join users u on u.company = c.name where s.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)
     void insertDataToShipmentAfterCloseCreation(Long id, String username);
 
     //modification on stock after close creation -- optimistic version
     @Modifying
     @Transactional
-    @Query(value = "insert into storage (comment,created,hd_number,last_update,pieces_qty,quality,article_id,company_id,status_id,unit_id,warehouse_id,shipment_number, change_by)  select concat('transfered to send in shipment: ',(select distinct shipment_number from shipment_in_creation sic inner join company c on sic.company_id = c.id inner join users u on u.company = c.name where sic.warehouse_id = ?1 and u.username like ?2 order by 1 desc )) ,localtime,DENSE_RANK() OVER (ORDER BY sic.id DESC) + (select hd_number from shipments order by hd_number desc limit 1) + 900000000 as hd_number,localtime,pieces_qty,quality,article_id,company_id,2,unit_id,warehouse_id,sic.shipment_number,sic.change_by from shipment_in_creation sic inner join company c on sic.company_id = c.id inner join users u on u.company = c.name where sic.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)
+    @Query(value = "insert into storage (comment,created,hd_number,last_update,pieces_qty,quality,article_id,company_id,status_id,unit_id,warehouse_id,shipment_number, change_by)  select concat('transfered to send in shipment: ',(select distinct shipment_number from shipment_in_creation sic inner join company c on sic.company_id = c.id inner join users u on u.company = c.name where sic.warehouse_id = ?1 and u.username like ?2 order by 1 desc )) ,localtime,sic.id + (select hd_number from shipments order by hd_number desc limit 1) + 900000000 as hd_number,localtime,pieces_qty,quality,article_id,company_id,2,unit_id,warehouse_id,sic.shipment_number,sic.change_by from shipment_in_creation sic inner join company c on sic.company_id = c.id inner join users u on u.company = c.name where sic.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)
     void insertDataToStockAfterCloseCreationWithCorrectStatus(Long id, String username);
 
     @Modifying
@@ -78,4 +79,7 @@ public interface ShipmentInCreationRepository extends JpaRepository<ShipmentInCr
     @Transactional
     @Query(value = "Delete s.* from storage s inner join company c on s.company_id = c.id inner join users u on u.company = c.name where pieces_qty = 0 and status_id = 1 and s.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)
     void deleteZerosOnStock(Long id, String username);
+
+    @Query("Select sic from ShipmentInCreation sic where substring(sic.last_update,1,10) >= ?1 and sic.company.name = ?2 order by sic.warehouse.name")
+    List<ShipmentInCreation> getShipmentsInCreationFromXDayBack(String dateBack, String company);
 }

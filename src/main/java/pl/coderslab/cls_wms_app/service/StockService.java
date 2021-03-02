@@ -24,6 +24,6 @@ public interface StockService {
 
     void update(Stock stock);
 
-    void sendStock();
+    void sendStock(String company);
 }
 

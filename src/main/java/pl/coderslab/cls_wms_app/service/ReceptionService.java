@@ -1,8 +1,10 @@
 package pl.coderslab.cls_wms_app.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cls_wms_app.entity.Reception;
 
 import javax.mail.MessagingException;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -36,10 +38,11 @@ public interface ReceptionService {
 
     List<Integer> pallets();
 
-    //set finished reception line --> only one line
-//    void finished(Long id);
-
     void closeCreation(Long id);
 
     void openCreation(Long id);
+
+    void sendReceptions(String company);
+
+    void insertFileContentToDB(File fsFile);
 }

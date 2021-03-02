@@ -2,7 +2,7 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.ui.Model;
 import pl.coderslab.cls_wms_app.entity.Users;
-import pl.coderslab.cls_wms_app.entity.UsersRoles;
+
 
 import java.util.List;
 

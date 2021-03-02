@@ -73,8 +73,14 @@
 				</table>
 
 				<a th:href="@{/reception/formReception}"><div class="buttonik" style="float: right;max-width: 20%;">Add to Reception </div></a>
-
-			</div><br/><br/>
+				<form enctype="multipart/form-data" class="buttonik2" style="float: right;max-width: 20%;clear:right" method="post" th:action="@{/reception/receptionFile}">
+				<label for="receptionFile">Create Reception from file:</label>
+				<input type="file"
+					   id="receptionFile" name="receptionFile"
+					   accept=".txt">
+					<button>Submit File</button>
+				</form>
+			</div><br/><br/><br/><br/> <br/><br/><br/><br/><br/><br/>
 			<div th:include="fragments/footer :: footer"></div>
 		</div>
 		<div class="w3copyright-agile">
@@ -86,24 +92,7 @@
 
 	<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
-	<script>
-	superplaceholder({
-			el: input1,
-			sentences: [ 'Write your Username', 'For example:', 'SuperUserStrojem','or', 'SuperUserbUDUJem' ],
-			options: {
-				loop: true,
-				startOnFocus: false
-			}
-		})
-		superplaceholder({
-			el: input2,
-			sentences: [ 'Write your Password', 'For example:', 'SuperUserStrojem','**', 'SuperUserbUDUJem' ],
-			options: {
-				loop: true,
-				startOnFocus: false 
-			}
-		})
-	</script>
+
 
 </body>
 </html>

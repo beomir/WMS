@@ -2,10 +2,12 @@ package pl.coderslab.cls_wms_app.fixtures;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("local")
 public class LoadFixtures {
     private StockFixture stockFixture;
     private CompanyFixture companyFixture;
@@ -22,10 +24,12 @@ public class LoadFixtures {
     private UsersRolesFixture usersRolesFixture;
     private EmailTypesFixture emailTypesFixture;
     private EmailRecipientsFixture emailRecipientsFixture;
+    private SchedulerFixture schedulerFixture;
+    private TransactionFixture transactionFixture;
 
 
     @Autowired
-    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture) {
+    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture, TransactionFixture transactionFixture) {
         this.stockFixture = stockFixture;
         this.companyFixture = companyFixture;
         this.usersFixture = usersFixture;
@@ -41,7 +45,8 @@ public class LoadFixtures {
         this.usersRolesFixture = usersRolesFixture;
         this.emailTypesFixture = emailTypesFixture;
         this.emailRecipientsFixture = emailRecipientsFixture;
-
+        this.schedulerFixture = schedulerFixture;
+        this.transactionFixture = transactionFixture;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -62,6 +67,7 @@ public class LoadFixtures {
         stockFixture.loadIntoDB();
         emailTypesFixture.loadIntoDB();
         emailRecipientsFixture.loadIntoDB();
-
+        schedulerFixture.loadIntoDB();
+        transactionFixture.loadIntoDB();
     }
 }

@@ -23,13 +23,8 @@
 
 <div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
 
-	<div sec:authorize="hasRole('ROLE_ADMIN')">
-		<div th:include="fragments/adminNavigation :: adminNavigation"></div>
-	</div>
+	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
 
-	<div sec:authorize="!hasRole('ROLE_ADMIN')">
-		<div th:include="fragments/userNavigation :: userNavigation"></div>
-	</div>
 </div>
 
 <div id="content" class="mainw3-agileinfo">
@@ -47,23 +42,5 @@
 
 <script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 <script type="text/javascript" th:src="@{/js/logo.js}"></script>
-<script>
-	superplaceholder({
-		el: input1,
-		sentences: [ 'Write your Username', 'For example:', 'SuperUserStrojem','or', 'SuperUserbUDUJem' ],
-		options: {
-			loop: true,
-			startOnFocus: false
-		}
-	})
-	superplaceholder({
-		el: input2,
-		sentences: [ 'Write your Password', 'For example:', 'SuperUserStrojem','**', 'SuperUserbUDUJem' ],
-		options: {
-			loop: true,
-			startOnFocus: false
-		}
-	})
-</script>
 </body>
 </html>

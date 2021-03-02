@@ -18,4 +18,7 @@ public interface UnitRepository extends JpaRepository<Unit, Long> {
     @Query("Select u from Unit u where u.active = false")
     List<Unit> getDeactivatedUnit();
 
+    @Query("Select u from Unit u where u.name = ?1")
+    Unit getUnitByName(String unitName);
+
 }
