@@ -61,5 +61,10 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
     @Query("Select r from Reception r where substring(r.last_update,1,10) >= ?1 and r.company.name = ?2 order by r.warehouse.name")
     List<Reception> getReceptionsFromXDayBack(String dateBack, String company);
 
+    @Query(value="Select count(*) from receptions where reception_number = ?1",nativeQuery = true)
+    int checkIfReceptionAlreadyExists(Long receptionNbr);
+
+    @Query(value="Select count(*) from receptions where hd_number = ?1",nativeQuery = true)
+    int checkIfHdNumberExistsOnReception(Long hd_number);
 
 }

@@ -21,4 +21,7 @@ public interface VendorRepository extends JpaRepository<Vendor, Long> {
     @Query("Select v from Vendor v where v.active = true")
     List<Vendor> getVendors();
 
+    @Query("Select v from Vendor v where v.name = ?1")
+    Vendor getVendorByName(String vendorName);
+
 }

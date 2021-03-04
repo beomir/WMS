@@ -52,9 +52,23 @@
 			<section>
 				<label style="color: white;font-weight: bold">Trigger day of week</label><br/><br/>
 				<label th:each="i: ${weekDays}" style="color: white;font-weight: bold">
-					<input type="checkbox" th:field="*{dayOfWeek}" th:value="${i}"/>
+					<input type="checkbox" th:field="*{dayOfWeek}" th:value="${i}" class="triggerDays"/>
 					<span style="font-weight: bold" th:text="${i}" th:value="${i}" class="title"></span><br/>
 				</label>
+				<br/><br/>
+				<label style="color: white;font-weight: bold">
+					<input type="radio" id="allWeek" name="trigger" value="allDays">
+					<span>All Week</span>
+				</label>
+				<label style="color: white;font-weight: bold">
+					<input type="radio" id="workDays" name="trigger" value="workDays">
+					<span>Work Days</span>
+				</label>
+				<label style="color: white;font-weight: bold">
+					<input type="radio" id="weekend" name="trigger" value="weekend">
+					<span>Weekend</span>
+				</label>
+
 			</section><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Company</label>
@@ -95,6 +109,47 @@
 			hide.classList.remove("d-none")
 		}
 	})
+
+
+
+	if (document.querySelector('input[name="trigger"]')) {
+		document.querySelectorAll('input[name="trigger"]').forEach((elem) => {
+			elem.addEventListener("change", function(event) {
+				var item = event.target.value;
+				var inputElements = document.querySelectorAll(".triggerDays")
+				if(item == "allDays"){
+					for(var i = 0; inputElements[i]; ++i){
+							inputElements[i].checked = true;
+					}
+				}
+				else if(item == "workDays"){
+					for(var i = 0; inputElements[i]; ++i){
+						if(inputElements[i].value != "SUNDAY" && inputElements[i].value != "SATURDAY"){
+							inputElements[i].checked = true;
+						}
+						else if(inputElements[i].value == "SUNDAY" || inputElements[i].value == "SATURDAY"){
+							inputElements[i].checked = false;
+						}
+					}
+				}
+				else if(item == "weekend"){
+					for(var i = 0; inputElements[i]; ++i){
+						if(inputElements[i].value == "SUNDAY" || inputElements[i].value == "SATURDAY"){
+							inputElements[i].checked = true;
+						}
+						else if(inputElements[i].value != "SUNDAY" || inputElements[i].value != "SATURDAY"){
+							inputElements[i].checked = false;
+						}
+					}
+				}
+			});
+		});
+	}
+
+
+
+
+
 </script>
 
 </body>

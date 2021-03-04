@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
+</div>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form th:object="${issueLogSearching}" method="post" th:action="@{/user/issueLog-browser}">
+			<div class="titleList">Find Issues</div><br/>
+			<section>
+				<label style="color: white;font-weight: bold">Warehouse</label>
+				<select class="select-css" th:field="*{warehouse}">
+					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}">
+					<option th:value="'%'">All</option>
+					</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label style="color: white;font-weight: bold">Part of issue content</label>
+				<input type="text" th:field="*{issueLogContent}"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold">File name</label>
+				<input type="text" th:field="*{issueLogFileName}"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold">Issue created by User</label>
+				<input type="text" th:field="*{createdBy}"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold">Issues created From</label>
+				<input type="date" th:field="*{createdFrom}"/>
+			</section>
+
+			<section>
+				<label style="color: white;font-weight: bold">Issues created To</label>
+				<input type="date" th:field="*{createdTo}"/>
+			</section>
+
+			<section>
+				<br/><button class="button" type="submit">Search</button>
+			</section>
+		</form>
+
+	</div>
+
+	<div th:include="fragments/footer :: footer"></div>
+
+</div>
+<div class="w3copyright-agile">
+	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+</div>
+</div>
+
+
+<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
+<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+
+</body>
+
+
+</html>

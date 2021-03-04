@@ -74,7 +74,7 @@
 				</table>
 
 				<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/config/schedulersDeactivatedList}"><div th:text="#{app.deactivatedList}" class="buttonik" style="float: right;max-width: 20%;">Deactivated List</div></a>
-			</div>
+			</div><br/><br/>
 
 			<div th:include="fragments/footer :: footer"></div>
 		</div>

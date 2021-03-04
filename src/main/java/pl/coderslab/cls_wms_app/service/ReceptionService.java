@@ -2,8 +2,7 @@ package pl.coderslab.cls_wms_app.service;
 
 import pl.coderslab.cls_wms_app.entity.Reception;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
+import java.io.File;
 import java.util.List;
 
 public interface ReceptionService {
@@ -41,4 +40,7 @@ public interface ReceptionService {
     void openCreation(Long id);
 
     void sendReceptions(String company);
+
+    void insertFileContentToDB(File fsFile);
+
 }

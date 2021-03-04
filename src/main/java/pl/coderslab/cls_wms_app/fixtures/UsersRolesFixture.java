@@ -19,9 +19,7 @@ import java.util.List;
 @Profile("local")
 public class UsersRolesFixture {
     private UsersRolesService usersRolesService;
-//    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss a");
-//    LocalDateTime now = LocalDateTime.now();
-//    String dateTimeString = now.format(formatter);
+
 
 
     private List<UsersRoles> usersRolesList = Arrays.asList(

@@ -14,7 +14,10 @@
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span sec:authentication="principal.authorities"></span></div><br/>
 
         <a th:href="@{/warehouse}"><div th:text="#{app.chWarehouse}" class="btn">Choose Warehouse</div></a>
-        <div th:text="#{app.companyMenu}" class="btn" id="companyMenu"></div>
+        <div class="btn" id="companyMenu">
+            <span th:text="#{app.companyMenu}"></span>
+            <img id="companyImg" th:src="@{/images/list.png}" class="right"/>
+        </div>
         <span id="companyBtn" class="d-none">
             <a th:href="@{/config/warehouseList}" style="min-width: 100%">
             <ol class="btn2"><div th:text="#{app.warehousesList}" style="color: white;font-weight: normal">Warehouses list</div >
@@ -64,7 +67,10 @@
         </a>
 
         </span>
-        <div th:text="#{app.stockMenu}" class="btn" id="stockMenu"></div>
+        <div  class="btn" id="stockMenu">
+            <span th:text="#{app.stockMenu}"></span>
+            <img id="stockImg" th:src="@{/images/list.png}" class="right"/>
+        </div>
         <span id="stockBtn" class="d-none">
         <a th:href="@{/article}" style="min-width: 100%">
             <ol class="btn2"><div th:text="#{app.articleList}" style="color: white;font-weight: normal">Article list</div >
@@ -89,7 +95,10 @@
             </ol>
         </a>
         </span>
-        <div th:text="#{app.userMenu}" class="btn" id="userThings"></div>
+        <div class="btn" id="userThings">
+            <span th:text="#{app.userMenu}"></span>
+            <img id="userImg" th:src="@{/images/list.png}" class="right"/>
+        </div>
         <span id="userBtn" class="d-none">
         <a th:href="@{/config/userList}" style="min-width: 100%">
             <ol class="btn2"><div th:text="#{app.userList}" style="color: white;font-weight: normal">User list</div >
@@ -114,7 +123,10 @@
             </ol>
         </a>
         </span>
-        <div th:text="#{app.config}" class="btn" id="configuration"></div>
+        <div  class="btn" id="configuration">
+            <span th:text="#{app.config}"></span>
+            <img id="configImg" th:src="@{/images/list.png}" class="right"/>
+        </div>
         <span id="configBtn" class="d-none">
         <a th:href="@{/user/scheduler}" style="min-width: 100%">
             <ol class="btn2"><div th:text="#{app.scheduler}" style="color: white;font-weight: normal">Scheduler</div>
@@ -126,14 +138,34 @@
                 </li>
             </ol>
         </a>
+                  <a th:href="@{/user/transactions-browser}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.transactions}" style="color: white;font-weight: normal">Transaction</div>
+            </ol>
+        </a>
+             <a th:href="@{/user/issueLog-browser}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.issueLog}" style="color: white;font-weight: normal">Issue Log</div>
+            </ol>
+        </a>
         </span>
     </div>
     <script>
         const companyMenu = document.getElementById("companyMenu");
         const companyBtn = document.getElementById("companyBtn");
+        let switcherCom = 0;
 
         const handleClickCompany = () => {
             companyBtn.classList.toggle('d-none');
+            switcherCom = switcherCom + 1;
+            imgSwitcherCom();
+        }
+
+        function imgSwitcherCom(){
+            if (switcherCom % 2 == 0) {
+                document.getElementById('companyImg').src  = '/images/list.png';
+            }
+            else {
+                document.getElementById('companyImg').src = '/images/close.png';
+            }
         }
 
         companyMenu.addEventListener('click', handleClickCompany);
@@ -141,27 +173,63 @@
 
         const stockMenu = document.getElementById("stockMenu");
         const stockBtn = document.getElementById("stockBtn");
+        let switcherSto = 0;
 
         const handleClickStock = () => {
             stockBtn.classList.toggle('d-none');
+            switcherSto = switcherSto + 1;
+            imgSwitcherSto();
+        }
+
+        function imgSwitcherSto(){
+            if (switcherSto % 2 == 0) {
+                document.getElementById('stockImg').src  = '/images/list.png';
+            }
+            else {
+                document.getElementById('stockImg').src = '/images/close.png';
+            }
         }
 
         stockMenu.addEventListener('click', handleClickStock);
 
         const userThings = document.getElementById("userThings");
         const userBtn = document.getElementById("userBtn");
+        let switcherUsr = 0;
 
         const handleClickUser = () => {
             userBtn.classList.toggle('d-none');
+            switcherUsr = switcherUsr + 1;
+            imgSwitcherUsr();
+        }
+
+        function imgSwitcherUsr(){
+            if (switcherUsr % 2 == 0) {
+                document.getElementById('userImg').src  = '/images/list.png';
+            }
+            else {
+                document.getElementById('userImg').src = '/images/close.png';
+            }
         }
 
         userThings.addEventListener('click', handleClickUser);
 
         const configuration = document.getElementById("configuration");
         const configBtn = document.getElementById("configBtn");
+        let switcherSet = 0;
 
         const handleClickConfiguration = () => {
             configBtn.classList.toggle('d-none');
+            switcherSet = switcherSet + 1;
+            imgSwitcherSet();
+        }
+
+        function imgSwitcherSet(){
+            if (switcherSet % 2 == 0) {
+                document.getElementById('configImg').src  = '/images/list.png';
+            }
+            else {
+                document.getElementById('configImg').src = '/images/close.png';
+            }
         }
 
         configuration.addEventListener('click', handleClickConfiguration);

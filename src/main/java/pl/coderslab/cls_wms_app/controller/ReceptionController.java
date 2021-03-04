@@ -1,19 +1,25 @@
 package pl.coderslab.cls_wms_app.controller;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.*;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
+@Slf4j
 @Controller
 @RequestMapping("/reception")
 public class ReceptionController {
@@ -25,9 +31,10 @@ public class ReceptionController {
     private final CompanyService companyService;
     private final UnitService unitService;
     private final UsersService usersService;
+    private final ReceptionServiceImpl receptionServiceImpl;
 
     @Autowired
-    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService) {
+    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl) {
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.articleService = articleService;
@@ -35,6 +42,7 @@ public class ReceptionController {
         this.companyService = companyService;
         this.unitService = unitService;
         this.usersService = usersService;
+        this.receptionServiceImpl = receptionServiceImpl;
     }
 
 
@@ -42,12 +50,44 @@ public class ReceptionController {
     public String list(Model model,@SessionAttribute Long warehouseId) {
         List<Reception> receptions = receptionService.getReceptions(warehouseId,SecurityUtils.username());
         List<Warehouse> warehouse = warehouseService.getWarehouse(warehouseId);
+        model.addAttribute("fileStatus", receptionServiceImpl.insertReceptionFileResult);
         model.addAttribute("receptions", receptions);
         model.addAttribute("warehouse", warehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
         return "reception";
+    }
+
+    @PostMapping("receptionFile")
+    public String receptionFile(@RequestParam("receptionFile") MultipartFile file)
+    {
+        if(!file.isEmpty()) {
+            try {
+                String filePath = "input/receptions/";
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                byte[] bytes = file.getBytes();
+                File fsFile = new File(filePath + fileName);
+                while(fsFile.exists()){
+                    int random = new Random().nextInt(100);
+                    fsFile = new File(filePath + random + fileName);
+                }
+                fsFile.createNewFile();
+                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fsFile));
+                stream.write(bytes);
+                stream.close();
+
+                log.info("File {} has been successfully uploaded as {}", file.getOriginalFilename(), fileName);
+                receptionService.insertFileContentToDB(fsFile);
+            } catch (Exception e) {
+                log.error("File has not been uploaded", e);
+            }
+        }
+            else {
+                log.error("Uploaded file is empty");
+            }
+
+        return "redirect:/reception/reception";
     }
 
     @GetMapping("formReception")

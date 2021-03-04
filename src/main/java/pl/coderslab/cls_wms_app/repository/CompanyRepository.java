@@ -30,4 +30,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("select distinct c FROM Users u JOIN Company c on u.company = c.name WHERE u.username = ?1 ")
     Company getOneCompanyByUsername(String username);
 
+    @Query("Select c from Company c where c.name = ?1")
+    Company getCompanyByName(String companyName);
+
 }

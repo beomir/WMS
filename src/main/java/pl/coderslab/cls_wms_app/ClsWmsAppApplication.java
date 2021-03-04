@@ -10,7 +10,5 @@ public class ClsWmsAppApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ClsWmsAppApplication.class, args);
-
     }
-
 }

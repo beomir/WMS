@@ -19,12 +19,14 @@ public class DataUpdater {
     private final StockService stockService;
     private final SchedulerRepository schedulerRepository;
     private final ReceptionService receptionService;
+    private final ShipmentService shipmentService;
 
     @Autowired
-    public DataUpdater(StockService stockService, SchedulerRepository schedulerRepository, ReceptionService receptionService) {
+    public DataUpdater(StockService stockService, SchedulerRepository schedulerRepository, ReceptionService receptionService, ShipmentService shipmentService) {
         this.stockService = stockService;
         this.schedulerRepository = schedulerRepository;
         this.receptionService = receptionService;
+        this.shipmentService = shipmentService;
     }
 
 
@@ -45,11 +47,11 @@ public class DataUpdater {
         }
         String time = hour + ":" + minutes;
         String day = "%" + LocalDate.now().getDayOfWeek() + "%";
-//        System.out.println(time);
-//        System.out.println(day);
-//        System.out.println("Reception" + schedulerRepository.getSchedulers(time,day,"Reception").size());
-//        System.out.println("Stock" + schedulerRepository.getSchedulers(time,day,"Stock").size());
-//        System.out.println("Shipment" + schedulerRepository.getSchedulers(time,day,"Shipment").size());
+        System.out.println(time);
+        System.out.println(day);
+        System.out.println("Reception" + schedulerRepository.getSchedulers(time,day,"Reception").size());
+        System.out.println("Stock" + schedulerRepository.getSchedulers(time,day,"Stock").size());
+        System.out.println("Shipment" + schedulerRepository.getSchedulers(time,day,"Shipment").size());
         if(schedulerRepository.getSchedulers(time,day,"Reception").size()>0){
             List<Scheduler> schedulers = schedulerRepository.getSchedulers(time,day,"Reception");
             for(Scheduler value : schedulers){
@@ -62,12 +64,11 @@ public class DataUpdater {
                 stockService.sendStock(value.getCompany().getName());
             }
         }
-        //TODO scheduler for Shipment files
-//        else if(schedulerRepository.getSchedulers(time,day,"Shipment").size()>0){
-//            List<Scheduler> schedulers = schedulerRepository.getSchedulers(time,day,"Shipment");
-//            for(Scheduler value : schedulers){
-//                stockService.sendStock(value.getCompany().getName());
-//            }
-//        }
+        else if(schedulerRepository.getSchedulers(time,day,"Shipment").size()>0){
+            List<Scheduler> schedulers = schedulerRepository.getSchedulers(time,day,"Shipment");
+            for(Scheduler value : schedulers){
+                shipmentService.sentShipments(value.getCompany().getName());
+            }
+        }
     }
 }
