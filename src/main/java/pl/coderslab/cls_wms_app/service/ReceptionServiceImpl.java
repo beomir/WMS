@@ -468,7 +468,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                     issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
                     issuelog.setWarehouse(reception.getWarehouse());
                     issuelog.setIssueLogFilePath(errorFile.toString());
-                    if(reception.getCompany().getName() == null ) {
+                    if(reception.getCompany() == null ) {
                         issuelog.setAdditionalInformation("");
                     }
                     else{
