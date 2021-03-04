@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 @Component
-//@Profile("local")
+@Profile("local")
 public class StockFixture {
     private StockService stockService;
     private CompanyService companyService;
