@@ -109,6 +109,10 @@
             <ol class="btn2"><div th:text="#{app.transactions}" style="color: white;font-weight: normal">Transaction</div>
             </ol>
         </a>
+                 <a th:href="@{/user/issueLog-browser}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.issueLog}" style="color: white;font-weight: normal">Issue Log</div>
+            </ol>
+        </a>
                 </span>
             <span sec:authorize="hasRole('ROLE_ADMIN')">
 
@@ -238,6 +242,10 @@
         </a>
             <a th:href="@{/user/transactions-browser}" style="min-width: 100%">
             <ol class="btn2"><div th:text="#{app.transactions}" style="color: white;font-weight: normal">Transaction</div>
+            </ol>
+        </a>
+             <a th:href="@{/user/issueLog-browser}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.issueLog}" style="color: white;font-weight: normal">Issue Log</div>
             </ol>
         </a>
         </span>

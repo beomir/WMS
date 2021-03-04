@@ -23,7 +23,7 @@ public interface TransactionService {
 
     List<Transaction> getTransactionsByCreatedUser(String createdBy);
 
-    List<Transaction> getTransactionsByAllCriteria(String createdBy, String transactionType, String transactionGroup, String transactionFrom, String transactionTo);
+    List<Transaction> getTransactionsByAllCriteria(String createdBy, String transactionType, String transactionGroup, String transactionFrom, String transactionTo,String warehouse, String company);
 
     void save(TransactionSearch transactionSearch);
 

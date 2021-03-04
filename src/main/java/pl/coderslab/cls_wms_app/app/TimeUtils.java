@@ -8,7 +8,7 @@ import java.util.List;
 
 public class TimeUtils {
     public static String timeNowShort(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss a");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss_a");
         LocalDateTime now = LocalDateTime.now();
         String dateTimeString = now.format(formatter);
         return dateTimeString;

@@ -21,4 +21,6 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("Select distinct s from Stock s left outer join fetch Reception r on s.receptionNumber = r.receptionNumber where s.company.name = ?1")
     List<Stock> getStockByCompanyName(String name);
 
+    @Query(value="Select count(*) from storage where hd_number = ?1",nativeQuery = true)
+    int checkIfHdNumberExistsOnStock(Long hd_number);
 }

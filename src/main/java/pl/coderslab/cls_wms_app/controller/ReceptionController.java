@@ -31,9 +31,10 @@ public class ReceptionController {
     private final CompanyService companyService;
     private final UnitService unitService;
     private final UsersService usersService;
+    private final ReceptionServiceImpl receptionServiceImpl;
 
     @Autowired
-    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService) {
+    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl) {
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.articleService = articleService;
@@ -41,6 +42,7 @@ public class ReceptionController {
         this.companyService = companyService;
         this.unitService = unitService;
         this.usersService = usersService;
+        this.receptionServiceImpl = receptionServiceImpl;
     }
 
 
@@ -48,6 +50,7 @@ public class ReceptionController {
     public String list(Model model,@SessionAttribute Long warehouseId) {
         List<Reception> receptions = receptionService.getReceptions(warehouseId,SecurityUtils.username());
         List<Warehouse> warehouse = warehouseService.getWarehouse(warehouseId);
+        model.addAttribute("fileStatus", receptionServiceImpl.insertReceptionFileResult);
         model.addAttribute("receptions", receptions);
         model.addAttribute("warehouse", warehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -83,25 +86,6 @@ public class ReceptionController {
             else {
                 log.error("Uploaded file is empty");
             }
-
-
-
-
-//        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-//        String uploadDir = "input/receptions/" + fileName;
-//        Path uploadPath = Paths.get(uploadDir);
-//
-//        if(Files.exists(uploadPath)){
-//            Files.createDirectories(uploadPath);
-//        }
-//
-//        try (InputStream inputStream = multipartFile.getInputStream()){
-//            Path filePath = uploadPath.resolve(fileName);
-//            Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
-//        } catch (IOException e) {
-//            throw new IOException("Couldn't save uploaded file: " + fileName);
-
-
 
         return "redirect:/reception/reception";
     }

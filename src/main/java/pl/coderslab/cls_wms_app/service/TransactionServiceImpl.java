@@ -60,7 +60,7 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public List<Transaction> getTransactionsByAllCriteria(String createdBy, String transactionType, String transactionGroup, String transactionFrom, String transactionTo) {
+    public List<Transaction> getTransactionsByAllCriteria(String createdBy, String transactionType, String transactionGroup, String transactionFrom, String transactionTo,String warehouse, String company) {
         if(createdBy.equals("")){
             createdBy = "%";
         }
@@ -71,12 +71,15 @@ public class TransactionServiceImpl implements TransactionService{
             transactionGroup = "%";
         }
         if(transactionFrom.equals("")){
-            transactionFrom = "1970-01-01";;
+            transactionFrom = "1970-01-01";
         }
         if(transactionTo.equals("")){
             transactionTo = "2222-02-02";
         }
-        return transactionRepository.getTransactionByTypeAndGroupAndCreatedAndCreateBy(createdBy,transactionType,transactionGroup,transactionFrom,transactionTo);
+        if(company.equals("all")){
+            company = "%";
+        }
+        return transactionRepository.getTransactionByTypeAndGroupAndCreatedAndCreateBy(createdBy,transactionType,transactionGroup,transactionFrom,transactionTo,warehouse,company);
     }
 
     @Override

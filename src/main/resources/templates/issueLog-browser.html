@@ -26,8 +26,8 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form th:object="${transactionSearching}" method="post" th:action="@{/user/transactions-browser}">
-			<div class="titleList">Find Transactions</div><br/>
+		<form th:object="${issueLogSearching}" method="post" th:action="@{/user/issueLog-browser}">
+			<div class="titleList">Find Issues</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Warehouse</label>
 				<select class="select-css" th:field="*{warehouse}">
@@ -37,37 +37,25 @@
 				</select>
 			</section><br/><br/>
 			<section>
-				<label style="color: white;font-weight: bold">Company</label>
-				<select class="select-css" th:field="*{company}">
-					<option th:each="i : ${companys}" th:value="${i.name}" th:text="${i.name}">
-					</option>
-				</select>
-			</section><br/><br/>
-			<section>
-				<label style="color: white;font-weight: bold">Transaction type</label>
-				<input type="text" title="Number value" th:field="*{transactionType}"/>
+				<label style="color: white;font-weight: bold">Part of issue content</label>
+				<input type="text" th:field="*{issueLogContent}"/>
 			</section>
 			<section>
-				<label style="color: white;font-weight: bold">Transaction group</label>
-				<select class="select-css" th:field="*{transactionGroup}">
-					<option th:value="Reception">Reception</option>
-					<option th:value="Stock">Stock</option>
-					<option th:value="Shipment">Shipment</option>
-					<option th:value="'%'">All</option>
-				</select> <br/><br/>
+				<label style="color: white;font-weight: bold">File name</label>
+				<input type="text" th:field="*{issueLogFileName}"/>
 			</section>
 			<section>
-				<label style="color: white;font-weight: bold">Transaction created by User</label>
-				<input type="text" th:field="*{transactionUser}"/>
+				<label style="color: white;font-weight: bold">Issue created by User</label>
+				<input type="text" th:field="*{createdBy}"/>
 			</section>
 			<section>
-				<label style="color: white;font-weight: bold">Transactions From</label>
-				<input type="date" th:field="*{transactionDateFrom}"/>
+				<label style="color: white;font-weight: bold">Issues created From</label>
+				<input type="date" th:field="*{createdFrom}"/>
 			</section>
 
 			<section>
-				<label style="color: white;font-weight: bold">Transactions To</label>
-				<input type="date" th:field="*{transactionDateTo}"/>
+				<label style="color: white;font-weight: bold">Issues created To</label>
+				<input type="date" th:field="*{createdTo}"/>
 			</section>
 
 			<section>

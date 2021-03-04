@@ -36,8 +36,8 @@ public class TransactionController {
 
     @GetMapping("/user/transactions")
     public String list(Model model) {
-        List<Transaction> transaction = transactionService.getTransactionsByAllCriteria(transactionSearch.getTransactionUser(),transactionSearch.getTransactionType(),transactionSearch.getTransactionGroup(),transactionSearch.getTransactionDateFrom(),transactionSearch.getTransactionDateTo());
-        log.debug(transactionSearch.getTransactionUser() + " " + transactionSearch.getTransactionType() + " " + transactionSearch.getTransactionGroup());
+        List<Transaction> transaction = transactionService.getTransactionsByAllCriteria(transactionSearch.getTransactionUser(),transactionSearch.getTransactionType(),transactionSearch.getTransactionGroup(),transactionSearch.getTransactionDateFrom(),transactionSearch.getTransactionDateTo(),transactionSearch.getWarehouse(),transactionSearch.getCompany());
+        log.debug(transactionSearch.getTransactionUser() + " " + transactionSearch.getTransactionType() + " " + transactionSearch.getTransactionGroup() + " " + transactionSearch.getTransactionDateFrom() + " " + transactionSearch.getTransactionDateTo() + " " + transactionSearch.getWarehouse() + " " + transactionSearch.getCompany());
         model.addAttribute("transaction", transaction);
         model.addAttribute("transactionSearch",transactionSearch);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());

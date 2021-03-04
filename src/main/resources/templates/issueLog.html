@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>WMS CLS app</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+	<div class="main-agileits">
+		<div th:include="fragments/header :: header"></div>
+	</div>
+	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+
+		<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
+	</div>
+
+	<div id="content" class="mainw3-agileinfo">
+		<div style="width: 1200px" class="login-form">
+			<div style="background-color: #00BCD4;border-radius: 3px">
+				<span>
+				<div class="titleList" th:text="#{app.issueLog}"></div>
+					<a th:href="@{/user/issueLog-browser}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.changeTransactionCriteria}"></div></a>
+					<div>
+						<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.transactionCiteria} + ': '"></span><br/>
+						<table class="criteria">
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.transactionsGroup} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${issueLogSearch.issueLogContent}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.transactionType} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${issueLogSearch.issueLogFileName}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.warehouseName} + ': '"></th>
+								<th  style="color:blue;font-style:italic" th:text="${issueLogSearch.warehouse}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.company} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${issueLogSearch.createdBy}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.transactionDateFrom} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${issueLogSearch.createdFrom}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.transactionDateTo} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${issueLogSearch.createdTo}"></th>
+							</tr>
+						</table>
+					</div>
+					<br/><br/>
+				</span>
+				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
+					<tr style="border: solid 1px">
+						<th th:text="#{app.fileName}" style="font-weight: bold" class="tables">File name</th>
+						<th th:text="#{app.content}" style="font-weight: bold" class="tables">Content</th>
+						<th th:text="#{app.warehouseName}" style="font-weight: bold" class="tables">Warehouse</th>
+						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
+						<th th:text="#{app.createdBy}" style="font-weight: bold" class="tables">Created By</th>
+						<th th:text="#{app.additionalInfo}" style="font-weight: bold" class="tables">Additional Information</th>
+					</tr>
+				    <tr style="border: solid 1px" th:each="issueLogs: ${issueLogs}">
+						<td class="tables"><a th:text="${issueLogs.issueLogFileName}" th:href="@{${issueLogs.issueLogFilePath}}"></a></td>
+				        <td class="tables" th:text="${issueLogs.issueLogContent}"></td>
+				        <td class="tables" th:text="${issueLogs.warehouse.name}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(issueLogs.created,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${issueLogs.createdBy}"></td>
+						<td class="tables" th:text="${issueLogs.additionalInformation}"></td>
+				    </tr>
+				</table>
+
+			</div>
+
+			<div th:include="fragments/footer :: footer"></div>
+		</div>
+		<div class="w3copyright-agile">
+			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+		</div>
+	</div>
+
+	<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
+	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+
+</body>
+</html>

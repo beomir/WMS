@@ -29,7 +29,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("Select t from Transaction t where t.createdBy = ?1")
     List<Transaction>  getTransactionsByCreatedUser(String createdBy);
 
-    @Query("Select t from Transaction t where t.createdBy like ?1 and t.transactionType like ?2 and t.transactionGroup like ?3 and t.created > ?4 and t.created < ?5")
-    List<Transaction> getTransactionByTypeAndGroupAndCreatedAndCreateBy(String createdBy, String transactionType, String transactionGroup, String transactionDateFrom, String transactionDateTo);
+    @Query("Select t from Transaction t where t.createdBy like ?1 and t.transactionType like ?2 and t.transactionGroup like ?3 and t.created > ?4 and t.created < ?5 and t.warehouse.name like ?6 and t.company.name like ?7")
+    List<Transaction> getTransactionByTypeAndGroupAndCreatedAndCreateBy(String createdBy, String transactionType, String transactionGroup, String transactionDateFrom, String transactionDateTo, String warehouse, String company);
 
 }
