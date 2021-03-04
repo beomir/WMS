@@ -16,7 +16,7 @@ import java.util.List;
 
 
 @Component
-@Profile("local")
+//@Profile("local")
 public class UsersRolesFixture {
     private UsersRolesService usersRolesService;
 

@@ -7,7 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("local")
+//@Profile("local")
 public class LoadFixtures {
     private StockFixture stockFixture;
     private CompanyFixture companyFixture;

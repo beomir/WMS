@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-@Profile("local")
+//@Profile("local")
 public class TransactionFixture {
 
     private final TransactionService transactionService;
