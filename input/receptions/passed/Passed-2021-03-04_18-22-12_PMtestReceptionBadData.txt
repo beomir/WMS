@@ -1,0 +1,2 @@
+Reception_Number:20210001,ArticleNumber:1234567890123459,HandleDeviceNumber:202110000000000006,PiecesQuantity:12,VendorName:Sharpico,Unit:EA,Company:Strojem,FromWarehouse:WRO1,Quality:EU1
+Reception_Number:20210001,ArticleNumber:1234567890123459,HandleDeviceNumber:202110000000000014,PiecesQuantity:12,VendorName:Sharpico,Unit:EA,Company:Strojem,FromWarehouse:WRO1,Quality:EU1

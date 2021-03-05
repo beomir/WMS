@@ -25,9 +25,10 @@ public class ShipmentInCreationController {
     private final CustomerService customerService;
     private final ShipmentService shipmentService;
     private final UsersService usersService;
+    private final CustomerUserDetailsService customerUserDetailsService;
 
     @Autowired
-    public ShipmentInCreationController(ShipmentInCreationService shipmentInCreationService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, ArticleService articleService, UnitService unitService, CustomerService customerService, ShipmentService shipmentService, UsersService usersService) {
+    public ShipmentInCreationController(ShipmentInCreationService shipmentInCreationService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, ArticleService articleService, UnitService unitService, CustomerService customerService, ShipmentService shipmentService, UsersService usersService, CustomerUserDetailsService customerUserDetailsService) {
 
         this.shipMethodService = shipMethodService;
         this.warehouseService = warehouseService;
@@ -38,38 +39,44 @@ public class ShipmentInCreationController {
         this.customerService = customerService;
         this.shipmentService = shipmentService;
         this.usersService = usersService;
+        this.customerUserDetailsService = customerUserDetailsService;
     }
 
     @GetMapping("/shipmentInCreation")
-    public String list(Model model, @SessionAttribute Long warehouseId) {
-        List<ShipmentInCreation> getShipmentInCreation = shipmentInCreationService.getShipmentInCreationById(warehouseId);
+    public String list(Model model) {
+        List<ShipmentInCreation> getShipmentInCreation = shipmentInCreationService.getShipmentInCreationById(customerUserDetailsService.chosenWarehouse );
         List<ShipMethod> shipMethod = shipMethodService.getShipMethod();
-        List<Warehouse> warehouse = warehouseService.getWarehouse(warehouseId);
+        List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse );
         model.addAttribute("shipments", getShipmentInCreation);
         model.addAttribute("shipMethod", shipMethod);
         model.addAttribute("warehouse", warehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        List<Long> stockDifferences = shipmentInCreationService.stockDifference(warehouseId,SecurityUtils.username());
+        List<Long> stockDifferences = shipmentInCreationService.stockDifference(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
         model.addAttribute("stockDifferences", stockDifferences);
-        List<Long> stockDifferencesQty = shipmentInCreationService.stockDifferenceQty(warehouseId,SecurityUtils.username());
+        List<Long> stockDifferencesQty = shipmentInCreationService.stockDifferenceQty(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
         model.addAttribute("stockDifferencesQty", stockDifferencesQty);
-        List<Long> shipmentCreationSummary = shipmentInCreationService.shipmentCreationSummary(warehouseId,SecurityUtils.username());
+        List<Long> shipmentCreationSummary = shipmentInCreationService.shipmentCreationSummary(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
         model.addAttribute("shipmentCreationSummary", shipmentCreationSummary);
 
-        List<Shipment> shipments = shipmentService.getShipment(warehouseId,SecurityUtils.username());
+        List<Shipment> shipments = shipmentService.getShipment(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
         model.addAttribute("shipment", shipments);
-        String messages = shipmentInCreationService.resultOfShipmentCreationValidation(warehouseId);
+        String messages = shipmentInCreationService.resultOfShipmentCreationValidation(customerUserDetailsService.chosenWarehouse );
         model.addAttribute("messages", messages);
 
-        int checkHowManyNotFinishedShipments = shipmentService.checkHowManyNotfinishedShipments(warehouseId,SecurityUtils.username());
+        int checkHowManyNotFinishedShipments = shipmentService.checkHowManyNotfinishedShipments(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
         model.addAttribute("cHMNFS", checkHowManyNotFinishedShipments);
         usersService.loggedUserData(model);
-        return "shipmentInCreation";
+        if(customerUserDetailsService.chosenWarehouse == null){
+            return "redirect:/warehouse";
+        }
+        else{
+            return "shipmentInCreation";
+        }
     }
 
     @GetMapping("/formShipment")
-    public String shipmentForm(Model model,@SessionAttribute Long warehouseId){
+    public String shipmentForm(Model model){
         model.addAttribute("shipment", new ShipmentInCreation());
         List<Customer> customers = customerService.getCustomer(SecurityUtils.username());
         model.addAttribute("customers", customers);
@@ -83,13 +90,13 @@ public class ShipmentInCreationController {
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         model.addAttribute("articles", articles);
 
-        List<Warehouse> warehouses = warehouseService.getWarehouse(warehouseId);
+        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse );
         model.addAttribute("warehouses", warehouses);
 
-        int qtyOfOpenedShipmentsInCreation = shipmentInCreationService.qtyOfOpenedShipmentsInCreation(warehouseId,SecurityUtils.username());
+        int qtyOfOpenedShipmentsInCreation = shipmentInCreationService.qtyOfOpenedShipmentsInCreation(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
         model.addAttribute("qtyOfOpenedShipmentsInCreation", qtyOfOpenedShipmentsInCreation);
 
-        List<ShipmentInCreation> openedShipments = shipmentInCreationService.openedShipments(warehouseId,SecurityUtils.username());
+        List<ShipmentInCreation> openedShipments = shipmentInCreationService.openedShipments(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
         model.addAttribute("openedShipments", openedShipments);
 
         model.addAttribute("lastShipmentNumber", shipmentInCreationService.lastShipment());
@@ -100,7 +107,12 @@ public class ShipmentInCreationController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "formShipment";
+        if(customerUserDetailsService.chosenWarehouse == null){
+            return "redirect:/warehouse";
+        }
+        else{
+            return "formShipment";
+        }
     }
 
     @PostMapping("formShipment")

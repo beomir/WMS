@@ -22,10 +22,11 @@ public class StockController {
     private final StatusService statusService;
     private final ArticleService articleService;
     private final UnitService unitService;
+    private CustomerUserDetailsService customerUserDetailsService;
 
 
     @Autowired
-    public StockController(StockService stockService, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService) {
+    public StockController(StockService stockService, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService) {
         this.stockService = stockService;
         this.usersService = usersService;
         this.receptionService = receptionService;
@@ -34,18 +35,24 @@ public class StockController {
         this.statusService = statusService;
         this.articleService = articleService;
         this.unitService = unitService;
+        this.customerUserDetailsService = customerUserDetailsService;
     }
 
     @GetMapping("/stock")
-    public String list(Model model,@SessionAttribute Long warehouseId) {
-        List<Stock> storage = stockService.getStorage(warehouseId,SecurityUtils.username());
-        List<Warehouse> warehouse = warehouseService.getWarehouse(warehouseId);
+    public String list(Model model) {
+        List<Stock> storage = stockService.getStorage(customerUserDetailsService.chosenWarehouse,SecurityUtils.username());
+        List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("stock", storage);
         model.addAttribute("warehouse", warehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "stock";
+        if(customerUserDetailsService.chosenWarehouse == null){
+            return "redirect:/warehouse";
+        }
+            else{
+                return "stock";
+        }
     }
 
 //change status

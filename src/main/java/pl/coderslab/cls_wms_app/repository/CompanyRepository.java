@@ -23,7 +23,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("Select  c from Company c where c.active = false")
     List<Company> getDeactivatedCompany();
 
-
     @Query("SELECT distinct c FROM Users u JOIN Company c on u.company = c.name WHERE u.username like ?1 order by c.name")
     List<Company> getCompanyByUsername(String username);
 

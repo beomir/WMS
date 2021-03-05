@@ -17,4 +17,6 @@ public interface IssueLogRepository extends JpaRepository<IssueLog, Long> {
     @Query("Select i from IssueLog i")
     List<IssueLog> getIssueLogs();
 
+    @Query(value = "Select count(*) from issue_log where issue_log_file_name = ?1",nativeQuery = true)
+    int checkDoubleFiles(String fileName);
 }

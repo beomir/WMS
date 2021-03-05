@@ -14,6 +14,8 @@ public interface WarehouseService {
 
     List<Warehouse> getWarehouse(Long id);
 
+    Warehouse getOneWarehouse(Long id);
+
     Warehouse findById(Long id);
 
     Warehouse get(Long id);

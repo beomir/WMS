@@ -21,6 +21,8 @@ import java.util.Collection;
 public class CustomerUserDetailsService implements UserDetailsService {
 
     private final UsersRepository repository;
+    // warehouse id from session
+    public Long chosenWarehouse;
 
     @Override
     @Transactional

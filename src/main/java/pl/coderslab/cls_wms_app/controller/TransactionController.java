@@ -49,8 +49,10 @@ public class TransactionController {
     @GetMapping("/user/transactions-browser")
     public String browser(Model model) {
         model.addAttribute("transactionSearching", new TransactionSearch());
-        List<Company> companys = companyService.getCompany();
+        Company companys = companyService.getOneCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        List<Company> company = companyService.getCompany();
+        model.addAttribute("company", company);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         usersService.loggedUserData(model);

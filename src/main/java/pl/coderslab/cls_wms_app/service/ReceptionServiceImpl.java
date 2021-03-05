@@ -39,9 +39,11 @@ public class ReceptionServiceImpl implements ReceptionService {
     private final TransactionService transactionService;
     private final IssueLogService issueLogService;
     public String insertReceptionFileResult;
+    private CustomerUserDetailsService customerUserDetailsService;
+    private IssueLogRepository issueLogRepository;
 
     @Autowired
-    public ReceptionServiceImpl(ReceptionRepository receptionRepository, EmailRecipientsRepository emailRecipientsRepository, SendEmailService sendEmailService, SchedulerRepository schedulerRepository, ArticleRepository articleRepository, VendorRepository vendorRepository, UnitRepository unitRepository, CompanyRepository companyRepository, WarehouseRepository warehouseRepository, StatusService statusService, StockRepository stockRepository, TransactionService transactionService, IssueLogService issueLogService) {
+    public ReceptionServiceImpl(ReceptionRepository receptionRepository, EmailRecipientsRepository emailRecipientsRepository, SendEmailService sendEmailService, SchedulerRepository schedulerRepository, ArticleRepository articleRepository, VendorRepository vendorRepository, UnitRepository unitRepository, CompanyRepository companyRepository, WarehouseRepository warehouseRepository, StatusService statusService, StockRepository stockRepository, TransactionService transactionService, IssueLogService issueLogService, CustomerUserDetailsService customerUserDetailsService, IssueLogRepository issueLogRepository) {
         this.receptionRepository = receptionRepository;
         this.emailRecipientsRepository = emailRecipientsRepository;
         this.sendEmailService = sendEmailService;
@@ -55,6 +57,8 @@ public class ReceptionServiceImpl implements ReceptionService {
         this.stockRepository = stockRepository;
         this.transactionService = transactionService;
         this.issueLogService = issueLogService;
+        this.customerUserDetailsService = customerUserDetailsService;
+        this.issueLogRepository = issueLogRepository;
     }
 
     @Override
@@ -466,7 +470,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                     issuelog.setCreated(LocalDateTime.now().toString());
                     issuelog.setIssueLogFileName(fileName);
                     issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
-                    issuelog.setWarehouse(reception.getWarehouse());
+                    issuelog.setWarehouse(warehouseRepository.getOneWarehouse(customerUserDetailsService.chosenWarehouse));
                     issuelog.setIssueLogFilePath(errorFile.toString());
                     if(reception.getCompany() == null ) {
                         issuelog.setAdditionalInformation("");
@@ -474,8 +478,10 @@ public class ReceptionServiceImpl implements ReceptionService {
                     else{
                         issuelog.setAdditionalInformation("Company: " + reception.getCompany().getName() + ", Reception number: " + reception.getReceptionNumber());
                     }
+                    if(issueLogRepository.checkDoubleFiles(fileName)<1){
+                        issueLogService.add(issuelog);
+                    }
 
-                    issueLogService.add(issuelog);
 
                     //copy to errors directory
                     try {

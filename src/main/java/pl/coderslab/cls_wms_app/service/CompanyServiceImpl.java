@@ -71,6 +71,10 @@ public class CompanyServiceImpl implements CompanyService{
         return companyRepository.getCompanyByUsername(username);
     }
 
+    @Override
+    public Company getOneCompanyByUsername(String username) {
+        return companyRepository.getOneCompanyByUsername(username);
+    }
 //    @Override
 //    public String getCompanyByUsername(String username) {
 //        return companyRepository.getCompanyByUsername(SecurityUtils.username());
