@@ -57,7 +57,9 @@ public class ReceptionController {
         model.addAttribute("warehouse", warehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+        String token = usersService.FindUsernameByToken(SecurityUtils.username());
+        model.addAttribute("token", token);
+        model.addAttribute("localDateTime", LocalDateTime.now());
         if(customerUserDetailsService.chosenWarehouse == null){
             return "redirect:/warehouse";
         }

@@ -441,17 +441,17 @@ public class ReceptionServiceImpl implements ReceptionService {
                     transactionService.add(transaction);
 
                     String fileName = fsFile.toPath().getFileName().toString();
-                    Path passedPath = Paths.get("input/receptions/passed/Passed-" + TimeUtils.timeNowShort() + fileName);
+                    Path passedPath = Paths.get("src/main/resources/static/files/input/receptions/passed/Passed-" + TimeUtils.timeNowShort() + fileName);
                     Files.copy(fsFile.toPath(), passedPath, StandardCopyOption.REPLACE_EXISTING);
                     log.debug("Reception created. File transferred to directory passed. Transaction Log 121 Created");
 
                 } else {
 
                     String fileName = fsFile.toPath().getFileName().toString();
-                    Path errorPath = Paths.get("input/receptions/errors/Error-" + TimeUtils.timeNowShort() + "-" + fileName);
+                    Path errorPath = Paths.get("src/main/resources/static/files/input/receptions/errors/Error-" + TimeUtils.timeNowShort() + "-" + fileName);
 
                     //create file with issueLog
-                    File errorFile = new File("input/receptions/errors/IssueLog-" + TimeUtils.timeNowShort() + "-" + fileName);
+                    File errorFile = new File("src/main/resources/static/files/input/receptions/errors/IssueLog-" + TimeUtils.timeNowShort() + "-" + fileName);
                     try (FileWriter fileWriter = new FileWriter(errorFile,true)) {
                         fileWriter.append(issueLog);
                     }
@@ -468,7 +468,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                         issuelog.setIssueLogContent(issueLog);
                     }
                     issuelog.setCreated(LocalDateTime.now().toString());
-                    issuelog.setIssueLogFileName(fileName);
+                    issuelog.setIssueLogFileName(errorFile.getName());
                     issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
                     issuelog.setWarehouse(warehouseRepository.getOneWarehouse(customerUserDetailsService.chosenWarehouse));
                     issuelog.setIssueLogFilePath(errorFile.toString());
@@ -478,7 +478,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                     else{
                         issuelog.setAdditionalInformation("Company: " + reception.getCompany().getName() + ", Reception number: " + reception.getReceptionNumber());
                     }
-                    if(issueLogRepository.checkDoubleFiles(fileName)<1){
+                    if(issueLogRepository.checkDoubleFiles("%"+fileName)<1){
                         issueLogService.add(issuelog);
                     }
 

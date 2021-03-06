@@ -4,12 +4,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.entity.IssueLog;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.*;
+import pl.coderslab.cls_wms_app.service.IssueLogSearch;
+import pl.coderslab.cls_wms_app.service.IssueLogService;
+import pl.coderslab.cls_wms_app.service.UsersService;
+import pl.coderslab.cls_wms_app.service.WarehouseService;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -55,5 +61,28 @@ public class IssueLogController {
         issueLogService.save(issueLogSearching);
         return "redirect:/user/issueLog";
     }
+
+
+        @RequestMapping("files/input/receptions/errors/{name}")
+        @ResponseBody
+        public void show(@PathVariable ("name") String name, HttpServletResponse response) {
+            if(name.contains(".txt")) response.setContentType("application/txt");
+            response.setHeader("Content-Disposition","attachment; filename=" + name);
+            response.setHeader("Content-Transfer-Encoding","binary");
+            try{
+                BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
+                FileInputStream fis = new FileInputStream("D:\\repository\\WMS\\src\\main\\resources\\static\\files\\input\\receptions\\errors\\" + name);
+                int len;
+                byte[] buf = new byte[1024];
+                while((len = fis.read(buf))>0){
+                    bos.write(buf,0,len);
+                }
+                bos.close();
+                response.flushBuffer();
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
 
 }

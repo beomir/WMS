@@ -19,12 +19,14 @@ public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private boolean resetPassword;
+    private final ReceptionServiceImpl receptionServiceImpl;
 
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder) {
+    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
 
+        this.receptionServiceImpl = receptionServiceImpl;
     }
 
     @Override
@@ -93,6 +95,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public void loggedUserData(Model model) {
+        receptionServiceImpl.insertReceptionFileResult = "";
         String token = FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());

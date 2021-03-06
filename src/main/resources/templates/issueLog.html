@@ -65,7 +65,7 @@
 						<th th:text="#{app.additionalInfo}" style="font-weight: bold" class="tables">Additional Information</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="issueLogs: ${issueLogs}">
-						<td class="tables"><a th:text="${issueLogs.issueLogFileName}" th:href="@{${issueLogs.issueLogFilePath}}"></a></td>
+						<td class="tables"><a th:text="${issueLogs.issueLogFileName}" th:href="@{${'/files/input/receptions/errors/' + issueLogs.issueLogFileName}}"></a></td>
 				        <td class="tables" th:text="${issueLogs.issueLogContent}"></td>
 				        <td class="tables" th:text="${issueLogs.warehouse.name}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(issueLogs.created,0,19),'T',' ')}"></td>
