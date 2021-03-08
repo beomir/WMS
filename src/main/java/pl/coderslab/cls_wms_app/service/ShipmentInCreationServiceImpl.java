@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
+import pl.coderslab.cls_wms_app.entity.Shipment;
 import pl.coderslab.cls_wms_app.entity.ShipmentInCreation;
+import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.repository.ShipmentInCreationRepository;
+import pl.coderslab.cls_wms_app.repository.StatusRepository;
+import pl.coderslab.cls_wms_app.repository.StockRepository;
 
 import java.util.List;
 
@@ -15,10 +19,18 @@ import java.util.List;
 @Slf4j
 public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
     private ShipmentInCreationRepository shipmentInCreationRepository;
+    private StatusRepository statusRepository;
+    private StockService stockService;
+    private StockRepository stockRepository;
+    private ShipmentService shipmentService;
 
     @Autowired
-    public ShipmentInCreationServiceImpl(ShipmentInCreationRepository shipmentInCreationRepository) {
+    public ShipmentInCreationServiceImpl(ShipmentInCreationRepository shipmentInCreationRepository, StatusRepository statusRepository, StockService stockService, StockRepository stockRepository, ShipmentService shipmentService) {
         this.shipmentInCreationRepository = shipmentInCreationRepository;
+        this.statusRepository = statusRepository;
+        this.stockService = stockService;
+        this.stockRepository = stockRepository;
+        this.shipmentService = shipmentService;
     }
 
     @Override
@@ -90,14 +102,93 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
     public void closeCreationShipment(Long id, @SessionAttribute Long warehouseId) {
         ShipmentInCreation shipmentInCreation = shipmentInCreationRepository.getOne(id);
         if(validateTheCorrectnessOfShipment(warehouseId)) {
-            shipmentInCreation.setCreation_closed(true);
-            Long shipmentNmbr = shipmentInCreationRepository.getOne(id).getShipmentNumber();
-            shipmentInCreationRepository.updateCloseCreationShipmentValue(shipmentNmbr);
-            shipmentInCreationRepository.insertDataToShipmentAfterCloseCreation(warehouseId,SecurityUtils.username());
-            shipmentInCreationRepository.insertDataToStockAfterCloseCreationWithCorrectStatus(warehouseId,SecurityUtils.username());
-            shipmentInCreationRepository.updateStockDataAboutShipmentQty(warehouseId,SecurityUtils.username());
-            shipmentInCreationRepository.deleteQtyAfterCloseCreation(warehouseId,SecurityUtils.username());
-            shipmentInCreationRepository.deleteZerosOnStock(warehouseId,SecurityUtils.username());
+
+//            Long shipmentNmbr = shipmentInCreationRepository.getOne(id).getShipmentNumber();
+
+//            shipmentInCreationRepository.updateCloseCreationShipmentValue(shipmentNmbr);
+//            shipmentInCreationRepository.insertDataToShipmentAfterCloseCreation(warehouseId,SecurityUtils.username());
+            Shipment shipment = new Shipment();
+            shipment.setArticle(shipmentInCreation.getArticle());
+            shipment.setCompany(shipmentInCreation.getCompany());
+            shipment.setUnit(shipmentInCreation.getUnit());
+            shipment.setCustomer(shipmentInCreation.getCustomer());
+            shipment.setHd_number(shipmentInCreationRepository.containerNumberForShip() + shipmentInCreation.getId() + 900000000L);
+            shipment.setCreation_closed(true);
+            shipment.setFinished(false);
+            shipment.setPieces_qty(shipmentInCreation.getPieces_qty());
+            shipment.setLast_update(shipmentInCreation.getLast_update());
+            shipment.setCreated(shipmentInCreation.getLast_update());
+            shipment.setShipmentNumber(shipmentInCreation.getShipmentNumber());
+            shipment.setQuality(shipmentInCreation.getQuality());
+            shipment.setShipMethod(shipmentInCreation.getShipMethod());
+            shipment.setStatus(statusRepository.getStatusById(2L));
+            shipment.setWarehouse(shipmentInCreation.getWarehouse());
+            shipment.setChangeBy(SecurityUtils.username());
+            shipmentService.add(shipment);
+
+            int qtyToSend = shipmentInCreation.getPieces_qty().intValue();
+            while(qtyToSend>0){
+                Stock stockToSend = stockRepository.getStockById(stockRepository.searchStockToSend(shipmentInCreation.getArticle().getArticle_number(),shipmentInCreation.getWarehouse().getName()));
+                System.out.println("id stocku: " + stockToSend.getId());
+                System.out.println(shipmentInCreation.getArticle().getArticle_number());
+                int qtyToSendOnStock = stockToSend.getPieces_qty().intValue();
+
+                log.debug("Na stoku dostepne do wyslania: " + stockToSend.getPieces_qty() + " id stocku:" + stockToSend.getId());
+                log.debug("Pozostało do wyslania: " + qtyToSend);
+
+                if(qtyToSendOnStock > qtyToSend) {
+                    stockToSend.setPieces_qty(stockToSend.getPieces_qty() - qtyToSend);
+                    stockService.add(stockToSend);
+                    if(qtyToSend - qtyToSendOnStock < 0){
+                        qtyToSend = 0;
+                    }
+                    else{
+                        qtyToSend = qtyToSend - qtyToSendOnStock;
+                    }
+                    log.debug("na stoku wiecej niz do wysylki: qtyToSend " + qtyToSend);
+                }
+                else if(qtyToSendOnStock == qtyToSend){
+                    qtyToSend = 0;
+                    stockService.remove(stockToSend.getId());
+                    log.debug("na stoku tyle co do wysylki");
+                }
+                else{
+                    stockService.remove(stockToSend.getId());
+                    if(qtyToSend - qtyToSendOnStock < 0){
+                        qtyToSend = 0;
+                    }
+                    else{
+                        qtyToSend = qtyToSend - qtyToSendOnStock;
+                    }
+
+                    log.debug("na stoku mniej niz do wysylki");
+                }
+            }
+
+//            shipmentInCreationRepository.insertDataToStockAfterCloseCreationWithCorrectStatus(warehouseId,SecurityUtils.username());
+            Stock stock = new Stock();
+            stock.setStatus(statusRepository.getStatusById(2L));
+            stock.setArticle(shipmentInCreation.getArticle());
+            stock.setCompany(shipmentInCreation.getCompany());
+            stock.setUnit(shipmentInCreation.getUnit());
+            stock.setHd_number(shipment.getHd_number());
+            stock.setPieces_qty(shipmentInCreation.getPieces_qty());
+            stock.setCreated(shipmentInCreation.getLast_update());
+            stock.setChangeBy(SecurityUtils.username());
+            stock.setLast_update(shipmentInCreation.getLast_update());
+            stock.setQuality(shipmentInCreation.getQuality());
+            stock.setShipmentNumber(shipmentInCreation.getShipmentNumber());
+            stock.setComment("transfered to send in shipment: " + shipmentInCreation.getShipmentNumber());
+            stock.setWarehouse(shipmentInCreation.getWarehouse());
+            stockService.add(stock);
+
+//            shipmentInCreationRepository.updateStockDataAboutShipmentQty(warehouseId,SecurityUtils.username());
+//            Long qtyToSendL = shipmentInCreation.getPieces_qty();
+
+
+//            shipmentInCreationRepository.deleteQtyAfterCloseCreation(warehouseId,SecurityUtils.username());
+            remove(id);
+//            shipmentInCreationRepository.deleteZerosOnStock(warehouseId,SecurityUtils.username());
         }
     }
 
@@ -107,13 +198,13 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
         boolean shipmentReadyToCloseCreation = true;
         for (int i = 0; i < checkShipments.size(); i++) {
             log.debug(String.valueOf(checkShipments.get(i)));
-            System.out.println(checkShipments.get(i));
+//            System.out.println(checkShipments.get(i));
             if (checkShipments.get(i) < 0) {
                 shipmentReadyToCloseCreation = false;
             }
         }
         log.debug(String.valueOf(shipmentReadyToCloseCreation));
-        System.out.println(shipmentReadyToCloseCreation);
+//        System.out.println(shipmentReadyToCloseCreation);
         return shipmentReadyToCloseCreation;
     }
 
@@ -138,5 +229,6 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
 //    public void deleteZerosOnStock(@SessionAttribute Long warehouseId, String username)
 //    { shipmentInCreationRepository.deleteZerosOnStock(warehouseId,username);
 //    }
+
 
 }

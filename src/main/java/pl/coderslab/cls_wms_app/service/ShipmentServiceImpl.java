@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.entity.*;
-import pl.coderslab.cls_wms_app.repository.EmailRecipientsRepository;
-import pl.coderslab.cls_wms_app.repository.SchedulerRepository;
-import pl.coderslab.cls_wms_app.repository.ShipmentInCreationRepository;
-import pl.coderslab.cls_wms_app.repository.ShipmentRepository;
+import pl.coderslab.cls_wms_app.repository.*;
 
 
 import java.io.File;
@@ -32,14 +29,19 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final EmailRecipientsRepository emailRecipientsRepository;
     private final ShipmentInCreationRepository shipmentInCreationRepository;
     private final SchedulerRepository schedulerRepository;
+    private final StockService stockService;
+    private final StockRepository stockRepository;
+
 
     @Autowired
-    public ShipmentServiceImpl(ShipmentRepository shipmentRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ShipmentInCreationRepository shipmentInCreationRepository, SchedulerRepository schedulerRepository) {
+    public ShipmentServiceImpl(ShipmentRepository shipmentRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ShipmentInCreationRepository shipmentInCreationRepository, SchedulerRepository schedulerRepository, StockService stockService, StockRepository stockRepository) {
         this.shipmentRepository = shipmentRepository;
         this.sendEmailService = sendEmailService;
         this.emailRecipientsRepository = emailRecipientsRepository;
         this.shipmentInCreationRepository = shipmentInCreationRepository;
         this.schedulerRepository = schedulerRepository;
+        this.stockService = stockService;
+        this.stockRepository = stockRepository;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     public void finishShipment(Long shipmentNbrtoFinish)  {
         List<Shipment> finishedShipment = shipmentRepository.getShipmentByShipmentNumber(shipmentNbrtoFinish);
-        List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForShipmentType(shipmentRepository.getOneShipmentByShipmentNumber(shipmentNbrtoFinish),"Shipment");
+        List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForShipmentType(shipmentRepository.getConmpanyNameByShipmentNumber(shipmentNbrtoFinish),"Shipment");
         String shipmentNbr = shipmentNbrtoFinish.toString();
         String warehouse = shipmentRepository.getWarehouseByShipmentNumber(shipmentNbrtoFinish);
         File shipment = new File("outbound/outbound" + shipmentNbr + ".txt");
@@ -101,8 +103,14 @@ public class ShipmentServiceImpl implements ShipmentService {
         else{
             log.debug(path + " is empty, cannot send the email");
         }
-        shipmentRepository.updateFinishedShipmentValue(shipmentNbrtoFinish);
-        shipmentRepository.deleteStockAfterFinishShipment(shipmentNbrtoFinish);
+
+//        Change shipment status on finished
+//        shipmentRepository.updateFinishedShipmentValue(shipmentNbrtoFinish);
+        shipmentRepository.getOneShipmentByShipmentNumber(shipmentNbrtoFinish).setFinished(true);
+
+        //update stock after finish shipment
+        //shipmentRepository.deleteStockAfterFinishShipment(shipmentNbrtoFinish);
+        stockService.remove(stockRepository.getStockByShipmentNumber(shipmentNbrtoFinish).getId());
     }
 
     @Override
@@ -185,6 +193,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         }
 
     }
+
 
 
 }

@@ -82,4 +82,8 @@ public interface ShipmentInCreationRepository extends JpaRepository<ShipmentInCr
 
     @Query("Select sic from ShipmentInCreation sic where substring(sic.last_update,1,10) >= ?1 and sic.company.name = ?2 order by sic.warehouse.name")
     List<ShipmentInCreation> getShipmentsInCreationFromXDayBack(String dateBack, String company);
+
+    @Query(value = "select hd_number from shipments order by hd_number desc limit 1",nativeQuery = true)
+    Long containerNumberForShip();
+
 }

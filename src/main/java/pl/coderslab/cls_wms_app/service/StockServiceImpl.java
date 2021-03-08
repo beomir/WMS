@@ -233,5 +233,10 @@ public class StockServiceImpl implements StockService {
         transaction.setWarehouse(stock.getWarehouse());
     }
 
+    @Override
+    public void remove(Long id) {
+        stockRepository.deleteById(id);
+    }
+
 }
 

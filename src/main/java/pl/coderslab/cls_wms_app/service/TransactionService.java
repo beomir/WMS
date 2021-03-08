@@ -1,6 +1,5 @@
 package pl.coderslab.cls_wms_app.service;
 
-import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.Transaction;
 
 import java.util.List;

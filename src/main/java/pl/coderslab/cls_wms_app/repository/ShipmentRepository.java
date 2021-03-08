@@ -41,11 +41,14 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     List<Shipment> getShipmentByShipmentNumber(Long shipmentNbr);
 
     @Query(value="Select distinct c.name from shipments s inner join company c on s.company_id = c.id where s.shipment_number = ?1",nativeQuery = true)
-    String getOneShipmentByShipmentNumber(Long shipmentNbr);
+    String getConmpanyNameByShipmentNumber(Long shipmentNbr);
 
     @Query(value="Select distinct w.name from shipments s inner join warehouse w on s.warehouse_id = w.id where s.shipment_number = ?1",nativeQuery = true)
     String getWarehouseByShipmentNumber(Long shipmentNbr);
 
     @Query("Select r from Shipment r where substring(r.last_update,1,10) >= ?1 and r.company.name = ?2 order by r.warehouse.name")
     List<Shipment> getShipmentsFromXDayBack(String dateBack, String company);
+
+    @Query("Select shi from Shipment shi where shi.shipmentNumber = ?1")
+    Shipment getOneShipmentByShipmentNumber(Long shipmentNumber);
 }
