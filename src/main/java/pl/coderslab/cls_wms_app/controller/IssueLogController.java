@@ -72,7 +72,7 @@ public class IssueLogController {
             try{
                 BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
 //                FileInputStream fis = new FileInputStream("D:\\repository\\WMS\\src\\main\\resources\\static\\files\\input\\receptions\\errors\\" + name);
-                FileInputStream fis = new FileInputStream("localhost:8080/src/main/resources/static/files/input/receptions/errors/" + name);
+                FileInputStream fis = new FileInputStream("https://cls-wms.herokuapp.com/src/main/resources/static/files/input/receptions/errors/" + name);
                 int len;
                 byte[] buf = new byte[1024];
                 while((len = fis.read(buf))>0){
