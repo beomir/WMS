@@ -67,6 +67,61 @@ public class ReceptionServiceImpl implements ReceptionService {
     }
 
     @Override
+    public void addNew(Reception reception) {
+        Transaction transactionAdded = new Transaction();
+        transactionAdded.setTransactionDescription("Reception created manually");
+        transactionAdded.setAdditionalInformation("Reception Number: " + reception.getReceptionNumber() + " created");
+        transactionAdded.setTransactionGroup("Reception");
+        transactionAdded.setTransactionType("111");
+        transactionAdded.setCreated(reception.getCreated());
+        transactionAdded.setCreatedBy(SecurityUtils.usernameForActivations());
+        transactionAdded.setCompany(reception.getCompany());
+        transactionAdded.setWarehouse(reception.getWarehouse());
+        transactionAdded.setReceptionNumber(reception.getReceptionNumber());
+        transactionAdded.setArticle(reception.getArticle().getArticle_number());
+        transactionAdded.setQuality(reception.getQuality());
+        transactionAdded.setUnit(reception.getUnit().getName());
+        transactionAdded.setVendor(reception.getVendor().getName());
+        transactionAdded.setQuantity(reception.getPieces_qty());
+        transactionAdded.setHdNumber(reception.getHd_number());
+        transactionAdded.setReceptionStatus("Created");
+        receptionRepository.save(reception);
+        transactionService.add(transactionAdded);
+    }
+
+    @Override
+    public void edit(Reception reception) {
+        Transaction transactionEdited = new Transaction();
+        transactionEdited.setTransactionDescription("Reception edited manually");
+        transactionEdited.setAdditionalInformation("Reception Number: " + reception.getReceptionNumber() + " edited");
+        transactionEdited.setTransactionGroup("Reception");
+        transactionEdited.setTransactionType("112");
+        transactionEdited.setCreated(reception.getCreated());
+        transactionEdited.setCreatedBy(SecurityUtils.usernameForActivations());
+        transactionEdited.setCompany(reception.getCompany());
+        transactionEdited.setWarehouse(reception.getWarehouse());
+        transactionEdited.setReceptionNumber(reception.getReceptionNumber());
+        transactionEdited.setArticle(reception.getArticle().getArticle_number());
+        transactionEdited.setQuality(reception.getQuality());
+        transactionEdited.setUnit(reception.getUnit().getName());
+        transactionEdited.setVendor(reception.getVendor().getName());
+        transactionEdited.setQuantity(reception.getPieces_qty());
+        transactionEdited.setHdNumber(reception.getHd_number());
+        if(reception.isFinished()){
+            transactionEdited.setReceptionStatus("Finished");
+        }
+        else if(reception.isCreation_closed() && !reception.isFinished()){
+            transactionEdited.setReceptionStatus("Closed");
+        }
+        else if(!reception.isCreation_closed() && !reception.isFinished()){
+            transactionEdited.setReceptionStatus("Created");
+        }
+
+        transactionService.add(transactionEdited);
+        receptionRepository.save(reception);
+    }
+
+    @Override
     public int getCreatedReceptionById(Long receptionNbr) {
         return receptionRepository.getCreatedReceptionById(receptionNbr);
     }
@@ -74,7 +129,8 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     public void updateCloseCreationValue(Long receptionNbr) {
         if (getCreatedReceptionById(receptionNbr) > 0) {
-            receptionRepository.updateCloseCreationValue(receptionNbr);
+            List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNbr);
+                receptionRepository.updateCloseCreationValue(receptionNbr);
         }
     }
 
@@ -108,6 +164,28 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     public void finishReception(Long receptionNmbr) {
         List<Reception> finishedReception = receptionRepository.getReceptionByReceptionNumber(receptionNmbr);
+        //transaction
+        for(Reception value : finishedReception){
+            Transaction transactionEdited = new Transaction();
+            transactionEdited.setTransactionDescription("Reception Finished");
+            transactionEdited.setAdditionalInformation("Reception Number: " + value.getReceptionNumber()  +  ", HD number: " + value.getHd_number() + " received on stock");
+            transactionEdited.setTransactionGroup("Reception");
+            transactionEdited.setReceptionNumber(value.getReceptionNumber());
+            transactionEdited.setReceptionStatus("Finished");
+            transactionEdited.setArticle(value.getArticle().getArticle_number());
+            transactionEdited.setQuality(value.getQuality());
+            transactionEdited.setUnit(value.getUnit().getName());
+            transactionEdited.setVendor(value.getVendor().getName());
+            transactionEdited.setQuantity(value.getPieces_qty());
+            transactionEdited.setHdNumber(value.getHd_number());
+            transactionEdited.setTransactionType("114");
+            transactionEdited.setCreated(value.getCreated());
+            transactionEdited.setCreatedBy(SecurityUtils.usernameForActivations());
+            transactionEdited.setCompany(value.getCompany());
+            transactionEdited.setWarehouse(value.getWarehouse());
+            transactionService.add(transactionEdited);
+        }
+
         List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForShipmentType(receptionRepository.getCompanyNameByReceptionNumber(receptionNmbr), "%Receptions%");
         String receptionNbr = receptionNmbr.toString();
         String warehouse = receptionRepository.getWarehouseByReceptionNumber(receptionNmbr);
@@ -145,6 +223,7 @@ public class ReceptionServiceImpl implements ReceptionService {
             System.out.println(path + " is empty, cannot send the email");
             log.debug(path + " is empty, cannot send the email");
         }
+
     }
 
 
@@ -183,6 +262,27 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     public void closeCreation(Long id) {
         Reception reception = receptionRepository.getOne(id);
+        List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(reception.getReceptionNumber());
+        for(Reception value : receptions){
+            Transaction transactionEdited = new Transaction();
+            transactionEdited.setTransactionDescription("Reception Closed");
+            transactionEdited.setAdditionalInformation("Reception Number: " + value.getReceptionNumber()  +  ", HD number: " + value.getHd_number() + " closed");
+            transactionEdited.setTransactionGroup("Reception");
+            transactionEdited.setReceptionNumber(value.getReceptionNumber());
+            transactionEdited.setReceptionStatus("Closed");
+            transactionEdited.setArticle(value.getArticle().getArticle_number());
+            transactionEdited.setQuality(value.getQuality());
+            transactionEdited.setUnit(value.getUnit().getName());
+            transactionEdited.setVendor(value.getVendor().getName());
+            transactionEdited.setQuantity(value.getPieces_qty());
+            transactionEdited.setHdNumber(value.getHd_number());
+            transactionEdited.setTransactionType("113");
+            transactionEdited.setCreated(value.getCreated());
+            transactionEdited.setCreatedBy(SecurityUtils.usernameForActivations());
+            transactionEdited.setCompany(value.getCompany());
+            transactionEdited.setWarehouse(value.getWarehouse());
+            transactionService.add(transactionEdited);
+        }
         reception.setCreation_closed(true);
         Long receptionNmbr = receptionRepository.getOne(id).getReceptionNumber();
         receptionRepository.updateCloseCreationValue(receptionNmbr);
@@ -191,6 +291,27 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     public void openCreation(Long id) {
         Reception reception = receptionRepository.getOne(id);
+        List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(reception.getReceptionNumber());
+        for(Reception value : receptions){
+            Transaction transactionEdited = new Transaction();
+            transactionEdited.setTransactionDescription("Reception Opened");
+            transactionEdited.setAdditionalInformation("Reception Number: " + value.getReceptionNumber()  +  ", HD number: " + value.getHd_number() + " opened");
+            transactionEdited.setTransactionGroup("Reception");
+            transactionEdited.setReceptionNumber(value.getReceptionNumber());
+            transactionEdited.setReceptionStatus("Created");
+            transactionEdited.setArticle(value.getArticle().getArticle_number());
+            transactionEdited.setQuality(value.getQuality());
+            transactionEdited.setUnit(value.getUnit().getName());
+            transactionEdited.setVendor(value.getVendor().getName());
+            transactionEdited.setQuantity(value.getPieces_qty());
+            transactionEdited.setHdNumber(value.getHd_number());
+            transactionEdited.setTransactionType("115");
+            transactionEdited.setCreated(value.getCreated());
+            transactionEdited.setCreatedBy(SecurityUtils.usernameForActivations());
+            transactionEdited.setCompany(value.getCompany());
+            transactionEdited.setWarehouse(value.getWarehouse());
+            transactionService.add(transactionEdited);
+        }
         reception.setCreation_closed(false);
         receptionRepository.save(reception);
     }
@@ -418,7 +539,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                         issueLog = issueLog + "\n Line: " + counter + " Lack information about Quality in file or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber, PiecesQuantity, VendorName, Unit, Company, FromWarehouse )" + LocalDateTime.now();
                     }
                     if(round == 10){
-                        System.out.println("end");
+                        log.debug("Finish file insert");
                     }
                 }
 
@@ -429,21 +550,31 @@ public class ReceptionServiceImpl implements ReceptionService {
                 reception.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                 if (issueLog.equals("")) {
                     add(reception);
+
                     Transaction transaction = new Transaction();
-                    transaction.setWarehouse(reception.getWarehouse());
-                    transaction.setCompany(reception.getCompany());
-                    transaction.setCreated(LocalDateTime.now().toString());
-                    transaction.setCreatedBy(SecurityUtils.usernameForActivations());
-                    transaction.setTransactionType("121");
-                    transaction.setTransactionGroup("Reception");
                     transaction.setTransactionDescription("Create Reception from File");
-                    transaction.setAdditionalInformation("Reception number: " + reception.getReceptionNumber() + " created");
+                    transaction.setAdditionalInformation("Reception number: " + reception.getReceptionNumber() + " created from file");
+                    transaction.setTransactionGroup("Reception");
+                    transaction.setReceptionNumber(reception.getReceptionNumber());
+                    transaction.setReceptionStatus("Created");
+                    transaction.setArticle(reception.getArticle().getArticle_number());
+                    transaction.setQuality(reception.getQuality());
+                    transaction.setUnit(reception.getUnit().getName());
+                    transaction.setVendor(reception.getVendor().getName());
+                    transaction.setQuantity(reception.getPieces_qty());
+                    transaction.setHdNumber(reception.getHd_number());
+                    transaction.setTransactionType("121");
+                    transaction.setCreated(reception.getCreated());
+                    transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+                    transaction.setCompany(reception.getCompany());
+                    transaction.setWarehouse(reception.getWarehouse());
                     transactionService.add(transaction);
 
                     String fileName = fsFile.toPath().getFileName().toString();
                     Path passedPath = Paths.get("src/main/resources/static/files/input/receptions/passed/Passed-" + TimeUtils.timeNowShort() + fileName);
                     Files.copy(fsFile.toPath(), passedPath, StandardCopyOption.REPLACE_EXISTING);
                     log.debug("Reception created. File transferred to directory passed. Transaction Log 121 Created");
+                    insertReceptionFileResult = "File " + fsFile.toPath().getFileName().toString() + " succesfully inserted to DB";
 
                 } else {
 

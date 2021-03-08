@@ -3,7 +3,10 @@ package pl.coderslab.cls_wms_app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
+import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.Transaction;
+import pl.coderslab.cls_wms_app.repository.ReceptionRepository;
 import pl.coderslab.cls_wms_app.repository.TransactionRepository;
 
 import java.util.List;
@@ -12,11 +15,13 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService{
     private final TransactionRepository transactionRepository;
     public TransactionSearch transactionSearch;
+    private final ReceptionRepository receptionRepository;
 
     @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository,TransactionSearch transactionSearch) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository, TransactionSearch transactionSearch, ReceptionRepository receptionRepository) {
         this.transactionRepository = transactionRepository;
         this.transactionSearch = transactionSearch;
+        this.receptionRepository = receptionRepository;
     }
 
     @Override
@@ -91,8 +96,8 @@ public class TransactionServiceImpl implements TransactionService{
         transactionSearch.setTransactionDateTo(transactionSearching.getTransactionDateTo());
         transactionSearch.setCompany(transactionSearching.getCompany());
         transactionSearch.setWarehouse(transactionSearching.getWarehouse());
-
     }
+
 
 
 }

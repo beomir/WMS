@@ -24,10 +24,10 @@ public class TransactionFixture {
 
 
     private List<Transaction> transactionList = Arrays.asList(
-            new Transaction(null, "111","Create Reception", null,TimeUtils.timeNowLong(),"system","Reception","Reception number: 20200001 created",null ),
-            new Transaction(null, "211","Create Shipment", null,TimeUtils.timeNowLong(),"system","Shipment", "Shipment number: 20200001 created",null),
-            new Transaction(null, "212","Close Shipment", null,TimeUtils.timeNowLong(),"system","Shipment","Shipment number: 20200002 closed",null),
-            new Transaction(null, "311","Stock surplus", null,TimeUtils.timeNowLong(),"system","Stock","Surplus: 1 qty, Article: 1234567890123456",null)
+            new Transaction(null, "111","Reception created manually", null,TimeUtils.timeNowLong(),"system","Reception","Reception number: 20200001 created",null,"Sherpico",null,202000000000000006L,12L,1234567890123455L,"EU1","EA",20200001L,"Created",null,null,null),
+            new Transaction(null, "211","Shipment created manually", null,TimeUtils.timeNowLong(),"system","Shipment", "Shipment number: 20200001 created",null,null,"Muzeum 2 wojny",202000000000000005L,10L,1234567890123455L,"EU1","EA",null,null,20200001L,"Created",null),
+            new Transaction(null, "212","Shipment Closed", null,TimeUtils.timeNowLong(),"system","Shipment","Shipment number: 20200002 closed",null,null,"Muzeum 2 wojny",202000000000000005L,10L,1234567890123455L,"EU1","EA",null,null,20200001L,"Closed",null),
+            new Transaction(null, "311","Stock surplus", null,TimeUtils.timeNowLong(),"system","Stock","Surplus: 1 qty, Article: 1234567890123456",null,null,null,202000000000000005L,10L,1234567890123455L,"EU1","EA",null,null,null,null,null)
     );
 
     @Autowired

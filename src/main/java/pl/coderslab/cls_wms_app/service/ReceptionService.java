@@ -9,6 +9,10 @@ public interface ReceptionService {
 
     void add(Reception reception);
 
+    void addNew(Reception reception);
+
+    void edit(Reception reception);
+
     List<Reception> getReceptions(Long id,String username);
 
     List<Reception> getReception(Long id);

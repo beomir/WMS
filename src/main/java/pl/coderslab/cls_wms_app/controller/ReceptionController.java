@@ -131,7 +131,7 @@ public class ReceptionController {
 
     @PostMapping("formReception")
     public String receptionAdd(Reception reception) {
-        receptionService.add(reception);
+        receptionService.addNew(reception);
         receptionService.getCreatedReceptionById(reception.getReceptionNumber());
         receptionService.updateCloseCreationValue(reception.getReceptionNumber());
         return "redirect:/reception/reception";
@@ -183,7 +183,7 @@ public class ReceptionController {
 
     @PostMapping("editReceptionLine")
     public String updateReceptionPost(Reception reception) {
-        receptionService.add(reception);
+        receptionService.edit(reception);
         receptionService.getCreatedReceptionById(reception.getReceptionNumber());
         receptionService.updateCloseCreationValue(reception.getReceptionNumber());
         return "redirect:/reception/reception";

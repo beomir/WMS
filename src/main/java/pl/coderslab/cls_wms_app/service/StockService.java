@@ -18,6 +18,20 @@ public interface StockService {
 
     void add(Stock stock);
 
+    void addNewStock(Stock stock);
+
+    void changeStatus(Stock stock);
+
+    void changeArticleNumber(Stock stock);
+
+    void changeQty(Stock stock);
+
+    void changeQuality(Stock stock);
+
+    void changeUnit(Stock stock);
+
+    void changeComment(Stock stock);
+
     Stock get(Long id);
 
     void delete(Long id);
