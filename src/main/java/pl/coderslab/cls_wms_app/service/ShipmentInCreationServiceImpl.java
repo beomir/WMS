@@ -18,11 +18,11 @@ import java.util.List;
 @Service
 @Slf4j
 public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
-    private ShipmentInCreationRepository shipmentInCreationRepository;
-    private StatusRepository statusRepository;
-    private StockService stockService;
-    private StockRepository stockRepository;
-    private ShipmentService shipmentService;
+    private final ShipmentInCreationRepository shipmentInCreationRepository;
+    private final StatusRepository statusRepository;
+    private final StockService stockService;
+    private final StockRepository stockRepository;
+    private final ShipmentService shipmentService;
 
     @Autowired
     public ShipmentInCreationServiceImpl(ShipmentInCreationRepository shipmentInCreationRepository, StatusRepository statusRepository, StockService stockService, StockRepository stockRepository, ShipmentService shipmentService) {
@@ -103,10 +103,15 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
         ShipmentInCreation shipmentInCreation = shipmentInCreationRepository.getOne(id);
         if(validateTheCorrectnessOfShipment(warehouseId)) {
 
+            //old process based on SQL
 //            Long shipmentNmbr = shipmentInCreationRepository.getOne(id).getShipmentNumber();
-
 //            shipmentInCreationRepository.updateCloseCreationShipmentValue(shipmentNmbr);
 //            shipmentInCreationRepository.insertDataToShipmentAfterCloseCreation(warehouseId,SecurityUtils.username());
+//            shipmentInCreationRepository.updateStockDataAboutShipmentQty(warehouseId,SecurityUtils.username());
+//            Long qtyToSendL = shipmentInCreation.getPieces_qty();
+//            shipmentInCreationRepository.insertDataToStockAfterCloseCreationWithCorrectStatus(warehouseId,SecurityUtils.username());
+//            shipmentInCreationRepository.deleteQtyAfterCloseCreation(warehouseId,SecurityUtils.username());
+//            shipmentInCreationRepository.deleteZerosOnStock(warehouseId,SecurityUtils.username());
             Shipment shipment = new Shipment();
             shipment.setArticle(shipmentInCreation.getArticle());
             shipment.setCompany(shipmentInCreation.getCompany());
@@ -125,6 +130,24 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
             shipment.setWarehouse(shipmentInCreation.getWarehouse());
             shipment.setChangeBy(SecurityUtils.username());
             shipmentService.add(shipment);
+
+
+
+            Stock stock = new Stock();
+            stock.setStatus(statusRepository.getStatusById(2L));
+            stock.setArticle(shipmentInCreation.getArticle());
+            stock.setCompany(shipmentInCreation.getCompany());
+            stock.setUnit(shipmentInCreation.getUnit());
+            stock.setHd_number(shipment.getHd_number());
+            stock.setPieces_qty(shipmentInCreation.getPieces_qty());
+            stock.setCreated(shipmentInCreation.getLast_update());
+            stock.setChangeBy(SecurityUtils.username());
+            stock.setLast_update(shipmentInCreation.getLast_update());
+            stock.setQuality(shipmentInCreation.getQuality());
+            stock.setShipmentNumber(shipmentInCreation.getShipmentNumber());
+            stock.setComment("transfered to send in shipment: " + shipmentInCreation.getShipmentNumber());
+            stock.setWarehouse(shipmentInCreation.getWarehouse());
+            stockService.add(stock);
 
             int qtyToSend = shipmentInCreation.getPieces_qty().intValue();
             while(qtyToSend>0){
@@ -165,30 +188,8 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
                 }
             }
 
-//            shipmentInCreationRepository.insertDataToStockAfterCloseCreationWithCorrectStatus(warehouseId,SecurityUtils.username());
-            Stock stock = new Stock();
-            stock.setStatus(statusRepository.getStatusById(2L));
-            stock.setArticle(shipmentInCreation.getArticle());
-            stock.setCompany(shipmentInCreation.getCompany());
-            stock.setUnit(shipmentInCreation.getUnit());
-            stock.setHd_number(shipment.getHd_number());
-            stock.setPieces_qty(shipmentInCreation.getPieces_qty());
-            stock.setCreated(shipmentInCreation.getLast_update());
-            stock.setChangeBy(SecurityUtils.username());
-            stock.setLast_update(shipmentInCreation.getLast_update());
-            stock.setQuality(shipmentInCreation.getQuality());
-            stock.setShipmentNumber(shipmentInCreation.getShipmentNumber());
-            stock.setComment("transfered to send in shipment: " + shipmentInCreation.getShipmentNumber());
-            stock.setWarehouse(shipmentInCreation.getWarehouse());
-            stockService.add(stock);
-
-//            shipmentInCreationRepository.updateStockDataAboutShipmentQty(warehouseId,SecurityUtils.username());
-//            Long qtyToSendL = shipmentInCreation.getPieces_qty();
-
-
-//            shipmentInCreationRepository.deleteQtyAfterCloseCreation(warehouseId,SecurityUtils.username());
             remove(id);
-//            shipmentInCreationRepository.deleteZerosOnStock(warehouseId,SecurityUtils.username());
+
         }
     }
 
