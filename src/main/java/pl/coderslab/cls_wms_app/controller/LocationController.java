@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.coderslab.cls_wms_app.entity.Location;
+import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.LocationService;
-import pl.coderslab.cls_wms_app.service.UsersService;
-import pl.coderslab.cls_wms_app.service.WarehouseService;
+import pl.coderslab.cls_wms_app.repository.StorageZoneRepository;
+import pl.coderslab.cls_wms_app.service.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,21 +21,23 @@ public class LocationController {
     private final LocationService locationService;
     private final UsersService usersService;
     private final WarehouseService warehouseService;
+    private final StorageZoneRepository storageZoneRepository;
 
     @Autowired
-    public LocationController(LocationService locationService, UsersService usersService, WarehouseService warehouseService) {
+    public LocationController(LocationService locationService, UsersService usersService, WarehouseService warehouseService, StorageZoneRepository storageZoneRepository) {
         this.locationService = locationService;
         this.usersService = usersService;
         this.warehouseService = warehouseService;
+        this.storageZoneRepository = storageZoneRepository;
     }
 
 
-    @GetMapping("location")
+    @GetMapping("/user/locations")
     public String locationList(Model model) {
         List<Location> locations = locationService.getLocations();
         model.addAttribute("locations", locations);
         usersService.loggedUserData(model);
-        return "location";
+        return "locations";
     }
 
     @GetMapping("/config/locationDeactivatedList")
@@ -46,7 +48,7 @@ public class LocationController {
     }
 
 
-    @GetMapping("formLocation")
+    @GetMapping("/user/formLocation")
     public String locationForm(Model model){
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
@@ -59,13 +61,13 @@ public class LocationController {
     @PostMapping("formLocation")
     public String locationAdd(Location location) {
         locationService.add(location);
-        return "redirect:/location";
+        return "redirect:/user/locations";
     }
 
     @GetMapping("/removeLocation/{id}")
     public String removeLocation(@PathVariable Long id) {
         locationService.remove(id);
-        return "redirect:/location";
+        return "redirect:/locations";
     }
 
     @GetMapping("/config/activateLocation/{id}")
@@ -74,7 +76,7 @@ public class LocationController {
         return "redirect:/config/locationDeactivatedList";
     }
 
-    @GetMapping("/formEditLocation/{id}")
+    @GetMapping("/user/formEditLocation/{id}")
     public String updateLocation(@PathVariable Long id, Model model) {
         Location location = locationService.findById(id);
         model.addAttribute(location);
@@ -88,7 +90,24 @@ public class LocationController {
     @PostMapping("formEditLocation")
     public String edit(Location location) {
         locationService.add(location);
-        return "redirect:/location";
+        return "redirect:/user/locations";
+    }
+
+    @GetMapping("/user/locations-browser")
+    public String browser(Model model) {
+        model.addAttribute("locationSearching", new LocationSearch());
+        List<Warehouse> warehouses = warehouseService.getWarehouse();
+        model.addAttribute("warehouses", warehouses);
+        List<StorageZone> storageZones = storageZoneRepository.getStorageZones();
+        model.addAttribute("storageZones", storageZones);
+        usersService.loggedUserData(model);
+        return "locations-browser";
+    }
+
+    @PostMapping("/user/locations-browser")
+    public String findTransaction(LocationSearch locationSearching) {
+        locationService.save(locationSearching);
+        return "redirect:/user/locations";
     }
 
 }

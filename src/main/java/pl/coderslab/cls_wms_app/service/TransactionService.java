@@ -26,5 +26,4 @@ public interface TransactionService {
 
     void save(TransactionSearch transactionSearch);
 
-
 }

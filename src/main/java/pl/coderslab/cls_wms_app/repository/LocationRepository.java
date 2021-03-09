@@ -23,7 +23,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     @Query("Select l from Location l where l.locationName = ?1")
     Location findLocationByLocationName(String locationName);
 
-    @Query("Select l from Location l where l.locationName like ?1 and l.locationType like ?2 and l.storageZone.storageZoneName like ?3")
-    Location findLocationsByCriteria(String locationName, String locationType, String storageZoneName);
+    @Query("Select l from Location l where l.locationName like ?1 and l.locationType like ?2 and l.storageZone.storageZoneName like ?3 and l.warehouse.name like ?4")
+    Location findLocationsByCriteria(String locationName, String locationType, String storageZoneName, String warehouseName);
 
 }

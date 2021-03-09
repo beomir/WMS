@@ -23,4 +23,6 @@ public interface LocationService {
 
     void remove(Long id);
 
+    void save(LocationSearch locationSearching);
+
 }

@@ -113,6 +113,30 @@
             <ol class="btn2"><div th:text="#{app.issueLog}" style="color: white;font-weight: normal">Issue Log</div>
             </ol>
         </a>
+                      <a th:href="@{/user/locations-browser}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.locations}" style="color: white;font-weight: normal">Locations</div>
+                 <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:text="#{app.addLocation}" th:href="@{/user/formLocation}">Create New Location</a>
+                            <a th:text="#{app.addLocations}" th:href="@{/user/formLocationPack}">Create Location pack</a>
+                            <a th:text="#{app.addLocationsToStorageZone}" th:href="@{/user/addLocationsToStorageZone}">Add Locations To Storage Zone</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+             <a th:href="@{/user/storageZones-browser}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.storageZones}" style="color: white;font-weight: normal">Storage Zones</div>
+                 <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:text="#{app.addStorageZone}" th:href="@{/user/formLocation}">Create New Storage Zone</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
                 </span>
             <span sec:authorize="hasRole('ROLE_ADMIN')">
 
@@ -246,6 +270,30 @@
         </a>
              <a th:href="@{/user/issueLog-browser}" style="min-width: 100%">
             <ol class="btn2"><div th:text="#{app.issueLog}" style="color: white;font-weight: normal">Issue Log</div>
+            </ol>
+        </a>
+                  <a th:href="@{/user/locations-browser}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.locations}" style="color: white;font-weight: normal">Locations</div>
+                 <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:text="#{app.addLocation}" th:href="@{/user/formLocation}">Create New Location</a>
+                            <a th:text="#{app.addLocations}" th:href="@{/user/formLocationPack}">Create Location pack</a>
+                            <a th:text="#{app.addLocationsToStorageZone}" th:href="@{/user/addLocationsToStorageZone}">Add Locations To Storage Zone</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+             <a th:href="@{/user/storageZones-browser}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.storageZones}" style="color: white;font-weight: normal">Storage Zones</div>
+                 <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:text="#{app.addStorageZone}" th:href="@{/user/formLocation}">Create New Storage Zone</a>
+                        </li>
+                    </ul>
+                </li>
             </ol>
         </a>
         </span>

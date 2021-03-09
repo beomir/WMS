@@ -739,6 +739,10 @@ ol > li > ul > li:hover > a
 {
     color: #451717;
 }
+ol > li > ul > li > a:hover
+{
+    background-color: #002ed4;
+}
 
 tr:hover > td{
     background-color: #444444;

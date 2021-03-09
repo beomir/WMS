@@ -14,10 +14,12 @@ import java.util.List;
 @Service
 public class LocationServiceImpl implements LocationService{
     private final LocationRepository locationRepository;
+    private final LocationSearch locationSearch;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository) {
+    public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch) {
         this.locationRepository = locationRepository;
+        this.locationSearch = locationSearch;
     }
 
     @Override
@@ -64,6 +66,14 @@ public class LocationServiceImpl implements LocationService{
     @Override
     public void remove(Long id) {
         locationRepository.deleteById(id);
+    }
+
+    @Override
+    public void save(LocationSearch locationSearching) {
+        locationSearch.setLocationName(locationSearching.getLocationName());
+        locationSearch.setStorageZoneName(locationSearching.getStorageZoneName());
+        locationSearch.setWarehouse(locationSearching.getWarehouse());
+        locationSearch.setLocationType(locationSearching.getLocationType());
     }
 
     @Override

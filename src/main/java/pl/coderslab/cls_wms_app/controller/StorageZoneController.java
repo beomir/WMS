@@ -85,8 +85,8 @@ public class StorageZoneController {
         return "formEditStorageZones";
     }
 
-    @PostMapping("formEditLocation")
-    public String edit(StorageZone storageZone) {
+    @PostMapping("formEditStorageZone")
+    public String editStorageZone(StorageZone storageZone) {
         storageZoneService.add(storageZone);
         return "redirect:/storageZones";
     }
