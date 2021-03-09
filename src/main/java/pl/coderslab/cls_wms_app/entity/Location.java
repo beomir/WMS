@@ -17,7 +17,7 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String location;
+    private String locationName;
 
     private String locationDesc;
     private String locationType;
@@ -36,9 +36,9 @@ public class Location {
     private boolean active;
     private String changeBy;
 
-    public Location(Long id, String location, String locationDesc, String locationType, Warehouse warehouse, StorageZone storageZone, String created, String last_update, boolean active, String changeBy) {
+    public Location(Long id, String locationName, String locationDesc, String locationType, Warehouse warehouse, StorageZone storageZone, String created, String last_update, boolean active, String changeBy) {
         this.id = id;
-        this.location = location;
+        this.locationName = locationName;
         this.locationDesc = locationDesc;
         this.locationType = locationType;
         this.warehouse = warehouse;
