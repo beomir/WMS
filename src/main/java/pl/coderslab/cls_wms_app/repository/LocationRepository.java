@@ -3,7 +3,6 @@ package pl.coderslab.cls_wms_app.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Location;
 
 import java.util.List;
@@ -23,5 +22,8 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     @Query("Select l from Location l where l.locationName = ?1")
     Location findLocationByLocationName(String locationName);
+
+    @Query("Select l from Location l where l.locationName like ?1 and l.locationType like ?2 and l.storageZone.storageZoneName like ?3")
+    Location findLocationsByCriteria(String locationName, String locationType, String storageZoneName);
 
 }

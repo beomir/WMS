@@ -4,9 +4,7 @@ package pl.coderslab.cls_wms_app.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
-import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Location;
-import pl.coderslab.cls_wms_app.repository.ArticleRepository;
 import pl.coderslab.cls_wms_app.repository.LocationRepository;
 
 import java.time.LocalDateTime;
