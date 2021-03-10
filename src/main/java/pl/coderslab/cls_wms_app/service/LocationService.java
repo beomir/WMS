@@ -9,6 +9,10 @@ public interface LocationService {
 
     void add(Location location);
 
+    void addLocation(Location location);
+
+    void editLocation(Location location);
+
     List<Location> getLocationByWarehouseName(String warehouseName);
 
     List<Location> getLocations(); //for fixtures
@@ -24,5 +28,7 @@ public interface LocationService {
     void remove(Long id);
 
     void save(LocationSearch locationSearching);
+
+    List<Location> getLocationsByAllCriteria(String locationName, String locationType, String storageZoneName, String warehouseName);
 
 }

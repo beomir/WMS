@@ -23,7 +23,8 @@ public class StorageZoneFixture {
             new StorageZone(null, "Picking Floor2","Picking floor zone2", "type1",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system"),
             new StorageZone(null, "Picking Rack","Picking floor zone2", "type1",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system"),
             new StorageZone(null, "Reserve","Reserve zone", "type1",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system"),
-            new StorageZone(null, "Doors","Picking floor location", "type2",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system")
+            new StorageZone(null, "Doors","Picking floor location", "type2",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system"),
+            new StorageZone(null, "Not assigned","Not assigned locations", "type0",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system")
     );
 
     @Autowired
@@ -44,18 +45,21 @@ public class StorageZoneFixture {
         StorageZone storageZone3 = storageZoneList.get(2);
         StorageZone storageZone4 = storageZoneList.get(3);
         StorageZone storageZone5 = storageZoneList.get(4);
+        StorageZone storageZone6 = storageZoneList.get(5);
 
         storageZone1.setWarehouse(warehouseList.get(0));
         storageZone2.setWarehouse(warehouseList.get(0));
         storageZone3.setWarehouse(warehouseList.get(0));
         storageZone4.setWarehouse(warehouseList.get(0));
         storageZone5.setWarehouse(warehouseList.get(0));
+        storageZone6.setWarehouse(warehouseList.get(1));
 
         storageZoneService.add(storageZone1);
         storageZoneService.add(storageZone2);
         storageZoneService.add(storageZone3);
         storageZoneService.add(storageZone4);
         storageZoneService.add(storageZone5);
+        storageZoneService.add(storageZone6);
 
     }
 }

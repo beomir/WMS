@@ -48,4 +48,20 @@ public class Location {
         this.active = active;
         this.changeBy = changeBy;
     }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id=" + id +
+                ", locationName='" + locationName + '\'' +
+                ", locationDesc='" + locationDesc + '\'' +
+                ", locationType='" + locationType + '\'' +
+                ", warehouse=" + warehouse +
+                ", storageZone=" + storageZone +
+                ", created='" + created + '\'' +
+                ", last_update='" + last_update + '\'' +
+                ", active=" + active +
+                ", changeBy='" + changeBy + '\'' +
+                '}';
+    }
 }

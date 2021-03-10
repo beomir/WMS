@@ -45,4 +45,19 @@ public class StorageZone {
         this.active = active;
         this.changeBy = changeBy;
     }
+
+    @Override
+    public String toString() {
+        return "StorageZone{" +
+                "id=" + id +
+                ", storageZoneName='" + storageZoneName + '\'' +
+                ", storageZoneDesc='" + storageZoneDesc + '\'' +
+                ", storageZoneType='" + storageZoneType + '\'' +
+                ", warehouse=" + warehouse +
+                ", created='" + created + '\'' +
+                ", last_update='" + last_update + '\'' +
+                ", active=" + active +
+                ", changeBy='" + changeBy + '\'' +
+                '}';
+    }
 }

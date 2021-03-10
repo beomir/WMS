@@ -63,12 +63,14 @@ public class LocationFixture {
         location2.setStorageZone(storageZoneList.get(1));
         location3.setStorageZone(storageZoneList.get(2));
         location4.setStorageZone(storageZoneList.get(3));
-        location4.setStorageZone(storageZoneList.get(4));
-        location4.setStorageZone(storageZoneList.get(4));
+        location5.setStorageZone(storageZoneList.get(4));
+        location6.setStorageZone(storageZoneList.get(4));
 
         locationService.add(location1);
         locationService.add(location2);
         locationService.add(location3);
         locationService.add(location4);
+        locationService.add(location5);
+        locationService.add(location6);
     }
 }

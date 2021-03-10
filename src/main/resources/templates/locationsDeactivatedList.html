@@ -28,26 +28,7 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px">
 				<span>
-				<div class="titleList" th:text="#{app.locations}"></div>
-					<a th:href="@{/user/locations-browser}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.changeCriteria}"></div></a>
-					<a th:href="@{/user/formLocation}"><div class="buttonik2" style="float: right;max-width: 20%;clear:right" th:text="#{app.addLocation}"></div></a>
-					<div>
-						<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
-						<table class="criteria">
-							<tr>
-								<th style="color:blue;font-weight: bold" th:text="#{app.storageZone} + ': '"></th>
-								<th style="color:blue;font-style:italic" th:text="${locationSearch.storageZoneName}"></th>
-								<th style="color:blue;font-weight: bold" th:text="#{app.locationName} + ': '"></th>
-								<th style="color:blue;font-style:italic" th:text="${locationSearch.locationName}"></th>
-							</tr>
-							<tr>
-								<th style="color:blue;font-weight: bold" th:text="#{app.warehouseName} + ': '"></th>
-								<th  style="color:blue;font-style:italic" th:text="${locationSearch.warehouse}"></th>
-								<th style="color:blue;font-weight: bold" th:text="#{app.type} + ': '"></th>
-								<th style="color:blue;font-style:italic" th:text="${locationSearch.locationType}"></th>
-							</tr>
-						</table>
-					</div>
+				<div class="titleList" th:text="#{app.deactivateLocations}"></div>
 					<br/><br/>
 				</span>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
@@ -66,8 +47,9 @@
 							<ol><div th:text="${locations.locationName}"></div>
 								<li>
 									<ul>
-										<li><a th:text="#{app.deactivate}" th:href="@{/deactivateLocation/{id}(id=${locations.id})}">DEACTIVATE</a></li>
+										<li><a th:text="#{app.activate}" th:href="@{/config/activateLocation/{id}(id=${locations.id})}">Activate</a></li>
 										<li><a th:text="#{app.edit}" th:href="@{/user/formEditLocation/{id}(id=${locations.id})}">Edit location</a></li>
+										<li><a th:text="#{app.delete}" th:href="@{/config/removeLocation//{id}(id=${locations.id})}">DELETE</a></li>
 									</ul>
 								</li>
 							</ol>
@@ -82,7 +64,7 @@
 				    </tr>
 				</table>
 
-				<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/config/locationsDeactivatedList}"><div th:text="#{app.deactivatedList}" class="buttonik" style="float: right;max-width: 20%;">Deactivated List</div></a>
+				<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/user/locations}"><div th:text="#{app.activatedList}" class="buttonik" style="float: right;max-width: 20%;">Active List</div></a>
 			</div>
 			<br/><br/>
 			<div th:include="fragments/footer :: footer"></div>

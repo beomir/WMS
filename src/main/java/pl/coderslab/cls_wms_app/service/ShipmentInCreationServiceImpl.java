@@ -195,7 +195,7 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
         stock.setStatus(statusRepository.getStatusById(2L));
         stock.setChangeBy(SecurityUtils.username());
         stock.setWarehouse(shipmentInCreation.getWarehouse());
-        stock.setComment("transfered to send in shipment: " + shipmentInCreation.getShipmentNumber());
+        stock.setComment("transferred to send in shipment: " + shipmentInCreation.getShipmentNumber());
         stockService.add(stock);
     }
 
