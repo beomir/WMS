@@ -24,10 +24,6 @@ public class TransactionServiceImpl implements TransactionService{
         transactionRepository.save(transaction);
     }
 
-    @Override
-    public List<Transaction> getTransaction(String username) {
-        return transactionRepository.getTransactionsByUser(username);
-    }
 
     @Override
     public List<Transaction> getTransaction() {
@@ -39,25 +35,6 @@ public class TransactionServiceImpl implements TransactionService{
         return transactionRepository.getOne(id);
     }
 
-    @Override
-    public List<Transaction> getTransactionByTransactionType(int transactionType) {
-        return transactionRepository.getTransactionsByTransactionType(transactionType);
-    }
-
-    @Override
-    public List<Transaction> getTransactionByTransactionGroup(String transactionGroup) {
-        return transactionRepository.getTransactionsByTransactionGroup(transactionGroup);
-    }
-
-    @Override
-    public List<Transaction> getTransactionByCreationDate(String creationDate) {
-        return transactionRepository.getTransactionsByCreateDate(creationDate);
-    }
-
-    @Override
-    public List<Transaction> getTransactionsByCreatedUser(String createdBy) {
-        return transactionRepository.getTransactionsByCreatedUser(createdBy);
-    }
 
     @Override
     public List<Transaction> getTransactionsByAllCriteria(String createdBy, String transactionType, String transactionGroup, String transactionFrom, String transactionTo,String warehouse, String company) {

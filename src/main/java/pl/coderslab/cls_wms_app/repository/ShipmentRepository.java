@@ -51,4 +51,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     @Query("Select shi from Shipment shi where shi.shipmentNumber = ?1")
     Shipment getOneShipmentByShipmentNumber(Long shipmentNumber);
+
+    @Query("Select s from Shipment s where s.id = ?1")
+    List<Shipment> getShipmentsByShipmentId(Long id);
 }

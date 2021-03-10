@@ -103,14 +103,22 @@ public class ShipmentServiceImpl implements ShipmentService {
         else{
             log.debug(path + " is empty, cannot send the email");
         }
-
+//old logic
 //        Change shipment status on finished
 //        shipmentRepository.updateFinishedShipmentValue(shipmentNbrtoFinish);
-        shipmentRepository.getOneShipmentByShipmentNumber(shipmentNbrtoFinish).setFinished(true);
+//        shipmentRepository.getShipmentByShipmentNumber(shipmentNbrtoFinish).setFinished(true);
 
-        //update stock after finish shipment
-        //shipmentRepository.deleteStockAfterFinishShipment(shipmentNbrtoFinish);
-        stockService.remove(stockRepository.getStockByShipmentNumber(shipmentNbrtoFinish).getId());
+//        update stock after finish shipment
+//        shipmentRepository.deleteStockAfterFinishShipment(shipmentNbrtoFinish);
+//        stockService.remove(stockRepository.getStockListByShipmentNumber(shipmentNbrtoFinish).getId());
+
+        for(Shipment shipmentsToFinish : finishedShipment){
+            shipmentsToFinish.setFinished(true);
+        }
+
+        for(Stock stockToRemove : stockRepository.getStockListByShipmentNumber(shipmentNbrtoFinish)) {
+            stockService.remove(stockToRemove.getId());
+        }
     }
 
     @Override
