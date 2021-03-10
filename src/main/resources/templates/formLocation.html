@@ -26,15 +26,35 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form th:object="${location}" method="post" th:action="@{/user/formLocation}">
+		<form  method="post" th:action="@{/user/formLocation}">
 			<div th:text="#{app.createNewLocation}" class="titleList">Create a new Location</div><br/>
-			<section>
-				<label style="color: white;font-weight: bold">Location Name</label>
-				<input type="text" th:field="*{locationName}"/>
+			<section id="stockLocation">
+				<span style="color: white;font-weight: bold">Stock Location</span><br/>
+				<label style="color: white;font-style: italic" title="For example PFL like Picking floor location">Shortcut name (three alpha)</label>
+				<input class="location" id="stockFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{locationNameConstruction.firstSepStock}"/>
+				<label title="Numeric Value three digits" 	style="color: white;font-style: italic">Height (three numeric)</label>
+				<input class="location" id="stockSecondSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{locationNameConstruction.secondSepStock}"/>
+				<label title="Numeric Value two digits" 	style="color: white;font-style: italic">Depth (two numeric)</label>
+				<input class="location" id="stockThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" title="Numeric Value two digits" 	type="text"  th:field="*{locationNameConstruction.thirdSepStock}"/>
+				<label title="Numeric Value three digits" 	style="color: white;font-style: italic">Width (three numeric)</label>
+				<input class="location" id="stockFourthSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits"	type="text"  th:field="*{locationNameConstruction.fourthSepStock}"/>
+				<label style="color: white;font-style: italic">Location name simulation</label>
+				<div style="color: white;font-weight: bold" id="stockLocationSimulation"></div><br/><br/>
+			</section>
+			<section id="doorLocation">
+				<span style="color: white;font-weight: bold">Door Location</span><br/>
+				<label style="color: white;font-style: italic" title="For example DOOR">Shortcut name (four alpha)</label>
+				<input class="location" id="doorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{4}" minlength="4" maxlength="4" type="text" title="For example DOOR" th:field="*{locationNameConstruction.firstSepDoor}"/>
+				<label style="color: white;font-style: italic" title="For example SHI like Shipment">Destination (three alpha)</label>
+				<input class="location" id="doorSecondSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" minlength="3" maxlength="3" type="text" title="For example SHI" th:field="*{locationNameConstruction.secondSepDoor}"/>
+				<label style="color: white;font-style: italic" title="For example 01 like warehouse door number">Number (two numeric)</label>
+				<input class="location" id="doorThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 01" th:field="*{locationNameConstruction.thirdSepDoor}"/>
+				<label style="color: white;font-style: italic">Location name simulation</label>
+				<div style="color: white;font-weight: bold" id="doorLocationSimulation"></div><br/><br/>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Location type</label>
-				<select class="select-css" th:field="*{locationType}">
+				<select id="selectId" class="select-css" th:field="*{location.locationType}">
 					<option th:value="RDL">Reception Door</option>
 					<option th:value="PFL">Stock Picking Floor</option>
 					<option th:value="PFL">Stock Picking Racks</option>
@@ -44,14 +64,14 @@
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Storage Zone</label>
-				<select class="select-css" th:field="*{storageZone}">
+				<select class="select-css" th:field="*{location.storageZone}">
 					<option th:each="i : ${storageZones}" th:value="${i.id}" th:text="${i.storageZoneName}">
 					</option>
 				</select> <br/>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Warehouses</label>
-				<select class="select-css" th:field="*{warehouse}">
+				<select class="select-css" th:field="*{location.warehouse}">
 					<option th:each="i : ${warehouses}" th:value="${i.id}" th:text="${i.name}">
 					</option>
 				</select>
@@ -73,7 +93,63 @@
 
 <script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 <script type="text/javascript" th:src="@{/js/logo.js}"></script>
+<script>
+	let stockLocation = document.getElementById("stockLocation")
+	let doorLocation = document.getElementById("doorLocation")
+	let select = document.getElementById('selectId')
+	stockLocation.classList.add("d-none")
 
+	select.addEventListener("change", function () {
+		if(document.getElementById('selectId').value == "SDL" || document.getElementById('selectId').value == "RDL") {
+			stockLocation.classList.add("d-none")
+			doorLocation.classList.remove("d-none")
+		} else {
+			stockLocation.classList.remove("d-none")
+			doorLocation.classList.add("d-none")
+		}
+	})
+
+	//stockLocations
+	let stockFirstSep = document.getElementById("stockFirstSep")
+	let stockSecondSep = document.getElementById("stockSecondSep")
+	let stockThirdSep = document.getElementById("stockThirdSep")
+	let stockFourthSep = document.getElementById("stockFourthSep")
+
+	let stockLocationSimulation = document.getElementById("stockLocationSimulation")
+
+
+	stockFirstSep.addEventListener("keyup", function () {
+		stockLocationSimulation.innerHTML = document.getElementById("stockFirstSep").value + document.getElementById("stockSecondSep").value + document.getElementById("stockThirdSep").value + document.getElementById("stockFourthSep").value
+	});
+	stockSecondSep.addEventListener("keyup", function () {
+		stockLocationSimulation.innerHTML = document.getElementById("stockFirstSep").value + document.getElementById("stockSecondSep").value + document.getElementById("stockThirdSep").value + document.getElementById("stockFourthSep").value
+	});
+	stockThirdSep.addEventListener("keyup", function () {
+		stockLocationSimulation.innerHTML = document.getElementById("stockFirstSep").value + document.getElementById("stockSecondSep").value + document.getElementById("stockThirdSep").value + document.getElementById("stockFourthSep").value
+	});
+	stockFourthSep.addEventListener("keyup", function () {
+		stockLocationSimulation.innerHTML = document.getElementById("stockFirstSep").value + document.getElementById("stockSecondSep").value + document.getElementById("stockThirdSep").value + document.getElementById("stockFourthSep").value
+	});
+
+	//doorLocations
+	let doorFirstSep = document.getElementById("doorFirstSep")
+	let doorSecondSep = document.getElementById("doorSecondSep")
+	let doorThirdSep = document.getElementById("doorThirdSep")
+
+
+	let doorLocationSimulation = document.getElementById("doorLocationSimulation")
+
+	doorFirstSep.addEventListener("keyup", function () {
+		doorLocationSimulation.innerHTML = document.getElementById("doorFirstSep").value + document.getElementById("doorSecondSep").value + document.getElementById("doorThirdSep").value
+	});
+	doorSecondSep.addEventListener("keyup", function () {
+		doorLocationSimulation.innerHTML = document.getElementById("doorFirstSep").value + document.getElementById("doorSecondSep").value + document.getElementById("doorThirdSep").value
+	});
+	doorThirdSep.addEventListener("keyup", function () {
+		doorLocationSimulation.innerHTML = document.getElementById("doorFirstSep").value + document.getElementById("doorSecondSep").value + document.getElementById("doorThirdSep").value
+	});
+
+</script>
 
 </body>
 

@@ -12,6 +12,7 @@ import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.repository.StorageZoneRepository;
 import pl.coderslab.cls_wms_app.service.*;
+import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,14 +25,16 @@ public class LocationController {
     private final WarehouseService warehouseService;
     private final StorageZoneRepository storageZoneRepository;
     public LocationSearch locationSearch;
+    public LocationNameConstruction locationNameConstruction;
 
     @Autowired
-    public LocationController(LocationService locationService, UsersService usersService, WarehouseService warehouseService, StorageZoneRepository storageZoneRepository, LocationSearch locationSearch) {
+    public LocationController(LocationService locationService, UsersService usersService, WarehouseService warehouseService, StorageZoneRepository storageZoneRepository, LocationSearch locationSearch, LocationNameConstruction locationNameConstruction) {
         this.locationService = locationService;
         this.usersService = usersService;
         this.warehouseService = warehouseService;
         this.storageZoneRepository = storageZoneRepository;
         this.locationSearch = locationSearch;
+        this.locationNameConstruction = locationNameConstruction;
     }
 
 
@@ -66,6 +69,7 @@ public class LocationController {
         model.addAttribute("storageZones", storageZones);
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("location", new Location());
+        model.addAttribute("locationNameConstruction", new LocationNameConstruction());
         usersService.loggedUserData(model);
         return "formLocation";
     }
