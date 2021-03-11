@@ -11,10 +11,13 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @Service
 public class LocationNameConstruction {
-    public String firstSepStock;
-    public String secondSepStock;
-    public String thirdSepStock;
-    public String fourthSepStock;
+    public String firstSepRack;
+    public String secondSepRack;
+    public String thirdSepRack;
+    public String fourthSepRack;
+
+    public String firstSepFloor;
+    public String secondSepFloor;
 
     public String firstSepDoor;
     public String secondSepDoor;

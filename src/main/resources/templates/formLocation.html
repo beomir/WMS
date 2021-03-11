@@ -28,36 +28,45 @@
 	<div class="login-form">
 		<form  method="post" th:action="@{/user/formLocation}">
 			<div th:text="#{app.createNewLocation}" class="titleList">Create a new Location</div><br/>
-			<section id="stockLocation">
-				<span style="color: white;font-weight: bold">Stock Location</span><br/>
-				<label style="color: white;font-style: italic" title="For example PFL like Picking floor location">Shortcut name (three alpha)</label>
-				<input class="location" id="stockFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{locationNameConstruction.firstSepStock}"/>
+			<section id="rackLocation">
+				<span style="color: white;font-weight: bold">Rack Location</span><br/>
+				<label style="color: white;font-style: italic" title="For example PRL like Picking rack location">Shortcut name (three alpha)</label>
+				<input class="location" id="rackFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{locationNameConstruction.firstSepRack}"/>
 				<label title="Numeric Value three digits" 	style="color: white;font-style: italic">Height (three numeric)</label>
-				<input class="location" id="stockSecondSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{locationNameConstruction.secondSepStock}"/>
+				<input class="location" id="rackSecondSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{locationNameConstruction.secondSepRack}"/>
 				<label title="Numeric Value two digits" 	style="color: white;font-style: italic">Depth (two numeric)</label>
-				<input class="location" id="stockThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" title="Numeric Value two digits" 	type="text"  th:field="*{locationNameConstruction.thirdSepStock}"/>
+				<input class="location" id="rackThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" title="Numeric Value two digits" 	type="text"  th:field="*{locationNameConstruction.thirdSepRack}"/>
 				<label title="Numeric Value three digits" 	style="color: white;font-style: italic">Width (three numeric)</label>
-				<input class="location" id="stockFourthSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits"	type="text"  th:field="*{locationNameConstruction.fourthSepStock}"/>
+				<input class="location" id="rackFourthSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits"	type="text"  th:field="*{locationNameConstruction.fourthSepRack}"/>
 				<label style="color: white;font-style: italic">Location name simulation</label>
-				<div style="color: white;font-weight: bold" id="stockLocationSimulation"></div><br/><br/>
+				<div style="color: white;font-weight: bold" id="rackLocationSimulation"></div><br/><br/>
 			</section>
 			<section id="doorLocation">
 				<span style="color: white;font-weight: bold">Door Location</span><br/>
 				<label style="color: white;font-style: italic" title="For example DOOR">Shortcut name (four alpha)</label>
-				<input class="location" id="doorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{4}" minlength="4" maxlength="4" type="text" title="For example DOOR" th:field="*{locationNameConstruction.firstSepDoor}"/>
+				<input required class="location" id="doorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{4}" minlength="4" maxlength="4" type="text" title="For example DOOR" th:field="*{locationNameConstruction.firstSepDoor}"/>
 				<label style="color: white;font-style: italic" title="For example SHI like Shipment">Destination (three alpha)</label>
-				<input class="location" id="doorSecondSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" minlength="3" maxlength="3" type="text" title="For example SHI" th:field="*{locationNameConstruction.secondSepDoor}"/>
+				<input required class="location" id="doorSecondSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" minlength="3" maxlength="3" type="text" title="For example SHI" th:field="*{locationNameConstruction.secondSepDoor}"/>
 				<label style="color: white;font-style: italic" title="For example 01 like warehouse door number">Number (two numeric)</label>
-				<input class="location" id="doorThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 01" th:field="*{locationNameConstruction.thirdSepDoor}"/>
+				<input required class="location" id="doorThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 01" th:field="*{locationNameConstruction.thirdSepDoor}"/>
 				<label style="color: white;font-style: italic">Location name simulation</label>
 				<div style="color: white;font-weight: bold" id="doorLocationSimulation"></div><br/><br/>
+			</section>
+			<section id="floorLocation">
+				<span style="color: white;font-weight: bold">Floor Location</span><br/>
+				<label style="color: white;font-style: italic" title="For example PFL like Picking floor location">Shortcut name (three alpha)</label>
+				<input class="location" id="floorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{locationNameConstruction.firstSepFloor}"/>
+				<label title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (eight numeric)</label>
+				<input class="location" id="floorSecondSep" pattern="[0-9]{8}" minlength="8" maxlength="8" title="Numeric Value eight digits" 	type="text"  th:field="*{locationNameConstruction.secondSepFloor}"/>
+				<label style="color: white;font-style: italic">Location name simulation</label>
+				<div style="color: white;font-weight: bold" id="floorLocationSimulation"></div><br/><br/>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Location type</label>
 				<select id="selectId" class="select-css" th:field="*{location.locationType}">
 					<option th:value="RDL">Reception Door</option>
 					<option th:value="PFL">Stock Picking Floor</option>
-					<option th:value="PFL">Stock Picking Racks</option>
+					<option th:value="PRL">Stock Picking Racks</option>
 					<option th:value="RRL">Stock Reserve Racks</option>
 					<option th:value="SDL">Ship Door</option>
 				</select> <br/>
@@ -94,41 +103,27 @@
 <script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
 <script type="text/javascript" th:src="@{/js/logo.js}"></script>
 <script>
-	let stockLocation = document.getElementById("stockLocation")
-	let doorLocation = document.getElementById("doorLocation")
-	let select = document.getElementById('selectId')
-	stockLocation.classList.add("d-none")
 
-	select.addEventListener("change", function () {
-		if(document.getElementById('selectId').value == "SDL" || document.getElementById('selectId').value == "RDL") {
-			stockLocation.classList.add("d-none")
-			doorLocation.classList.remove("d-none")
-		} else {
-			stockLocation.classList.remove("d-none")
-			doorLocation.classList.add("d-none")
-		}
-	})
+	//rackLocations
+	let rackFirstSep = document.getElementById("rackFirstSep")
+	let rackSecondSep = document.getElementById("rackSecondSep")
+	let rackThirdSep = document.getElementById("rackThirdSep")
+	let rackFourthSep = document.getElementById("rackFourthSep")
 
-	//stockLocations
-	let stockFirstSep = document.getElementById("stockFirstSep")
-	let stockSecondSep = document.getElementById("stockSecondSep")
-	let stockThirdSep = document.getElementById("stockThirdSep")
-	let stockFourthSep = document.getElementById("stockFourthSep")
-
-	let stockLocationSimulation = document.getElementById("stockLocationSimulation")
+	let rackLocationSimulation = document.getElementById("rackLocationSimulation")
 
 
-	stockFirstSep.addEventListener("keyup", function () {
-		stockLocationSimulation.innerHTML = document.getElementById("stockFirstSep").value + document.getElementById("stockSecondSep").value + document.getElementById("stockThirdSep").value + document.getElementById("stockFourthSep").value
+	rackFirstSep.addEventListener("keyup", function () {
+		rackLocationSimulation.innerHTML = document.getElementById("rackFirstSep").value + document.getElementById("rackSecondSep").value + document.getElementById("rackThirdSep").value + document.getElementById("rackFourthSep").value
 	});
-	stockSecondSep.addEventListener("keyup", function () {
-		stockLocationSimulation.innerHTML = document.getElementById("stockFirstSep").value + document.getElementById("stockSecondSep").value + document.getElementById("stockThirdSep").value + document.getElementById("stockFourthSep").value
+	rackSecondSep.addEventListener("keyup", function () {
+		rackLocationSimulation.innerHTML = document.getElementById("rackFirstSep").value + document.getElementById("rackSecondSep").value + document.getElementById("rackThirdSep").value + document.getElementById("rackFourthSep").value
 	});
-	stockThirdSep.addEventListener("keyup", function () {
-		stockLocationSimulation.innerHTML = document.getElementById("stockFirstSep").value + document.getElementById("stockSecondSep").value + document.getElementById("stockThirdSep").value + document.getElementById("stockFourthSep").value
+	rackThirdSep.addEventListener("keyup", function () {
+		rackLocationSimulation.innerHTML = document.getElementById("rackFirstSep").value + document.getElementById("rackSecondSep").value + document.getElementById("rackThirdSep").value + document.getElementById("rackFourthSep").value
 	});
-	stockFourthSep.addEventListener("keyup", function () {
-		stockLocationSimulation.innerHTML = document.getElementById("stockFirstSep").value + document.getElementById("stockSecondSep").value + document.getElementById("stockThirdSep").value + document.getElementById("stockFourthSep").value
+	rackFourthSep.addEventListener("keyup", function () {
+		rackLocationSimulation.innerHTML = document.getElementById("rackFirstSep").value + document.getElementById("rackSecondSep").value + document.getElementById("rackThirdSep").value + document.getElementById("rackFourthSep").value
 	});
 
 	//doorLocations
@@ -149,6 +144,91 @@
 		doorLocationSimulation.innerHTML = document.getElementById("doorFirstSep").value + document.getElementById("doorSecondSep").value + document.getElementById("doorThirdSep").value
 	});
 
+
+	//floorLocations
+	let floorFirstSep = document.getElementById("floorFirstSep")
+	let floorSecondSep = document.getElementById("floorSecondSep")
+
+	let floorLocationSimulation = document.getElementById("floorLocationSimulation")
+
+	floorFirstSep.addEventListener("keyup", function () {
+		floorLocationSimulation.innerHTML = document.getElementById("floorFirstSep").value + document.getElementById("floorSecondSep").value
+	});
+	floorSecondSep.addEventListener("keyup", function () {
+		floorLocationSimulation.innerHTML = document.getElementById("floorFirstSep").value + document.getElementById("floorSecondSep").value
+	});
+
+
+	//switching location type
+	let rackLocation = document.getElementById("rackLocation")
+	let doorLocation = document.getElementById("doorLocation")
+	let floorLocation = document.getElementById("floorLocation")
+	let select = document.getElementById('selectId')
+	rackLocation.classList.add("d-none")
+	floorLocation.classList.add("d-none")
+
+
+	select.addEventListener("change", function () {
+		if(document.getElementById('selectId').value == "SDL" || document.getElementById('selectId').value == "RDL") {
+			rackLocation.classList.add("d-none")
+			floorLocation.classList.add("d-none")
+			doorLocation.classList.remove("d-none")
+
+			$("#rackSecondSep").removeAttr('required').val("")
+			$("#rackFirstSep").removeAttr('required').val("")
+			$("#rackThirdSep").removeAttr('required').val("")
+			$("#rackFourthSep").removeAttr('required').val("")
+			rackLocationSimulation.innerHTML = "";
+
+			$("#floorSecondSep").removeAttr('required').val("")
+			$("#floorFirstSep").removeAttr('required').val("")
+			floorLocationSimulation.innerHTML = "";
+
+			doorFirstSep.setAttribute("required", "");
+			doorSecondSep.setAttribute("required", "");
+			doorThirdSep.setAttribute("required", "");
+
+
+
+		} else if(document.getElementById('selectId').value == "PRL" || document.getElementById('selectId').value == "RRL"){
+			rackLocation.classList.remove("d-none")
+			doorLocation.classList.add("d-none")
+			floorLocation.classList.add("d-none")
+
+			rackSecondSep.setAttribute("required", "");
+			rackFirstSep.setAttribute("required", "");
+			rackThirdSep.setAttribute("required", "");
+			rackFourthSep.setAttribute("required", "");
+
+			$("#floorSecondSep").removeAttr('required').val("")
+			$("#floorFirstSep").removeAttr('required').val("")
+			floorLocationSimulation.innerHTML = "";
+
+			$("#doorFirstSep").removeAttr('required').val("")
+			$("#doorSecondSep").removeAttr('required').val("")
+			$("#doorThirdSep").removeAttr('required').val("")
+			doorLocationSimulation.innerHTML = "";
+		}
+		else{
+			rackLocation.classList.add("d-none")
+			doorLocation.classList.add("d-none")
+			floorLocation.classList.remove("d-none")
+
+			$("#doorFirstSep").removeAttr('required').val("")
+			$("#doorSecondSep").removeAttr('required').val("")
+			$("#doorThirdSep").removeAttr('required').val("")
+			doorLocationSimulation.innerHTML = "";
+
+			$("#rackSecondSep").removeAttr('required').val("")
+			$("#rackFirstSep").removeAttr('required').val("")
+			$("#rackThirdSep").removeAttr('required').val("")
+			$("#rackFourthSep").removeAttr('required').val("")
+			rackLocationSimulation.innerHTML = "";
+
+			floorFirstSep.setAttribute("required", "");
+			floorSecondSep.setAttribute("required", "");
+		}
+	})
 </script>
 
 </body>

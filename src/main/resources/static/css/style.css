@@ -1134,5 +1134,5 @@ input:invalid.location {
     border: 2px dashed red;
 }
 input:invalid:focus.location {
-    background-image: linear-gradient(indianred, yellow);
+    background-image: linear-gradient(pink, lightgreen);
 }
