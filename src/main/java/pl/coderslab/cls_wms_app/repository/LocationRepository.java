@@ -25,5 +25,4 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     @Query("Select l from Location l where l.locationName like ?1 and l.locationType like ?2 and l.storageZone.storageZoneName like ?3 and l.warehouse.name like ?4 and l.active = true")
     List<Location> findLocationsByCriteria(String locationName, String locationType, String storageZoneName, String warehouseName);
-
 }

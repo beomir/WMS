@@ -1,12 +1,12 @@
 package pl.coderslab.cls_wms_app.controller;
 
-import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
@@ -25,7 +25,7 @@ public class LocationController {
     private final WarehouseService warehouseService;
     private final StorageZoneRepository storageZoneRepository;
     public LocationSearch locationSearch;
-    public LocationNameConstruction locationNameConstruction;
+    private final LocationNameConstruction locationNameConstruction;
 
     @Autowired
     public LocationController(LocationService locationService, UsersService usersService, WarehouseService warehouseService, StorageZoneRepository storageZoneRepository, LocationSearch locationSearch, LocationNameConstruction locationNameConstruction) {
@@ -49,7 +49,10 @@ public class LocationController {
         }
         model.addAttribute("locations", locations);
         model.addAttribute("locationSearch",locationSearch);
-        usersService.loggedUserData(model);
+        model.addAttribute("locationExistsMessage",locationNameConstruction.message);
+        String token = usersService.FindUsernameByToken(SecurityUtils.username());
+        model.addAttribute("token", token);
+        model.addAttribute("localDateTime", LocalDateTime.now());
         return "locations";
     }
 
@@ -75,8 +78,8 @@ public class LocationController {
     }
 
     @PostMapping("/user/formLocation")
-    public String locationAdd(Location location) {
-        locationService.addLocation(location);
+    public String locationAdd(Location location, LocationNameConstruction locationNameConstruction) {
+        locationService.addLocation(location, locationNameConstruction);
         return "redirect:/user/locations";
     }
 
@@ -106,6 +109,8 @@ public class LocationController {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         List<StorageZone> storageZones = storageZoneRepository.getStorageZones();
+        LocationNameConstruction lCN = locationService.lCN(location);
+        model.addAttribute("locationNameConstruction", lCN);
         model.addAttribute("storageZones", storageZones);
         model.addAttribute("localDateTime", LocalDateTime.now());
         usersService.loggedUserData(model);
@@ -113,8 +118,8 @@ public class LocationController {
     }
 
     @PostMapping("/user/formEditLocation")
-    public String edit(Location location) {
-        locationService.editLocation(location);
+    public String edit(Location location, LocationNameConstruction locationNameConstruction) {
+        locationService.editLocation(location, locationNameConstruction);
         return "redirect:/user/locations";
     }
 

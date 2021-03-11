@@ -29,6 +29,7 @@
 			<div style="background-color: #00BCD4;border-radius: 3px">
 				<span>
 				<div class="titleList" th:text="#{app.locations}"></div>
+					<div style="color: darkred;font-weight: bold" th:text="${locationExistsMessage}"></div>
 					<a th:href="@{/user/locations-browser}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.changeCriteria}"></div></a>
 					<a th:href="@{/user/formLocation}"><div class="buttonik2" style="float: right;max-width: 20%;clear:right" th:text="#{app.addLocation}"></div></a>
 					<div>

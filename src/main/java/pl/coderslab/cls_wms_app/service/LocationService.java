@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.service;
 
 
 import pl.coderslab.cls_wms_app.entity.Location;
+import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 
 import java.util.List;
 
@@ -9,9 +10,9 @@ public interface LocationService {
 
     void add(Location location);
 
-    void addLocation(Location location);
+    void addLocation(Location location, LocationNameConstruction locationNameConstruction);
 
-    void editLocation(Location location);
+    void editLocation(Location location, LocationNameConstruction locationNameConstruction);
 
     List<Location> getLocationByWarehouseName(String warehouseName);
 
@@ -30,5 +31,7 @@ public interface LocationService {
     void save(LocationSearch locationSearching);
 
     List<Location> getLocationsByAllCriteria(String locationName, String locationType, String storageZoneName, String warehouseName);
+
+    LocationNameConstruction lCN(Location location);
 
 }

@@ -23,4 +23,7 @@ public class LocationNameConstruction {
     public String secondSepDoor;
     public String thirdSepDoor;
 
+    public String message;
+
+
 }

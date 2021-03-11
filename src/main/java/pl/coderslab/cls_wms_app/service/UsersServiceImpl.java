@@ -9,6 +9,7 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.repository.UsersRepository;
+import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,13 +21,15 @@ public class UsersServiceImpl implements UsersService {
     private final PasswordEncoder passwordEncoder;
     private boolean resetPassword;
     private final ReceptionServiceImpl receptionServiceImpl;
+    private final LocationNameConstruction locationNameConstruction;
 
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl) {
+    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl, LocationNameConstruction locationNameConstruction) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
 
         this.receptionServiceImpl = receptionServiceImpl;
+        this.locationNameConstruction = locationNameConstruction;
     }
 
     @Override
@@ -96,6 +99,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public void loggedUserData(Model model) {
         receptionServiceImpl.insertReceptionFileResult = "";
+        locationNameConstruction.message = "";
         String token = FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());
