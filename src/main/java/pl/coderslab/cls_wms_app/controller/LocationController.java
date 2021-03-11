@@ -147,8 +147,17 @@ public class LocationController {
         model.addAttribute("warehouses", warehouses);
         List<StorageZone> storageZones = storageZoneRepository.getStorageZones();
         model.addAttribute("storageZones", storageZones);
+        model.addAttribute("localDateTime", LocalDateTime.now());
+        model.addAttribute("location", new Location());
+        model.addAttribute("locationNameConstruction", new LocationNameConstruction());
         usersService.loggedUserData(model);
         return "formLocationPack";
+    }
+
+    @PostMapping("/user/formLocationPack")
+    public String formLocationPack(Location location, LocationNameConstruction locationNameConstruction) {
+        locationService.editLocation(location, locationNameConstruction);
+        return "redirect:/user/locations";
     }
 
     @GetMapping("/user/addLocationsToStorageZone")

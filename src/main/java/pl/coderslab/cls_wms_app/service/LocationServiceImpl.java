@@ -76,7 +76,7 @@ public class LocationServiceImpl implements LocationService{
             log.debug("location: " + location + " created");
         }
         else{
-            lNC.setMessage("Location: " + locationName + " already exists");
+            lNC.setMessage("ERROR: Location: " + locationName + " already exists, try with another name");
             log.error("location: " + locationName + " already exists");
         }
 
@@ -125,7 +125,7 @@ public class LocationServiceImpl implements LocationService{
                 log.debug("location: " + location + " created");
             }
             else{
-                lNC.setMessage("Location: " + locationName + " already exists");
+                lNC.setMessage("ERROR: Location: " + locationName + " already exists, try with another name");
                 log.error("location: " + locationName + " already exists");
             }
         } catch (NullPointerException e){
