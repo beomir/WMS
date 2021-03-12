@@ -160,14 +160,17 @@ public class LocationController {
         return "redirect:/user/locations";
     }
 
-    @GetMapping("/user/addLocationsToStorageZone")
+    @GetMapping("/user/addLocToStorageZones")
     public String addLocationToStorageZone(Model model) {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         List<StorageZone> storageZones = storageZoneRepository.getStorageZones();
         model.addAttribute("storageZones", storageZones);
+        model.addAttribute("localDateTime", LocalDateTime.now());
+        model.addAttribute("location", new Location());
+        model.addAttribute("locationNameConstruction", new LocationNameConstruction());
         usersService.loggedUserData(model);
-        return "addLocationsToStorageZone";
+        return "addLocToStorageZones";
     }
 
 }
