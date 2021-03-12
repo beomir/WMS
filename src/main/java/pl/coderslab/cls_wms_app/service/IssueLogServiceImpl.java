@@ -39,19 +39,19 @@ public class IssueLogServiceImpl implements IssueLogService{
 
     @Override
     public List<IssueLog> getIssueLogByAllCriteria(String issueLogFileName, String createdFrom, String createdTo, String createdBy, String issueLogContent, String warehouse) {
-        if(createdBy.equals("")){
+        if(createdBy == null || createdBy.equals("")){
             createdBy = "%";
         }
-        if(issueLogFileName.equals("")){
+        if(issueLogFileName == null || issueLogFileName.equals("")){
             issueLogFileName = "%";
         }
-        if(createdFrom.equals("")){
+        if(createdFrom == null || createdFrom.equals("")){
             createdFrom = "1970-01-01";
         }
-        if(createdTo.equals("")){
+        if(createdTo == null || createdTo.equals("")){
             createdTo = "2222-02-02";
         }
-        if(issueLogContent.equals("")){
+        if(issueLogContent == null || issueLogContent.equals("")){
             issueLogContent = "%";
         }
         return issueLogRepository.getIssueLogsByFileNameAndIssueLogContentAndCreatedAndCreatedBy(issueLogFileName,createdFrom,createdTo,createdBy,issueLogContent,warehouse);

@@ -42,5 +42,6 @@ public interface ShipmentInCreationService {
 
     String resultOfShipmentCreationValidation(Long id);
 
+
 //    void deleteZerosOnStock(@SessionAttribute Long warehouseId,String username);
 }

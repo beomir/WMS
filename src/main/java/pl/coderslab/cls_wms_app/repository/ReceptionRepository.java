@@ -67,4 +67,6 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
     @Query(value="Select count(*) from receptions where hd_number = ?1",nativeQuery = true)
     int checkIfHdNumberExistsOnReception(Long hd_number);
 
+    @Query("Select r from Reception r where r.receptionNumber = ?1")
+    Reception getOneReceptionByReceptionNumber(Long receptionNbr);
 }

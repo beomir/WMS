@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-@Profile("local")
+//@Profile("local")
 public class CustomerFixture {
     private CustomerService customerService;
     private CompanyService companyService;

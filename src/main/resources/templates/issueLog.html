@@ -29,20 +29,20 @@
 			<div style="background-color: #00BCD4;border-radius: 3px">
 				<span>
 				<div class="titleList" th:text="#{app.issueLog}"></div>
-					<a th:href="@{/user/issueLog-browser}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.changeTransactionCriteria}"></div></a>
+					<a th:href="@{/user/issueLog-browser}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.changeCriteria}"></div></a>
 					<div>
-						<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.transactionCiteria} + ': '"></span><br/>
+						<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
 						<table class="criteria">
 							<tr>
-								<th style="color:blue;font-weight: bold" th:text="#{app.transactionsGroup} + ': '"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.issueLogContent} + ': '"></th>
 								<th style="color:blue;font-style:italic" th:text="${issueLogSearch.issueLogContent}"></th>
-								<th style="color:blue;font-weight: bold" th:text="#{app.transactionType} + ': '"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.issueLogFileName} + ': '"></th>
 								<th style="color:blue;font-style:italic" th:text="${issueLogSearch.issueLogFileName}"></th>
 							</tr>
 							<tr>
 								<th style="color:blue;font-weight: bold" th:text="#{app.warehouseName} + ': '"></th>
 								<th  style="color:blue;font-style:italic" th:text="${issueLogSearch.warehouse}"></th>
-								<th style="color:blue;font-weight: bold" th:text="#{app.company} + ': '"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.createdBy} + ': '"></th>
 								<th style="color:blue;font-style:italic" th:text="${issueLogSearch.createdBy}"></th>
 							</tr>
 							<tr>
@@ -65,7 +65,7 @@
 						<th th:text="#{app.additionalInfo}" style="font-weight: bold" class="tables">Additional Information</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="issueLogs: ${issueLogs}">
-						<td class="tables"><a th:text="${issueLogs.issueLogFileName}" th:href="@{${issueLogs.issueLogFilePath}}"></a></td>
+						<td class="tables"><a th:text="${issueLogs.issueLogFileName}" th:href="@{${'/files/input/receptions/errors/' + issueLogs.issueLogFileName}}"></a></td>
 				        <td class="tables" th:text="${issueLogs.issueLogContent}"></td>
 				        <td class="tables" th:text="${issueLogs.warehouse.name}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(issueLogs.created,0,19),'T',' ')}"></td>

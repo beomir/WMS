@@ -32,9 +32,10 @@ public class ReceptionController {
     private final UnitService unitService;
     private final UsersService usersService;
     private final ReceptionServiceImpl receptionServiceImpl;
+    private CustomerUserDetailsService customerUserDetailsService;
 
     @Autowired
-    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl) {
+    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, CustomerUserDetailsService customerUserDetailsService) {
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.articleService = articleService;
@@ -43,20 +44,28 @@ public class ReceptionController {
         this.unitService = unitService;
         this.usersService = usersService;
         this.receptionServiceImpl = receptionServiceImpl;
+        this.customerUserDetailsService = customerUserDetailsService;
     }
 
 
     @GetMapping("reception")
-    public String list(Model model,@SessionAttribute Long warehouseId) {
-        List<Reception> receptions = receptionService.getReceptions(warehouseId,SecurityUtils.username());
-        List<Warehouse> warehouse = warehouseService.getWarehouse(warehouseId);
+    public String list(Model model) {
+        List<Reception> receptions = receptionService.getReceptions(customerUserDetailsService.chosenWarehouse,SecurityUtils.username());
+        List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("fileStatus", receptionServiceImpl.insertReceptionFileResult);
         model.addAttribute("receptions", receptions);
         model.addAttribute("warehouse", warehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
-        return "reception";
+        String token = usersService.FindUsernameByToken(SecurityUtils.username());
+        model.addAttribute("token", token);
+        model.addAttribute("localDateTime", LocalDateTime.now());
+        if(customerUserDetailsService.chosenWarehouse == null){
+            return "redirect:/warehouse";
+        }
+        else{
+            return "reception";
+        }
     }
 
     @PostMapping("receptionFile")
@@ -91,14 +100,14 @@ public class ReceptionController {
     }
 
     @GetMapping("formReception")
-    public String receptionForm(Model model,@SessionAttribute Long warehouseId){
+    public String receptionForm(Model model){
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         List<Integer> pallets = receptionService.pallets();
         List<Unit> units = unitService.getUnit();
         List<Vendor> vendors = vendorService.getVendor(SecurityUtils.username());
-        List<Reception> openedReceptions = receptionService.openedReceptions(warehouseId,SecurityUtils.username());
-        List<Warehouse> warehouses = warehouseService.getWarehouse(warehouseId);
-        int qtyOfOpenedReceptions = receptionService.qtyOfOpenedReceptions(warehouseId,SecurityUtils.username());
+        List<Reception> openedReceptions = receptionService.openedReceptions(customerUserDetailsService.chosenWarehouse,SecurityUtils.username());
+        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
+        int qtyOfOpenedReceptions = receptionService.qtyOfOpenedReceptions(customerUserDetailsService.chosenWarehouse,SecurityUtils.username());
         model.addAttribute("lastReceptionNumber", receptionService.lastReception());
         model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
         model.addAttribute("reception", new Reception());
@@ -112,12 +121,17 @@ public class ReceptionController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "formReception";
+        if(customerUserDetailsService.chosenWarehouse == null){
+            return "redirect:/warehouse";
+        }
+        else{
+            return "formReception";
+        }
     }
 
     @PostMapping("formReception")
     public String receptionAdd(Reception reception) {
-        receptionService.add(reception);
+        receptionService.addNew(reception);
         receptionService.getCreatedReceptionById(reception.getReceptionNumber());
         receptionService.updateCloseCreationValue(reception.getReceptionNumber());
         return "redirect:/reception/reception";
@@ -169,7 +183,7 @@ public class ReceptionController {
 
     @PostMapping("editReceptionLine")
     public String updateReceptionPost(Reception reception) {
-        receptionService.add(reception);
+        receptionService.edit(reception);
         receptionService.getCreatedReceptionById(reception.getReceptionNumber());
         receptionService.updateCloseCreationValue(reception.getReceptionNumber());
         return "redirect:/reception/reception";

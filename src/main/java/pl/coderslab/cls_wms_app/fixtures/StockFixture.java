@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 @Component
-@Profile("local")
+//@Profile("local")
 public class StockFixture {
     private StockService stockService;
     private CompanyService companyService;
@@ -23,20 +23,20 @@ public class StockFixture {
     private UnitService unitService;
 
     private List<Stock> stockList = Arrays.asList(
-            new Stock(null, 202000000000000000L, null, 24L,null,null,"EU1",null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000001L, null, 10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000002L, null,  18L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000003L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000004L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000005L, null,  40L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000006L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000007L, null,  44L,null,null,"BW1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000008L, null,  20L,null,null,"BW1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000009L, null,  75L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000010L, null,  21L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000011L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000012L, null,  43L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system"),
-            new Stock(null, 202000000000000013L, null,  123L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,null,"system")
+            new Stock(null, 202000000000000000L, null, 24L,null,null,"EU1",null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000001L, null, 10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000002L, null,  18L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000003L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000004L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000005L, null,  40L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000006L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000007L, null,  44L,null,null,"BW1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000008L, null,  20L,null,null,"BW1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000009L, null,  75L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000010L, null,  21L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000011L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000012L, null,  43L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
+            new Stock(null, 202000000000000013L, null,  123L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system")
     );
 
 

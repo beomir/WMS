@@ -28,21 +28,23 @@ public class ShipmentController {
     private final WarehouseService warehouseService;
     private final CompanyService companyService;
     private final UsersService usersService;
+    private final CustomerUserDetailsService customerUserDetailsService;
 
     @Autowired
-    public ShipmentController(ShipmentService shipmentService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, UsersService usersService) {
+    public ShipmentController(ShipmentService shipmentService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, UsersService usersService, CustomerUserDetailsService customerUserDetailsService) {
         this.shipmentService = shipmentService;
         this.shipMethodService = shipMethodService;
         this.warehouseService = warehouseService;
         this.companyService = companyService;
         this.usersService = usersService;
+        this.customerUserDetailsService = customerUserDetailsService;
     }
 
     @GetMapping("/shipment")
-    public String list(Model model,@SessionAttribute Long warehouseId) {
-        List<Shipment> shipments = shipmentService.getShipment(warehouseId,SecurityUtils.username());
+    public String list(Model model) {
+        List<Shipment> shipments = shipmentService.getShipment(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
         List<ShipMethod> shipMethod = shipMethodService.getShipMethod();
-        List<Warehouse> warehouse = warehouseService.getWarehouse(warehouseId);
+        List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse );
         model.addAttribute("shipments", shipments);
         model.addAttribute("shipMethod", shipMethod);
         model.addAttribute("warehouse", warehouse);
@@ -53,7 +55,13 @@ public class ShipmentController {
 //        Map<String,Integer> surveyMap =  shipmentService.surveyMap(warehouseId,SecurityUtils.username());
 //        model.addAttribute("surveyMap",surveyMap);
 
-        return "shipment";
+        if(customerUserDetailsService.chosenWarehouse == null){
+            return "redirect:/warehouse";
+        }
+        else{
+            return "shipment";
+        }
+
     }
 
     @GetMapping("/finishedShipment/{id}")

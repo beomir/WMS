@@ -21,4 +21,6 @@ public interface CompanyService {
     void activate(Long id);
 
     List<Company> getCompanyByUsername(String username);
+
+    Company getOneCompanyByUsername(String username);
 }

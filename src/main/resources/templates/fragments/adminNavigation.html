@@ -146,6 +146,68 @@
             <ol class="btn2"><div th:text="#{app.issueLog}" style="color: white;font-weight: normal">Issue Log</div>
             </ol>
         </a>
+                  <a th:href="@{/user/locations-browser}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.locations}" style="color: white;font-weight: normal">Locations</div>
+                 <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:text="#{app.addLocation}" th:href="@{/user/formLocation}">Create New Location</a>
+                            <a th:text="#{app.addLocations}" th:href="@{/user/formLocationPack}">Create Location pack</a>
+                            <a th:text="#{app.addLocationsToStorageZone}" th:href="@{/user/addLocToStorageZones}">Add Locations To Storage Zone</a>
+                            <a th:text="#{app.deactivatedList}" th:href="@{/config/locationsDeactivatedList}">Deactivated List</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+             <a th:href="@{/user/storageZones-browser}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.storageZones}" style="color: white;font-weight: normal">Storage Zones</div>
+                 <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:text="#{app.addStorageZone}" th:href="@{/user/formLocation}">Create New Storage Zone</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+        </span>
+        <div class="btn" id="warehouseOperations">
+            <span th:text="#{app.warehouseOperations}"></span>
+            <img id="whsOperationsImg" th:src="@{/images/list.png}" class="right"/>
+        </div>
+        <span id="whsOperationsBtn" class="d-none">
+        <a th:href="@{/warehouse}"><div  class="btn3">
+            <span th:text="#{app.chWarehouse}"></span>
+            <img th:src="@{/images/return.png}" class="right"/>
+            </div></a>
+        <a th:href="@{/stock}" ><div th:text="#{app.checkStock}" class="btn3">Check Stock</div></a>
+        <div class="btn3" id="reception">
+            <span th:text="#{app.receptionMenu}"></span>
+            <img id="receptionImg" th:src="@{/images/list.png}" class="right"/>
+        </div>
+        <span id="receptionBtn" class="d-none">
+        <a th:href="@{/reception/formReception}"><div th:text="#{app.declareReception}" class="btn2">Declare Reception</div></a>
+        <a th:href="@{/reception/reception}"><div th:text="#{app.checkReceptions}" class="btn2">Check Receptions</div></a>
+            </span>
+        <div class="btn3" id="shipment">
+            <span th:text="#{app.shipmentMenu}"></span>
+            <img id="shipmentImg" th:src="@{/images/list.png}" class="right"/>
+        </div>
+        <span id="shipmentBtn" class="d-none">
+        <a th:href="@{/shipment/formShipment}"><div th:text="#{app.declareShipment}" class="btn2">Declare Shipment</div></a>
+        <a th:href="@{/shipment/shipment}">
+            <ol class="btn2"><div th:text="#{app.checkShipment}" style="color: white;font-weight: normal">Check Shipments</div >
+                <li style="min-width: 100%;">
+                    <ul>
+                        <li>
+                            <a th:text="#{app.checkShipmentInCreation}" th:href="@{/shipment/shipmentInCreation}">Check Shipments in Creation</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
+            </span>
         </span>
     </div>
     <script>
@@ -234,6 +296,70 @@
 
         configuration.addEventListener('click', handleClickConfiguration);
 
+        const warehouseOperations = document.getElementById("warehouseOperations");
+        const whsOperationsBtn = document.getElementById("whsOperationsBtn");
+        let whsOperationsSwitcher = 0;
+
+        const handleClickwarehouseOperations = () => {
+            whsOperationsBtn.classList.toggle('d-none');
+            whsOperationsSwitcher = whsOperationsSwitcher + 1;
+            imgWhsOperationsSwitcher();
+        }
+
+        function imgWhsOperationsSwitcher(){
+            if (whsOperationsSwitcher % 2 == 0) {
+                document.getElementById('whsOperationsImg').src  = '/images/list.png';
+            }
+            else {
+                document.getElementById('whsOperationsImg').src = '/images/close.png';
+            }
+        }
+
+
+        warehouseOperations.addEventListener('click', handleClickwarehouseOperations);
+
+
+        const reception = document.getElementById("reception");
+        const receptionButtons = document.getElementById("receptionBtn");
+        let switcherRec = 0;
+
+        const handleClickReception = () => {
+            receptionButtons.classList.toggle('d-none');
+            switcherRec = switcherRec + 1;
+            imgSwitcherRec();
+        }
+
+        function imgSwitcherRec(){
+            if (switcherRec % 2 == 0) {
+                document.getElementById('receptionImg').src  = '/images/list.png';
+            }
+            else {
+                document.getElementById('receptionImg').src = '/images/close.png';
+            }
+        }
+
+        reception.addEventListener('click', handleClickReception);
+
+        const shipment = document.getElementById("shipment");
+        const shipmentButtons = document.getElementById("shipmentBtn");
+        let switcherShi = 0;
+
+        const handleClickShipment = () => {
+            shipmentButtons.classList.toggle('d-none');
+            switcherShi = switcherShi + 1;
+            imgSwitcherShi();
+        }
+
+        function imgSwitcherShi(){
+            if (switcherShi % 2 == 0) {
+                document.getElementById('shipmentImg').src  = '/images/list.png';
+            }
+            else {
+                document.getElementById('shipmentImg').src = '/images/close.png';
+            }
+        }
+
+        shipment.addEventListener('click', handleClickShipment);
     </script>
 </div>
 </body>

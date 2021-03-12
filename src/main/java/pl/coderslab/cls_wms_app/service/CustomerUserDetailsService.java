@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.repository.UsersRepository;
 
@@ -21,6 +22,9 @@ import java.util.Collection;
 public class CustomerUserDetailsService implements UserDetailsService {
 
     private final UsersRepository repository;
+    // warehouse id from session
+    public Long chosenWarehouse;
+    public Stock chosenStockPosition;
 
     @Override
     @Transactional

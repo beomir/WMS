@@ -17,7 +17,6 @@ public interface ShipmentService {
 
     Shipment findById(Long id);
 
-
     void finishShipment(Long id) throws IOException, MessagingException;
 
     int checkHowManyNotfinishedShipments(Long id,String username);
@@ -25,4 +24,5 @@ public interface ShipmentService {
     Map<String,Integer> surveyMap(Long id, String username);
 
     void sentShipments(String company);
+
 }

@@ -9,9 +9,7 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.CompanyService;
-import pl.coderslab.cls_wms_app.service.UsersService;
-import pl.coderslab.cls_wms_app.service.WarehouseService;
+import pl.coderslab.cls_wms_app.service.*;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
@@ -23,16 +21,19 @@ public class WarehouseController {
     private WarehouseService warehouseService;
     private UsersService usersService;
     private CompanyService companyService;
+    private CustomerUserDetailsService customerUserDetailsService;
 
     @Autowired
-    public WarehouseController(WarehouseService warehouseService, UsersService usersService, CompanyService companyService) {
+    public WarehouseController(WarehouseService warehouseService, UsersService usersService, CompanyService companyService, CustomerUserDetailsService customerUserDetailsService) {
         this.warehouseService = warehouseService;
         this.usersService = usersService;
         this.companyService = companyService;
+        this.customerUserDetailsService = customerUserDetailsService;
     }
 
     @GetMapping("/warehouse")
     public String list(Model model) {
+        System.out.println(customerUserDetailsService.chosenWarehouse);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         List<Users> users = usersService.getUsers();
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -47,6 +48,8 @@ public class WarehouseController {
     @PostMapping("/stock")
     public String get(@RequestParam Long id, HttpSession session) {
         session.setAttribute("warehouseId", id);
+        //saved session value to variable
+        customerUserDetailsService.chosenWarehouse = id;
         return "redirect:/stock";
     }
 

@@ -23,4 +23,16 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     @Query(value="Select count(*) from storage where hd_number = ?1",nativeQuery = true)
     int checkIfHdNumberExistsOnStock(Long hd_number);
+
+    @Query(value = "select s.id from storage s  join article a on (a.id = s.article_id) join status st on (st.id = s.status_id) join warehouse w on (w.id = s.warehouse_id) where a.article_number = ?1 and st.status = 'on_hand' and w.name = ?2 order by s.pieces_qty desc limit 1",nativeQuery = true)
+    Long searchStockToSend(Long articleNumber, String warehouseName);
+
+    @Query("Select s from Stock s where s.id = ?1")
+    Stock getStockById(Long id);
+
+    @Query("Select s from Stock s where s.shipmentNumber = ?1")
+    Stock getStockByShipmentNumber(Long shipmentNumber);
+
+    @Query("Select s from Stock s where s.shipmentNumber = ?1")
+    List<Stock> getStockListByShipmentNumber(Long shipmentNumber);
 }

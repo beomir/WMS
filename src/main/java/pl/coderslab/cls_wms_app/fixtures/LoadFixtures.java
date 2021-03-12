@@ -2,12 +2,11 @@ package pl.coderslab.cls_wms_app.fixtures;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("local")
+//@Profile("local")
 public class LoadFixtures {
     private StockFixture stockFixture;
     private CompanyFixture companyFixture;
@@ -26,10 +25,12 @@ public class LoadFixtures {
     private EmailRecipientsFixture emailRecipientsFixture;
     private SchedulerFixture schedulerFixture;
     private TransactionFixture transactionFixture;
+    private LocationFixture locationFixture;
+    private StorageZoneFixture storageZoneFixture;
 
 
     @Autowired
-    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture, TransactionFixture transactionFixture) {
+    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture, TransactionFixture transactionFixture, LocationFixture locationFixture, StorageZoneFixture storageZoneFixture) {
         this.stockFixture = stockFixture;
         this.companyFixture = companyFixture;
         this.usersFixture = usersFixture;
@@ -47,6 +48,8 @@ public class LoadFixtures {
         this.emailRecipientsFixture = emailRecipientsFixture;
         this.schedulerFixture = schedulerFixture;
         this.transactionFixture = transactionFixture;
+        this.locationFixture = locationFixture;
+        this.storageZoneFixture = storageZoneFixture;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -69,5 +72,7 @@ public class LoadFixtures {
         emailRecipientsFixture.loadIntoDB();
         schedulerFixture.loadIntoDB();
         transactionFixture.loadIntoDB();
+        storageZoneFixture.loadIntoDB();
+        locationFixture.loadIntoDB();
     }
 }

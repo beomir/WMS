@@ -739,6 +739,10 @@ ol > li > ul > li:hover > a
 {
     color: #451717;
 }
+ol > li > ul > li > a:hover
+{
+    background-color: #002ed4;
+}
 
 tr:hover > td{
     background-color: #444444;
@@ -1122,3 +1126,36 @@ table.criteria {
     border-spacing: 10px;
 
 }
+
+input.location {
+    border: 2px solid currentcolor;
+}
+input:invalid.location {
+    border: 2px dashed red;
+}
+input:invalid:focus.location {
+    background-image: linear-gradient(pink, lightgreen);
+}
+
+
+input.location2 {
+    border: 2px solid currentcolor;
+}
+input:invalid.location2 {
+    border: 2px dashed red;
+}
+input:invalid:focus.location2 {
+    background-image: linear-gradient(pink, lightgreen);
+}
+
+.locationPack tr:hover > td{
+    background-color: transparent ;
+}
+
+table.locationPack {
+    margin-right: auto;
+    margin-left: auto;
+    border-collapse: separate;
+    border-spacing: 50px 0;
+}
+

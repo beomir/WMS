@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 @Component
-@Profile("local")
+//@Profile("local")
 public class VendorFixture {
 
     private VendorService vendorService;

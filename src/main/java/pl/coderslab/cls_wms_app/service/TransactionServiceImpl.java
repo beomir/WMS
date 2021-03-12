@@ -14,7 +14,7 @@ public class TransactionServiceImpl implements TransactionService{
     public TransactionSearch transactionSearch;
 
     @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository,TransactionSearch transactionSearch) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository, TransactionSearch transactionSearch) {
         this.transactionRepository = transactionRepository;
         this.transactionSearch = transactionSearch;
     }
@@ -24,10 +24,6 @@ public class TransactionServiceImpl implements TransactionService{
         transactionRepository.save(transaction);
     }
 
-    @Override
-    public List<Transaction> getTransaction(String username) {
-        return transactionRepository.getTransactionsByUser(username);
-    }
 
     @Override
     public List<Transaction> getTransaction() {
@@ -39,44 +35,25 @@ public class TransactionServiceImpl implements TransactionService{
         return transactionRepository.getOne(id);
     }
 
-    @Override
-    public List<Transaction> getTransactionByTransactionType(int transactionType) {
-        return transactionRepository.getTransactionsByTransactionType(transactionType);
-    }
-
-    @Override
-    public List<Transaction> getTransactionByTransactionGroup(String transactionGroup) {
-        return transactionRepository.getTransactionsByTransactionGroup(transactionGroup);
-    }
-
-    @Override
-    public List<Transaction> getTransactionByCreationDate(String creationDate) {
-        return transactionRepository.getTransactionsByCreateDate(creationDate);
-    }
-
-    @Override
-    public List<Transaction> getTransactionsByCreatedUser(String createdBy) {
-        return transactionRepository.getTransactionsByCreatedUser(createdBy);
-    }
 
     @Override
     public List<Transaction> getTransactionsByAllCriteria(String createdBy, String transactionType, String transactionGroup, String transactionFrom, String transactionTo,String warehouse, String company) {
-        if(createdBy.equals("")){
+        if(createdBy == null || createdBy.equals("")){
             createdBy = "%";
         }
-        if(transactionType.equals("")){
+        if(transactionType == null || transactionType.equals("")){
             transactionType = "%";
         }
-        if(transactionGroup.equals("")){
+        if(transactionGroup == null || transactionGroup.equals("")){
             transactionGroup = "%";
         }
-        if(transactionFrom.equals("")){
+        if(transactionFrom == null || transactionFrom.equals("")){
             transactionFrom = "1970-01-01";
         }
-        if(transactionTo.equals("")){
+        if(transactionTo == null || transactionTo.equals("")){
             transactionTo = "2222-02-02";
         }
-        if(company.equals("all")){
+        if(company == null || company.equals("all")){
             company = "%";
         }
         return transactionRepository.getTransactionByTypeAndGroupAndCreatedAndCreateBy(createdBy,transactionType,transactionGroup,transactionFrom,transactionTo,warehouse,company);
@@ -91,8 +68,8 @@ public class TransactionServiceImpl implements TransactionService{
         transactionSearch.setTransactionDateTo(transactionSearching.getTransactionDateTo());
         transactionSearch.setCompany(transactionSearching.getCompany());
         transactionSearch.setWarehouse(transactionSearching.getWarehouse());
-
     }
+
 
 
 }
