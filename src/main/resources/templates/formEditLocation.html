@@ -24,6 +24,8 @@
 	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
 </div>
 
+<span th:include="fragments/locationsMenu :: locationsMenu"></span>
+
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form  method="post" th:action="@{/user/formEditLocation}">
@@ -46,11 +48,11 @@
 			<section id="doorLocation" th:classappend="${#strings.contains(location.locationDesc,'door')} ? 'empty' : 'd-none'">
 				<span style="color: white;font-weight: bold">Door Location</span><br/>
 				<label style="color: white;font-style: italic" title="For example DOOR">Shortcut name (four alpha)</label>
-				<input required class="location" id="doorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{4}" minlength="4" maxlength="4" type="text" title="For example DOOR" th:field="*{locationNameConstruction.firstSepDoor}"/>
+				<input class="location" id="doorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{4}" minlength="4" maxlength="4" type="text" title="For example DOOR" th:field="*{locationNameConstruction.firstSepDoor}"/>
 				<label style="color: white;font-style: italic" title="For example SHI like Shipment">Destination (three alpha)</label>
-				<input required class="location" id="doorSecondSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" minlength="3" maxlength="3" type="text" title="For example SHI" th:field="*{locationNameConstruction.secondSepDoor}"/>
+				<input class="location" id="doorSecondSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" minlength="3" maxlength="3" type="text" title="For example SHI" th:field="*{locationNameConstruction.secondSepDoor}"/>
 				<label style="color: white;font-style: italic" title="For example 01 like warehouse door number">Number (two numeric)</label>
-				<input required class="location" id="doorThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 01" th:field="*{locationNameConstruction.thirdSepDoor}"/>
+				<input class="location" id="doorThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 01" th:field="*{locationNameConstruction.thirdSepDoor}"/>
 				<label style="color: white;font-style: italic">Location name simulation</label>
 				<div style="color: white;font-weight: bold" id="doorLocationSimulation"></div><br/><br/>
 			</section>
@@ -78,6 +80,20 @@
 				<select class="select-css" th:field="*{location.storageZone}">
 					<option th:each="i : ${storageZones}" th:value="${i.id}" th:text="${i.storageZoneName}">
 					</option>
+				</select> <br/>
+			</section>
+			<section id="multiItem">
+				<label style="color: white;font-weight: bold">Multi Item allowed</label>
+				<select class="select-css" th:field="*{location.multiItem}">
+					<option th:value="true">Yes</option>
+					<option th:value="false">No</option>
+				</select> <br/>
+			</section>
+			<section id="hdControling">
+				<label style="color: white;font-weight: bold">HD controlled</label>
+				<select class="select-css"  id="hdControl" name="hdControl">
+					<option selected th:value="true">Control</option>
+					<option th:value="false">Not control</option>
 				</select> <br/>
 			</section>
 			<section>
@@ -171,6 +187,8 @@
 	let doorLocation = document.getElementById("doorLocation")
 	let floorLocation = document.getElementById("floorLocation")
 	let select = document.getElementById('selectId')
+	let hdControl = document.getElementById("hdControling")
+	let multiItem = document.getElementById("multiItem")
 
 
 	select.addEventListener("change", function () {
@@ -178,6 +196,8 @@
 			rackLocation.classList.add("d-none")
 			floorLocation.classList.add("d-none")
 			doorLocation.classList.remove("d-none")
+			hdControl.classList.add("d-none")
+			multiItem.classList.add("d-none")
 
 			$("#rackSecondSep").removeAttr('required').val("")
 			$("#rackFirstSep").removeAttr('required').val("")
@@ -199,6 +219,9 @@
 			rackLocation.classList.remove("d-none")
 			doorLocation.classList.add("d-none")
 			floorLocation.classList.add("d-none")
+			hdControl.classList.remove("d-none")
+			multiItem.classList.remove("d-none")
+
 
 			rackSecondSep.setAttribute("required", "");
 			rackFirstSep.setAttribute("required", "");
@@ -218,6 +241,8 @@
 			rackLocation.classList.add("d-none")
 			doorLocation.classList.add("d-none")
 			floorLocation.classList.remove("d-none")
+			hdControl.classList.remove("d-none")
+			multiItem.classList.remove("d-none")
 
 			$("#doorFirstSep").removeAttr('required').val("")
 			$("#doorSecondSep").removeAttr('required').val("")

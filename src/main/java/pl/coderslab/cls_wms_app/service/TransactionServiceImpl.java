@@ -38,22 +38,22 @@ public class TransactionServiceImpl implements TransactionService{
 
     @Override
     public List<Transaction> getTransactionsByAllCriteria(String createdBy, String transactionType, String transactionGroup, String transactionFrom, String transactionTo,String warehouse, String company) {
-        if(createdBy.equals("")){
+        if(createdBy == null || createdBy.equals("")){
             createdBy = "%";
         }
-        if(transactionType.equals("")){
+        if(transactionType == null || transactionType.equals("")){
             transactionType = "%";
         }
-        if(transactionGroup.equals("")){
+        if(transactionGroup == null || transactionGroup.equals("")){
             transactionGroup = "%";
         }
-        if(transactionFrom.equals("")){
+        if(transactionFrom == null || transactionFrom.equals("")){
             transactionFrom = "1970-01-01";
         }
-        if(transactionTo.equals("")){
+        if(transactionTo == null || transactionTo.equals("")){
             transactionTo = "2222-02-02";
         }
-        if(company.equals("all")){
+        if(company == null || company.equals("all")){
             company = "%";
         }
         return transactionRepository.getTransactionByTypeAndGroupAndCreatedAndCreateBy(createdBy,transactionType,transactionGroup,transactionFrom,transactionTo,warehouse,company);

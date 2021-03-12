@@ -34,15 +34,15 @@
 						<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
 						<table class="criteria">
 							<tr>
-								<th style="color:blue;font-weight: bold" th:text="#{app.transactionsGroup} + ': '"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.issueLogContent} + ': '"></th>
 								<th style="color:blue;font-style:italic" th:text="${issueLogSearch.issueLogContent}"></th>
-								<th style="color:blue;font-weight: bold" th:text="#{app.transactionType} + ': '"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.issueLogFileName} + ': '"></th>
 								<th style="color:blue;font-style:italic" th:text="${issueLogSearch.issueLogFileName}"></th>
 							</tr>
 							<tr>
 								<th style="color:blue;font-weight: bold" th:text="#{app.warehouseName} + ': '"></th>
 								<th  style="color:blue;font-style:italic" th:text="${issueLogSearch.warehouse}"></th>
-								<th style="color:blue;font-weight: bold" th:text="#{app.company} + ': '"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.createdBy} + ': '"></th>
 								<th style="color:blue;font-style:italic" th:text="${issueLogSearch.createdBy}"></th>
 							</tr>
 							<tr>

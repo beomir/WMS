@@ -126,20 +126,6 @@
 					</option>
 				</select> <br/>
 			</section>
-			<section id="multiItem">
-				<label style="color: white;font-weight: bold">Multi Item allowed</label>
-				<select class="select-css" th:field="*{location.multiItem}">
-					<option th:value="true">Yes</option>
-					<option th:value="false">No</option>
-				</select> <br/>
-			</section>
-			<section id="hdControling">
-				<label style="color: white;font-weight: bold">HD controlled</label>
-				<select class="select-css"  id="hdControl" name="hdControl">
-					<option selected th:value="true">Control</option>
-					<option th:value="false">Not control</option>
-				</select> <br/>
-			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Warehouses</label>
 				<select class="select-css" th:field="*{location.warehouse}">
@@ -227,21 +213,15 @@
 	let doorLocationSimulation = document.getElementById("doorLocationSimulation")
 
 	doorThirdSep.addEventListener("keyup", function () {
-		let firstRangeDoor = parseInt(document.getElementById("doorThirdSepTo").value) - parseInt(document.getElementById("doorThirdSep").value) +1
+		let firstRangeDoor = parseInt(document.getElementById("doorThirdSepTo").value) - parseInt(document.getElementById("doorThirdSep").value)
 		firstRangeDoor = firstRangeDoor || 0;
-		if(firstRangeDoor<0){
-			firstRangeDoor = 0;
-		}
-		doorLocationSimulation.innerHTML = firstRangeDoor;
+		doorLocationSimulation.innerHTML = firstRangeDoor +1;
 	});
 
 	doorThirdSepTo.addEventListener("keyup", function () {
-		let firstRangeDoor = parseInt(document.getElementById("doorThirdSepTo").value) - parseInt(document.getElementById("doorThirdSep").value) +1
+		let firstRangeDoor = parseInt(document.getElementById("doorThirdSepTo").value) - parseInt(document.getElementById("doorThirdSep").value)
 		firstRangeDoor = firstRangeDoor || 0;
-		if(firstRangeDoor<0){
-			firstRangeDoor = 0;
-		}
-		doorLocationSimulation.innerHTML = firstRangeDoor;
+		doorLocationSimulation.innerHTML = firstRangeDoor +1;
 	});
 
 
@@ -252,20 +232,14 @@
 	let floorLocationSimulation = document.getElementById("floorLocationSimulation")
 
 	floorFirstSep.addEventListener("keyup", function () {
-		let firstRangeFloor = parseInt(document.getElementById("floorSecondSepTo").value) - parseInt(document.getElementById("floorSecondSep").value) + 1
+		let firstRangeFloor = parseInt(document.getElementById("floorSecondSepTo").value) - parseInt(document.getElementById("floorSecondSep").value)
 		firstRangeFloor = firstRangeFloor || 0;
-		if(firstRangeFloor<0){
-			firstRangeFloor = 0;
-		}
-		floorLocationSimulation.innerHTML = firstRangeFloor;
+		floorLocationSimulation.innerHTML = firstRangeFloor +1;
 	});
 	floorSecondSepTo.addEventListener("keyup", function () {
-		let firstRangeFloor = parseInt(document.getElementById("floorSecondSepTo").value) - parseInt(document.getElementById("floorSecondSep").value) +1
+		let firstRangeFloor = parseInt(document.getElementById("floorSecondSepTo").value) - parseInt(document.getElementById("floorSecondSep").value)
 		firstRangeFloor = firstRangeFloor || 0;
-		if(firstRangeFloor<0){
-			firstRangeFloor = 0;
-		}
-		floorLocationSimulation.innerHTML = firstRangeFloor;
+		floorLocationSimulation.innerHTML = firstRangeFloor +1;
 	});
 
 
@@ -273,21 +247,15 @@
 	let rackLocation = document.getElementById("rackLocation")
 	let doorLocation = document.getElementById("doorLocation")
 	let floorLocation = document.getElementById("floorLocation")
-	let hdControl = document.getElementById("hdControling")
-	let multiItem = document.getElementById("multiItem")
 	let select = document.getElementById('selectId')
 	rackLocation.classList.add("d-none")
 	floorLocation.classList.add("d-none")
-	hdControl.classList.add("d-none")
-	multiItem.classList.add("d-none")
 
 
 	select.addEventListener("change", function () {
 		if(document.getElementById('selectId').value == "SDL" || document.getElementById('selectId').value == "RDL") {
 			rackLocation.classList.add("d-none")
 			floorLocation.classList.add("d-none")
-			hdControl.classList.add("d-none")
-			multiItem.classList.add("d-none")
 			doorLocation.classList.remove("d-none")
 
 
@@ -314,8 +282,6 @@
 
 		} else if(document.getElementById('selectId').value == "PRL" || document.getElementById('selectId').value == "RRL"){
 			rackLocation.classList.remove("d-none")
-			hdControl.classList.remove("d-none")
-			multiItem.classList.remove("d-none")
 			doorLocation.classList.add("d-none")
 			floorLocation.classList.add("d-none")
 
@@ -342,8 +308,6 @@
 			rackLocation.classList.add("d-none")
 			doorLocation.classList.add("d-none")
 			floorLocation.classList.remove("d-none")
-			hdControl.classList.remove("d-none")
-			multiItem.classList.remove("d-none")
 
 			$("#doorFirstSep").removeAttr('required').val("")
 			$("#doorSecondSep").removeAttr('required').val("")

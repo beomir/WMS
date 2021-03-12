@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
+import pl.coderslab.cls_wms_app.entity.IssueLog;
 import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
@@ -22,12 +23,14 @@ public class LocationServiceImpl implements LocationService{
     private final LocationRepository locationRepository;
     public LocationSearch locationSearch;
     public LocationNameConstruction lNC;
+    private final IssueLogService issueLogService;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC) {
+    public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC, IssueLogService issueLogService) {
         this.locationRepository = locationRepository;
         this.locationSearch = locationSearch;
         this.lNC = lNC;
+        this.issueLogService = issueLogService;
     }
 
     @Override
@@ -42,6 +45,8 @@ public class LocationServiceImpl implements LocationService{
         if(location.getLocationDesc().contains("door")){
             if(locationNameConstruction.getFirstSepDoor().length() == 4 && StringUtils.isAlpha(locationNameConstruction.getFirstSepDoor()) && locationNameConstruction.getSecondSepDoor().length() == 3 && StringUtils.isAlpha(locationNameConstruction.getSecondSepDoor()) && locationNameConstruction.getThirdSepDoor().length() == 2 && StringUtils.isNumeric(locationNameConstruction.getThirdSepDoor()) ){
                 locationName = locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + locationNameConstruction.getThirdSepDoor();
+                location.setHdControl(true);
+                location.setMultiItem(true);
             }
             else{
                 log.error("Location Door name is incorrect: 1sep: " + locationNameConstruction.getFirstSepDoor().length() + StringUtils.isAlpha(locationNameConstruction.getFirstSepDoor()) + " ,2sep: " + locationNameConstruction.getSecondSepDoor().length() + StringUtils.isAlpha(locationNameConstruction.getSecondSepDoor()) + " ,3sep: " + locationNameConstruction.getThirdSepDoor().length() + StringUtils.isAlpha(locationNameConstruction.getThirdSepDoor()));
@@ -145,10 +150,27 @@ public class LocationServiceImpl implements LocationService{
             if(locationsRange>0){
                 for (int i = from; i <= to; i++) {
                     Location doorLocation = new Location();
-                    doorLocation.setLocationName(locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + i);
+                    doorLocation.setLocationName(locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i),2,"0"));
+                    doorLocation.setMultiItem(true);
+                    doorLocation.setHdControl(true);
                     LocationPackRestData(location, doorLocation);
-                    log.debug("Location created: " + locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + i);
-                    locationRepository.save(doorLocation);
+                    if(locationRepository.findLocationByLocationName(doorLocation.getLocationName()) == null){
+                        locationRepository.save(doorLocation);
+                        log.debug("Location created: " + locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i),2,"0"));
+                    }
+                    else{
+                        log.error("Location: " + doorLocation.getLocationName() + " already exists and was not created");
+                        lNC.message = "Not all locations from prescribed scope were created, check issue log";
+                        IssueLog issuelog = new IssueLog();
+                        issuelog.setIssueLogContent("Location: " + doorLocation.getLocationName() + ", already exists and was not created");
+                        issuelog.setWarehouse(location.getWarehouse());
+                        issuelog.setCreated(LocalDateTime.now().toString());
+                        issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
+                        issuelog.setIssueLogFilePath("");
+                        issuelog.setIssueLogFileName("");
+                        issuelog.setAdditionalInformation("Location tried be create by range generation");
+                        issueLogService.add(issuelog);
+                    }
                 }
             }
             else {
@@ -162,10 +184,25 @@ public class LocationServiceImpl implements LocationService{
             if (locationsRange > 0) {
                 for (int i = from; i <= to; i++) {
                     Location floorLocation = new Location();
-                    floorLocation.setLocationName(locationNameConstruction.getFirstSepFloor() + i);
+                    floorLocation.setLocationName(locationNameConstruction.getFirstSepFloor() + StringUtils.leftPad(Integer.toString(i),8,"0"));
                     LocationPackRestData(location, floorLocation);
-                    log.debug("Location created: " + locationNameConstruction.getFirstSepFloor() +  i);
-                    locationRepository.save(floorLocation);
+                    log.debug("Location created: " + locationNameConstruction.getFirstSepFloor() +  StringUtils.leftPad(Integer.toString(i),8,"0"));
+                    if(locationRepository.findLocationByLocationName(floorLocation.getLocationName()) == null){
+                        locationRepository.save(floorLocation);
+                    }
+                    else{
+                        log.error("Location: " + floorLocation.getLocationName() + " already exists");
+                        lNC.message = "Not all locations from prescribed scope were created, check issue log";
+                        IssueLog issuelog = new IssueLog();
+                        issuelog.setIssueLogContent("Location: " + floorLocation.getLocationName() + ", already exists and was not created");
+                        issuelog.setWarehouse(location.getWarehouse());
+                        issuelog.setCreated(LocalDateTime.now().toString());
+                        issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
+                        issuelog.setIssueLogFilePath("");
+                        issuelog.setIssueLogFileName("");
+                        issuelog.setAdditionalInformation("Location tried be create by range generation");
+                        issueLogService.add(issuelog);
+                    }
                 }
             }
             else {
@@ -199,7 +236,22 @@ public class LocationServiceImpl implements LocationService{
                             LocationPackRestData(location, rackLocation);
                             rackLocation.setLocationName(locationNameConstruction.getFirstSepRack() + rackNumber + rackHeight + locationNbr);
                             log.debug("Created location: " +rackLocation.getLocationName());
-                            locationRepository.save(rackLocation);
+                            if(locationRepository.findLocationByLocationName(rackLocation.getLocationName()) == null){
+                                locationRepository.save(rackLocation);
+                            }
+                            else{
+                                log.error("Location: " + rackLocation.getLocationName() + " already exists");
+                                lNC.message = "Not all locations from prescribed scope were created, check issue log";
+                                IssueLog issuelog = new IssueLog();
+                                issuelog.setIssueLogContent("Location: " + rackLocation.getLocationName() + ", already exists and was not created");
+                                issuelog.setWarehouse(location.getWarehouse());
+                                issuelog.setCreated(LocalDateTime.now().toString());
+                                issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
+                                issuelog.setIssueLogFilePath("");
+                                issuelog.setIssueLogFileName("");
+                                issuelog.setAdditionalInformation("Location tried be create by range generation");
+                                issueLogService.add(issuelog);
+                            }
                         }
                     }
                 }
@@ -215,6 +267,8 @@ public class LocationServiceImpl implements LocationService{
         doorLocation.setLocationType(location.getLocationType());
         doorLocation.setWarehouse(location.getWarehouse());
         doorLocation.setStorageZone(location.getStorageZone());
+        doorLocation.setMultiItem(location.isMultiItem());
+        doorLocation.setHdControl(location.isHdControl());
         doorLocation.setActive(true);
     }
 
@@ -319,9 +373,6 @@ public class LocationServiceImpl implements LocationService{
             lCN.setFirstSepFloor(location.getLocationName().substring(0,3));
             lCN.setSecondSepFloor(location.getLocationName().substring(3,10));
         }
-
         return lCN;
     }
-
-
 }

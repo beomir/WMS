@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="locationsMenu">
+    <a th:if="${#httpServletRequest.requestURI != '/user/locations-browser'}" th:href="@{/user/locations-browser}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;" th:text="#{app.locations}"></div></a>
+    <a th:if="${#httpServletRequest.requestURI != '/user/formLocation'}" th:href="@{/user/formLocation}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.addLocation}"></div></a>
+    <a th:if="${#httpServletRequest.requestURI != '/user/formLocationPack'}" th:href="@{/user/formLocationPack}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.locationRange}"></div></a>
+    <a th:if="${#httpServletRequest.requestURI != '/user/addLocationsToStorageZone'}" th:href="@{/user/addLocationsToStorageZone}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.addLocationsToStorageZone}"></div></a>
+</div>
+</body>
+</html>

@@ -24,6 +24,8 @@
 	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
 </div>
 
+<span th:include="fragments/locationsMenu :: locationsMenu"></span>
+
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${locationSearching}" method="post" th:action="@{/user/locations-browser}">

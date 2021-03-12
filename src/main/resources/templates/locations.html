@@ -30,8 +30,10 @@
 				<span>
 				<div class="titleList" th:text="#{app.locations}"></div>
 					<div style="color: darkred;font-weight: bold" th:text="${locationExistsMessage}"></div>
-					<a th:href="@{/user/locations-browser}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.changeCriteria}"></div></a>
-					<a th:href="@{/user/formLocation}"><div class="buttonik2" style="float: right;max-width: 20%;clear:right" th:text="#{app.addLocation}"></div></a>
+					<a th:href="@{/user/locations-browser}"><div class="btn2" style="float: right;max-width: 20%;" th:text="#{app.changeCriteria}"></div></a>
+					<a th:href="@{/user/formLocation}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.addLocation}"></div></a>
+					<a th:href="@{/user/formLocationPack}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.locationRange}"></div></a>
+					<a th:href="@{/user/addLocationsToStorageZone}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.addLocationsToStorageZone}"></div></a>
 					<div>
 						<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
 						<table class="criteria">
@@ -57,6 +59,8 @@
 						<th th:text="#{app.description}" style="font-weight: bold" class="tables">Description</th>
 						<th th:text="#{app.type}" style="font-weight: bold" class="tables">Type</th>
 						<th th:text="#{app.storageZone}" style="font-weight: bold" class="tables">Storage Zone</th>
+						<th th:text="#{app.multiItem}" style="font-weight: bold" class="tables">Multi Item</th>
+						<th th:text="#{app.hdControl}" style="font-weight: bold" class="tables">Hd control</th>
 						<th th:text="#{app.warehouseName}" style="font-weight: bold" class="tables">Warehouse</th>
 						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
 						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
@@ -76,6 +80,10 @@
 				        <td class="tables" th:text="${locations.locationDesc}"></td>
 				        <td class="tables" th:text="${locations.locationType}"></td>
 				        <td class="tables" th:text="${locations.storageZone.storageZoneName}"></td>
+				        <td th:if="${locations.multiItem == true}" class="tables" >Allowed</td>
+				        <td th:if="${locations.multiItem == false}" class="tables" >Not allowed</td>
+				        <td th:if="${locations.hdControl == true}" class="tables">Yes</td>
+				        <td th:if="${locations.hdControl == false}" class="tables">No</td>
 				        <td class="tables" th:text="${locations.warehouse.name}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(locations.created,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(locations.last_update,0,19),'T',' ')}"></td>

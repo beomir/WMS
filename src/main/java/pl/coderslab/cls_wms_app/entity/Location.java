@@ -36,7 +36,10 @@ public class Location {
     private boolean active;
     private String changeBy;
 
-    public Location(Long id, String locationName, String locationDesc, String locationType, Warehouse warehouse, StorageZone storageZone, String created, String last_update, boolean active, String changeBy) {
+    private boolean multiItem;
+    private boolean hdControl;
+
+    public Location(Long id, String locationName, String locationDesc, String locationType, Warehouse warehouse, StorageZone storageZone, String created, String last_update, boolean active, String changeBy,boolean multiItem,boolean hdControl) {
         this.id = id;
         this.locationName = locationName;
         this.locationDesc = locationDesc;
@@ -47,6 +50,8 @@ public class Location {
         this.last_update = last_update;
         this.active = active;
         this.changeBy = changeBy;
+        this.multiItem = multiItem;
+        this.hdControl = hdControl;
     }
 
     @Override
@@ -62,6 +67,8 @@ public class Location {
                 ", last_update='" + last_update + '\'' +
                 ", active=" + active +
                 ", changeBy='" + changeBy + '\'' +
+                ", multiItem='" + multiItem + '\'' +
+                ", hdControl='" + hdControl + '\'' +
                 '}';
     }
 }
