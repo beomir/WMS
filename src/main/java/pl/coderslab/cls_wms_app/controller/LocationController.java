@@ -156,7 +156,7 @@ public class LocationController {
 
     @PostMapping("/user/formLocationPack")
     public String formLocationPack(Location location, LocationNameConstruction locationNameConstruction) {
-        locationService.editLocation(location, locationNameConstruction);
+        locationService.createLocationPack(location, locationNameConstruction);
         return "redirect:/user/locations";
     }
 

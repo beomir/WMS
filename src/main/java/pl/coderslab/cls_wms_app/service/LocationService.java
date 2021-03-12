@@ -14,6 +14,8 @@ public interface LocationService {
 
     void editLocation(Location location, LocationNameConstruction locationNameConstruction);
 
+    void createLocationPack(Location location, LocationNameConstruction locationNameConstruction);
+
     List<Location> getLocationByWarehouseName(String warehouseName);
 
     List<Location> getLocations(); //for fixtures

@@ -26,7 +26,7 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form  method="post" th:action="@{/user/formLocation}">
+		<form  method="post" th:action="@{/user/formLocationPack}">
 			<div th:text="#{app.locationRange}" class="titleList">Create Locations Range</div><br/>
 			<section id="rackLocation">
 				<span style="color: white;font-weight: bold">Rack Location</span><br/>
@@ -36,28 +36,28 @@
 				<table class="locationPack">
 					<tbody>
 					<tr>
-						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Height (three numeric) From</label></td>
-						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Height (three numeric) To</label></td>
+						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Rack number (three numeric) From</label></td>
+						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Rack number (three numeric) To</label></td>
 					</tr>
 					<tr>
 						<td><input class="location2" id="rackSecondSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{locationNameConstruction.secondSepRack}"/></td>
-						<td><input class="location2" id="rackSecondSepTo" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{locationNameConstruction.secondSepRack}"/></td>
+						<td><input class="location2" id="rackSecondSepTo" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{locationNameConstruction.secondSepRackTo}"/></td>
 					</tr>
 					<tr>
-						<td><label title="Numeric Value two digits" 	style="color: white;font-style: italic">Depth (two numeric) From</label></td>
-						<td><label title="Numeric Value two digits" 	style="color: white;font-style: italic">Depth (two numeric) To</label></td>
+						<td><label title="Numeric Value two digits" 	style="color: white;font-style: italic">Rack height level (two numeric) From</label></td>
+						<td><label title="Numeric Value two digits" 	style="color: white;font-style: italic">Rack height level (two numeric) To</label></td>
 					</tr>
 					<tr>
 						<td><input class="location2" id="rackThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" title="Numeric Value two digits" 	type="text"  th:field="*{locationNameConstruction.thirdSepRack}"/></td>
-						<td><input class="location2" id="rackThirdSepTo" pattern="[0-9]{2}" minlength="2" maxlength="2" title="Numeric Value two digits" 	type="text"  th:field="*{locationNameConstruction.thirdSepRack}"/></td>
+						<td><input class="location2" id="rackThirdSepTo" pattern="[0-9]{2}" minlength="2" maxlength="2" title="Numeric Value two digits" 	type="text"  th:field="*{locationNameConstruction.thirdSepRackTo}"/></td>
 					</tr>
 					<tr>
-						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Width (three numeric) From</label></td>
-						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Width (three numeric) To</label></td>
+						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Location number (three numeric) From</label></td>
+						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Location number (three numeric) To</label></td>
 					</tr>
 					<tr>
 						<td><input class="location2" id="rackFourthSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits"	type="text"  th:field="*{locationNameConstruction.fourthSepRack}"/></td>
-						<td><input class="location2" id="rackFourthSepTo" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits"	type="text"  th:field="*{locationNameConstruction.fourthSepRack}"/></td>
+						<td><input class="location2" id="rackFourthSepTo" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits"	type="text"  th:field="*{locationNameConstruction.fourthSepRackTo}"/></td>
 					</tr>
 					</tbody>
 				</table>
@@ -79,7 +79,7 @@
 					</tr>
 					<tr>
 						<td><input required class="location2" id="doorThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 01" th:field="*{locationNameConstruction.thirdSepDoor}"/></td>
-						<td><input required class="location2" id="doorThirdSepTo" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 99" th:field="*{locationNameConstruction.thirdSepDoor}"/></td>
+						<td><input required class="location2" id="doorThirdSepTo" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 99" th:field="*{locationNameConstruction.thirdSepDoorTo}"/></td>
 					</tr>
 					</tbody>
 				</table>
@@ -99,7 +99,7 @@
 					</tr>
 					<tr>
 						<td><input class="location2" id="floorSecondSep" pattern="[0-9]{8}" minlength="8" maxlength="8" title="Numeric Value eight digits" 	type="text"  th:field="*{locationNameConstruction.secondSepFloor}"/></td>
-						<td><input class="location2" id="floorSecondSepTo" pattern="[0-9]{8}" minlength="8" maxlength="8" title="Numeric Value eight digits" 	type="text"  th:field="*{locationNameConstruction.secondSepFloor}"/></td>
+						<td><input class="location2" id="floorSecondSepTo" pattern="[0-9]{8}" minlength="8" maxlength="8" title="Numeric Value eight digits" 	type="text"  th:field="*{locationNameConstruction.secondSepFloorTo}"/></td>
 					</tr>
 					</tbody>
 				</table>
@@ -182,21 +182,21 @@
 	});
 
 	function calculateRackLocations(){
-		let firstRangeRack = parseInt(document.getElementById("rackSecondSepTo").value) - parseInt(document.getElementById("rackSecondSep").value)
-		let secondRangeRack =  parseInt(document.getElementById("rackThirdSepTo").value) - parseInt(document.getElementById("rackThirdSep").value)
-		let thirdRangeRack = parseInt(document.getElementById("rackFourthSepTo").value) - parseInt(document.getElementById("rackFourthSep").value)
+		let firstRangeRack = parseInt(document.getElementById("rackSecondSepTo").value) - parseInt(document.getElementById("rackSecondSep").value) +1
+		let secondRangeRack =  parseInt(document.getElementById("rackThirdSepTo").value) - parseInt(document.getElementById("rackThirdSep").value) +1
+		let thirdRangeRack = parseInt(document.getElementById("rackFourthSepTo").value) - parseInt(document.getElementById("rackFourthSep").value) +1
 		firstRangeRack = firstRangeRack || 0;
 		secondRangeRack = secondRangeRack || 0;
 		thirdRangeRack = thirdRangeRack || 0;
 
-		let sumOfLocationToCreate = firstRangeRack + secondRangeRack + thirdRangeRack
+		let sumOfLocationToCreate = thirdRangeRack * secondRangeRack * firstRangeRack
 		if(firstRangeRack<0 || firstRangeRack == null){
 			sumOfLocationToCreate = 0;
 		}
 		if(secondRangeRack<0 || secondRangeRack == null){
 			sumOfLocationToCreate = 0;
 		}
-		if(thirdRangeRack<0 || thirdRangeRack == null){
+		if(thirdRangeRack<1 || thirdRangeRack == null){
 			sumOfLocationToCreate = 0;
 		}
 
@@ -212,13 +212,13 @@
 	doorThirdSep.addEventListener("keyup", function () {
 		let firstRangeDoor = parseInt(document.getElementById("doorThirdSepTo").value) - parseInt(document.getElementById("doorThirdSep").value)
 		firstRangeDoor = firstRangeDoor || 0;
-		doorLocationSimulation.innerHTML = firstRangeDoor;
+		doorLocationSimulation.innerHTML = firstRangeDoor +1;
 	});
 
 	doorThirdSepTo.addEventListener("keyup", function () {
 		let firstRangeDoor = parseInt(document.getElementById("doorThirdSepTo").value) - parseInt(document.getElementById("doorThirdSep").value)
 		firstRangeDoor = firstRangeDoor || 0;
-		doorLocationSimulation.innerHTML = firstRangeDoor;
+		doorLocationSimulation.innerHTML = firstRangeDoor +1;
 	});
 
 
@@ -231,12 +231,12 @@
 	floorFirstSep.addEventListener("keyup", function () {
 		let firstRangeFloor = parseInt(document.getElementById("floorSecondSepTo").value) - parseInt(document.getElementById("floorSecondSep").value)
 		firstRangeFloor = firstRangeFloor || 0;
-		doorLocationSimulation.innerHTML = firstRangeFloor;
+		floorLocationSimulation.innerHTML = firstRangeFloor +1;
 	});
 	floorSecondSepTo.addEventListener("keyup", function () {
 		let firstRangeFloor = parseInt(document.getElementById("floorSecondSepTo").value) - parseInt(document.getElementById("floorSecondSep").value)
 		firstRangeFloor = firstRangeFloor || 0;
-		doorLocationSimulation.innerHTML = firstRangeFloor;
+		floorLocationSimulation.innerHTML = firstRangeFloor +1;
 	});
 
 

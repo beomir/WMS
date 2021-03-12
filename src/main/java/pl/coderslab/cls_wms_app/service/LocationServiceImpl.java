@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static java.lang.Integer.*;
+
 @Service
 @Slf4j
 public class LocationServiceImpl implements LocationService{
@@ -131,6 +133,89 @@ public class LocationServiceImpl implements LocationService{
         } catch (NullPointerException e){
             locationRepository.save(location);
         }
+    }
+
+    @Override
+    public void createLocationPack(Location location, LocationNameConstruction locationNameConstruction) {
+        locationDescription(location);
+        if(location.getLocationDesc().contains("door")){
+            int from = parseInt(locationNameConstruction.getThirdSepDoor());
+            int to = parseInt(locationNameConstruction.getThirdSepDoorTo());
+            int locationsRange = to - from ;
+            if(locationsRange>0){
+                for (int i = from; i <= to; i++) {
+                    Location doorLocation = new Location();
+                    doorLocation.setLocationName(locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + i);
+                    LocationPackRestData(location, doorLocation);
+                    log.debug("Location created: " + locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + i);
+                    locationRepository.save(doorLocation);
+                }
+            }
+            else {
+                log.error("ERROR: location range: " + locationsRange + " lower than 1");
+            }
+        }
+        else if(location.getLocationDesc().contains("floor")) {
+            int from = parseInt(locationNameConstruction.getSecondSepFloor());
+            int to = parseInt(locationNameConstruction.getSecondSepFloorTo());
+            int locationsRange = to - from;
+            if (locationsRange > 0) {
+                for (int i = from; i <= to; i++) {
+                    Location floorLocation = new Location();
+                    floorLocation.setLocationName(locationNameConstruction.getFirstSepFloor() + i);
+                    LocationPackRestData(location, floorLocation);
+                    log.debug("Location created: " + locationNameConstruction.getFirstSepFloor() +  i);
+                    locationRepository.save(floorLocation);
+                }
+            }
+            else {
+                log.error("ERROR: location range: " + locationsRange + " lower than 1");
+            }
+        }
+        else{
+            int rackNumberFrom = parseInt(locationNameConstruction.getSecondSepRack());
+            int rackNumberTo = parseInt(locationNameConstruction.getSecondSepRackTo());
+            int rackNumberRange = rackNumberTo - rackNumberFrom;
+
+            int rackHeightFrom = parseInt(locationNameConstruction.getThirdSepRack());
+            int rackHeightTo = parseInt(locationNameConstruction.getThirdSepRackTo());
+            int rackHeightRange = rackHeightTo - rackHeightFrom;
+
+            int locationNumberFrom = parseInt(locationNameConstruction.getFourthSepRack());
+            int locationNumberTo = parseInt(locationNameConstruction.getFourthSepRackTo());
+            int locationNumberRange = locationNumberTo - locationNumberFrom;
+
+            if(rackNumberRange >= 0 && rackHeightRange >= 0 && locationNumberRange >= 0){
+                for (int i = rackNumberFrom; i <= rackNumberTo; i++) {
+                    String rackNumber;
+                    String rackHeight;
+                    String locationNbr;
+                    rackNumber = StringUtils.leftPad(Integer.toString(i),3,"0");
+                    for (int j = rackHeightFrom; j <= rackHeightTo; j++) {
+                        rackHeight = StringUtils.leftPad(Integer.toString(j),2,"0") ;
+                        for (int k = locationNumberFrom; k <= locationNumberTo; k++) {
+                            locationNbr = StringUtils.leftPad(Integer.toString(k),3,"0");
+                            Location rackLocation = new Location();
+                            LocationPackRestData(location, rackLocation);
+                            rackLocation.setLocationName(locationNameConstruction.getFirstSepRack() + rackNumber + rackHeight + locationNbr);
+                            log.debug("Created location: " +rackLocation.getLocationName());
+                            locationRepository.save(rackLocation);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void LocationPackRestData(Location location, Location doorLocation) {
+        doorLocation.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        doorLocation.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        doorLocation.setChangeBy(SecurityUtils.usernameForActivations());
+        doorLocation.setLocationDesc(location.getLocationDesc());
+        doorLocation.setLocationType(location.getLocationType());
+        doorLocation.setWarehouse(location.getWarehouse());
+        doorLocation.setStorageZone(location.getStorageZone());
+        doorLocation.setActive(true);
     }
 
     private void locationDescription(Location location) {
