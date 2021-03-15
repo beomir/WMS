@@ -55,7 +55,7 @@ public class UserController {
 
         List<UsersRoles> usersRolesList = usersRolesService.getUsersRoles();
         model.addAttribute("users_Roles", usersRolesList);
-        return "/userSettings/formUserCreation";
+        return "userSettings/formUserCreation";
     }
 
     @PostMapping("formUserCreation")
@@ -79,7 +79,7 @@ public class UserController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/userSettings/usersList";
+        return "userSettings/usersList";
     }
 
 
@@ -92,7 +92,7 @@ public class UserController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/userSettings/userList";
+        return "userSettings/userList";
     }
 
     @GetMapping("/formUserEdit/{activateToken}")
@@ -107,7 +107,7 @@ public class UserController {
         List<UsersRoles> usersRolesList = usersRolesService.getUsersRoles();
         model.addAttribute("users_Roles", usersRolesList);
         usersService.loggedUserData(model);
-        return "/userSettings/formUserEdit";
+        return "userSettings/formUserEdit";
     }
 
     @PostMapping("formUserEdit")

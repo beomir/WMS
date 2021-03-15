@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/contactForm").permitAll()
                 .antMatchers("/resetPassword").permitAll()
                 .antMatchers("/blog/**").permitAll()
-                .antMatchers("/templates/wmsValues/warehouse/**","files/**","files/","/files/**","/js/**", "/css/**", "/fonts/**", "/images/**", "/templates/fragments/**").permitAll()
+                .antMatchers("files/**","files/","/files/**","/js/**", "/css/**", "/fonts/**", "/images/**", "/templates/fragments/**").permitAll()
                 .antMatchers("/shipment", "/shipment/**").hasAnyRole("USER", "ADMIN","SHIPMENT_USER")
                 .antMatchers("/reception", "/reception/**").hasAnyRole("USER", "ADMIN","RECEPTION_USER")
                 .antMatchers("/storage", "/storage/**").hasAnyRole("USER", "ADMIN","STOCK_USER")

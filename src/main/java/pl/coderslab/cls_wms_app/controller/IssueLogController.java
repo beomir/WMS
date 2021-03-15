@@ -44,7 +44,7 @@ public class IssueLogController {
         model.addAttribute("issueLogs", issueLogs);
         model.addAttribute("issueLogSearch",issueLogSearch);
         usersService.loggedUserData(model);
-        return "/wmsSettings/issueLog/issueLog";
+        return "wmsSettings/issueLog/issueLog";
     }
 
     @GetMapping("/user/issueLog-browser")
@@ -53,7 +53,7 @@ public class IssueLogController {
         usersService.loggedUserData(model);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
-        return "/wmsSettings/issueLog/issueLog-browser";
+        return "wmsSettings/issueLog/issueLog-browser";
     }
 
     @PostMapping("/user/issueLog-browser")

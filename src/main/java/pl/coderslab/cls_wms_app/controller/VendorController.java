@@ -38,7 +38,7 @@ public class VendorController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/vendor/vendor";
+        return "wmsValues/vendor/vendor";
     }
 
     @GetMapping("/config/vendorDeactivatedList")
@@ -48,7 +48,7 @@ public class VendorController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/vendor/vendorDeactivatedList";
+        return "wmsValues/vendor/vendorDeactivatedList";
     }
 
 
@@ -61,7 +61,7 @@ public class VendorController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/vendor/formVendor";
+        return "wmsValues/vendor/formVendor";
     }
 
     @PostMapping("/reception/formVendor")
@@ -92,7 +92,7 @@ public class VendorController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/vendor/formEditVendor";
+        return "wmsValues/vendor/formEditVendor";
     }
 
     @PostMapping("/reception/formEditVendor")

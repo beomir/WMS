@@ -39,7 +39,7 @@ public class EmailRecipientsController {
         model.addAttribute("emailRecipients", emailRecipients);
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsSettings/emailRecipients/emailRecipients";
+        return "wmsSettings/emailRecipients/emailRecipients";
     }
 
     @GetMapping("/config/emailRecipientsDeactivatedList")
@@ -51,7 +51,7 @@ public class EmailRecipientsController {
         model.addAttribute("emailTypes", emailTypes);
         usersService.loggedUserData(model);
 
-        return "/wmsSettings/emailRecipients/emailRecipientsDeactivatedList";
+        return "wmsSettings/emailRecipients/emailRecipientsDeactivatedList";
     }
 
 
@@ -63,7 +63,7 @@ public class EmailRecipientsController {
         model.addAttribute("emailRecipients", new EmailRecipients());
         model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
-        return "/wmsSettings/emailRecipients/formEmailRecipients";
+        return "wmsSettings/emailRecipients/formEmailRecipients";
     }
 
     @PostMapping("formEmailRecipients")
@@ -93,7 +93,7 @@ public class EmailRecipientsController {
         model.addAttribute(emailRecipients);
         model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
-        return "/wmsSettings/emailRecipients/editEmailRecipients";
+        return "wmsSettings/emailRecipients/editEmailRecipients";
     }
 
     @PostMapping("editEmailRecipients")

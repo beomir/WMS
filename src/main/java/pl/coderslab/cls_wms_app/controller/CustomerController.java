@@ -37,7 +37,7 @@ public class CustomerController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/customer/customer";
+        return "wmsValues/customer/customer";
     }
 
     @GetMapping("/config/customerDeactivatedList")
@@ -47,7 +47,7 @@ public class CustomerController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/customer/customerDeactivatedList";
+        return "wmsValues/customer/customerDeactivatedList";
     }
 
 
@@ -60,7 +60,7 @@ public class CustomerController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/customer/formCustomer";
+        return "wmsValues/customer/formCustomer";
     }
 
     @PostMapping("/shipment/formCustomer")
@@ -92,7 +92,7 @@ public class CustomerController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/customer/formEditCustomer";
+        return "wmsValues/customer/formEditCustomer";
     }
 
     @PostMapping("/shipment/formEditCustomer")

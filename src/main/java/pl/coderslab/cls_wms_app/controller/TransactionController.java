@@ -47,7 +47,7 @@ public class TransactionController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsSettings/transactions/transactions";
+        return "wmsSettings/transactions/transactions";
     }
 
     @GetMapping("/user/transactions-browser")
@@ -60,7 +60,7 @@ public class TransactionController {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         usersService.loggedUserData(model);
-        return "/wmsSettings/transactions/transactions-browser";
+        return "wmsSettings/transactions/transactions-browser";
     }
 
     @PostMapping("/user/transactions-browser")

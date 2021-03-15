@@ -34,14 +34,14 @@ public class ArticleController {
         model.addAttribute("article", article);
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/storage/article/article";
+        return "storage/article/article";
     }
 
     @GetMapping("/config/articleDeactivatedList")
     public String articleDeactivatedList(Model model) {
         List<Article> article = articleService.getDeactivatedArticle();
         model.addAttribute("article", article);
-        return "/storage/article/articleDeactivatedList";
+        return "storage/article/articleDeactivatedList";
     }
 
 
@@ -52,7 +52,7 @@ public class ArticleController {
         model.addAttribute("article", new Article());
         model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
-        return "/storage/article/formArticle";
+        return "storage/article/formArticle";
     }
 
     @PostMapping("formArticle")
@@ -81,7 +81,7 @@ public class ArticleController {
         model.addAttribute("companies", companies);
         model.addAttribute("localDateTime", LocalDateTime.now());
         usersService.loggedUserData(model);
-        return "/storage/article/formEditArticle";
+        return "storage/article/formEditArticle";
     }
 
     @PostMapping("formEditArticle")

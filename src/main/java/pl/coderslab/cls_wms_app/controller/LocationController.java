@@ -56,14 +56,14 @@ public class LocationController {
         String token = usersService.FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        return "/storage/location/locations";
+        return "storage/location/locations";
     }
 
     @GetMapping("/config/locationsDeactivatedList")
     public String locationDeactivatedList(Model model) {
         List<Location> locations = locationService.getDeactivatedLocations();
         model.addAttribute("locations", locations);
-        return "/storage/location/locationsDeactivatedList";
+        return "storage/location/locationsDeactivatedList";
     }
 
 
@@ -77,7 +77,7 @@ public class LocationController {
         model.addAttribute("location", new Location());
         model.addAttribute("locationNameConstruction", new LocationNameConstruction());
         usersService.loggedUserData(model);
-        return "/storage/location/formLocation";
+        return "storage/location/formLocation";
     }
 
     @PostMapping("/user/formLocation")
@@ -117,7 +117,7 @@ public class LocationController {
         model.addAttribute("storageZones", storageZones);
         model.addAttribute("localDateTime", LocalDateTime.now());
         usersService.loggedUserData(model);
-        return "/storage/location/formEditLocation";
+        return "storage/location/formEditLocation";
     }
 
     @PostMapping("/user/formEditLocation")
@@ -134,7 +134,7 @@ public class LocationController {
         List<StorageZone> storageZones = storageZoneRepository.getStorageZones();
         model.addAttribute("storageZones", storageZones);
         usersService.loggedUserData(model);
-        return "/storage/location/locations-browser";
+        return "storage/location/locations-browser";
     }
 
 
@@ -154,7 +154,7 @@ public class LocationController {
         model.addAttribute("location", new Location());
         model.addAttribute("locationNameConstruction", new LocationNameConstruction());
         usersService.loggedUserData(model);
-        return "/storage/location/formLocationPack";
+        return "storage/location/formLocationPack";
     }
 
     @PostMapping("/user/formLocationPack")
@@ -173,7 +173,7 @@ public class LocationController {
         model.addAttribute("location", new Location());
         model.addAttribute("locationNameConstruction", new LocationNameConstruction());
         usersService.loggedUserData(model);
-        return "/storage/location/addLocToStorageZones";
+        return "storage/location/addLocToStorageZones";
     }
 
 }

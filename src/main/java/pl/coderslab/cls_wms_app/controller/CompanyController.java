@@ -37,7 +37,7 @@ public class CompanyController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/company/company";
+        return "wmsValues/company/company";
     }
 
     @GetMapping("companyDeactivatedList")
@@ -47,7 +47,7 @@ public class CompanyController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/company/companyDeactivatedList";
+        return "wmsValues/company/companyDeactivatedList";
     }
 
 
@@ -58,7 +58,7 @@ public class CompanyController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/company/formCompany";
+        return "wmsValues/company/formCompany";
     }
 
     @PostMapping("formCompany")
@@ -86,7 +86,7 @@ public class CompanyController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/company/formEditCompany";
+        return "wmsValues/company/formEditCompany";
     }
 
     @PostMapping("formEditCompany")

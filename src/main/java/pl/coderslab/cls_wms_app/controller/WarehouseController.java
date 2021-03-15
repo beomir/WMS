@@ -66,7 +66,7 @@ public class WarehouseController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/warehouse/warehouseList";
+        return "wmsValues/warehouse/warehouseList";
     }
 
     @GetMapping("/config/warehouseDeactivatedList")
@@ -76,7 +76,7 @@ public class WarehouseController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/warehouse/warehouseDeactivatedList";
+        return "wmsValues/warehouse/warehouseDeactivatedList";
     }
 
 
@@ -87,7 +87,7 @@ public class WarehouseController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/warehouse/formWarehouseCreation";
+        return "wmsValues/warehouse/formWarehouseCreation";
     }
 
     @PostMapping("/config/formWarehouseCreation")
@@ -116,7 +116,7 @@ public class WarehouseController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsValues/warehouse/formEditWarehouse";
+        return "wmsValues/warehouse/formEditWarehouse";
     }
 
     @PostMapping("/config/formEditWarehouse")

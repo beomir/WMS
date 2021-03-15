@@ -41,7 +41,7 @@ public class UnitController {
         model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
-        return "/wmsValues/unit/unit";
+        return "wmsValues/unit/unit";
     }
 
     @GetMapping("unitDeactivatedList")
@@ -52,7 +52,7 @@ public class UnitController {
         model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
-        return "/wmsValues/unit/unitDeactivatedList";
+        return "wmsValues/unit/unitDeactivatedList";
     }
 
 
@@ -64,7 +64,7 @@ public class UnitController {
         model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
-        return "/wmsValues/unit/formUnitCreation";
+        return "wmsValues/unit/formUnitCreation";
     }
 
     @PostMapping("formUnitCreation")
@@ -95,7 +95,7 @@ public class UnitController {
         model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
-        return "/wmsValues/unit/formEditUnit";
+        return "wmsValues/unit/formEditUnit";
     }
 
     @PostMapping("formEditUnit")

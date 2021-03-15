@@ -72,7 +72,7 @@ public class StockController {
         model.addAttribute("statuses", statuses);
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "/storage/formChangeStatus";
+        return "storage/formChangeStatus";
     }
 
     @PostMapping("/storage/formChangeStatus")
@@ -89,7 +89,7 @@ public class StockController {
         model.addAttribute("articles", articles);
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "/storage/formChangeArticleNumber";
+        return "storage/formChangeArticleNumber";
     }
 
     @PostMapping("/storage/formChangeArticleNumber")
@@ -106,7 +106,7 @@ public class StockController {
         customerUserDetailsService.chosenStockPosition = stock;
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "/storage/formChangeQty";
+        return "storage/formChangeQty";
     }
 
     @PostMapping("/storage/formChangeQty")
@@ -123,7 +123,7 @@ public class StockController {
         customerUserDetailsService.chosenStockPosition = stock;
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "/storage/formChangeQuality";
+        return "storage/formChangeQuality";
     }
 
     @PostMapping("/storage/formChangeQuality")
@@ -142,7 +142,7 @@ public class StockController {
         model.addAttribute("units", units);
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "/storage/formChangeUnit";
+        return "storage/formChangeUnit";
     }
 
     @PostMapping("/storage/formChangeUnit")
@@ -159,7 +159,7 @@ public class StockController {
         customerUserDetailsService.chosenStockPosition = stock;
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "/storage/formAddComment";
+        return "storage/formAddComment";
     }
 
     @PostMapping("/formAddComment")
@@ -193,7 +193,7 @@ public class StockController {
         model.addAttribute("companys", companys);
         model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
         usersService.loggedUserData(model);
-        return "/storage/formStock";
+        return "storage/formStock";
     }
 
     @PostMapping("/storage/formStock")

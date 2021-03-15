@@ -35,14 +35,14 @@ public class StorageZoneController {
         List<StorageZone> storageZones = storageZoneService.getStorageZones();
         model.addAttribute("storageZones", storageZones);
         usersService.loggedUserData(model);
-        return "/storage/storageZones/storageZones";
+        return "storage/storageZones/storageZones";
     }
 
     @GetMapping("/config/storageZonesDeactivatedList")
     public String storageZonesDeactivatedList(Model model) {
         List<StorageZone> storageZones = storageZoneService.getDeactivatedStorageZones();
         model.addAttribute("storageZones", storageZones);
-        return "/storage/storageZones/storageZonesDeactivatedList";
+        return "storage/storageZones/storageZonesDeactivatedList";
     }
 
 
@@ -53,7 +53,7 @@ public class StorageZoneController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("storageZones", new StorageZone());
         usersService.loggedUserData(model);
-        return "/storage/storageZones/formStorageZones";
+        return "storage/storageZones/formStorageZones";
     }
 
     @PostMapping("formStorageZones")
@@ -82,7 +82,7 @@ public class StorageZoneController {
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("localDateTime", LocalDateTime.now());
         usersService.loggedUserData(model);
-        return "/storage/storageZones/formEditStorageZones";
+        return "storage/storageZones/formEditStorageZones";
     }
 
     @PostMapping("formEditStorageZone")

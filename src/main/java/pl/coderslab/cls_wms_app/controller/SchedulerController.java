@@ -38,14 +38,14 @@ public class SchedulerController {
         model.addAttribute("scheduler", scheduler);
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "/wmsSettings/scheduler/scheduler";
+        return "wmsSettings/scheduler/scheduler";
     }
 
     @GetMapping("/config/schedulersDeactivatedList")
     public String schedulerDeactivatedList(Model model) {
         List<Scheduler> scheduler = schedulerService.getDeactivatedScheduler();
         model.addAttribute("scheduler", scheduler);
-        return "/wmsSettings/scheduler/schedulersDeactivatedList";
+        return "wmsSettings/scheduler/schedulersDeactivatedList";
     }
 
     @GetMapping("/user/formScheduler")
@@ -56,7 +56,7 @@ public class SchedulerController {
         model.addAttribute("companies", companies);
         model.addAttribute("weekDays", TimeUtils.dayOfWeeks());
         usersService.loggedUserData(model);
-        return "/wmsSettings/scheduler/formScheduler";
+        return "wmsSettings/scheduler/formScheduler";
     }
 
     @PostMapping("formScheduler")
@@ -86,7 +86,7 @@ public class SchedulerController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("weekDays", TimeUtils.dayOfWeeks());
         usersService.loggedUserData(model);
-        return "/wmsSettings/scheduler/formEditScheduler";
+        return "wmsSettings/scheduler/formEditScheduler";
     }
 
     @PostMapping("formEditScheduler")
