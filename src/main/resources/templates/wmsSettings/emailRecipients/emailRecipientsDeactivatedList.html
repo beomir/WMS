@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>WMS CLS app</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+	<div class="main-agileits">
+		<div th:include="fragments/header :: header"></div>
+	</div>
+	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+
+		<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
+	</div>
+	<div id="content" class="mainw3-agileinfo">
+		<div style="width: 1200px" class="login-form">
+			<div style="background-color: #00BCD4;border-radius: 3px">
+			<span sec:authorize="!hasRole('ROLE_ADMIN')">
+				<div th:each="companys: ${companys}" class="titleList" th:text="'Deactivated Email Recipients for company: ' + ${companys.name}"></div><br/><br/>
+				</span>
+				<span sec:authorize="hasRole('ROLE_ADMIN')">
+				<div class="titleList" th:text="#{app.deactivateRecipientsList}"></div><br/><br/>
+					</span>
+				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
+					<tr style="border: solid 1px">
+						<th th:text="#{app.index.acr4}" style="font-weight: bold" class="tables">Email</th>
+						<th th:text="#{app.index.acr2}" style="font-weight: bold" class="tables">Name</th>
+						<th th:text="#{app.index.acr3}" style="font-weight: bold" class="tables">Last Name</th>
+						<th th:text="#{app.phone}" style="font-weight: bold" class="tables">Phone</th>
+						<th th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
+						<th th:text="#{app.typeOfMails}" style="font-weight: bold" class="tables">Type of emails</th>
+						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
+						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
+					</tr>
+				    <tr style="border: solid 1px" th:each="emailRecipients: ${emailRecipients}">
+						<td th:if="${emailRecipients.active==false}" class="tables" style="padding-bottom: 2px">
+							<ol><div th:text="${emailRecipients.email}"></div>
+								<li>
+									<ul>
+										<li><a th:text="#{app.activate}" th:href="@{/config/activateEmailRecipients/{token}(token=${emailRecipients.token})}">ACTIVATE</a></li>
+									</ul>
+								</li>
+							</ol>
+						</td>
+						<td th:if="${emailRecipients.active==false}" class="tables" th:text="${emailRecipients.name}"></td>
+						<td th:if="${emailRecipients.active==false}" class="tables" th:text="${emailRecipients.lastname}"></td>
+						<td th:if="${emailRecipients.active==false}" class="tables" th:text="${emailRecipients.phone}"></td>
+						<td th:if="${emailRecipients.active==false}" class="tables" th:text="${emailRecipients.company.name}"></td>
+						<td th:if="${emailRecipients.active==false}" class="tables" th:text="${emailRecipients.type}"></td>
+						<td th:if="${emailRecipients.active==false}" class="tables" th:text="${#strings.replace(#strings.substring(emailRecipients.created,0,19),'T',' ')}"></td>
+						<td th:if="${emailRecipients.active==false}" class="tables" th:text="${#strings.replace(#strings.substring(emailRecipients.last_update,0,19),'T',' ')}"></td>
+						<td th:if="${emailRecipients.active==false}" class="tables" th:text="${emailRecipients.changeBy}"></td>
+				    </tr>
+				</table>
+
+				<a th:href="@{/templates/wmsSettings/emailRecipients}"><div th:text="#{app.activatedList}" class="buttonik" style="float: right;max-width: 20%;">Activated List</div></a>
+
+			</div><br/><br/>
+
+			<div th:include="fragments/footer :: footer"></div>
+		</div>
+		<div class="w3copyright-agile">
+			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+		</div>
+	</div>
+
+	<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
+	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+</body>
+</html>

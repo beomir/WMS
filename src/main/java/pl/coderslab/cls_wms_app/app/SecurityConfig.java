@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import pl.coderslab.cls_wms_app.service.CustomerUserDetailsService;
+import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 @Configuration
 @RequiredArgsConstructor

@@ -42,12 +42,11 @@
 						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
 						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
-				    <tr style="border: solid 1px" th:each="storage: ${stock}">
+				    <tr th:each="storage: ${stock}" th:style="${storage.status.status == 'to_send'} == TRUE ? 'background: blue;border: solid 1px;' :'border: solid 1px;'" th:styleappend="${storage.status.status == 'on_reception'} == TRUE ? 'background: green;border: solid 1px;' :'border: solid 1px' ">
 						<td th:title="${storage.comment != null} == TRUE ? ${storage.comment}" th:style="${storage.comment != null && storage.comment != ''} == TRUE ? 'background: gray;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" style="padding-bottom: 2px">
 							<ol><div th:text="${storage.hd_number}"></div>
 								<li>
 									<ul>
-
 										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:href="@{/storage/formChangeStatus/{id}(id=${storage.id})}">Change Status</a></li>
 										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:href="@{/storage/formChangeQuality/{id}(id=${storage.id})}">Change Quality</a></li>
 										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/storage/formChangeQty/{id}(id=${storage.id})}">Change Qty</a></li>

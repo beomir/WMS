@@ -14,10 +14,10 @@ import pl.coderslab.cls_wms_app.entity.Users;
 
 import pl.coderslab.cls_wms_app.entity.UsersRoles;
 import pl.coderslab.cls_wms_app.repository.UsersRepository;
-import pl.coderslab.cls_wms_app.service.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 
-import pl.coderslab.cls_wms_app.service.UsersRolesService;
-import pl.coderslab.cls_wms_app.service.UsersService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersRolesService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class UserController {
 
         List<UsersRoles> usersRolesList = usersRolesService.getUsersRoles();
         model.addAttribute("users_Roles", usersRolesList);
-        return "formUserCreation";
+        return "/userSettings/formUserCreation";
     }
 
     @PostMapping("formUserCreation")
@@ -79,7 +79,7 @@ public class UserController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "usersList";
+        return "/userSettings/usersList";
     }
 
 
@@ -92,7 +92,7 @@ public class UserController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "userList";
+        return "/userSettings/userList";
     }
 
     @GetMapping("/formUserEdit/{activateToken}")
@@ -107,7 +107,7 @@ public class UserController {
         List<UsersRoles> usersRolesList = usersRolesService.getUsersRoles();
         model.addAttribute("users_Roles", usersRolesList);
         usersService.loggedUserData(model);
-        return "formUserEdit";
+        return "/userSettings/formUserEdit";
     }
 
     @PostMapping("formUserEdit")
@@ -127,7 +127,7 @@ public class UserController {
         model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
-        return "usersDeactivatedList";
+        return "/userSettings/usersDeactivatedList";
     }
 
 

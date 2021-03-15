@@ -6,7 +6,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
-import pl.coderslab.cls_wms_app.service.*;
+import pl.coderslab.cls_wms_app.service.storage.ArticleService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsOperations.ShipMethodService;
+import pl.coderslab.cls_wms_app.service.wmsOperations.ShipmentInCreationService;
+import pl.coderslab.cls_wms_app.service.wmsOperations.ShipmentService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CustomerService;
+import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
+import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -71,7 +80,7 @@ public class ShipmentInCreationController {
             return "redirect:/warehouse";
         }
         else{
-            return "shipmentInCreation";
+            return "wmsOperations/shipmentInCreation";
         }
     }
 
@@ -111,7 +120,7 @@ public class ShipmentInCreationController {
             return "redirect:/warehouse";
         }
         else{
-            return "formShipment";
+            return "wmsOperations/formShipment";
         }
     }
 
@@ -145,7 +154,7 @@ public class ShipmentInCreationController {
         model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
-        return "editShipment";
+        return "wmsOperations/editShipment";
     }
 
     @PostMapping("editShipment")

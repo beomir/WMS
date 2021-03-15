@@ -10,7 +10,11 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Transaction;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.*;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
+import pl.coderslab.cls_wms_app.temporaryObjects.TransactionSearch;
 
 import java.util.List;
 
@@ -43,7 +47,7 @@ public class TransactionController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "transactions";
+        return "/wmsSettings/transactions/transactions";
     }
 
     @GetMapping("/user/transactions-browser")
@@ -56,7 +60,7 @@ public class TransactionController {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         usersService.loggedUserData(model);
-        return "transactions-browser";
+        return "/wmsSettings/transactions/transactions-browser";
     }
 
     @PostMapping("/user/transactions-browser")

@@ -1,11 +1,15 @@
 package pl.coderslab.cls_wms_app.fixtures;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.*;
-import pl.coderslab.cls_wms_app.service.*;
+import pl.coderslab.cls_wms_app.service.storage.ArticleService;
+import pl.coderslab.cls_wms_app.service.storage.StockService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsValues.StatusService;
+import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
 
 import java.util.Arrays;

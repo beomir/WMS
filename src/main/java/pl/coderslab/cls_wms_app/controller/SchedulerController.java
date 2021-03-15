@@ -10,9 +10,9 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Scheduler;
-import pl.coderslab.cls_wms_app.service.CompanyService;
-import pl.coderslab.cls_wms_app.service.SchedulerService;
-import pl.coderslab.cls_wms_app.service.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsSettings.SchedulerService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,14 +38,14 @@ public class SchedulerController {
         model.addAttribute("scheduler", scheduler);
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "scheduler";
+        return "/wmsSettings/scheduler/scheduler";
     }
 
     @GetMapping("/config/schedulersDeactivatedList")
     public String schedulerDeactivatedList(Model model) {
         List<Scheduler> scheduler = schedulerService.getDeactivatedScheduler();
         model.addAttribute("scheduler", scheduler);
-        return "schedulersDeactivatedList";
+        return "/wmsSettings/scheduler/schedulersDeactivatedList";
     }
 
     @GetMapping("/user/formScheduler")
@@ -56,7 +56,7 @@ public class SchedulerController {
         model.addAttribute("companies", companies);
         model.addAttribute("weekDays", TimeUtils.dayOfWeeks());
         usersService.loggedUserData(model);
-        return "formScheduler";
+        return "/wmsSettings/scheduler/formScheduler";
     }
 
     @PostMapping("formScheduler")
@@ -86,7 +86,7 @@ public class SchedulerController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("weekDays", TimeUtils.dayOfWeeks());
         usersService.loggedUserData(model);
-        return "formEditScheduler";
+        return "/wmsSettings/scheduler/formEditScheduler";
     }
 
     @PostMapping("formEditScheduler")

@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Unit;
-import pl.coderslab.cls_wms_app.service.CompanyService;
-import pl.coderslab.cls_wms_app.service.UnitService;
-import pl.coderslab.cls_wms_app.service.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,7 +41,7 @@ public class UnitController {
         model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
-        return "unit";
+        return "/wmsValues/unit/unit";
     }
 
     @GetMapping("unitDeactivatedList")
@@ -52,7 +52,7 @@ public class UnitController {
         model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
-        return "unitDeactivatedList";
+        return "/wmsValues/unit/unitDeactivatedList";
     }
 
 
@@ -64,7 +64,7 @@ public class UnitController {
         model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
-        return "formUnitCreation";
+        return "/wmsValues/unit/formUnitCreation";
     }
 
     @PostMapping("formUnitCreation")
@@ -95,7 +95,7 @@ public class UnitController {
         model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
-        return "formEditUnit";
+        return "/wmsValues/unit/formEditUnit";
     }
 
     @PostMapping("formEditUnit")

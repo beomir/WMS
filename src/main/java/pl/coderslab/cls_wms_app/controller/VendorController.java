@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Vendor;
-import pl.coderslab.cls_wms_app.service.CompanyService;
-import pl.coderslab.cls_wms_app.service.UsersService;
-import pl.coderslab.cls_wms_app.service.VendorService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsValues.VendorService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,7 +38,7 @@ public class VendorController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "vendor";
+        return "/wmsValues/vendor/vendor";
     }
 
     @GetMapping("/config/vendorDeactivatedList")
@@ -48,7 +48,7 @@ public class VendorController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "vendorDeactivatedList";
+        return "/wmsValues/vendor/vendorDeactivatedList";
     }
 
 
@@ -61,7 +61,7 @@ public class VendorController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "formVendor";
+        return "/wmsValues/vendor/formVendor";
     }
 
     @PostMapping("/reception/formVendor")
@@ -92,7 +92,7 @@ public class VendorController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "formEditVendor";
+        return "/wmsValues/vendor/formEditVendor";
     }
 
     @PostMapping("/reception/formEditVendor")

@@ -6,9 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
-import pl.coderslab.cls_wms_app.service.ArticleService;
-import pl.coderslab.cls_wms_app.service.CompanyService;
-import pl.coderslab.cls_wms_app.service.UsersService;
+import pl.coderslab.cls_wms_app.service.storage.ArticleService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,14 +34,14 @@ public class ArticleController {
         model.addAttribute("article", article);
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "article";
+        return "/storage/article/article";
     }
 
     @GetMapping("/config/articleDeactivatedList")
     public String articleDeactivatedList(Model model) {
         List<Article> article = articleService.getDeactivatedArticle();
         model.addAttribute("article", article);
-        return "articleDeactivatedList";
+        return "/storage/article/articleDeactivatedList";
     }
 
 
@@ -52,7 +52,7 @@ public class ArticleController {
         model.addAttribute("article", new Article());
         model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
-        return "formArticle";
+        return "/storage/article/formArticle";
     }
 
     @PostMapping("formArticle")
@@ -81,7 +81,7 @@ public class ArticleController {
         model.addAttribute("companies", companies);
         model.addAttribute("localDateTime", LocalDateTime.now());
         usersService.loggedUserData(model);
-        return "formEditArticle";
+        return "/storage/article/formEditArticle";
     }
 
     @PostMapping("formEditArticle")

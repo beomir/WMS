@@ -10,10 +10,10 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.EmailRecipients;
 import pl.coderslab.cls_wms_app.entity.EmailTypes;
-import pl.coderslab.cls_wms_app.service.CompanyService;
-import pl.coderslab.cls_wms_app.service.EmailRecipientsService;
-import pl.coderslab.cls_wms_app.service.EmailTypesService;
-import pl.coderslab.cls_wms_app.service.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsSettings.EmailRecipientsService;
+import pl.coderslab.cls_wms_app.service.wmsSettings.EmailTypesService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import java.util.List;
 
 @Controller
@@ -39,7 +39,7 @@ public class EmailRecipientsController {
         model.addAttribute("emailRecipients", emailRecipients);
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "emailRecipients";
+        return "/wmsSettings/emailRecipients/emailRecipients";
     }
 
     @GetMapping("/config/emailRecipientsDeactivatedList")
@@ -51,7 +51,7 @@ public class EmailRecipientsController {
         model.addAttribute("emailTypes", emailTypes);
         usersService.loggedUserData(model);
 
-        return "emailRecipientsDeactivatedList";
+        return "/wmsSettings/emailRecipients/emailRecipientsDeactivatedList";
     }
 
 
@@ -63,7 +63,7 @@ public class EmailRecipientsController {
         model.addAttribute("emailRecipients", new EmailRecipients());
         model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
-        return "formEmailRecipients";
+        return "/wmsSettings/emailRecipients/formEmailRecipients";
     }
 
     @PostMapping("formEmailRecipients")
@@ -93,7 +93,7 @@ public class EmailRecipientsController {
         model.addAttribute(emailRecipients);
         model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
-        return "editEmailRecipients";
+        return "/wmsSettings/emailRecipients/editEmailRecipients";
     }
 
     @PostMapping("editEmailRecipients")

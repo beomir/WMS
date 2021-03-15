@@ -10,7 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
-import pl.coderslab.cls_wms_app.service.*;
+import pl.coderslab.cls_wms_app.service.storage.ArticleService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
+import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionServiceImpl;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
+import pl.coderslab.cls_wms_app.service.wmsValues.VendorService;
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
+import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -64,7 +72,7 @@ public class ReceptionController {
             return "redirect:/warehouse";
         }
         else{
-            return "reception";
+            return "wmsOperations/reception";
         }
     }
 
@@ -125,7 +133,7 @@ public class ReceptionController {
             return "redirect:/warehouse";
         }
         else{
-            return "formReception";
+            return "wmsOperations/formReception";
         }
     }
 
@@ -178,7 +186,7 @@ public class ReceptionController {
         model.addAttribute("companys", companys);
         model.addAttribute("localDateTime", LocalDateTime.now());
         usersService.loggedUserData(model);
-        return "editReceptionLine";
+        return "wmsOperations/editReceptionLine";
     }
 
     @PostMapping("editReceptionLine")

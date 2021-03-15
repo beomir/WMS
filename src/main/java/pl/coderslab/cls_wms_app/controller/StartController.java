@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.entity.Users;
-import pl.coderslab.cls_wms_app.service.UsersService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +59,7 @@ public class StartController {
 
     @RequestMapping("/contactForm")
     public String registerConfirmation(){
-        return "contactForm";
+        return "/userSettings/contactForm";
     }
 
     @GetMapping("/users/myProfile/{token}")
@@ -68,7 +68,7 @@ public class StartController {
         model.addAttribute(users);
 
         model.addAttribute("localDateTime", LocalDateTime.now());
-        return "myProfile";
+        return "/userSettings/myProfile";
     }
 
     @PostMapping("/users/myProfile")
@@ -80,13 +80,13 @@ public class StartController {
 
     @RequestMapping("/users/data-changed")
     public String data_changed(){
-        return "data-changed";
+        return "/userSettings/data-changed";
     }
 
     @GetMapping("/blog/resetPassword")
     public String resetPassword(Model model) {
         usersService.loggedUserData(model);
-        return "resetPassword";
+        return "/userSettings/resetPassword";
     }
 
     @PostMapping("/blog/resetPassword")
@@ -105,7 +105,7 @@ public class StartController {
     @RequestMapping("/blog/resetPassword-confirmation")
     public String resetPasswordConfirmation(Model model){
         model.addAttribute("userExists", userExists);
-        return "resetPassword-confirmation";
+        return "/userSettings/resetPassword-confirmation";
     }
 
     @GetMapping("/blog/passwordRestarted/{activateToken}")
@@ -116,12 +116,12 @@ public class StartController {
             usersService.setActivateUserAfterEmailValidation(activateToken);
             activateTokenActive = true;
             model.addAttribute("activateTokenActive", activateTokenActive);
-            return "passwordRestarted";
+            return "/userSettings/passwordRestarted";
         }
         catch(NullPointerException e) {
             activateTokenActive = false;
             model.addAttribute("activateTokenActive", activateTokenActive);
-            return "passwordRestarted";
+            return "/userSettings/passwordRestarted";
         }
     }
 
@@ -137,7 +137,7 @@ public class StartController {
     @GetMapping("/blog/passwordRestartedStep2")
     public String passwordRestartedFinish(Model model){
         model.addAttribute("resetPassword", usersService.resetPasswordStatus());
-        return "passwordRestartedStep2";
+        return "/userSettings/passwordRestartedStep2";
     }
 
     @GetMapping("/blog/blockMyAccount/{activateToken}")
@@ -148,12 +148,12 @@ public class StartController {
             usersService.blockAccountAfterUnforeseenRestartPass(activateToken);
             unforeseenRestartPass = true;
             model.addAttribute("unforeseenRestartPass", unforeseenRestartPass);
-            return "blockMyAccount";
+            return "/userSettings/blockMyAccount";
         }
         catch(NullPointerException e) {
             unforeseenRestartPass = false;
             model.addAttribute("unforeseenRestartPass", unforeseenRestartPass);
-            return "blockMyAccount";
+            return "/userSettings/blockMyAccount";
         }
     }
 }

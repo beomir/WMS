@@ -11,8 +11,11 @@ import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.repository.StorageZoneRepository;
-import pl.coderslab.cls_wms_app.service.*;
+import pl.coderslab.cls_wms_app.service.storage.LocationService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
+import pl.coderslab.cls_wms_app.temporaryObjects.LocationSearch;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,14 +56,14 @@ public class LocationController {
         String token = usersService.FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        return "locations";
+        return "/storage/location/locations";
     }
 
     @GetMapping("/config/locationsDeactivatedList")
     public String locationDeactivatedList(Model model) {
         List<Location> locations = locationService.getDeactivatedLocations();
         model.addAttribute("locations", locations);
-        return "locationsDeactivatedList";
+        return "/storage/location/locationsDeactivatedList";
     }
 
 
@@ -74,7 +77,7 @@ public class LocationController {
         model.addAttribute("location", new Location());
         model.addAttribute("locationNameConstruction", new LocationNameConstruction());
         usersService.loggedUserData(model);
-        return "formLocation";
+        return "/storage/location/formLocation";
     }
 
     @PostMapping("/user/formLocation")
@@ -114,7 +117,7 @@ public class LocationController {
         model.addAttribute("storageZones", storageZones);
         model.addAttribute("localDateTime", LocalDateTime.now());
         usersService.loggedUserData(model);
-        return "formEditLocation";
+        return "/storage/location/formEditLocation";
     }
 
     @PostMapping("/user/formEditLocation")
@@ -131,7 +134,7 @@ public class LocationController {
         List<StorageZone> storageZones = storageZoneRepository.getStorageZones();
         model.addAttribute("storageZones", storageZones);
         usersService.loggedUserData(model);
-        return "locations-browser";
+        return "/storage/location/locations-browser";
     }
 
 
@@ -151,7 +154,7 @@ public class LocationController {
         model.addAttribute("location", new Location());
         model.addAttribute("locationNameConstruction", new LocationNameConstruction());
         usersService.loggedUserData(model);
-        return "formLocationPack";
+        return "/storage/location/formLocationPack";
     }
 
     @PostMapping("/user/formLocationPack")
@@ -170,7 +173,7 @@ public class LocationController {
         model.addAttribute("location", new Location());
         model.addAttribute("locationNameConstruction", new LocationNameConstruction());
         usersService.loggedUserData(model);
-        return "addLocToStorageZones";
+        return "/storage/location/addLocToStorageZones";
     }
 
 }
