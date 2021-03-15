@@ -44,7 +44,7 @@ public class WarehouseController {
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("users", users);
         usersService.loggedUserData(model);
-        return "/wmsValues/warehouse/warehouse";
+        return "wmsValues/warehouse/warehouse";
     }
 
 
