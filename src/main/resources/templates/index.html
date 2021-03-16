@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="" />
 
-	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
 	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
 	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
@@ -16,7 +16,7 @@
 </head>
 <body onload="logo()">
 
-	<div class="main-agileits">
+	<div id="top" class="main-agileits">
 		<div th:include="fragments/header :: header"></div>
 		<div class="mainw3-agileinfo">
 
@@ -67,9 +67,7 @@
 	<div class="w3copyright-agile">
 		<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 	</div>
-
 	<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
-	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
 	<script>
 	superplaceholder({
 			el: input1,
@@ -87,7 +85,6 @@
 				startOnFocus: false 
 			}
 		})
-
 	const hide = document.getElementById("accountRequestFrom")
 	const accountRequest = document.getElementById("accountRequest")
 
@@ -100,7 +97,20 @@
 			hide.classList.remove("d-none")
 		}
 	})
+	$('#accountRequest').click(function() {
+		if ($(this).is(':checked')) {
+			$("#accountRequestFrom").show(400);
+			$('html, body').animate({
+				scrollTop: $("#accountRequestFrom").offset().top
+			}, 2000);
+		} else {
+			$("#accountRequestFrom").hide(400);
+			console.log("Checkbox is unchecked.")
+			$('html, body').animate({
+				scrollTop: $("#top").offset().top
+			}, 1000);
+		}
+	});
 	</script>
-
 </body>
 </html>

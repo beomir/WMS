@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <header th:fragment="header">
+
+    <script type="text/javascript" th:src="@{/js/logo.js}"></script>
     <section style="float: left;position: absolute">
         <span><a th:href="@{''(lang=ru)}"><img th:src="@{/images/ru2.png}"/></a></span>
         <span><a th:href="@{''(lang=pl)}"><img th:src="@{/images/pl2.png}"/></a> </span>

@@ -42,7 +42,7 @@
 				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
 			</section><br/>
 			<section>
-				<label style="color: white;font-weight: bold">Trigger hour</label><br/><br/>
+				<label style="color: white;font-weight: bold">Trigger hour</label>
 				<input type="time" th:field="*{hour}"/>
 			</section><br/>
 			<section id="howManyDaysBack">
@@ -51,11 +51,23 @@
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Trigger day of week</label><br/><br/>
-				<label th:each="i: ${weekDays}" style="color: white;font-weight: bold">
-					<input type="checkbox" th:field="*{dayOfWeek}" th:value="${i}"/>
+				<label th:each="i: ${weekDays}" style="color: white;font-weight: bold" >
+					<input type="checkbox" th:field="*{dayOfWeek}" th:value="${i}" class="triggerDays"/>
 					<span style="font-weight: bold" th:text="${i}" th:value="${i}" class="title"></span><br/>
 				</label>
-				<section><br/>
+				<section><br/><br/>
+					<label style="color: white;font-weight: bold">
+						<input type="radio" id="allWeek" name="trigger" value="allDays">
+						<span>All Week</span>
+					</label>
+					<label style="color: white;font-weight: bold">
+						<input type="radio" id="workDays" name="trigger" value="workDays">
+						<span>Work Days</span>
+					</label>
+					<label style="color: white;font-weight: bold">
+						<input type="radio" id="weekend" name="trigger" value="weekend">
+						<span>Weekend</span>
+					</label></section><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Company</label>
 				<select class="select-css" th:field="*{company}">
@@ -63,6 +75,7 @@
 					</option>
 				</select>
 			</section><br/>
+
 			<section>
 				<br/><button class="button" type="submit">Save</button>
 			</section>
@@ -77,24 +90,6 @@
 	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 </div>
 </div>
-
-
-<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
-<script type="text/javascript" th:src="@{/js/logo.js}"></script>
-<script>
-	var hide = document.getElementById("howManyDaysBack")
-	var select = document.getElementById('selectid')
-	hide.classList.add("d-none")
-
-	select.addEventListener("change", function () {
-		if(document.getElementById('selectid').value == "Stock") {
-			hide.classList.add("d-none")
-		} else {
-			hide.classList.remove("d-none")
-		}
-	})
-</script>
+<script type="text/javascript" th:src="@{/js/scheduler.js}"></script>
 </body>
-
-
 </html>

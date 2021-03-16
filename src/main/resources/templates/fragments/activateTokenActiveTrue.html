@@ -5,17 +5,20 @@
     <span>
         <form th:object="${user}" method="post" th:action="@{/blog/passwordRestarted}">
       <div class="form-group">
-          <p>Insert new password</p>
-        <input type="password" th:field="*{password}" id="password" name="password" placeholder="Password" />
+          <p th:text="#{app.insertNewPassword}">Insert new password</p>
+        <input type="password" th:field="*{password}" id="password" name="password" th:placeholder="#{app.password}" />
         <input type="hidden" th:field="*{email}" />
       </div>
       <div class="form-group">
-        <input type="password" name="password2" id="password2" placeholder="Repeat password" />
-        <span id='message' style="color:red">Password should not be empty</span>
+        <input type="password" name="password2" id="password2" th:placeholder="#{app.repeatPassword}" />
+        <span  id='passSNotEmpty' th:text="#{app.resetPasswordConf.passSNotEmpty}" style="color:red"></span>
+        <span class="d-none" id='passdif' th:text="#{app.passdif}" style="color:red"></span>
+        <span class="d-none" id='itsOK' th:text='#{app.itsOK}' style="color:green"></span>
       </div>
 
       <div style="min-width: 31%;" class="form-group form-group--buttons">
-        <button style="min-width: 31%;" type="submit" onclick="return checkPasswordAndName()" class="btn">Restart password</button>
+        <button th:text="#{app.resetPasswordConf.reset}" style="min-width: 31%;" type="submit" onclick="return checkPasswordAndName()" class="btn">Reset password</button>
+          <br/><br/>  <a style="cursor: pointer" th:href="@{/index}"><div th:text="#{app.index.cBTLP}" class="btn" style="margin-right: auto;margin-left: auto;text-align: center"></div></a>
       </div>
     </form>
     </span>

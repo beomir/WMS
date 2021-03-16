@@ -80,16 +80,6 @@
 					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.name}">
 				</select><br/>
 			</section>
-			<!--			Will be allowed in next app version-->
-			<!--			<section>-->
-			<!--				<label style="color: white;font-weight: bold">How many handle devices?</label>-->
-			<!--				<select class="select-css">-->
-			<!--					<option th:each="i : ${pallets}"  th:text="${i}">-->
-			<!--&lt;!&ndash;				nalezy wrzucic do formularza		th:value="${i}"&ndash;&gt;-->
-			<!--					</option>-->
-			<!--				</select>-->
-			<!--			</section><br/>-->
-
 			<section>
 				<label style="color: white;font-weight: bold">How many do you want sent?</label>
 				<input type="number" th:field="*{shipmentInCreation.pieces_qty}" required="required" min="1" max="6666666"/>
@@ -123,10 +113,5 @@
 		<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 	</div>
 </div>
-
-<script type="text/javascript" th:src= "@{/js/superplaceholder.js}"></script>
-<script type="text/javascript" th:src="@{/js/logo.js}"></script>
-
-
 </body>
 </html>
