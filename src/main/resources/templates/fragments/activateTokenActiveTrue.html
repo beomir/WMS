@@ -6,7 +6,7 @@
         <form th:object="${user}" method="post" th:action="@{/blog/passwordRestarted}">
       <div class="form-group">
           <p th:text="#{app.insertNewPassword}">Insert new password</p>
-        <input type="password" th:field="*{password}" id="password" name="password" th:placeholder="#{app.password}" />
+        <input type="password" th:field="*{password}" id="password1" name="password1" th:placeholder="#{app.password}" />
         <input type="hidden" th:field="*{email}" />
       </div>
       <div class="form-group">

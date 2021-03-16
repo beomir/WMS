@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.service.userSettings;
 
 import org.springframework.ui.Model;
 import pl.coderslab.cls_wms_app.entity.Users;
+import pl.coderslab.cls_wms_app.temporaryObjects.CheckPassword;
 
 
 import java.util.List;
@@ -42,4 +43,8 @@ public interface UsersService {
     boolean resetPasswordStatus();
 
     void resetPassword(Users users,String password2);
+
+    String changePassword(Users users,String email, CheckPassword check);
+
+    void edit(Users users);
 }

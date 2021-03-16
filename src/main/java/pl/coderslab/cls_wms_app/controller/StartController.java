@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersServiceImpl;
+import pl.coderslab.cls_wms_app.temporaryObjects.CheckPassword;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,13 +22,18 @@ public class StartController {
 
     private final SendEmailService sendEmailService;
     private final UsersService usersService;
+    private final UsersServiceImpl usersServiceImpl;
     private boolean userExists;
     private boolean activateTokenActive;
     private boolean unforeseenRestartPass;
+    public CheckPassword checkPassword;
 
-    public StartController(SendEmailService sendEmailService, UsersService usersService) {
+
+
+    public StartController(SendEmailService sendEmailService, UsersService usersService, UsersServiceImpl usersServiceImpl) {
         this.sendEmailService = sendEmailService;
         this.usersService = usersService;
+        this.usersServiceImpl = usersServiceImpl;
     }
 
 
@@ -64,22 +71,27 @@ public class StartController {
 
     @GetMapping("/users/myProfile/{token}")
     public String userPanel(@PathVariable String token, Model model) {
-        Users users = usersService.getUserByActivateToken(token);
-        model.addAttribute(users);
 
+        Users users = usersService.getUserByActivateToken(token);
+        System.out.println(users.getPassword());
+        model.addAttribute(users);
+        CheckPassword checkPass = new CheckPassword();
+        model.addAttribute("checkPassword", checkPass);
         model.addAttribute("localDateTime", LocalDateTime.now());
+        System.out.println(usersServiceImpl.alertMessage);
+        model.addAttribute("alertMessage", usersServiceImpl.alertMessage);
+        usersServiceImpl.oldPass = users.getPassword();
         return "userSettings/myProfile";
     }
 
     @PostMapping("/users/myProfile")
-    public String usersDataChanges(Users users,String email) {
-            sendEmailService.sendEmailFromContactForm("<p>Twoje dane po dokonanych zmianach:<br/><br/><b> Nazwa użytkownika:</b>" + users.getUsername() + "<br/><br/> <b>Email:</b>" + users.getEmail() + "<br/><br/><b>Hasło:</b>" + users.getPassword() + "</p><p>Your data after changes:<br/><br/><b> Username:</b>" + users.getUsername() + "<br/><br/> <b>Email:</b>" + users.getEmail() + "<br/><br/><b>Password:</b>" + users.getPassword() + "</p><p>Ваши данные после изменений:<br/><b> Имя пользователя:</b>" + users.getUsername() + "<br/><br/> <b>Эл. адрес:</b>" + users.getEmail() + "<br/><br/><b>пароль:</b>" + users.getPassword() + "</p><p>Vos données après modifications:<br/><b> Nom d'utilisateur:</b>" + users.getUsername() + "<br/><br/> <b>Email:</b>" + users.getEmail() + "<br/><br/><b>Mot de passe:</b>" + users.getPassword() + "</p>",email,"CLS WMS data changed");
-            usersService.add(users);
-            return "redirect:/users/data-changed";
+    public String usersDataChanges(Users users,String email, CheckPassword check) {
+        return usersService.changePassword(users,email,check);
     }
 
-    @RequestMapping("/users/data-changed")
-    public String data_changed(){
+    @GetMapping("/users/data-changed")
+    public String data_changed(Model model){
+        usersService.loggedUserData(model);
         return "/userSettings/data-changed";
     }
 
