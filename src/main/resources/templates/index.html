@@ -92,9 +92,9 @@
 
 	accountRequest.addEventListener("click", function (e) {
 		if (!this.checked) {
-			hide.classList.add("d-none")
+			$("#hide").hide(400);
 		} else {
-			hide.classList.remove("d-none")
+			$("#hide").show(400);
 		}
 	})
 	$('#accountRequest').click(function() {

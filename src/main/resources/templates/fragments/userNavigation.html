@@ -110,7 +110,7 @@
               <span th:text="#{app.warehouseOperations}"></span>
             <img id="whsOperationsImg" th:src="@{/images/list.png}" class="right"/>
          </div>
-        <span id="whsOperationsBtn" class="d-none">
+        <span id="whsOperationsBtn" class="d-none" style="min-width: 100%">
         <a th:href="@{/warehouse}"><div  class="btn3">
             <span th:text="#{app.chWarehouse}"></span>
             <img th:src="@{/images/return.png}" class="right"/>
@@ -145,11 +145,9 @@
         </span>
         <script>
             const warehouseOperations = document.getElementById("warehouseOperations");
-            const whsOperationsBtn = document.getElementById("whsOperationsBtn");
             let whsOperationsSwitcher = 0;
 
             const handleClickwarehouseOperations = () => {
-                whsOperationsBtn.classList.toggle('d-none');
                 whsOperationsSwitcher = whsOperationsSwitcher + 1;
                 imgWhsOperationsSwitcher();
             }
@@ -157,9 +155,17 @@
             function imgWhsOperationsSwitcher(){
                 if (whsOperationsSwitcher % 2 == 0) {
                     document.getElementById('whsOperationsImg').src  = '/images/list.png';
+                    $("#whsOperationsBtn").hide(500);
+                    $('html, body').animate({
+                        scrollTop: $("#topA").offset().top
+                    }, 1000);
                 }
                 else {
                     document.getElementById('whsOperationsImg').src = '/images/close.png';
+                    $("#whsOperationsBtn").show(500);
+                    $('html, body').animate({
+                        scrollTop: $("#warehouseOperations").offset().top
+                    }, 2000);
                 }
             }
 
@@ -167,11 +173,9 @@
             warehouseOperations.addEventListener('click', handleClickwarehouseOperations);
 
              const configuration = document.getElementById("configuration");
-             const configBtn = document.getElementById("configBtn");
              let switcher = 0;
 
              const handleClickConfiguration = () => {
-                 configBtn.classList.toggle('d-none');
                  switcher = switcher + 1;
                  imgSwitcher();
              }
@@ -179,9 +183,17 @@
              function imgSwitcher(){
                  if (switcher % 2 == 0) {
                      document.getElementById('configImg').src  = '/images/list.png';
+                     $("#configBtn").hide(500);
+                     $('html, body').animate({
+                         scrollTop: $("#topA").offset().top
+                     }, 1000);
                  }
                  else {
                      document.getElementById('configImg').src = '/images/close.png';
+                     $("#configBtn").show(500);
+                     $('html, body').animate({
+                         scrollTop: $("#configuration").offset().top
+                     }, 2000);
                  }
              }
 
@@ -189,11 +201,9 @@
              configuration.addEventListener('click', handleClickConfiguration);
 
             const reception = document.getElementById("reception");
-            const receptionButtons = document.getElementById("receptionBtn");
             let switcherRec = 0;
 
             const handleClickReception = () => {
-                receptionButtons.classList.toggle('d-none');
                 switcherRec = switcherRec + 1;
                 imgSwitcherRec();
             }
@@ -201,20 +211,20 @@
             function imgSwitcherRec(){
                 if (switcherRec % 2 == 0) {
                     document.getElementById('receptionImg').src  = '/images/list.png';
+                    $("#receptionBtn").hide(500);
                 }
                 else {
                     document.getElementById('receptionImg').src = '/images/close.png';
+                    $("#receptionBtn").show(500);
                 }
             }
 
             reception.addEventListener('click', handleClickReception);
 
             const shipment = document.getElementById("shipment");
-            const shipmentButtons = document.getElementById("shipmentBtn");
             let switcherShi = 0;
 
             const handleClickShipment = () => {
-                shipmentButtons.classList.toggle('d-none');
                 switcherShi = switcherShi + 1;
                 imgSwitcherShi();
             }
@@ -222,13 +232,18 @@
             function imgSwitcherShi(){
                 if (switcherShi % 2 == 0) {
                     document.getElementById('shipmentImg').src  = '/images/list.png';
+                    $("#shipmentBtn").hide(500);
                 }
                 else {
                     document.getElementById('shipmentImg').src = '/images/close.png';
+                    $("#shipmentBtn").show(500);
+                    $('html, body').animate({
+                        scrollTop: $("#shipmentBtn").offset().top
+                    }, 2000);
                 }
             }
-
             shipment.addEventListener('click', handleClickShipment);
+
         </script>
     </div>
 

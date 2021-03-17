@@ -307,11 +307,9 @@
     </div>
     <script>
         const reception = document.getElementById("reception");
-        const receptionButtons = document.getElementById("receptionBtn");
         let switcherRec = 0;
 
         const handleClickReception = () => {
-            receptionButtons.classList.toggle('d-none');
             switcherRec = switcherRec + 1;
             imgSwitcherRec();
         }
@@ -319,20 +317,23 @@
         function imgSwitcherRec(){
             if (switcherRec % 2 == 0) {
                 document.getElementById('receptionImg').src  = '/images/list.png';
+                $("#receptionBtn").hide(500);
             }
             else {
                 document.getElementById('receptionImg').src = '/images/close.png';
+                $("#receptionBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#reception").offset().top
+                }, 2000);
             }
         }
 
         reception.addEventListener('click', handleClickReception);
 
         const shipment = document.getElementById("shipment");
-        const shipmentButtons = document.getElementById("shipmentBtn");
         let switcherShi = 0;
 
         const handleClickShipment = () => {
-            shipmentButtons.classList.toggle('d-none');
             switcherShi = switcherShi + 1;
             imgSwitcherShi();
         }
@@ -340,20 +341,23 @@
         function imgSwitcherShi(){
             if (switcherShi % 2 == 0) {
                 document.getElementById('shipmentImg').src  = '/images/list.png';
+                $("#shipmentBtn").hide(500);
             }
             else {
                 document.getElementById('shipmentImg').src = '/images/close.png';
+                $("#shipmentBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#shipment").offset().top
+                }, 2000);
             }
         }
 
         shipment.addEventListener('click', handleClickShipment);
 
         const configuration = document.getElementById("configuration");
-        const configBtn = document.getElementById("configBtn");
         let switcherSet = 0;
 
         const handleClickConfiguration = () => {
-            configBtn.classList.toggle('d-none');
             switcherSet = switcherSet + 1;
             imgSwitcherSet();
         }
@@ -361,9 +365,14 @@
         function imgSwitcherSet(){
             if (switcherSet % 2 == 0) {
                 document.getElementById('settingImg').src  = '/images/list.png';
+                $("#configBtn").hide(500);
             }
             else {
                 document.getElementById('settingImg').src = '/images/close.png';
+                $("#configBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#configuration").offset().top
+                }, 2000);
             }
         }
 
@@ -371,11 +380,9 @@
 
 
         const companyMenu = document.getElementById("companyMenu");
-        const companyBtn = document.getElementById("companyBtn");
         let switcherCom = 0;
 
         const handleClickCompany = () => {
-            companyBtn.classList.toggle('d-none');
             switcherCom = switcherCom + 1;
             imgSwitcherCom();
         }
@@ -383,21 +390,22 @@
         function imgSwitcherCom(){
             if (switcherCom % 2 == 0) {
                 document.getElementById('companyImg').src  = '/images/list.png';
+                $("#companyBtn").hide(500);
             }
             else {
                 document.getElementById('companyImg').src = '/images/close.png';
+                $("#companyBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#companyMenu").offset().top
+                }, 2000);
             }
         }
 
         companyMenu.addEventListener('click', handleClickCompany);
-
-
         const stockMenu = document.getElementById("stockMenu");
-        const stockBtn = document.getElementById("stockBtn");
         let switcherSto = 0;
 
         const handleClickStock = () => {
-            stockBtn.classList.toggle('d-none');
             switcherSto = switcherSto + 1;
             imgSwitcherSto();
         }
@@ -405,20 +413,23 @@
         function imgSwitcherSto(){
             if (switcherSto % 2 == 0) {
                 document.getElementById('stockImg').src  = '/images/list.png';
+                $("#stockBtn").hide(500);
             }
             else {
                 document.getElementById('stockImg').src = '/images/close.png';
+                $("#stockBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#stockMenu").offset().top
+                }, 2000);
             }
         }
 
         stockMenu.addEventListener('click', handleClickStock);
 
         const userThings = document.getElementById("userThings");
-        const userBtn = document.getElementById("userBtn");
         let switcherUsr = 0;
 
         const handleClickUser = () => {
-            userBtn.classList.toggle('d-none');
             switcherUsr = switcherUsr + 1;
             imgSwitcherUsr();
         }
@@ -426,20 +437,23 @@
         function imgSwitcherUsr(){
             if (switcherUsr % 2 == 0) {
                 document.getElementById('userImg').src  = '/images/list.png';
+                $("#userBtn").hide(500);
             }
             else {
                 document.getElementById('userImg').src = '/images/close.png';
+                $("#userBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#userThings").offset().top
+                }, 2000);
             }
         }
 
         userThings.addEventListener('click', handleClickUser);
 
         const config = document.getElementById("config");
-        const configBt = document.getElementById("configBt");
         let switcherCon = 0;
 
         const handleClickConfig = () => {
-            configBt.classList.toggle('d-none');
             switcherCon = switcherCon + 1;
             imgSwitcherCon();
         }
@@ -447,9 +461,14 @@
         function imgSwitcherCon(){
             if (switcherCon % 2 == 0) {
                 document.getElementById('configImg').src  = '/images/list.png';
+                $("#configBt").hide(500);
             }
             else {
                 document.getElementById('configImg').src = '/images/close.png';
+                $("#configBt").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#config").offset().top
+                }, 2000);
             }
         }
 

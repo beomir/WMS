@@ -189,17 +189,18 @@ public class UsersServiceImpl implements UsersService {
             add(users);
             return "redirect:/users/data-changed";
         }
-        else if(!BCrypt.checkpw(enteredPassword,password)){
-            alertMessage = "ERROR: The old password entered is incorrect";
-            return "redirect:/users/myProfile/" + usersRepository.FindUsernameByToken(users.getUsername());
-        }
         else if(check.password1 == null || check.password2 == null){
             alertMessage = "ERROR: One from old credentials field to fill were empty";
             return "redirect:/users/myProfile/" + usersRepository.FindUsernameByToken(users.getUsername());
         }
-        else {
+        else if(!check.password1.equals(check.password2)){
             alertMessage = "ERROR: Old credentials are not the same";
             return "redirect:/users/myProfile/" + usersRepository.FindUsernameByToken(users.getUsername());
         }
+        else{
+            alertMessage = "ERROR: The old password entered is incorrect";
+            return "redirect:/users/myProfile/" + usersRepository.FindUsernameByToken(users.getUsername());
+        }
+
     }
 }
