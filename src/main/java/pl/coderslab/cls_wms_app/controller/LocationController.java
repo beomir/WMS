@@ -10,6 +10,7 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
+import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.repository.StorageZoneRepository;
 import pl.coderslab.cls_wms_app.service.storage.LocationService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
@@ -29,15 +30,17 @@ public class LocationController {
     private final StorageZoneRepository storageZoneRepository;
     public LocationSearch locationSearch;
     private final LocationNameConstruction locationNameConstruction;
+    private final LocationRepository locationRepository;
 
     @Autowired
-    public LocationController(LocationService locationService, UsersService usersService, WarehouseService warehouseService, StorageZoneRepository storageZoneRepository, LocationSearch locationSearch, LocationNameConstruction locationNameConstruction) {
+    public LocationController(LocationService locationService, UsersService usersService, WarehouseService warehouseService, StorageZoneRepository storageZoneRepository, LocationSearch locationSearch, LocationNameConstruction locationNameConstruction, LocationRepository locationRepository) {
         this.locationService = locationService;
         this.usersService = usersService;
         this.warehouseService = warehouseService;
         this.storageZoneRepository = storageZoneRepository;
         this.locationSearch = locationSearch;
         this.locationNameConstruction = locationNameConstruction;
+        this.locationRepository = locationRepository;
     }
 
 
@@ -169,6 +172,9 @@ public class LocationController {
         model.addAttribute("warehouses", warehouses);
         List<StorageZone> storageZones = storageZoneRepository.getStorageZones();
         model.addAttribute("storageZones", storageZones);
+        List<Location> LocationAndStorageZones = locationRepository.LocationsPlusStorageZone();
+        model.addAttribute("lasz", LocationAndStorageZones);
+
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("location", new Location());
         model.addAttribute("locationNameConstruction", new LocationNameConstruction());

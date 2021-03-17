@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
+
     @Query("Select l from Location l join Warehouse w where w.name = ?1 order by l.locationName")
     List<Location> getLocationByWarehouseName(String warehouseName);
 
@@ -25,4 +26,11 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     @Query("Select l from Location l where l.locationName like ?1 and l.locationType like ?2 and l.storageZone.storageZoneName like ?3 and l.warehouse.name like ?4 and l.active = true")
     List<Location> findLocationsByCriteria(String locationName, String locationType, String storageZoneName, String warehouseName);
+
+    @Query(value = "SELECT sz.storage_zone_name, count(l.location_name) FROM Location l inner join storage_zone sz on l.storage_zone_id = sz.id group by sz.storage_zone_name", nativeQuery = true)
+    List<String> NumberOfLocationsAssignedToStorageZone();
+
+    @Query("Select l from Location l join fetch StorageZone sz on sz.id = l.storageZone.id ")
+    List<Location> LocationsPlusStorageZone();
+
 }
