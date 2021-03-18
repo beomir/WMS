@@ -30,7 +30,7 @@
 			<div th:text="#{app.profileAssignedTo} +' ' + #{app.company} + ': ' + ${users.company}" class="titleList"></div><br/>
 			<div style="color: white;font-weight: bold" th:text="${alertMessage}"></div>
 			<section>
-				<label style="color: white;font-weight: bold">Login</label><br/><br/>
+				<label th:text="#{app.login}" style="color: white;font-weight: bold">Login</label><br/><br/>
 				<label th:text="${users.username}"  style="color: white;font-weight: bold;font-size: 22px"></label>
 				<input type="hidden" th:field="*{users.id}"/>
 				<input type="hidden" th:field="*{users.created}"/>

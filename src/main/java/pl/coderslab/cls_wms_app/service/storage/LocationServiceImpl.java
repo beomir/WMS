@@ -159,13 +159,12 @@ public class LocationServiceImpl implements LocationService{
     @Override
     public void addLocationsToStorageZone(AddLocationToStorageZone aLTSZ) {
         if(aLTSZ.locationType.equals("RDL") || aLTSZ.locationType.equals("SDL") ){
-            log.error(aLTSZ.storageZone);
-            log.error(aLTSZ.warehouse);
-            log.error(aLTSZ.storageZone);
-            log.error(aLTSZ.storageZone);
-            log.error(aLTSZ.storageZone);
-            log.error(aLTSZ.storageZone);
-            log.error(aLTSZ.storageZone);
+            log.debug(aLTSZ.storageZone);
+            log.debug(aLTSZ.warehouse);
+            log.debug(aLTSZ.firstSepDoor);
+            log.debug(aLTSZ.secondSepDoor);
+            log.debug(aLTSZ.thirdSepDoor);
+            log.debug(aLTSZ.thirdSepDoorTo);
             int from = parseInt(aLTSZ.getThirdSepDoor());
             int to = parseInt(aLTSZ.getThirdSepDoorTo());
             int doorLocationsRange = to - from ;
@@ -174,7 +173,6 @@ public class LocationServiceImpl implements LocationService{
             if(doorLocationsRange>0){
                 for (int i = from; i <= to; i++) {
                     requestedLocationToAdd = aLTSZ.getFirstSepDoor() + aLTSZ.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i),2,"0");
-                    log.error("inside loop locationToADD: " + requestedLocationToAdd);
                     if(locationRepository.findLocationByLocationName(requestedLocationToAdd) == null){
                         IssueLog issuelog = new IssueLog();
                         issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", not exists in DB");
@@ -183,8 +181,9 @@ public class LocationServiceImpl implements LocationService{
                         issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
                         issuelog.setIssueLogFilePath("");
                         issuelog.setIssueLogFileName("");
-                        issuelog.setAdditionalInformation("Location tried be add to Storage Zone by range generation");
+                        issuelog.setAdditionalInformation("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is not exists in DB");
                         issueLogService.add(issuelog);
+                        log.error("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is not exists in DB. Front End validation was broken");
                     }
                     else{
                         Location location = locationRepository.findLocationByLocationName(requestedLocationToAdd);
@@ -212,7 +211,7 @@ public class LocationServiceImpl implements LocationService{
                         transaction.setTransactionDescription("Storage Zone for Location Change");
                         transactionService.add(transaction);
                         add(location);
-                        log.error("Storage Zone aLTSSZ: " + aLTSZ.getStorageZone() + " location to save in db value: " + location.getStorageZone().getStorageZoneName());
+                        log.debug("Storage Zone aLTSSZ: " + aLTSZ.getStorageZone() + " location to save in db value: " + location.getStorageZone().getStorageZoneName());
                         counter++;
                     }
                 }
@@ -251,9 +250,9 @@ public class LocationServiceImpl implements LocationService{
                 for (int i = from; i <= to; i++) {
                     Location doorLocation = new Location();
                     doorLocation.setLocationName(locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i),2,"0"));
+                    LocationPackRestData(location, doorLocation);
                     doorLocation.setMultiItem(true);
                     doorLocation.setHdControl(true);
-                    LocationPackRestData(location, doorLocation);
                     if(locationRepository.findLocationByLocationName(doorLocation.getLocationName()) == null){
                         locationRepository.save(doorLocation);
                         log.debug("Location created: " + locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i),2,"0"));

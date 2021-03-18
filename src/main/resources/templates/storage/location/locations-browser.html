@@ -29,9 +29,9 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${locationSearching}" method="post" th:action="@{/user/locations-browser}">
-			<div class="titleList">Find Locations</div><br/>
+			<div th:text="#{app.findLocation}" class="titleList">Find Locations</div><br/>
 			<section>
-				<label style="color: white;font-weight: bold">Warehouse</label>
+				<label th:text="#{app.warehouseName}" style="color: white;font-weight: bold">Warehouse</label>
 				<select class="select-css" th:field="*{warehouse}">
 					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}">
 					<option th:value="'%'">All</option>
@@ -39,11 +39,11 @@
 				</select>
 			</section><br/><br/>
 			<section>
-				<label style="color: white;font-weight: bold">Location Name</label>
+				<label th:text="#{app.locationName}" style="color: white;font-weight: bold">Location Name</label>
 				<input type="text" title="Number value" th:field="*{locationName}"/>
 			</section>
 			<section>
-				<label style="color: white;font-weight: bold">Location type</label>
+				<label th:text="#{app.locationType}" style="color: white;font-weight: bold">Location type</label>
 				<select class="select-css" th:field="*{locationType}">
 					<option th:value="RDL">Reception Door</option>
 					<option th:value="PFL">Stock Picking Floor</option>
@@ -54,7 +54,7 @@
 				</select> <br/><br/>
 			</section>
 			<section>
-				<label style="color: white;font-weight: bold">Storage Zone</label>
+				<label th:text="#{app.storageZone}" style="color: white;font-weight: bold">Storage Zone</label>
 				<select class="select-css" th:field="*{storageZoneName}">
 					<option th:value="'%'">All</option>
 					<option th:value="null">Not assigned</option>
@@ -63,7 +63,7 @@
 				</select>
 			</section>
 			<section>
-				<br/><button class="button" type="submit">Search</button>
+				<br/><button th:text="#{app.search}" class="button" type="submit">Search</button>
 			</section>
 		</form>
 	</div>

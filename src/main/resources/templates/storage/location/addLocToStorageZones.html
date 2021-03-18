@@ -32,7 +32,7 @@
 		<form  method="post" th:action="@{/user/addLocToStorageZones}">
 			<div th:text="#{app.addLocationsToStorageZone}" class="titleList">Add Locations to Storage Zone</div><br/>
 			<section>
-				<label style="color: white;font-weight: bold">Storage Zone</label>
+				<label th:text="#{app.addToStorageZone}" style="color: white;font-weight: bold">Storage Zone</label>
 				<select id="selectZone" class="select-css" th:field="*{location.storageZone}">
 					<option th:each="i : ${storageZones}" th:value="${i.storageZoneName}" th:text="${i.storageZoneName}">
 					</option>
@@ -52,7 +52,7 @@
 				<br/></br>
 			</div>
 			<section>
-				<label style="color: white;font-weight: bold">Location type</label>
+				<label th:text="#{app.locationType}" style="color: white;font-weight: bold">Location type</label>
 				<select id="selectId" class="select-css" th:field="*{location.locationType}">
 					<option th:value="RDL">Reception Door</option>
 					<option th:value="PFL">Stock Picking Floor</option>
@@ -63,31 +63,31 @@
 			</section>
 
 			<section id="rackLocation">
-				<span style="color: white;font-weight: bold">Rack Location</span><br/>
-				<label style="color: white;font-style: italic" title="For example PRL like Picking rack location">Shortcut name (three alpha)</label>
+				<span th:text="#{app.rackLocation}" style="color: white;font-weight: bold">Rack Location</span><br/>
+				<label th:text="#{app.rack1}" style="color: white;font-style: italic" title="For example PRL like Picking rack location">Shortcut name (three alpha)</label>
 				<input class="location2" id="rackFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{location.firstSepRack}"/>
 
 				<table class="locationPack">
 					<tbody>
 					<tr>
-						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Rack number (three numeric) From</label></td>
-						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Rack number (three numeric) To</label></td>
+						<td><label th:text="#{app.rack2} + ' ' + #{app.from}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Rack number (three numeric) From</label></td>
+						<td><label th:text="#{app.rack2} + ' ' + #{app.to}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Rack number (three numeric) To</label></td>
 					</tr>
 					<tr>
-						<td><input class="location2" id="rackSecondSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{location.secondSepRack}"/></td>
-						<td><input class="location2" id="rackSecondSepTo" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{location.secondSepRackTo}"/></td>
+						<td><input  class="location2" id="rackSecondSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{location.secondSepRack}"/></td>
+						<td><input  class="location2" id="rackSecondSepTo" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{location.secondSepRackTo}"/></td>
 					</tr>
 					<tr>
-						<td><label title="Numeric Value two digits" 	style="color: white;font-style: italic">Rack height level (two numeric) From</label></td>
-						<td><label title="Numeric Value two digits" 	style="color: white;font-style: italic">Rack height level (two numeric) To</label></td>
+						<td><label th:text="#{app.rack3} + ' ' + #{app.from}" title="Numeric Value two digits" 	style="color: white;font-style: italic">Rack height level (two numeric) From</label></td>
+						<td><label th:text="#{app.rack3} + ' ' + #{app.to}" title="Numeric Value two digits" 	style="color: white;font-style: italic">Rack height level (two numeric) To</label></td>
 					</tr>
 					<tr>
 						<td><input class="location2" id="rackThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" title="Numeric Value two digits" 	type="text"  th:field="*{location.thirdSepRack}"/></td>
 						<td><input class="location2" id="rackThirdSepTo" pattern="[0-9]{2}" minlength="2" maxlength="2" title="Numeric Value two digits" 	type="text"  th:field="*{location.thirdSepRackTo}"/></td>
 					</tr>
 					<tr>
-						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Location number (three numeric) From</label></td>
-						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Location number (three numeric) To</label></td>
+						<td><label th:text="#{app.rack4} + ' ' + #{app.from}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Location number (three numeric) From</label></td>
+						<td><label th:text="#{app.rack4} + ' ' + #{app.to}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Location number (three numeric) To</label></td>
 					</tr>
 					<tr>
 						<td><input class="location2" id="rackFourthSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits"	type="text"  th:field="*{location.fourthSepRack}"/></td>
@@ -99,16 +99,16 @@
 
 			</section>
 			<section id="doorLocation">
-				<span style="color: white;font-weight: bold">Door Location</span><br/>
-				<label style="color: white;font-style: italic" title="For example DOOR">Shortcut name (four alpha)</label>
+				<span th:text="#{app.doorLocation}" style="color: white;font-weight: bold">Door Location</span><br/>
+				<label th:text="#{app.door1}" style="color: white;font-style: italic" title="For example DOOR">Shortcut name (four alpha)</label>
 				<input required class="location2" id="doorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{4}" minlength="4" maxlength="4" type="text" title="For example DOOR" th:field="*{location.firstSepDoor}"/>
-				<label style="color: white;font-style: italic" title="For example SHI like Shipment">Destination (three alpha)</label>
+				<label th:text="#{app.door2}" style="color: white;font-style: italic" title="For example SHI like Shipment">Destination (three alpha)</label>
 				<input required class="location2" id="doorSecondSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" minlength="3" maxlength="3" type="text" title="For example SHI" th:field="*{location.secondSepDoor}"/>
 				<table class="locationPack">
 					<tbody>
 					<tr>
-						<td><label style="color: white;font-style: italic" title="For example 01 like warehouse door number">Number (two numeric) From</label></td>
-						<td><label style="color: white;font-style: italic" title="For example 01 like warehouse door number">Number (two numeric) To</label></td>
+						<td><label th:text="#{app.door3} + ' ' + #{app.from}" style="color: white;font-style: italic" title="For example 01 like warehouse door number">Number (two numeric) From</label></td>
+						<td><label th:text="#{app.door3} + ' ' + #{app.to}" style="color: white;font-style: italic" title="For example 01 like warehouse door number">Number (two numeric) To</label></td>
 					</tr>
 					<tr>
 						<td><input required class="location2" id="doorThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 01" th:field="*{location.thirdSepDoor}"/></td>
@@ -119,14 +119,14 @@
 
 			</section>
 			<section id="floorLocation">
-				<span style="color: white;font-weight: bold">Floor Location</span><br/>
-				<label style="color: white;font-style: italic" title="For example PFL like Picking floor location">Shortcut name (three alpha)</label>
+				<span th:text="#{app.floorLocation}" style="color: white;font-weight: bold">Floor Location</span><br/>
+				<label th:text="#{app.rack1}" style="color: white;font-style: italic" title="For example PFL like Picking floor location">Shortcut name (three alpha)</label>
 				<input class="location2" id="floorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{location.firstSepFloor}"/>
 				<table class="locationPack">
 					<tbody>
 					<tr>
-						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (eight numeric) From</label></td>
-						<td><label title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (eight numeric) To</label></td>
+						<td><label th:text="#{app.floor2} + ' ' + #{app.from}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (eight numeric) From</label></td>
+						<td><label th:text="#{app.floor2} + ' ' + #{app.to}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (eight numeric) To</label></td>
 					</tr>
 					<tr>
 						<td><input class="location2" id="floorSecondSep" pattern="[0-9]{8}" minlength="8" maxlength="8" title="Numeric Value eight digits" 	type="text"  th:field="*{location.secondSepFloor}"/></td>
@@ -138,14 +138,14 @@
 
 
 			<section>
-				<label style="color: white;font-weight: bold">Warehouses</label>
+				<label th:text="#{app.warehouseName}" style="color: white;font-weight: bold">Warehouses</label>
 				<select class="select-css" th:field="*{location.warehouse}">
 					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}">
 					</option>
 				</select>
 			</section>
 			<section>
-				<br/><button class="button" type="submit" onclick="return checkLocationsBeforeSubmit()">Save</button>
+				<br/><button th:text="#{app.save}" class="button" type="submit" onclick="return checkLocationsBeforeSubmit()">Save</button>
 			</section>
 		</form>
 

@@ -31,9 +31,9 @@ floorLocation.classList.add("d-none")
 
 select.addEventListener("change", function () {
     if(document.getElementById('selectId').value == "SDL" || document.getElementById('selectId').value == "RDL") {
-        rackLocation.classList.add("d-none")
-        floorLocation.classList.add("d-none")
-        doorLocation.classList.remove("d-none")
+        $("#doorLocation").show(500);
+        $("#rackLocation").hide(500);
+        $("#floorLocation").hide(500);
 
 
         $("#rackFirstSep").removeAttr('required').val("")
@@ -58,9 +58,11 @@ select.addEventListener("change", function () {
 
 
     } else if(document.getElementById('selectId').value == "PRL" || document.getElementById('selectId').value == "RRL"){
-        rackLocation.classList.remove("d-none")
-        doorLocation.classList.add("d-none")
-        floorLocation.classList.add("d-none")
+
+        $("#rackLocation").show(500);
+        $("#doorLocation").hide(500);
+        $("#floorLocation").hide(500);
+
 
         rackFirstSep.setAttribute("required", "");
         rackSecondSep.setAttribute("required", "");
@@ -82,9 +84,10 @@ select.addEventListener("change", function () {
 
     }
     else{
-        rackLocation.classList.add("d-none")
-        doorLocation.classList.add("d-none")
-        floorLocation.classList.remove("d-none")
+        $("#floorLocation").show(500);
+        $("#rackLocation").hide(500);
+        $("#doorLocation").hide(500);
+
 
         $("#doorFirstSep").removeAttr('required').val("")
         $("#doorSecondSep").removeAttr('required').val("")
@@ -108,6 +111,7 @@ select.addEventListener("change", function () {
 const hide = document.getElementById("assignedLocationsList")
 
 hide.classList.add("d-none")
+
 
 $('#assignedLocations').click(function() {
     if ($(this).is(':checked')) {
