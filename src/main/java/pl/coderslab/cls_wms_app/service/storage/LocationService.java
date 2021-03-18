@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.service.storage;
 
 
 import pl.coderslab.cls_wms_app.entity.Location;
+import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationSearch;
 
@@ -36,5 +37,7 @@ public interface LocationService {
     List<Location> getLocationsByAllCriteria(String locationName, String locationType, String storageZoneName, String warehouseName);
 
     LocationNameConstruction lCN(Location location);
+
+    void addLocationsToStorageZone(AddLocationToStorageZone aLTSZ);
 
 }

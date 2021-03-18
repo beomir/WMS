@@ -8,8 +8,14 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.IssueLog;
 import pl.coderslab.cls_wms_app.entity.Location;
+import pl.coderslab.cls_wms_app.entity.Transaction;
+import pl.coderslab.cls_wms_app.repository.CompanyRepository;
 import pl.coderslab.cls_wms_app.repository.LocationRepository;
+import pl.coderslab.cls_wms_app.repository.StorageZoneRepository;
+import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
+import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
+import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationSearch;
 
@@ -26,13 +32,21 @@ public class LocationServiceImpl implements LocationService{
     public LocationSearch locationSearch;
     public LocationNameConstruction lNC;
     private final IssueLogService issueLogService;
+    private final StorageZoneRepository storageZoneRepository;
+    private final WarehouseRepository warehouseRepository;
+    private final TransactionService transactionService;
+    private final CompanyRepository companyRepository;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC, IssueLogService issueLogService) {
+    public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC, IssueLogService issueLogService, StorageZoneRepository storageZoneRepository, WarehouseRepository warehouseRepository, TransactionService transactionService, CompanyRepository companyRepository) {
         this.locationRepository = locationRepository;
         this.locationSearch = locationSearch;
         this.lNC = lNC;
         this.issueLogService = issueLogService;
+        this.storageZoneRepository = storageZoneRepository;
+        this.warehouseRepository = warehouseRepository;
+        this.transactionService = transactionService;
+        this.companyRepository = companyRepository;
     }
 
     @Override
@@ -81,7 +95,7 @@ public class LocationServiceImpl implements LocationService{
         if(locationRepository.findLocationByLocationName(locationName) == null)
         {
             locationRepository.save(location);
-            locationNameConstruction.message = "";
+            locationNameConstruction.message = "Locations created successfully";
             log.debug("location: " + location + " created");
         }
         else{
@@ -130,7 +144,7 @@ public class LocationServiceImpl implements LocationService{
             if(location.getId() == locationRepository.findLocationByLocationName(locationName).getId())
             {
                 locationRepository.save(location);
-                locationNameConstruction.message = "";
+                locationNameConstruction.message = "Locations created successfully";
                 log.debug("location: " + location + " created");
             }
             else{
@@ -140,6 +154,90 @@ public class LocationServiceImpl implements LocationService{
         } catch (NullPointerException e){
             locationRepository.save(location);
         }
+    }
+
+    @Override
+    public void addLocationsToStorageZone(AddLocationToStorageZone aLTSZ) {
+        if(aLTSZ.locationType.equals("RDL") || aLTSZ.locationType.equals("SDL") ){
+            log.error(aLTSZ.storageZone);
+            log.error(aLTSZ.warehouse);
+            log.error(aLTSZ.storageZone);
+            log.error(aLTSZ.storageZone);
+            log.error(aLTSZ.storageZone);
+            log.error(aLTSZ.storageZone);
+            log.error(aLTSZ.storageZone);
+            int from = parseInt(aLTSZ.getThirdSepDoor());
+            int to = parseInt(aLTSZ.getThirdSepDoorTo());
+            int doorLocationsRange = to - from ;
+            int counter = 0;
+            String requestedLocationToAdd ="";
+            if(doorLocationsRange>0){
+                for (int i = from; i <= to; i++) {
+                    requestedLocationToAdd = aLTSZ.getFirstSepDoor() + aLTSZ.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i),2,"0");
+                    log.error("inside loop locationToADD: " + requestedLocationToAdd);
+                    if(locationRepository.findLocationByLocationName(requestedLocationToAdd) == null){
+                        IssueLog issuelog = new IssueLog();
+                        issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", not exists in DB");
+                        issuelog.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()) );
+                        issuelog.setCreated(LocalDateTime.now().toString());
+                        issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
+                        issuelog.setIssueLogFilePath("");
+                        issuelog.setIssueLogFileName("");
+                        issuelog.setAdditionalInformation("Location tried be add to Storage Zone by range generation");
+                        issueLogService.add(issuelog);
+                    }
+                    else{
+                        Location location = locationRepository.findLocationByLocationName(requestedLocationToAdd);
+                        Transaction transaction = new Transaction();
+                        transaction.setAdditionalInformation("Location: " + requestedLocationToAdd + " have changed Storage Zone from: " + location.getStorageZone().getStorageZoneName() + ", to: " + aLTSZ.getStorageZone());
+                        location.setStorageZone(storageZoneRepository.findStorageZoneByStorageZoneName(aLTSZ.getStorageZone()));
+                        location.setLast_update(LocalDateTime.now().toString());
+                        transaction.setHdNumber(0L);
+                        transaction.setArticle(0L);
+                        transaction.setCustomer("");
+                        transaction.setVendor("");
+                        transaction.setReceptionNumber(0L);
+                        transaction.setReceptionStatus("");
+                        transaction.setShipmentNumber(0L);
+                        transaction.setShipmentStatus("");
+                        transaction.setQuality("");
+                        transaction.setQuantity(1L);
+                        transaction.setUnit("");
+                        transaction.setTransactionGroup("Stock");
+                        transaction.setCompany(companyRepository.getCompanyByName("all"));
+                        transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+                        transaction.setCreated(LocalDateTime.now().toString());
+                        transaction.setTransactionType("701");
+                        transaction.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
+                        transaction.setTransactionDescription("Storage Zone for Location Change");
+                        transactionService.add(transaction);
+                        add(location);
+                        log.error("Storage Zone aLTSSZ: " + aLTSZ.getStorageZone() + " location to save in db value: " + location.getStorageZone().getStorageZoneName());
+                        counter++;
+                    }
+                }
+                log.error("Counter value: " + counter);
+                log.error("doorLocationsRange value: " + doorLocationsRange);
+                if(counter==doorLocationsRange){
+                    aLTSZ.setMessage("All from requested locations have changed Storage Zone");
+                }
+                else{
+                    aLTSZ.setMessage("Requested Location is not in DB");
+                }
+
+
+            }
+
+
+
+        }
+        else if(aLTSZ.locationType.equals("PFL")){
+            System.out.println("Floor Loc");
+        }
+        else{
+            System.out.println("Rack Loc");
+        }
+
     }
 
     @Override
@@ -377,4 +475,6 @@ public class LocationServiceImpl implements LocationService{
         }
         return lCN;
     }
+
+
 }
