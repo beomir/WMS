@@ -39,6 +39,7 @@ public class LocationServiceImpl implements LocationService {
     public AddLocationToStorageZone addLocationToStorageZone;
     int counter = 0;
     int theSameStorageZone = 0;
+    String locationName;
 
     @Autowired
     public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC, IssueLogService issueLogService, StorageZoneRepository storageZoneRepository, WarehouseRepository warehouseRepository, TransactionService transactionService, CompanyRepository companyRepository, AddLocationToStorageZone addLocationToStorageZone) {
@@ -60,33 +61,8 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public void addLocation(Location location, LocationNameConstruction locationNameConstruction) {
-        locationDescription(location);
-        String locationName = "";
-        if (location.getLocationDesc().contains("door")) {
-            if (locationNameConstruction.getFirstSepDoor().length() == 4 && StringUtils.isAlpha(locationNameConstruction.getFirstSepDoor()) && locationNameConstruction.getSecondSepDoor().length() == 3 && StringUtils.isAlpha(locationNameConstruction.getSecondSepDoor()) && locationNameConstruction.getThirdSepDoor().length() == 2 && StringUtils.isNumeric(locationNameConstruction.getThirdSepDoor())) {
-                locationName = locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + locationNameConstruction.getThirdSepDoor();
-                location.setHdControl(true);
-                location.setMultiItem(true);
-            } else {
-                log.error("Location Door name is incorrect: 1sep: " + locationNameConstruction.getFirstSepDoor().length() + StringUtils.isAlpha(locationNameConstruction.getFirstSepDoor()) + " ,2sep: " + locationNameConstruction.getSecondSepDoor().length() + StringUtils.isAlpha(locationNameConstruction.getSecondSepDoor()) + " ,3sep: " + locationNameConstruction.getThirdSepDoor().length() + StringUtils.isAlpha(locationNameConstruction.getThirdSepDoor()));
 
-            }
-        } else if (location.getLocationDesc().contains("rack")) {
-            if (locationNameConstruction.getFirstSepRack().length() == 3 && StringUtils.isAlpha(locationNameConstruction.getFirstSepRack()) && locationNameConstruction.getSecondSepRack().length() == 3 && StringUtils.isNumeric(locationNameConstruction.getSecondSepRack()) && locationNameConstruction.getThirdSepRack().length() == 2 && StringUtils.isNumeric(locationNameConstruction.getThirdSepRack()) && locationNameConstruction.getFourthSepRack().length() == 3 && StringUtils.isNumeric(locationNameConstruction.getFourthSepRack())) {
-                locationName = locationNameConstruction.getFirstSepRack() + locationNameConstruction.getSecondSepRack() + locationNameConstruction.getThirdSepRack() + locationNameConstruction.getFourthSepRack();
-            } else {
-                log.error("Location Rack name is incorrect: 1sep: " + locationNameConstruction.getFirstSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getFirstSepRack()) + " ,2sep: " + locationNameConstruction.getSecondSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getSecondSepRack()) + " ,3sep: " + locationNameConstruction.getThirdSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getThirdSepRack()) + locationNameConstruction.getFourthSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getFourthSepRack()));
-            }
-        } else {
-            if (locationNameConstruction.getFirstSepFloor().length() == 3 && StringUtils.isAlpha(locationNameConstruction.getFirstSepFloor()) && locationNameConstruction.getSecondSepFloor().length() == 8 && StringUtils.isNumeric(locationNameConstruction.getSecondSepFloor())) {
-                locationName = locationNameConstruction.getFirstSepFloor() + locationNameConstruction.getSecondSepFloor();
-
-            } else {
-                log.error("Location Floor name is incorrect: " + locationName);
-                log.error("Location Door name is incorrect: 1sep: " + locationNameConstruction.getFirstSepFloor().length() + StringUtils.isAlpha(locationNameConstruction.getFirstSepFloor()) + " ,2sep: " + locationNameConstruction.getSecondSepFloor().length() + StringUtils.isAlpha(locationNameConstruction.getSecondSepFloor()));
-            }
-        }
-        location.setLocationName(locationName);
+        modificationOnSingleLocation(location, locationNameConstruction);
         location.setActive(true);
         location.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         location.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
@@ -105,8 +81,25 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public void editLocation(Location location, LocationNameConstruction locationNameConstruction) {
 
+        modificationOnSingleLocation(location, locationNameConstruction);
+        location.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        location.setChangeBy(SecurityUtils.usernameForActivations());
+        try {
+            if (location.getId() == locationRepository.findLocationByLocationName(locationName).getId()) {
+                locationRepository.save(location);
+                locationNameConstruction.message = "Locations created successfully";
+                log.debug("location: " + location + " created");
+            } else {
+                lNC.setMessage("ERROR: Location: " + locationName + " already exists, try with another name");
+                log.error("location: " + locationName + " already exists");
+            }
+        } catch (NullPointerException e) {
+            locationRepository.save(location);
+        }
+    }
+
+    public void modificationOnSingleLocation(Location location, LocationNameConstruction locationNameConstruction) {
         locationDescription(location);
-        String locationName = "";
         if (location.getLocationDesc().contains("door")) {
             if (locationNameConstruction.getFirstSepDoor().length() == 4 && StringUtils.isAlpha(locationNameConstruction.getFirstSepDoor()) && locationNameConstruction.getSecondSepDoor().length() == 3 && StringUtils.isAlpha(locationNameConstruction.getSecondSepDoor()) && locationNameConstruction.getThirdSepDoor().length() == 2 && StringUtils.isNumeric(locationNameConstruction.getThirdSepDoor())) {
                 locationName = locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + locationNameConstruction.getThirdSepDoor();
@@ -130,20 +123,6 @@ public class LocationServiceImpl implements LocationService {
             }
         }
         location.setLocationName(locationName);
-        location.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-        location.setChangeBy(SecurityUtils.usernameForActivations());
-        try {
-            if (location.getId() == locationRepository.findLocationByLocationName(locationName).getId()) {
-                locationRepository.save(location);
-                locationNameConstruction.message = "Locations created successfully";
-                log.debug("location: " + location + " created");
-            } else {
-                lNC.setMessage("ERROR: Location: " + locationName + " already exists, try with another name");
-                log.error("location: " + locationName + " already exists");
-            }
-        } catch (NullPointerException e) {
-            locationRepository.save(location);
-        }
     }
 
     @Override
@@ -164,10 +143,10 @@ public class LocationServiceImpl implements LocationService {
             if (locationsRange > 0) {
                 for (int i = from; i <= to; i++) {
                     requestedLocationToAdd = aLTSZ.getFirstSepDoor() + aLTSZ.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0");
-                    log.error("location: " + requestedLocationToAdd + " old storage zone: " + locationRepository.findLocationByLocationName(requestedLocationToAdd).getStorageZone().getStorageZoneName() + ", requested storage zone: " + aLTSZ.storageZone );
+                    log.error("location: " + requestedLocationToAdd + " old storage zone: " + locationRepository.findLocationByLocationName(requestedLocationToAdd).getStorageZone().getStorageZoneName() + ", requested storage zone: " + aLTSZ.storageZone);
                     addLocationsToStorageZoneIssueLogCreation(requestedLocationToAdd, aLTSZ);
                 }
-                log.error("Counter value: " + counter );
+                log.error("Counter value: " + counter);
                 log.error("doorLocationsRange value: " + locationsRange);
                 log.error("theSameStorageZone value: " + theSameStorageZone);
                 addLocationsToStorageZoneMessage(locationsRange);
@@ -180,9 +159,9 @@ public class LocationServiceImpl implements LocationService {
             log.debug(aLTSZ.secondSepFloorTo);
             int from = parseInt(aLTSZ.getSecondSepFloor());
             int to = parseInt(aLTSZ.getSecondSepFloorTo());
-            int locationsRange = to - from +1;
-             counter = 0;
-             theSameStorageZone = 0;
+            int locationsRange = to - from + 1;
+            counter = 0;
+            theSameStorageZone = 0;
             if (locationsRange > 0) {
                 for (int i = from; i <= to; i++) {
                     requestedLocationToAdd = aLTSZ.getFirstSepFloor() + StringUtils.leftPad(Integer.toString(i), 8, "0");
@@ -200,15 +179,15 @@ public class LocationServiceImpl implements LocationService {
             log.debug(aLTSZ.secondSepFloorTo);
             int rackNumberFrom = parseInt(aLTSZ.getSecondSepRack());
             int rackNumberTo = parseInt(aLTSZ.getSecondSepRackTo());
-            int rackNumberRange = rackNumberTo - rackNumberFrom +1;
+            int rackNumberRange = rackNumberTo - rackNumberFrom + 1;
 
             int rackHeightFrom = parseInt(aLTSZ.getThirdSepRack());
             int rackHeightTo = parseInt(aLTSZ.getThirdSepRackTo());
-            int rackHeightRange = rackHeightTo - rackHeightFrom +1;
+            int rackHeightRange = rackHeightTo - rackHeightFrom + 1;
 
             int locationNumberFrom = parseInt(aLTSZ.getFourthSepRack());
             int locationNumberTo = parseInt(aLTSZ.getFourthSepRackTo());
-            int locationNumberRange = locationNumberTo - locationNumberFrom +1;
+            int locationNumberRange = locationNumberTo - locationNumberFrom + 1;
 
             int locationsRange = rackNumberRange * rackHeightRange * locationNumberRange;
             if (rackNumberRange < 0) {
@@ -221,8 +200,8 @@ public class LocationServiceImpl implements LocationService {
                 locationsRange = 0;
             }
 
-             counter = 0;
-             theSameStorageZone = 0;
+            counter = 0;
+            theSameStorageZone = 0;
             if (locationsRange > 0) {
                 for (int i = rackNumberFrom; i <= rackNumberTo; i++) {
                     String rackNumber;
@@ -246,7 +225,7 @@ public class LocationServiceImpl implements LocationService {
         }
     }
 
-    private void addLocationsToStorageZoneIssueLogCreation(String requestedLocationToAdd, AddLocationToStorageZone aLTSZ){
+    private void addLocationsToStorageZoneIssueLogCreation(String requestedLocationToAdd, AddLocationToStorageZone aLTSZ) {
 
         if (locationRepository.findLocationByLocationName(requestedLocationToAdd) == null) {
             IssueLog issuelog = new IssueLog();
@@ -303,7 +282,8 @@ public class LocationServiceImpl implements LocationService {
         log.error("Counter w innej metodzie: " + counter);
         log.error("theSameStorageZone w innej metodzie: " + theSameStorageZone);
     }
-    private void addLocationsToStorageZoneMessage(int locationsRange){
+
+    private void addLocationsToStorageZoneMessage(int locationsRange) {
         if (theSameStorageZone > 0) {
             addLocationToStorageZone.setMessage("Requested location was already in requested Storage Zone, check issue log");
             log.error("Requested location was already in requested Storage Zone, check issue log");
@@ -325,20 +305,12 @@ public class LocationServiceImpl implements LocationService {
             int locationsRange = to - from;
             if (locationsRange > 0) {
                 for (int i = from; i <= to; i++) {
-                    Location doorLocation = new Location();
-                    doorLocation.setLocationName(locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0"));
-                    LocationPackRestData(location, doorLocation);
-                    doorLocation.setMultiItem(true);
-                    doorLocation.setHdControl(true);
-                    if (locationRepository.findLocationByLocationName(doorLocation.getLocationName()) == null) {
-                        locationRepository.save(doorLocation);
-                        log.debug("Location created: " + locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0"));
-                    } else {
-                        log.error("Location: " + doorLocation.getLocationName() + " already exists and was not created");
-                        IssueLog issuelog = new IssueLog();
-                        issuelog.setIssueLogContent("Location: " + doorLocation.getLocationName() + ", already exists and was not created");
-                        lNCMessage(location, issuelog);
-                    }
+                    Location newLocation = new Location();
+                    newLocation.setLocationName(locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0"));
+                    LocationPackRestData(location, newLocation);
+                    newLocation.setMultiItem(true);
+                    newLocation.setHdControl(true);
+                    createLocationPackIssueLog(location, newLocation);
                 }
             } else {
                 log.error("ERROR: location range: " + locationsRange + " lower than 1");
@@ -349,19 +321,11 @@ public class LocationServiceImpl implements LocationService {
             int locationsRange = to - from;
             if (locationsRange > 0) {
                 for (int i = from; i <= to; i++) {
-                    Location floorLocation = new Location();
-                    floorLocation.setLocationName(locationNameConstruction.getFirstSepFloor() + StringUtils.leftPad(Integer.toString(i), 8, "0"));
-                    LocationPackRestData(location, floorLocation);
+                    Location newLocation = new Location();
+                    newLocation.setLocationName(locationNameConstruction.getFirstSepFloor() + StringUtils.leftPad(Integer.toString(i), 8, "0"));
+                    LocationPackRestData(location, newLocation);
                     log.debug("Location created: " + locationNameConstruction.getFirstSepFloor() + StringUtils.leftPad(Integer.toString(i), 8, "0"));
-                    if (locationRepository.findLocationByLocationName(floorLocation.getLocationName()) == null) {
-                        locationRepository.save(floorLocation);
-                    } else {
-                        log.error("Location: " + floorLocation.getLocationName() + " already exists");
-
-                        IssueLog issuelog = new IssueLog();
-                        issuelog.setIssueLogContent("Location: " + floorLocation.getLocationName() + ", already exists and was not created");
-                        lNCMessage(location, issuelog);
-                    }
+                    createLocationPackIssueLog(location, newLocation);
                 }
             } else {
                 log.error("ERROR: location range: " + locationsRange + " lower than 1");
@@ -389,23 +353,27 @@ public class LocationServiceImpl implements LocationService {
                         rackHeight = StringUtils.leftPad(Integer.toString(j), 2, "0");
                         for (int k = locationNumberFrom; k <= locationNumberTo; k++) {
                             locationNbr = StringUtils.leftPad(Integer.toString(k), 3, "0");
-                            Location rackLocation = new Location();
-                            LocationPackRestData(location, rackLocation);
-                            rackLocation.setLocationName(locationNameConstruction.getFirstSepRack() + rackNumber + rackHeight + locationNbr);
-                            log.debug("Created location: " + rackLocation.getLocationName());
-                            if (locationRepository.findLocationByLocationName(rackLocation.getLocationName()) == null) {
-                                locationRepository.save(rackLocation);
-                            } else {
-                                log.error("Location: " + rackLocation.getLocationName() + " already exists");
-
-                                IssueLog issuelog = new IssueLog();
-                                issuelog.setIssueLogContent("Location: " + rackLocation.getLocationName() + ", already exists and was not created");
-                                lNCMessage(location, issuelog);
-                            }
+                            Location newLocation = new Location();
+                            LocationPackRestData(location, newLocation);
+                            newLocation.setLocationName(locationNameConstruction.getFirstSepRack() + rackNumber + rackHeight + locationNbr);
+                            log.debug("Created location: " + newLocation.getLocationName());
+                            createLocationPackIssueLog(location, newLocation);
                         }
                     }
                 }
             }
+        }
+    }
+
+    public void createLocationPackIssueLog(Location location, Location newLocation) {
+        if (locationRepository.findLocationByLocationName(newLocation.getLocationName()) == null) {
+            locationRepository.save(newLocation);
+//            log.debug("Location created: " + locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0"));
+        } else {
+            log.error("Location: " + newLocation.getLocationName() + " already exists and was not created");
+            IssueLog issuelog = new IssueLog();
+            issuelog.setIssueLogContent("Location: " + newLocation.getLocationName() + ", already exists and was not created");
+            lNCMessage(location, issuelog);
         }
     }
 
@@ -419,7 +387,7 @@ public class LocationServiceImpl implements LocationService {
         issuelog.setAdditionalInformation("Location tried be create by range generation");
         issueLogService.add(issuelog);
     }
-    
+
     private void LocationPackRestData(Location location, Location doorLocation) {
         doorLocation.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         doorLocation.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
