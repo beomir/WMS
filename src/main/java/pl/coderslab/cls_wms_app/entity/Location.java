@@ -39,7 +39,16 @@ public class Location {
     private boolean multiItem;
     private boolean hdControl;
 
-    public Location(Long id, String locationName, String locationDesc, String locationType, Warehouse warehouse, StorageZone storageZone, String created, String last_update, boolean active, String changeBy,boolean multiItem,boolean hdControl) {
+    private int height;
+    private int width;
+    private int depth;
+
+    private int volume;
+    private double maxWeight;
+
+
+
+    public Location(Long id, String locationName, String locationDesc, String locationType, Warehouse warehouse, StorageZone storageZone, String created, String last_update, boolean active, String changeBy,boolean multiItem,boolean hdControl,int height,int width,int depth, int volume, double maxWeight) {
         this.id = id;
         this.locationName = locationName;
         this.locationDesc = locationDesc;
@@ -52,6 +61,11 @@ public class Location {
         this.changeBy = changeBy;
         this.multiItem = multiItem;
         this.hdControl = hdControl;
+        this.height = height;
+        this.width = width;
+        this.depth = depth;
+        this.volume = volume;
+        this.maxWeight = maxWeight;
     }
 
     @Override
@@ -69,6 +83,11 @@ public class Location {
                 ", changeBy='" + changeBy + '\'' +
                 ", multiItem='" + multiItem + '\'' +
                 ", hdControl='" + hdControl + '\'' +
+                ", height='" + height + '\'' +
+                ", width='" + width + '\'' +
+                ", depth='" + depth + '\'' +
+                ", volume='" + volume + '\'' +
+                ", maxWeight='" + maxWeight + '\'' +
                 '}';
     }
 }

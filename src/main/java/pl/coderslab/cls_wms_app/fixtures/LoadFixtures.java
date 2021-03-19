@@ -27,10 +27,11 @@ public class LoadFixtures {
     private TransactionFixture transactionFixture;
     private LocationFixture locationFixture;
     private StorageZoneFixture storageZoneFixture;
+    private ArticleTypesFixture articleTypesFixture;
 
 
     @Autowired
-    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture, TransactionFixture transactionFixture, LocationFixture locationFixture, StorageZoneFixture storageZoneFixture) {
+    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture, TransactionFixture transactionFixture, LocationFixture locationFixture, StorageZoneFixture storageZoneFixture,ArticleTypesFixture articleTypesFixture) {
         this.stockFixture = stockFixture;
         this.companyFixture = companyFixture;
         this.usersFixture = usersFixture;
@@ -50,11 +51,13 @@ public class LoadFixtures {
         this.transactionFixture = transactionFixture;
         this.locationFixture = locationFixture;
         this.storageZoneFixture = storageZoneFixture;
+        this.articleTypesFixture = articleTypesFixture;
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void runAfterStartup() {
 
+        articleTypesFixture.loadIntoDB();
         companyFixture.loadIntoDB();
         unitFixture.loadIntoDB();
         usersRolesFixture.loadIntoDB();

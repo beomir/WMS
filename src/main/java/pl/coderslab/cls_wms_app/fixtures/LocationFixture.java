@@ -3,9 +3,11 @@ package pl.coderslab.cls_wms_app.fixtures;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
+import pl.coderslab.cls_wms_app.entity.ArticleTypes;
 import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
+import pl.coderslab.cls_wms_app.service.storage.ArticleTypesService;
 import pl.coderslab.cls_wms_app.service.storage.LocationService;
 import pl.coderslab.cls_wms_app.service.storage.StorageZoneService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
@@ -22,16 +24,16 @@ public class LocationFixture {
     private final StorageZoneService storageZoneService;
 
     private List<Location> locationList = Arrays.asList(
-            new Location(null, "FLP00101001","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true),
-            new Location(null, "FLP00101002","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true),
-            new Location(null, "RAP00101001","Picking rack location", "PRL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true),
-            new Location(null, "RAR00101001","Reserve rack location", "RRL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true),
-            new Location(null, "DOORREC01","Receiving door location", "RDL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true),
-            new Location(null, "DOORSHI01","Shipping door location", "SDL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true)
+            new Location(null, "FLP00101001","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,20,100,100,200000,3000.00),
+            new Location(null, "FLP00101002","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,20,100,100,200000,3000.00),
+            new Location(null, "RAP00101001","Picking rack location", "PRL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,20,100,100,200000,500.00),
+            new Location(null, "RAR00101001","Reserve rack location", "RRL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,20,100,100,200000,5000.00),
+            new Location(null, "DOORREC01","Receiving door location", "RDL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,20,100,100,200000,3000.00),
+            new Location(null, "DOORSHI01","Shipping door location", "SDL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,20,100,100,200000,3000.00)
     );
 
     @Autowired
-    public LocationFixture(LocationService locationService, WarehouseService warehouseService, StorageZoneService storageZoneService) {
+    public LocationFixture(LocationService locationService, WarehouseService warehouseService, StorageZoneService storageZoneService, ArticleTypesService articleTypesService) {
         this.locationService = locationService;
         this.warehouseService = warehouseService;
         this.storageZoneService = storageZoneService;
@@ -65,6 +67,7 @@ public class LocationFixture {
         location4.setStorageZone(storageZoneList.get(3));
         location5.setStorageZone(storageZoneList.get(4));
         location6.setStorageZone(storageZoneList.get(4));
+
 
         locationService.add(location1);
         locationService.add(location2);

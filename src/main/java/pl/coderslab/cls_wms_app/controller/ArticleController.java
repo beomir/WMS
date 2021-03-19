@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
+import pl.coderslab.cls_wms_app.service.storage.ArticleTypesService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
@@ -17,12 +18,14 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final ArticleTypesService articleTypesService;
     private final CompanyService companyService;
     private final UsersService usersService;
 
     @Autowired
-    public ArticleController(ArticleService articleService, CompanyService companyService, UsersService usersService) {
+    public ArticleController(ArticleService articleService, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService) {
         this.articleService = articleService;
+        this.articleTypesService = articleTypesService;
         this.companyService = companyService;
         this.usersService = usersService;
     }
@@ -88,6 +91,14 @@ public class ArticleController {
     public String edit(Article article) {
         articleService.add(article);
         return "redirect:/article";
+    }
+
+    @GetMapping("articleTypes")
+    public String listOfArticleTypes(Model model) {
+        List<ArticleTypes> articleTypes = articleTypesService.getArticleTypes();
+        model.addAttribute("articleTypes", articleTypes);
+        usersService.loggedUserData(model);
+        return "storage/article/articleTypes";
     }
 
 }
