@@ -1,7 +1,7 @@
 let counter = 0;
 let selectZone = document.getElementById('selectZone');
 let locations = document.getElementsByName('locationName');
-let storageZones = document.getElementsByName('storageZone');
+var storageZones = document.getElementsByName('storageZone');
 let locationsAssignedToStorage = document.getElementById('locationsAssignedToStorage');
 
 selectZone.addEventListener("change", function () {
@@ -129,14 +129,14 @@ function checkLocationsBeforeSubmit(){
 
 
     //rack
-    var rackFirstSep = document.getElementById("rackFirstSep").value
-    var rackSecondSep = document.getElementById("rackSecondSep").value
-    var rackSecondSepTo = document.getElementById("rackSecondSepTo").value
-    var rackThirdSep = document.getElementById("rackThirdSep").value
-    var rackThirdSepTo = document.getElementById("rackThirdSepTo").value
-    var rackFourthSep = document.getElementById("rackFourthSep").value
-    var rackFourthSepTo = document.getElementById("rackFourthSepTo").value
-    var rackLoc;
+    let rackFirstSep = document.getElementById("rackFirstSep").value
+    let rackSecondSep = document.getElementById("rackSecondSep").value
+    let rackSecondSepTo = document.getElementById("rackSecondSepTo").value
+    let rackThirdSep = document.getElementById("rackThirdSep").value
+    let rackThirdSepTo = document.getElementById("rackThirdSepTo").value
+    let rackFourthSep = document.getElementById("rackFourthSep").value
+    let rackFourthSepTo = document.getElementById("rackFourthSepTo").value
+    let rackLoc;
 
     let firstRangeRack = parseInt(document.getElementById("rackSecondSepTo").value) - parseInt(document.getElementById("rackSecondSep").value) +1
     let secondRangeRack =  parseInt(document.getElementById("rackThirdSepTo").value) - parseInt(document.getElementById("rackThirdSep").value) +1
@@ -157,12 +157,11 @@ function checkLocationsBeforeSubmit(){
     }
 
     //doorLocations
-    var doorFirstSep = document.getElementById("doorFirstSep").value
-    var doorSecondSep = document.getElementById("doorSecondSep").value
-    var doorThirdSep = document.getElementById("doorThirdSep").value
-    var doorThirdSepTo = document.getElementById("doorThirdSepTo").value
-    var doorLoc;
-    var doorZone;
+    let doorFirstSep = document.getElementById("doorFirstSep").value
+    let doorSecondSep = document.getElementById("doorSecondSep").value
+    let doorThirdSep = document.getElementById("doorThirdSep").value
+    let doorThirdSepTo = document.getElementById("doorThirdSepTo").value
+    let doorLoc;
 
 
     let firstRangeDoor = parseInt(document.getElementById("doorThirdSepTo").value) - parseInt(document.getElementById("doorThirdSep").value) +1
@@ -183,18 +182,26 @@ function checkLocationsBeforeSubmit(){
         firstRangeFloor = 0;
     }
     counter = 0;
-    let currentLocation;
-    let zoneForCurrentLocation;
-    let differentStorageZones = 0;
-    let selectZone = document.getElementById('selectZone');
-    let chosenStorageZone = selectZone.options[selectZone.selectedIndex].text;
+    var currentLocation;
+    var zoneForCurrentLocation;
+    var differentStorageZonesLocation;
+    var differentStorageZones = 0;
+    var selectZone = document.getElementById('selectZone');
+    var chosenStorageZone = selectZone.options[selectZone.selectedIndex].text;
     if(firstRangeFloor>0){
         for(let i = floorSecondSep; i <= floorSecondSepTo; i++){
             floorLoc = floorFirstSep + i.toString().padStart(8,"0")
             for(let j = 0; j < storageZones.length -1; j++){
+
                 currentLocation = locations[j].textContent
+                zoneForCurrentLocation = storageZones[j+1].textContent
                 if(floorLoc == currentLocation){
                     counter++;
+                    console.log("current location: " + currentLocation + ", zone: " + zoneForCurrentLocation + ", chosen zone in form: " + chosenStorageZone)
+                    if(zoneForCurrentLocation == chosenStorageZone){
+                        differentStorageZones++
+                        differentStorageZonesLocation = currentLocation;
+                    }
                 }
 
             }
@@ -216,17 +223,18 @@ function checkLocationsBeforeSubmit(){
                 zoneForCurrentLocation = storageZones[j+1].textContent
                 if(doorLoc == currentLocation){
                     counter++;
-                    console.log("current location: " + currentLocation + ", zone: " + zoneForCurrentLocation + ", chosen zone in form: " + chosenStorageZone)
+                    // console.log("current location: " + currentLocation + ", zone: " + zoneForCurrentLocation + ", chosen zone in form: " + chosenStorageZone)
                     if(zoneForCurrentLocation == chosenStorageZone){
                         differentStorageZones++
+                        differentStorageZonesLocation = currentLocation;
                     }
                 }
             }
         }
         if(counter!=firstRangeDoor){
                 if(counter!=firstRangeDoor){
-                    console.log("First range Door: " +firstRangeDoor)
-                    console.log("counter: " + counter)
+                    // console.log("First range Door: " +firstRangeDoor)
+                    // console.log("counter: " + counter)
                     alert("Requested door locations are out of bound existed locations scope")
                     returnToPreviousPage();
                     return false;
@@ -234,19 +242,26 @@ function checkLocationsBeforeSubmit(){
         }
     }
     else{
-        for(let i = rackSecondSep; i<= rackSecondSepTo; i++){
-            let rackNumber = i.toString().padStart(3,"0")
+        for(let i = rackSecondSep; i<= rackSecondSepTo; i++) {
+            let rackNumber = i.toString().padStart(3, "0")
             let rackHeight;
             let locationNbr;
-            for(let j = rackThirdSep; j <= rackThirdSepTo; i++){
-                rackHeight = j.toString().padStart(2,"0")
-                for(let k = rackFourthSep; k <= rackFourthSepTo; i++){
-                    locationNbr = k.toString().padStart(3,"0")
+            for (let j = rackThirdSep; j <= rackThirdSepTo; j++) {
+                rackHeight = j.toString().padStart(2, "0")
+                for (let k = rackFourthSep; k <= rackFourthSepTo; k++) {
+                    locationNbr = k.toString().padStart(3, "0")
                     rackLoc = rackFirstSep + rackNumber + rackHeight + locationNbr;
-                    for(let l = 0; l < storageZones.length -1; l++)
+                    for (var l = 0; l < storageZones.length - 1; l++) {
                         currentLocation = locations[l].textContent
-                    if(rackLoc == currentLocation){
-                        counter++;
+                        zoneForCurrentLocation = storageZones[l+1].textContent
+                        if (rackLoc == currentLocation) {
+                            counter++;
+                            console.log("current location: " + currentLocation + ", zone: " + zoneForCurrentLocation + ", chosen zone in form: " + chosenStorageZone)
+                            if (zoneForCurrentLocation == chosenStorageZone) {
+                                differentStorageZones++
+                                differentStorageZonesLocation = currentLocation;
+                            }
+                        }
                     }
                 }
             }
@@ -259,16 +274,16 @@ function checkLocationsBeforeSubmit(){
                     return false;
         }
     }
-    let c = counter - differentStorageZones;
+    let locationsInDifferentStorageZone = counter - differentStorageZones;
     if(differentStorageZones>0){
         if(differentStorageZones==1){
-            alert(differentStorageZones + " location was already in storage zone: " + chosenStorageZone + ", location stayed in the same storage zone")
+            alert(differentStorageZones + " location was already in storage zone: " + chosenStorageZone + ", location " + differentStorageZonesLocation +   ", stayed in the same storage zone. Rest: " + locationsInDifferentStorageZone + ", locations changed storage zone. List of them you will find in transaction log")
         }
         else if(locationsInDifferentStorageZone==1){
-            alert(differentStorageZones + " locations were already in storage zone: " + chosenStorageZone + ", only one location changed storage zone. More information about locations which not changed storage zone, you will find in issue log")
+            alert(differentStorageZones + " locations were already in storage zone: " + chosenStorageZone + ", only one location changed storage zone, information about it you will find in transaction log. More information about locations which not changed storage zone, you will find in issue log")
         }
         else{
-            alert(differentStorageZones + " locations were already in storage zone: " + chosenStorageZone + ",rest " + locationsInDifferentStorageZone + " locations were changed. More information about locations which not changed storage zone, you will find in issue log")
+            alert(differentStorageZones + " locations were already in storage zone: " + chosenStorageZone + ",rest " + locationsInDifferentStorageZone + " locations were changed, list of them you will find in transaction log. More information about locations which not changed storage zone, you will find in issue log")
         }
     }
     console.log("First range Door: " +firstRangeDoor)
