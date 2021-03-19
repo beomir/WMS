@@ -37,6 +37,8 @@ public class LocationServiceImpl implements LocationService {
     private final TransactionService transactionService;
     private final CompanyRepository companyRepository;
     public AddLocationToStorageZone addLocationToStorageZone;
+    int counter = 0;
+    int theSameStorageZone = 0;
 
     @Autowired
     public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC, IssueLogService issueLogService, StorageZoneRepository storageZoneRepository, WarehouseRepository warehouseRepository, TransactionService transactionService, CompanyRepository companyRepository, AddLocationToStorageZone addLocationToStorageZone) {
@@ -146,6 +148,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public void addLocationsToStorageZone(AddLocationToStorageZone aLTSZ) {
+        String requestedLocationToAdd;
         if (aLTSZ.locationType.equals("RDL") || aLTSZ.locationType.equals("SDL")) {
             log.debug(aLTSZ.storageZone);
             log.debug(aLTSZ.warehouse);
@@ -155,79 +158,19 @@ public class LocationServiceImpl implements LocationService {
             log.debug(aLTSZ.thirdSepDoorTo);
             int from = parseInt(aLTSZ.getThirdSepDoor());
             int to = parseInt(aLTSZ.getThirdSepDoorTo());
-            int doorLocationsRange = to - from;
-            int counter = 0;
-            int theSameStorageZone = 0;
-            String requestedLocationToAdd = "";
-            if (doorLocationsRange > 0) {
+            int locationsRange = to - from + 1;
+            counter = 0;
+            theSameStorageZone = 0;
+            if (locationsRange > 0) {
                 for (int i = from; i <= to; i++) {
                     requestedLocationToAdd = aLTSZ.getFirstSepDoor() + aLTSZ.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0");
                     log.error("location: " + requestedLocationToAdd + " old storage zone: " + locationRepository.findLocationByLocationName(requestedLocationToAdd).getStorageZone().getStorageZoneName() + ", requested storage zone: " + aLTSZ.storageZone );
-                    if (locationRepository.findLocationByLocationName(requestedLocationToAdd) == null) {
-                        IssueLog issuelog = new IssueLog();
-                        issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", not exists in DB");
-                        issuelog.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
-                        issuelog.setCreated(LocalDateTime.now().toString());
-                        issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
-                        issuelog.setIssueLogFilePath("");
-                        issuelog.setIssueLogFileName("");
-                        issuelog.setAdditionalInformation("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is not exists in DB");
-                        issueLogService.add(issuelog);
-                        log.error("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is not exists in DB. Front End validation was broken");
-                    } else if (locationRepository.findLocationByLocationName(requestedLocationToAdd).getStorageZone().getStorageZoneName().equals(aLTSZ.storageZone)) {
-                        IssueLog issuelog = new IssueLog();
-                        issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", is already in storage zone: " + aLTSZ.storageZone);
-                        issuelog.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
-                        issuelog.setCreated(LocalDateTime.now().toString());
-                        issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
-                        issuelog.setIssueLogFilePath("");
-                        issuelog.setIssueLogFileName("");
-                        issuelog.setAdditionalInformation("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is in the same storage zone as requested");
-                        issueLogService.add(issuelog);
-                        theSameStorageZone++;
-                    } else {
-                        Location location = locationRepository.findLocationByLocationName(requestedLocationToAdd);
-                        Transaction transaction = new Transaction();
-                        transaction.setAdditionalInformation("Location: " + requestedLocationToAdd + " have changed Storage Zone from: " + location.getStorageZone().getStorageZoneName() + ", to: " + aLTSZ.getStorageZone());
-                        location.setStorageZone(storageZoneRepository.findStorageZoneByStorageZoneName(aLTSZ.getStorageZone()));
-                        location.setLast_update(LocalDateTime.now().toString());
-                        transaction.setHdNumber(0L);
-                        transaction.setArticle(0L);
-                        transaction.setCustomer("");
-                        transaction.setVendor("");
-                        transaction.setReceptionNumber(0L);
-                        transaction.setReceptionStatus("");
-                        transaction.setShipmentNumber(0L);
-                        transaction.setShipmentStatus("");
-                        transaction.setQuality("");
-                        transaction.setQuantity(1L);
-                        transaction.setUnit("");
-                        transaction.setTransactionGroup("Stock");
-                        transaction.setCompany(companyRepository.getCompanyByName("all"));
-                        transaction.setCreatedBy(SecurityUtils.usernameForActivations());
-                        transaction.setCreated(LocalDateTime.now().toString());
-                        transaction.setTransactionType("701");
-                        transaction.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
-                        transaction.setTransactionDescription("Storage Zone for Location Change");
-                        transactionService.add(transaction);
-                        add(location);
-                        log.debug("Storage Zone aLTSSZ: " + aLTSZ.getStorageZone() + " location to save in db value: " + location.getStorageZone().getStorageZoneName());
-                        counter++;
-                    }
+                    addLocationsToStorageZoneIssueLogCreation(requestedLocationToAdd, aLTSZ);
                 }
-                log.error("Counter value: " + counter);
-                log.error("doorLocationsRange value: " + doorLocationsRange);
+                log.error("Counter value: " + counter );
+                log.error("doorLocationsRange value: " + locationsRange);
                 log.error("theSameStorageZone value: " + theSameStorageZone);
-                if (theSameStorageZone > 0) {
-                    addLocationToStorageZone.setMessage("Requested location was already in requested Storage Zone, check issue log");
-                    log.error("Requested location was already in requested Storage Zone, check issue log");
-                } else if (counter == doorLocationsRange) {
-                    addLocationToStorageZone.setMessage("All from requested locations have changed Storage Zone");
-                    log.error("All from requested locations have changed Storage Zon");
-                } else {
-                    addLocationToStorageZone.setMessage("Requested Location is not in DB");
-                    log.error("Requested Location is not in DB");
-                }
+                addLocationsToStorageZoneMessage(locationsRange);
             }
         } else if (aLTSZ.locationType.equals("PFL")) {
             log.debug(aLTSZ.storageZone);
@@ -237,74 +180,17 @@ public class LocationServiceImpl implements LocationService {
             log.debug(aLTSZ.secondSepFloorTo);
             int from = parseInt(aLTSZ.getSecondSepFloor());
             int to = parseInt(aLTSZ.getSecondSepFloorTo());
-            int floorLocationsRange = to - from;
-            int counter = 0;
-            int theSameStorageZone = 0;
-            String requestedLocationToAdd = "";
-            if (floorLocationsRange > 0) {
+            int locationsRange = to - from +1;
+             counter = 0;
+             theSameStorageZone = 0;
+            if (locationsRange > 0) {
                 for (int i = from; i <= to; i++) {
                     requestedLocationToAdd = aLTSZ.getFirstSepFloor() + StringUtils.leftPad(Integer.toString(i), 8, "0");
-                    if (locationRepository.findLocationByLocationName(requestedLocationToAdd) == null) {
-                        IssueLog issuelog = new IssueLog();
-                        issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", not exists in DB");
-                        issuelog.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
-                        issuelog.setCreated(LocalDateTime.now().toString());
-                        issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
-                        issuelog.setIssueLogFilePath("");
-                        issuelog.setIssueLogFileName("");
-                        issuelog.setAdditionalInformation("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is not exists in DB");
-                        issueLogService.add(issuelog);
-                        log.error("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is not exists in DB. Front End validation was broken");
-                    } else if (locationRepository.findLocationByLocationName(requestedLocationToAdd).getStorageZone().getStorageZoneName().equals(aLTSZ.storageZone) ) {
-                        IssueLog issuelog = new IssueLog();
-                        issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", is already in storage zone: " + aLTSZ.storageZone);
-                        issuelog.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
-                        issuelog.setCreated(LocalDateTime.now().toString());
-                        issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
-                        issuelog.setIssueLogFilePath("");
-                        issuelog.setIssueLogFileName("");
-                        issuelog.setAdditionalInformation("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is in the same storage zone as requested");
-                        issueLogService.add(issuelog);
-                        theSameStorageZone++;
-                    } else {
-                        Location location = locationRepository.findLocationByLocationName(requestedLocationToAdd);
-                        Transaction transaction = new Transaction();
-                        transaction.setAdditionalInformation("Location: " + requestedLocationToAdd + " have changed Storage Zone from: " + location.getStorageZone().getStorageZoneName() + ", to: " + aLTSZ.getStorageZone());
-                        location.setStorageZone(storageZoneRepository.findStorageZoneByStorageZoneName(aLTSZ.getStorageZone()));
-                        location.setLast_update(LocalDateTime.now().toString());
-                        transaction.setHdNumber(0L);
-                        transaction.setArticle(0L);
-                        transaction.setCustomer("");
-                        transaction.setVendor("");
-                        transaction.setReceptionNumber(0L);
-                        transaction.setReceptionStatus("");
-                        transaction.setShipmentNumber(0L);
-                        transaction.setShipmentStatus("");
-                        transaction.setQuality("");
-                        transaction.setQuantity(1L);
-                        transaction.setUnit("");
-                        transaction.setTransactionGroup("Stock");
-                        transaction.setCompany(companyRepository.getCompanyByName("all"));
-                        transaction.setCreatedBy(SecurityUtils.usernameForActivations());
-                        transaction.setCreated(LocalDateTime.now().toString());
-                        transaction.setTransactionType("701");
-                        transaction.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
-                        transaction.setTransactionDescription("Storage Zone for Location Change");
-                        transactionService.add(transaction);
-                        add(location);
-                        log.debug("Storage Zone aLTSSZ: " + aLTSZ.getStorageZone() + " location to save in db value: " + location.getStorageZone().getStorageZoneName());
-                        counter++;
-                    }
+                    addLocationsToStorageZoneIssueLogCreation(requestedLocationToAdd, aLTSZ);
                 }
                 log.error("Counter value: " + counter);
-                log.error("doorLocationsRange value: " + floorLocationsRange);
-                if (theSameStorageZone > 0) {
-                    addLocationToStorageZone.setMessage("Requested location was already in requested Storage Zone, check issue log");
-                } else if (counter == floorLocationsRange) {
-                    addLocationToStorageZone.setMessage("All from requested locations have changed Storage Zone");
-                } else {
-                    addLocationToStorageZone.setMessage("Requested Location is not in DB");
-                }
+                log.error("doorLocationsRange value: " + locationsRange);
+                addLocationsToStorageZoneMessage(locationsRange);
             }
         } else {
             log.debug(aLTSZ.storageZone);
@@ -314,31 +200,30 @@ public class LocationServiceImpl implements LocationService {
             log.debug(aLTSZ.secondSepFloorTo);
             int rackNumberFrom = parseInt(aLTSZ.getSecondSepRack());
             int rackNumberTo = parseInt(aLTSZ.getSecondSepRackTo());
-            int rackNumberRange = rackNumberTo - rackNumberFrom;
+            int rackNumberRange = rackNumberTo - rackNumberFrom +1;
 
             int rackHeightFrom = parseInt(aLTSZ.getThirdSepRack());
             int rackHeightTo = parseInt(aLTSZ.getThirdSepRackTo());
-            int rackHeightRange = rackHeightTo - rackHeightFrom;
+            int rackHeightRange = rackHeightTo - rackHeightFrom +1;
 
             int locationNumberFrom = parseInt(aLTSZ.getFourthSepRack());
             int locationNumberTo = parseInt(aLTSZ.getFourthSepRackTo());
-            int locationNumberRange = locationNumberTo - locationNumberFrom;
+            int locationNumberRange = locationNumberTo - locationNumberFrom +1;
 
-            int rackLocationsRange = rackNumberRange * rackHeightRange * locationNumberRange;
+            int locationsRange = rackNumberRange * rackHeightRange * locationNumberRange;
             if (rackNumberRange < 0) {
-                rackLocationsRange = 0;
+                locationsRange = 0;
             }
             if (rackHeightRange < 0) {
-                rackLocationsRange = 0;
+                locationsRange = 0;
             }
             if (locationNumberRange < 1) {
-                rackLocationsRange = 0;
+                locationsRange = 0;
             }
 
-            int counter = 0;
-            int theSameStorageZone = 0;
-            String requestedLocationToAdd = "";
-            if (rackLocationsRange > 0) {
+             counter = 0;
+             theSameStorageZone = 0;
+            if (locationsRange > 0) {
                 for (int i = rackNumberFrom; i <= rackNumberTo; i++) {
                     String rackNumber;
                     String rackHeight;
@@ -349,76 +234,86 @@ public class LocationServiceImpl implements LocationService {
                         for (int k = locationNumberFrom; k <= locationNumberTo; k++) {
                             locationNbr = StringUtils.leftPad(Integer.toString(k), 3, "0");
                             requestedLocationToAdd = aLTSZ.getFirstSepRack() + rackNumber + rackHeight + locationNbr;
-                            if (locationRepository.findLocationByLocationName(requestedLocationToAdd) == null) {
-                                IssueLog issuelog = new IssueLog();
-                                issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", not exists in DB");
-                                issuelog.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
-                                issuelog.setCreated(LocalDateTime.now().toString());
-                                issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
-                                issuelog.setIssueLogFilePath("");
-                                issuelog.setIssueLogFileName("");
-                                issuelog.setAdditionalInformation("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is not exists in DB");
-                                issueLogService.add(issuelog);
-                                log.error("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is not exists in DB. Front End validation was broken");
-                            } else if (locationRepository.findLocationByLocationName(requestedLocationToAdd).getStorageZone().getStorageZoneName().equals(aLTSZ.storageZone)) {
-                                IssueLog issuelog = new IssueLog();
-                                issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", is already in storage zone: " + aLTSZ.storageZone);
-                                issuelog.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
-                                issuelog.setCreated(LocalDateTime.now().toString());
-                                issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
-                                issuelog.setIssueLogFilePath("");
-                                issuelog.setIssueLogFileName("");
-                                issuelog.setAdditionalInformation("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is in the same storage zone as requested");
-                                issueLogService.add(issuelog);
-                                theSameStorageZone++;
-                            } else {
-                                Location location = locationRepository.findLocationByLocationName(requestedLocationToAdd);
-                                Transaction transaction = new Transaction();
-                                transaction.setAdditionalInformation("Location: " + requestedLocationToAdd + " have changed Storage Zone from: " + location.getStorageZone().getStorageZoneName() + ", to: " + aLTSZ.getStorageZone());
-                                location.setStorageZone(storageZoneRepository.findStorageZoneByStorageZoneName(aLTSZ.getStorageZone()));
-                                location.setLast_update(LocalDateTime.now().toString());
-                                transaction.setHdNumber(0L);
-                                transaction.setArticle(0L);
-                                transaction.setCustomer("");
-                                transaction.setVendor("");
-                                transaction.setReceptionNumber(0L);
-                                transaction.setReceptionStatus("");
-                                transaction.setShipmentNumber(0L);
-                                transaction.setShipmentStatus("");
-                                transaction.setQuality("");
-                                transaction.setQuantity(1L);
-                                transaction.setUnit("");
-                                transaction.setTransactionGroup("Stock");
-                                transaction.setCompany(companyRepository.getCompanyByName("all"));
-                                transaction.setCreatedBy(SecurityUtils.usernameForActivations());
-                                transaction.setCreated(LocalDateTime.now().toString());
-                                transaction.setTransactionType("701");
-                                transaction.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
-                                transaction.setTransactionDescription("Storage Zone for Location Change");
-                                transactionService.add(transaction);
-                                add(location);
-                                log.debug("Storage Zone aLTSSZ: " + aLTSZ.getStorageZone() + " location to save in db value: " + location.getStorageZone().getStorageZoneName());
-                                counter++;
-                            }
+                            addLocationsToStorageZoneIssueLogCreation(requestedLocationToAdd, aLTSZ);
                         }
                     }
                 }
                 log.error("Counter value: " + counter);
-                log.error("doorLocationsRange value: " + rackLocationsRange);
+                log.error("doorLocationsRange value: " + locationsRange);
                 log.error("theSameStorageZone value: " + theSameStorageZone);
-                if (theSameStorageZone > 0) {
-                    addLocationToStorageZone.setMessage("Requested location was already in requested Storage Zone, check issue log");
-                    log.error("Requested location was already in requested Storage Zone, check issue log");
-                } else if (counter == rackLocationsRange) {
-                    addLocationToStorageZone.setMessage("All from requested locations have changed Storage Zone");
-                    log.error("All from requested locations have changed Storage Zone");
-                } else {
-                    addLocationToStorageZone.setMessage("Requested Location is not in DB");
-                    log.error("Requested Location is not in DB");
-                }
+                addLocationsToStorageZoneMessage(locationsRange);
             }
         }
+    }
 
+    private void addLocationsToStorageZoneIssueLogCreation(String requestedLocationToAdd, AddLocationToStorageZone aLTSZ){
+
+        if (locationRepository.findLocationByLocationName(requestedLocationToAdd) == null) {
+            IssueLog issuelog = new IssueLog();
+            issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", not exists in DB");
+            issuelog.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
+            issuelog.setCreated(LocalDateTime.now().toString());
+            issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
+            issuelog.setIssueLogFilePath("");
+            issuelog.setIssueLogFileName("");
+            issuelog.setAdditionalInformation("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is not exists in DB");
+            issueLogService.add(issuelog);
+            log.error("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is not exists in DB. Front End validation was broken");
+
+        } else if (locationRepository.findLocationByLocationName(requestedLocationToAdd).getStorageZone().getStorageZoneName().equals(aLTSZ.storageZone)) {
+            IssueLog issuelog = new IssueLog();
+            issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", is already in storage zone: " + aLTSZ.storageZone);
+            issuelog.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
+            issuelog.setCreated(LocalDateTime.now().toString());
+            issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
+            issuelog.setIssueLogFilePath("");
+            issuelog.setIssueLogFileName("");
+            issuelog.setAdditionalInformation("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is in the same storage zone as requested");
+            issueLogService.add(issuelog);
+            theSameStorageZone++;
+        } else {
+            Location location = locationRepository.findLocationByLocationName(requestedLocationToAdd);
+            Transaction transaction = new Transaction();
+            transaction.setAdditionalInformation("Location: " + requestedLocationToAdd + " have changed Storage Zone from: " + location.getStorageZone().getStorageZoneName() + ", to: " + aLTSZ.getStorageZone());
+            location.setStorageZone(storageZoneRepository.findStorageZoneByStorageZoneName(aLTSZ.getStorageZone()));
+            location.setLast_update(LocalDateTime.now().toString());
+            transaction.setHdNumber(0L);
+            transaction.setArticle(0L);
+            transaction.setCustomer("");
+            transaction.setVendor("");
+            transaction.setReceptionNumber(0L);
+            transaction.setReceptionStatus("");
+            transaction.setShipmentNumber(0L);
+            transaction.setShipmentStatus("");
+            transaction.setQuality("");
+            transaction.setQuantity(1L);
+            transaction.setUnit("");
+            transaction.setTransactionGroup("Stock");
+            transaction.setCompany(companyRepository.getCompanyByName("all"));
+            transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+            transaction.setCreated(LocalDateTime.now().toString());
+            transaction.setTransactionType("701");
+            transaction.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
+            transaction.setTransactionDescription("Storage Zone for Location Change");
+            transactionService.add(transaction);
+            add(location);
+            log.debug("Storage Zone aLTSSZ: " + aLTSZ.getStorageZone() + " location to save in db value: " + location.getStorageZone().getStorageZoneName());
+            counter++;
+        }
+        log.error("Counter w innej metodzie: " + counter);
+        log.error("theSameStorageZone w innej metodzie: " + theSameStorageZone);
+    }
+    private void addLocationsToStorageZoneMessage(int locationsRange){
+        if (theSameStorageZone > 0) {
+            addLocationToStorageZone.setMessage("Requested location was already in requested Storage Zone, check issue log");
+            log.error("Requested location was already in requested Storage Zone, check issue log");
+        } else if (counter == locationsRange) {
+            addLocationToStorageZone.setMessage("All from requested locations have changed Storage Zone");
+            log.error("All from requested locations have changed Storage Zone");
+        } else {
+            addLocationToStorageZone.setMessage("Requested Location is not in DB");
+            log.error("Requested Location is not in DB");
+        }
     }
 
     @Override
@@ -524,8 +419,7 @@ public class LocationServiceImpl implements LocationService {
         issuelog.setAdditionalInformation("Location tried be create by range generation");
         issueLogService.add(issuelog);
     }
-
-
+    
     private void LocationPackRestData(Location location, Location doorLocation) {
         doorLocation.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         doorLocation.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
@@ -640,6 +534,4 @@ public class LocationServiceImpl implements LocationService {
         }
         return lCN;
     }
-
-
 }
