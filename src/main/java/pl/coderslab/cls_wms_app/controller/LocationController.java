@@ -59,6 +59,7 @@ public class LocationController {
         model.addAttribute("locations", locations);
         model.addAttribute("locationSearch",locationSearch);
         model.addAttribute("locationExistsMessage",locationNameConstruction.message);
+        model.addAttribute("addToStorageZoneMessage",addLocationToStorageZone.message);
         String token = usersService.FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());

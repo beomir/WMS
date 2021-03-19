@@ -233,8 +233,6 @@ function checkLocationsBeforeSubmit(){
         }
         if(counter!=firstRangeDoor){
                 if(counter!=firstRangeDoor){
-                    // console.log("First range Door: " +firstRangeDoor)
-                    // console.log("counter: " + counter)
                     alert("Requested door locations are out of bound existed locations scope")
                     returnToPreviousPage();
                     return false;

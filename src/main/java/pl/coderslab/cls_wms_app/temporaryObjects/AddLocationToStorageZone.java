@@ -32,7 +32,7 @@ public class AddLocationToStorageZone {
     public String locationType;
     public String warehouse;
 
-    public String message;
+    public String message ="";
 
 
 }

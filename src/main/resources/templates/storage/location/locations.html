@@ -15,7 +15,7 @@
 	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
 
 </head>
-<body onload="logo()">
+<body onload="logo();errorMessage()">
 	<div class="main-agileits">
 		<div th:include="fragments/header :: header"></div>
 	</div>
@@ -29,7 +29,8 @@
 			<div style="background-color: #00BCD4;border-radius: 3px">
 				<span>
 				<div class="titleList" th:text="#{app.locations}"></div>
-					<div style="color: darkred;font-weight: bold" th:text="${locationExistsMessage}"></div>
+					<div th:unless="${locationExistsMessage.isEmpty()}" id="locationExistsMessage" style="color: darkred;font-weight: bold;text-align: center" th:text="${locationExistsMessage}"></div>
+					<div th:unless="${addToStorageZoneMessage.isEmpty()}" id="addToStorageZoneMessage" style="color: darkred;font-weight: bold;text-align: center" th:text="${addToStorageZoneMessage}"></div>
 					<a th:href="@{/user/locations-browser}"><div class="btn2" style="float: right;max-width: 20%;" th:text="#{app.changeCriteria}"></div></a>
 					<a th:href="@{/user/formLocation}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.addLocation}"></div></a>
 					<a th:href="@{/user/formLocationPack}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.locationRange}"></div></a>
@@ -103,6 +104,17 @@
 
 
 	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
-
+<script>
+	function errorMessage(){
+		setTimeout(function (){
+			errorMessage().fadeIn(5000)},5000)
+		setTimeout (function (){
+			$("#locationExistsMessage").fadeOut(3000);
+			$("#addToStorageZoneMessage").fadeOut(3000);
+			}, 3000)
+		$("#locationExistsMessage").fadeIn(3000);
+		$("#addToStorageZoneMessage").fadeIn(3000);
+	}
+</script>
 </body>
 </html>
