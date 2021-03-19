@@ -7,10 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.entity.IssueLog;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.IssueLogSearch;
-import pl.coderslab.cls_wms_app.service.IssueLogService;
-import pl.coderslab.cls_wms_app.service.UsersService;
-import pl.coderslab.cls_wms_app.service.WarehouseService;
+import pl.coderslab.cls_wms_app.temporaryObjects.IssueLogSearch;
+import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -44,7 +44,7 @@ public class IssueLogController {
         model.addAttribute("issueLogs", issueLogs);
         model.addAttribute("issueLogSearch",issueLogSearch);
         usersService.loggedUserData(model);
-        return "issueLog";
+        return "wmsSettings/issueLog/issueLog";
     }
 
     @GetMapping("/user/issueLog-browser")
@@ -53,7 +53,7 @@ public class IssueLogController {
         usersService.loggedUserData(model);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
-        return "issueLog-browser";
+        return "wmsSettings/issueLog/issueLog-browser";
     }
 
     @PostMapping("/user/issueLog-browser")

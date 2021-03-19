@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
+</div>
+
+<span th:include="fragments/locationsMenu :: locationsMenu"></span>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form  method="post" th:action="@{/user/formEditLocation}">
+			<div th:text="#{app.editLocation}" class="titleList">Edit location</div><br/>
+			<section id="rackLocation" th:classappend="${#strings.contains(location.locationDesc,'rack')} ? 'empty' : 'd-none'">
+				<span th:text="#{app.rackLocation}" style="color: white;font-weight: bold">Rack Location</span><br/>
+				<label th:text="#{app.rack1}" style="color: white;font-style: italic" title="For example PRL like Picking rack location">Shortcut name (three alpha)</label>
+				<input class="location" id="rackFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{locationNameConstruction.firstSepRack}"/>
+				<label th:text="#{app.rack2}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Height (three numeric)</label>
+				<input class="location" id="rackSecondSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{locationNameConstruction.secondSepRack}"/>
+				<label th:text="#{app.rack3}" title="Numeric Value two digits" 	style="color: white;font-style: italic">Depth (two numeric)</label>
+				<input class="location" id="rackThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" title="Numeric Value two digits" 	type="text"  th:field="*{locationNameConstruction.thirdSepRack}"/>
+				<label th:text="#{app.rack4}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Width (three numeric)</label>
+				<input class="location" id="rackFourthSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits"	type="text"  th:field="*{locationNameConstruction.fourthSepRack}"/>
+				<label th:text="#{app.locationNameSimulation}" style="color: white;font-style: italic">Location name simulation</label>
+				<div style="color: white;font-weight: bold" id="rackLocationSimulation"></div><br/><br/>
+				<input type="hidden" th:field="*{location.id}"/>
+				<input type="hidden" th:field="*{location.created}"/>
+			</section>
+			<section id="doorLocation" th:classappend="${#strings.contains(location.locationDesc,'door')} ? 'empty' : 'd-none'">
+				<span th:text="#{app.doorLocation}" style="color: white;font-weight: bold">Door Location</span><br/>
+				<label th:text="#{app.door1}" style="color: white;font-style: italic" title="For example DOOR">Shortcut name (four alpha)</label>
+				<input class="location" id="doorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{4}" minlength="4" maxlength="4" type="text" title="For example DOOR" th:field="*{locationNameConstruction.firstSepDoor}"/>
+				<label th:text="#{app.door2}" style="color: white;font-style: italic" title="For example SHI like Shipment">Destination (three alpha)</label>
+				<input class="location" id="doorSecondSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" minlength="3" maxlength="3" type="text" title="For example SHI" th:field="*{locationNameConstruction.secondSepDoor}"/>
+				<label th:text="#{app.door3}" style="color: white;font-style: italic" title="For example 01 like warehouse door number">Number (two numeric)</label>
+				<input class="location" id="doorThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 01" th:field="*{locationNameConstruction.thirdSepDoor}"/>
+				<label th:text="#{app.locationNameSimulation}" style="color: white;font-style: italic">Location name simulation</label>
+				<div style="color: white;font-weight: bold" id="doorLocationSimulation"></div><br/><br/>
+			</section>
+			<section id="floorLocation" th:classappend="${#strings.contains(location.locationDesc,'floor')} ? 'empty' : 'd-none'">
+				<span th:text="#{app.floorLocation}" style="color: white;font-weight: bold">Floor Location</span><br/>
+				<label th:text="#{app.rack1}" style="color: white;font-style: italic" title="For example PFL like Picking floor location">Shortcut name (three alpha)</label>
+				<input class="location" id="floorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{locationNameConstruction.firstSepFloor}"/>
+				<label  th:text="#{app.floor2}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (eight numeric)</label>
+				<input class="location" id="floorSecondSep" pattern="[0-9]{8}" minlength="8" maxlength="8" title="Numeric Value eight digits" 	type="text"  th:field="*{locationNameConstruction.secondSepFloor}"/>
+				<label th:text="#{app.locationNameSimulation}" style="color: white;font-style: italic">Location name simulation</label>
+				<div style="color: white;font-weight: bold" id="floorLocationSimulation"></div><br/><br/>
+			</section>
+			<section>
+				<label th:text="#{app.locationType}" style="color: white;font-weight: bold">Location type</label>
+				<select id="selectId" class="select-css" th:field="*{location.locationType}">
+					<option th:value="RDL">Reception Door</option>
+					<option th:value="PFL">Stock Picking Floor</option>
+					<option th:value="PRL">Stock Picking Racks</option>
+					<option th:value="RRL">Stock Reserve Racks</option>
+					<option th:value="SDL">Ship Door</option>
+				</select> <br/>
+			</section>
+			<section>
+				<label th:text="#{app.storageZone}" style="color: white;font-weight: bold">Storage Zone</label>
+				<select class="select-css" th:field="*{location.storageZone}">
+					<option th:each="i : ${storageZones}" th:value="${i.id}" th:text="${i.storageZoneName}">
+					</option>
+				</select> <br/>
+			</section>
+			<section  id="multiItem">
+				<label th:text="#{app.multiItem}" style="color: white;font-weight: bold">Multi Item allowed</label>
+				<select class="select-css" th:field="*{location.multiItem}">
+					<option th:value="true">Yes</option>
+					<option th:value="false">No</option>
+				</select> <br/>
+			</section>
+			<section id="hdControling">
+				<label th:text="#{app.hdControl}" style="color: white;font-weight: bold">HD controlled</label>
+				<select class="select-css"  id="hdControl" name="hdControl">
+					<option selected th:value="true">Control</option>
+					<option th:value="false">Not control</option>
+				</select> <br/>
+			</section>
+			<section>
+				<label th:text="#{app.warehouseName}" style="color: white;font-weight: bold">Warehouses</label>
+				<select class="select-css" th:field="*{location.warehouse}">
+					<option th:each="i : ${warehouses}" th:value="${i.id}" th:text="${i.name}">
+					</option>
+				</select><br/>
+			</section>
+			<section>
+				<section>
+					<label th:text="#{app.status}" style="color: white;font-weight: bold">Status</label>
+					<select class="select-css" th:field="*{location.active}">
+						<option th:value="true">Active</option>
+						<option th:value="false">Inactive</option>
+					</select> <br/>
+				</section>
+				<br/><button th:text="#{app.save}" class="button" type="submit">Save</button>
+			</section>
+		</form>
+
+	</div>
+
+	<div th:include="fragments/footer :: footer"></div>
+
+</div>
+<div class="w3copyright-agile">
+	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+</div>
+
+<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+<script type="text/javascript" th:src="@{/js/editLocation.js}"></script>
+
+
+</body>
+
+
+</html>

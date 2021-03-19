@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:include="fragments/stockNavigation :: stockNavigation"></div>
+</div>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form  method="post" th:action="@{/shipment/editShipment}">
+
+			<span sec:authorize="hasRole('ROLE_ADMIN')">
+			<div  class="titleList">Edit Shipment</div><br/><br/>
+			</span>
+
+			<span sec:authorize="!hasRole('ROLE_ADMIN')">
+				<div  th:each="companys: ${companys}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Edit Shipment for company: ' + ${companys.name}"></div><br/>
+			</span>
+
+			<section>
+				<label style="color: white;font-weight: bold">Edit Shipment</label>
+				<input type="text" th:field="*{shipmentInCreation.shipmentNumber}" readonly/>
+			</section>
+
+			<section>
+				<label style="color: white;font-weight: bold">Article</label>
+				<select class="select-css" th:field="*{shipmentInCreation.article}">
+					<option th:each="i : ${articles}" th:value="${i.id}" th:text="${i.article_number}">
+					</option>
+				</select>
+				<input type="hidden" th:field="*{shipmentInCreation.id}"/>
+				<input type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
+				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
+				<input type="hidden" th:value="false" id="shipment.creation_closed" name="shipment.creation_closed"/>
+				<input type="hidden" th:value="1" id="status" name="status"/>
+				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
+				<input type="hidden" th:field="*{shipmentInCreation.created}"/>
+				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
+			</section>
+
+			<section sec:authorize="hasRole('ROLE_ADMIN')">
+				<label style="color: white;font-weight: bold">Company</label>
+				<select class="select-css" th:field="*{shipmentInCreation.company}">
+					<option th:each="i : ${companys}" th:value="${i.id}" th:text="${i.name}">
+					</option>
+				</select>
+			</section><br/>
+
+			<section>
+				<label style="color: white;font-weight: bold">Quality</label>
+				<select class="select-css" th:field="*{shipmentInCreation.quality}">
+					<option th:value="EU1">Europen Union first grade</option>
+					<option th:value="EU2">Europen Union second grade</option>
+					<option th:value="BW1">Bonded Warehouse first grade</option>
+					<option th:value="BW2">Bonded Warehouse second grade</option>
+				</select>
+			</section><br/>
+
+			<section>
+				<label style="color: white;font-weight: bold">Unit</label>
+				<select class="select-css" th:field="*{shipmentInCreation.unit}" >
+					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.name}">
+				</select><br/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold">How many do you want sent?</label>
+				<input type="number" th:field="*{shipmentInCreation.pieces_qty}" required="required" min="1" max="6666666"/>
+			</section>
+
+			<section>
+				<label style="color: white;font-weight: bold">Customer</label>
+				<select class="select-css" th:field="*{shipmentInCreation.customer}">
+					<option th:each="i : ${customers}" th:value="${i.id}" th:text="${i.name}">
+					</option>
+				</select>
+			</section><br/>
+
+			<section>
+				<label style="color: white;font-weight: bold">Ship Method</label>
+				<select class="select-css" th:field="*{shipmentInCreation.shipMethod}">
+					<option th:each="i : ${shipMethods}" th:value="${i.id}" th:text="${i.method_desc}">
+					</option>
+				</select>
+			</section><br/>
+
+
+			<section>
+				<br/><button class="button" type="submit">Save</button>
+			</section>
+
+		</form>
+		<div th:include="fragments/footer :: footer"></div>
+	</div>
+	<div class="w3copyright-agile">
+		<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
+</div>
+
+<span th:include="fragments/locationsMenu :: locationsMenu"></span>
+
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form  method="post" th:action="@{/user/addLocToStorageZones}">
+			<div th:text="#{app.addLocationsToStorageZone}" class="titleList">Add Locations to Storage Zone</div><br/>
+			<section>
+				<label th:text="#{app.addToStorageZone}" style="color: white;font-weight: bold">Storage Zone</label>
+				<select id="selectZone" class="select-css" th:field="*{location.storageZone}">
+					<option th:each="i : ${storageZones}" th:value="${i.storageZoneName}" th:text="${i.storageZoneName}">
+					</option>
+				</select> <br/>
+			</section>
+			<section>
+			<label th:text="#{app.currentQtyOfLocInStorageZone}" style="color: white;font-style: italic">Current number of locations assigned to Storage Zone</label>
+			<div style="color: white;font-weight: bold" id="qtyOfLocInStorageZone"></div><br/><br/>
+			</section>
+			<section>
+			<input type="checkbox" id="assignedLocations"/>
+			<label th:text="#{app.displayLocationsFromStorageZone}" style="letter-spacing: 2px;color: white">Click to display locations assigned to selected Storage Zone</label>
+			</section><br/>
+			<div id="assignedLocationsList" style="color: white">
+				<br/>
+				<div id="locationsAssignedToStorage"></div><br/>
+				<br/></br>
+			</div>
+			<section>
+				<label th:text="#{app.locationType}" style="color: white;font-weight: bold">Location type</label>
+				<select id="selectId" class="select-css" th:field="*{location.locationType}">
+					<option th:value="RDL">Reception Door</option>
+					<option th:value="PFL">Stock Picking Floor</option>
+					<option th:value="PRL">Stock Picking Racks</option>
+					<option th:value="RRL">Stock Reserve Racks</option>
+					<option th:value="SDL">Ship Door</option>
+				</select> <br/>
+			</section>
+
+			<section id="rackLocation">
+				<span th:text="#{app.rackLocation}" style="color: white;font-weight: bold">Rack Location</span><br/>
+				<label th:text="#{app.rack1}" style="color: white;font-style: italic" title="For example PRL like Picking rack location">Shortcut name (three alpha)</label>
+				<input class="location2" id="rackFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{location.firstSepRack}"/>
+
+				<table class="locationPack">
+					<tbody>
+					<tr>
+						<td><label th:text="#{app.rack2} + ' ' + #{app.from}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Rack number (three numeric) From</label></td>
+						<td><label th:text="#{app.rack2} + ' ' + #{app.to}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Rack number (three numeric) To</label></td>
+					</tr>
+					<tr>
+						<td><input  class="location2" id="rackSecondSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{location.secondSepRack}"/></td>
+						<td><input  class="location2" id="rackSecondSepTo" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{location.secondSepRackTo}"/></td>
+					</tr>
+					<tr>
+						<td><label th:text="#{app.rack3} + ' ' + #{app.from}" title="Numeric Value two digits" 	style="color: white;font-style: italic">Rack height level (two numeric) From</label></td>
+						<td><label th:text="#{app.rack3} + ' ' + #{app.to}" title="Numeric Value two digits" 	style="color: white;font-style: italic">Rack height level (two numeric) To</label></td>
+					</tr>
+					<tr>
+						<td><input class="location2" id="rackThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" title="Numeric Value two digits" 	type="text"  th:field="*{location.thirdSepRack}"/></td>
+						<td><input class="location2" id="rackThirdSepTo" pattern="[0-9]{2}" minlength="2" maxlength="2" title="Numeric Value two digits" 	type="text"  th:field="*{location.thirdSepRackTo}"/></td>
+					</tr>
+					<tr>
+						<td><label th:text="#{app.rack4} + ' ' + #{app.from}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Location number (three numeric) From</label></td>
+						<td><label th:text="#{app.rack4} + ' ' + #{app.to}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Location number (three numeric) To</label></td>
+					</tr>
+					<tr>
+						<td><input class="location2" id="rackFourthSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits"	type="text"  th:field="*{location.fourthSepRack}"/></td>
+						<td><input class="location2" id="rackFourthSepTo" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits"	type="text"  th:field="*{location.fourthSepRackTo}"/></td>
+					</tr>
+					</tbody>
+				</table>
+
+
+			</section>
+			<section id="doorLocation">
+				<span th:text="#{app.doorLocation}" style="color: white;font-weight: bold">Door Location</span><br/>
+				<label th:text="#{app.door1}" style="color: white;font-style: italic" title="For example DOOR">Shortcut name (four alpha)</label>
+				<input required class="location2" id="doorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{4}" minlength="4" maxlength="4" type="text" title="For example DOOR" th:field="*{location.firstSepDoor}"/>
+				<label th:text="#{app.door2}" style="color: white;font-style: italic" title="For example SHI like Shipment">Destination (three alpha)</label>
+				<input required class="location2" id="doorSecondSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" minlength="3" maxlength="3" type="text" title="For example SHI" th:field="*{location.secondSepDoor}"/>
+				<table class="locationPack">
+					<tbody>
+					<tr>
+						<td><label th:text="#{app.door3} + ' ' + #{app.from}" style="color: white;font-style: italic" title="For example 01 like warehouse door number">Number (two numeric) From</label></td>
+						<td><label th:text="#{app.door3} + ' ' + #{app.to}" style="color: white;font-style: italic" title="For example 01 like warehouse door number">Number (two numeric) To</label></td>
+					</tr>
+					<tr>
+						<td><input required class="location2" id="doorThirdSep" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 01" th:field="*{location.thirdSepDoor}"/></td>
+						<td><input required class="location2" id="doorThirdSepTo" pattern="[0-9]{2}" minlength="2" maxlength="2" type="text" title="For example 99" th:field="*{location.thirdSepDoorTo}"/></td>
+					</tr>
+					</tbody>
+				</table>
+
+			</section>
+			<section id="floorLocation">
+				<span th:text="#{app.floorLocation}" style="color: white;font-weight: bold">Floor Location</span><br/>
+				<label th:text="#{app.rack1}" style="color: white;font-style: italic" title="For example PFL like Picking floor location">Shortcut name (three alpha)</label>
+				<input class="location2" id="floorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{location.firstSepFloor}"/>
+				<table class="locationPack">
+					<tbody>
+					<tr>
+						<td><label th:text="#{app.floor2} + ' ' + #{app.from}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (eight numeric) From</label></td>
+						<td><label th:text="#{app.floor2} + ' ' + #{app.to}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (eight numeric) To</label></td>
+					</tr>
+					<tr>
+						<td><input class="location2" id="floorSecondSep" pattern="[0-9]{8}" minlength="8" maxlength="8" title="Numeric Value eight digits" 	type="text"  th:field="*{location.secondSepFloor}"/></td>
+						<td><input class="location2" id="floorSecondSepTo" pattern="[0-9]{8}" minlength="8" maxlength="8" title="Numeric Value eight digits" 	type="text"  th:field="*{location.secondSepFloorTo}"/></td>
+					</tr>
+					</tbody>
+				</table>
+			</section>
+
+
+			<section>
+				<label th:text="#{app.warehouseName}" style="color: white;font-weight: bold">Warehouses</label>
+				<select class="select-css" th:field="*{location.warehouse}">
+					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}">
+					</option>
+				</select>
+			</section>
+			<section>
+				<br/><button th:text="#{app.save}" class="button"  type="submit" onclick="return checkLocationsBeforeSubmit()">Save</button>
+			</section>
+		</form>
+
+
+	</div>
+	<table class="d-none" >
+		<tr th:each="i : ${lasz}">
+			<td th:text="${i.storageZone.storageZoneName}" name="storageZone"></td>
+			<td th:text="${i.locationName}" name="locationName"></td>
+		</tr>
+	</table>
+
+	<div th:include="fragments/footer :: footer"></div>
+
+</div>
+<div class="w3copyright-agile">
+	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+</div>
+
+<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+<script type="text/javascript" th:src="@{/js/addLocationToStorageZone.js}"></script>
+</body>
+
+
+</html>

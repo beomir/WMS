@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>WMS CLS app</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo();errorMessage()">
+	<div class="main-agileits">
+		<div th:include="fragments/header :: header"></div>
+	</div>
+	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+
+		<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
+	</div>
+
+	<div id="content" class="mainw3-agileinfo">
+		<div style="width: 1200px" class="login-form">
+			<div style="background-color: #00BCD4;border-radius: 3px">
+				<span>
+				<div class="titleList" th:text="#{app.locations}"></div>
+					<div th:unless="${locationExistsMessage.isEmpty()}" id="locationExistsMessage" style="color: darkred;font-weight: bold;text-align: center" th:text="${locationExistsMessage}"></div>
+					<div th:unless="${addToStorageZoneMessage.isEmpty()}" id="addToStorageZoneMessage" style="color: darkred;font-weight: bold;text-align: center" th:text="${addToStorageZoneMessage}"></div>
+					<a th:href="@{/user/locations-browser}"><div class="btn2" style="float: right;max-width: 20%;" th:text="#{app.changeCriteria}"></div></a>
+					<a th:href="@{/user/formLocation}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.addLocation}"></div></a>
+					<a th:href="@{/user/formLocationPack}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.locationRange}"></div></a>
+					<a th:href="@{/user/addLocToStorageZones}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.addLocationsToStorageZone}"></div></a>
+					<div>
+						<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
+						<table class="criteria">
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.storageZone} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${locationSearch.storageZoneName}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.locationName} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${locationSearch.locationName}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.warehouseName} + ': '"></th>
+								<th  style="color:blue;font-style:italic" th:text="${locationSearch.warehouse}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.type} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${locationSearch.locationType}"></th>
+							</tr>
+						</table>
+					</div>
+					<br/><br/>
+				</span>
+				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
+					<tr style="border: solid 1px">
+						<th th:text="#{app.locationName}" style="font-weight: bold" class="tables">Location Name</th>
+						<th th:text="#{app.description}" style="font-weight: bold" class="tables">Description</th>
+						<th th:text="#{app.type}" style="font-weight: bold" class="tables">Type</th>
+						<th th:text="#{app.storageZone}" style="font-weight: bold" class="tables">Storage Zone</th>
+						<th th:text="#{app.multiItem}" style="font-weight: bold" class="tables">Multi Item</th>
+						<th th:text="#{app.hdControl}" style="font-weight: bold" class="tables">Hd control</th>
+						<th th:text="#{app.warehouseName}" style="font-weight: bold" class="tables">Warehouse</th>
+						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
+						<th th:text="#{app.createdBy}" style="font-weight: bold" class="tables">Created By</th>
+					</tr>
+				    <tr style="border: solid 1px" th:each="locations: ${locations}">
+						<td class="tables" style="padding-bottom: 2px">
+							<ol><div th:text="${locations.locationName}"></div>
+								<li>
+									<ul>
+										<li><a th:text="#{app.deactivate}" th:href="@{/deactivateLocation/{id}(id=${locations.id})}">DEACTIVATE</a></li>
+										<li><a th:text="#{app.edit}" th:href="@{/user/formEditLocation/{id}(id=${locations.id})}">Edit location</a></li>
+									</ul>
+								</li>
+							</ol>
+						</td>
+				        <td class="tables" th:text="${locations.locationDesc}"></td>
+				        <td class="tables" th:text="${locations.locationType}"></td>
+				        <td class="tables" th:text="${locations.storageZone.storageZoneName}"></td>
+				        <td th:if="${locations.multiItem == true}" class="tables" >Allowed</td>
+				        <td th:if="${locations.multiItem == false}" class="tables" >Not allowed</td>
+				        <td th:if="${locations.hdControl == true}" class="tables">Yes</td>
+				        <td th:if="${locations.hdControl == false}" class="tables">No</td>
+				        <td class="tables" th:text="${locations.warehouse.name}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(locations.created,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(locations.last_update,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${locations.changeBy}"></td>
+				    </tr>
+				</table>
+
+				<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/config/locationsDeactivatedList}"><div th:text="#{app.deactivatedList}" class="buttonik" style="float: right;max-width: 20%;">Deactivated List</div></a>
+			</div>
+			<br/><br/>
+			<div th:include="fragments/footer :: footer"></div>
+		</div>
+		<div class="w3copyright-agile">
+			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+		</div>
+	</div>
+
+
+	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+<script>
+	function errorMessage(){
+		setTimeout(function (){
+			errorMessage().fadeIn(5000)},5000)
+		setTimeout (function (){
+			$("#locationExistsMessage").fadeOut(3000);
+			$("#addToStorageZoneMessage").fadeOut(3000);
+			}, 3000)
+		$("#locationExistsMessage").fadeIn(3000);
+		$("#addToStorageZoneMessage").fadeIn(3000);
+	}
+</script>
+</body>
+</html>

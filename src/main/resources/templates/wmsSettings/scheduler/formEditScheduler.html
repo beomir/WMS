@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
+</div>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form th:object="${scheduler}" method="post" th:action="@{/formEditScheduler}">
+			<div class="titleList">Edit Scheduler</div><br/>
+			<section>
+				<label style="color: white;font-weight: bold">Scheduler type</label>
+				<select id="selectid" class="select-css" th:field="*{type}">
+					<option th:value="Stock">Stock</option>
+					<option th:value="Reception">Reception</option>
+					<option th:value="Shipment">Shipment</option>
+				</select>
+				<input type="hidden" th:field="*{id}"/>
+				<input type="hidden" th:field="*{created}"/>
+				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
+				<input type="hidden" th:value="true" id="active" name="active"/>
+				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
+			</section><br/>
+			<section>
+				<label style="color: white;font-weight: bold">Trigger hour</label>
+				<input type="time" th:field="*{hour}"/>
+			</section><br/>
+			<section id="howManyDaysBack">
+				<label title="From how many days back do you want generate the report?" style="color: white;font-weight: bold">From how many days back</label>
+				<input type="number" th:field="*{howManyDaysBack}"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold">Trigger day of week</label><br/><br/>
+				<label th:each="i: ${weekDays}" style="color: white;font-weight: bold" >
+					<input type="checkbox" th:field="*{dayOfWeek}" th:value="${i}" class="triggerDays"/>
+					<span style="font-weight: bold" th:text="${i}" th:value="${i}" class="title"></span><br/>
+				</label>
+				<section><br/><br/>
+					<label style="color: white;font-weight: bold">
+						<input type="radio" id="allWeek" name="trigger" value="allDays">
+						<span>All Week</span>
+					</label>
+					<label style="color: white;font-weight: bold">
+						<input type="radio" id="workDays" name="trigger" value="workDays">
+						<span>Work Days</span>
+					</label>
+					<label style="color: white;font-weight: bold">
+						<input type="radio" id="weekend" name="trigger" value="weekend">
+						<span>Weekend</span>
+					</label></section><br/>
+			<section>
+				<label style="color: white;font-weight: bold">Company</label>
+				<select class="select-css" th:field="*{company}">
+					<option th:each="i : ${companies}" th:value="${i.id}" th:text="${i.name}">
+					</option>
+				</select>
+			</section><br/>
+
+			<section>
+				<br/><button class="button" type="submit">Save</button>
+			</section>
+		</form>
+
+	</div>
+
+	<div th:include="fragments/footer :: footer"></div>
+
+</div>
+<div class="w3copyright-agile">
+	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+</div>
+</div>
+<script type="text/javascript" th:src="@{/js/scheduler.js}"></script>
+</body>
+</html>

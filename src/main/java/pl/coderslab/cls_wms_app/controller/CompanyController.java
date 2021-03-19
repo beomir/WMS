@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
-import pl.coderslab.cls_wms_app.service.CompanyService;
-import pl.coderslab.cls_wms_app.service.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,7 +37,7 @@ public class CompanyController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "company";
+        return "wmsValues/company/company";
     }
 
     @GetMapping("companyDeactivatedList")
@@ -47,7 +47,7 @@ public class CompanyController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "companyDeactivatedList";
+        return "wmsValues/company/companyDeactivatedList";
     }
 
 
@@ -58,7 +58,7 @@ public class CompanyController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "formCompany";
+        return "wmsValues/company/formCompany";
     }
 
     @PostMapping("formCompany")
@@ -85,7 +85,8 @@ public class CompanyController {
         model.addAttribute(company);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        return "formEditCompany";
+        usersService.loggedUserData(model);
+        return "wmsValues/company/formEditCompany";
     }
 
     @PostMapping("formEditCompany")

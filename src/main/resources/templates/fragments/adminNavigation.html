@@ -176,7 +176,7 @@
             <span th:text="#{app.warehouseOperations}"></span>
             <img id="whsOperationsImg" th:src="@{/images/list.png}" class="right"/>
         </div>
-        <span id="whsOperationsBtn" class="d-none">
+        <span id="whsOperationsBtn" class="d-none" style="min-width: 100%">
         <a th:href="@{/warehouse}"><div  class="btn3">
             <span th:text="#{app.chWarehouse}"></span>
             <img th:src="@{/images/return.png}" class="right"/>
@@ -212,11 +212,9 @@
     </div>
     <script>
         const companyMenu = document.getElementById("companyMenu");
-        const companyBtn = document.getElementById("companyBtn");
         let switcherCom = 0;
 
         const handleClickCompany = () => {
-            companyBtn.classList.toggle('d-none');
             switcherCom = switcherCom + 1;
             imgSwitcherCom();
         }
@@ -224,21 +222,22 @@
         function imgSwitcherCom(){
             if (switcherCom % 2 == 0) {
                 document.getElementById('companyImg').src  = '/images/list.png';
+                $("#companyBtn").hide(500);
             }
             else {
                 document.getElementById('companyImg').src = '/images/close.png';
+                $("#companyBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#companyMenu").offset().top
+                }, 2000);
             }
         }
 
         companyMenu.addEventListener('click', handleClickCompany);
-
-
         const stockMenu = document.getElementById("stockMenu");
-        const stockBtn = document.getElementById("stockBtn");
         let switcherSto = 0;
 
         const handleClickStock = () => {
-            stockBtn.classList.toggle('d-none');
             switcherSto = switcherSto + 1;
             imgSwitcherSto();
         }
@@ -246,20 +245,23 @@
         function imgSwitcherSto(){
             if (switcherSto % 2 == 0) {
                 document.getElementById('stockImg').src  = '/images/list.png';
+                $("#stockBtn").hide(500);
             }
             else {
                 document.getElementById('stockImg').src = '/images/close.png';
+                $("#stockBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#stockMenu").offset().top
+                }, 2000);
             }
         }
 
         stockMenu.addEventListener('click', handleClickStock);
 
         const userThings = document.getElementById("userThings");
-        const userBtn = document.getElementById("userBtn");
         let switcherUsr = 0;
 
         const handleClickUser = () => {
-            userBtn.classList.toggle('d-none');
             switcherUsr = switcherUsr + 1;
             imgSwitcherUsr();
         }
@@ -267,20 +269,23 @@
         function imgSwitcherUsr(){
             if (switcherUsr % 2 == 0) {
                 document.getElementById('userImg').src  = '/images/list.png';
+                $("#userBtn").hide(500);
             }
             else {
                 document.getElementById('userImg').src = '/images/close.png';
+                $("#userBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#userThings").offset().top
+                }, 2000);
             }
         }
 
         userThings.addEventListener('click', handleClickUser);
 
         const configuration = document.getElementById("configuration");
-        const configBtn = document.getElementById("configBtn");
         let switcherSet = 0;
 
         const handleClickConfiguration = () => {
-            configBtn.classList.toggle('d-none');
             switcherSet = switcherSet + 1;
             imgSwitcherSet();
         }
@@ -288,20 +293,23 @@
         function imgSwitcherSet(){
             if (switcherSet % 2 == 0) {
                 document.getElementById('configImg').src  = '/images/list.png';
+                $("#configBtn").hide(500);
             }
             else {
                 document.getElementById('configImg').src = '/images/close.png';
+                $("#configBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#configuration").offset().top
+                }, 2000);
             }
         }
 
         configuration.addEventListener('click', handleClickConfiguration);
 
         const warehouseOperations = document.getElementById("warehouseOperations");
-        const whsOperationsBtn = document.getElementById("whsOperationsBtn");
         let whsOperationsSwitcher = 0;
 
         const handleClickwarehouseOperations = () => {
-            whsOperationsBtn.classList.toggle('d-none');
             whsOperationsSwitcher = whsOperationsSwitcher + 1;
             imgWhsOperationsSwitcher();
         }
@@ -309,9 +317,14 @@
         function imgWhsOperationsSwitcher(){
             if (whsOperationsSwitcher % 2 == 0) {
                 document.getElementById('whsOperationsImg').src  = '/images/list.png';
+                $("#whsOperationsBtn").hide(500);
             }
             else {
                 document.getElementById('whsOperationsImg').src = '/images/close.png';
+                $("#whsOperationsBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#whsOperationsBtn").offset().top
+                }, 2000);
             }
         }
 
@@ -320,11 +333,9 @@
 
 
         const reception = document.getElementById("reception");
-        const receptionButtons = document.getElementById("receptionBtn");
         let switcherRec = 0;
 
         const handleClickReception = () => {
-            receptionButtons.classList.toggle('d-none');
             switcherRec = switcherRec + 1;
             imgSwitcherRec();
         }
@@ -332,20 +343,23 @@
         function imgSwitcherRec(){
             if (switcherRec % 2 == 0) {
                 document.getElementById('receptionImg').src  = '/images/list.png';
+                $("#receptionBtn").hide(500);
             }
             else {
                 document.getElementById('receptionImg').src = '/images/close.png';
+                $("#receptionBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#receptionBtn").offset().top
+                }, 2000);
             }
         }
 
         reception.addEventListener('click', handleClickReception);
 
         const shipment = document.getElementById("shipment");
-        const shipmentButtons = document.getElementById("shipmentBtn");
         let switcherShi = 0;
 
         const handleClickShipment = () => {
-            shipmentButtons.classList.toggle('d-none');
             switcherShi = switcherShi + 1;
             imgSwitcherShi();
         }
@@ -353,9 +367,14 @@
         function imgSwitcherShi(){
             if (switcherShi % 2 == 0) {
                 document.getElementById('shipmentImg').src  = '/images/list.png';
+                $("#shipmentBtn").hide(500);
             }
             else {
                 document.getElementById('shipmentImg').src = '/images/close.png';
+                $("#shipmentBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#shipmentBtn").offset().top
+                }, 2000);
             }
         }
 

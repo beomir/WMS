@@ -9,7 +9,10 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.*;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
+import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
@@ -18,10 +21,10 @@ import java.util.List;
 @Controller
 public class WarehouseController {
 
-    private WarehouseService warehouseService;
-    private UsersService usersService;
-    private CompanyService companyService;
-    private CustomerUserDetailsService customerUserDetailsService;
+    private final WarehouseService warehouseService;
+    private final UsersService usersService;
+    private final CompanyService companyService;
+    private final CustomerUserDetailsService customerUserDetailsService;
 
     @Autowired
     public WarehouseController(WarehouseService warehouseService, UsersService usersService, CompanyService companyService, CustomerUserDetailsService customerUserDetailsService) {
@@ -41,7 +44,7 @@ public class WarehouseController {
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("users", users);
         usersService.loggedUserData(model);
-        return "warehouse";
+        return "wmsValues/warehouse/warehouse";
     }
 
 
@@ -63,7 +66,7 @@ public class WarehouseController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "warehouseList";
+        return "wmsValues/warehouse/warehouseList";
     }
 
     @GetMapping("/config/warehouseDeactivatedList")
@@ -73,7 +76,7 @@ public class WarehouseController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "warehouseDeactivatedList";
+        return "wmsValues/warehouse/warehouseDeactivatedList";
     }
 
 
@@ -84,7 +87,7 @@ public class WarehouseController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "formWarehouseCreation";
+        return "wmsValues/warehouse/formWarehouseCreation";
     }
 
     @PostMapping("/config/formWarehouseCreation")
@@ -113,7 +116,7 @@ public class WarehouseController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "formEditWarehouse";
+        return "wmsValues/warehouse/formEditWarehouse";
     }
 
     @PostMapping("/config/formEditWarehouse")

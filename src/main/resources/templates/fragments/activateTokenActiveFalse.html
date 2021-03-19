@@ -3,10 +3,10 @@
 <body>
 <span th:fragment="activateTokenActiveFalse">
     <form>
-    <span style="font-size: 16px;color: white">Token do resetowania hasła wygasł.
-
-        <br/><br/>  <a style="cursor: pointer" th:href="@{/blog/resetPassword}"><div class="btn" style="margin-right: auto;margin-left: auto;text-align: center">Zresetuj hasło ponownie</div></a>
-        <a style="cursor: pointer" th:href="@{/index}"><div class="btn" style="margin-right: auto;margin-left: auto;text-align: center">Wróc do strony głównej</div></a>
+    <span th:text="#{app.resetPasswordConf.tokenExpired}" style="font-size: 16px;color: white">Token do resetowania hasła wygasł.</span>
+    <span>
+        <br/><br/>  <a style="cursor: pointer" th:href="@{/blog/resetPassword}"><div th:text="#{app.resetPasswordConf.rstAgain}" class="btn" style="margin-right: auto;margin-left: auto;text-align: center">Zresetuj hasło ponownie</div></a>
+        <a style="cursor: pointer" th:href="@{/index}"><div th:text="#{app.index.cBTLP}" class="btn" style="margin-right: auto;margin-left: auto;text-align: center">Wróc do strony głównej</div></a>
     </span>
         </form>
 </span>

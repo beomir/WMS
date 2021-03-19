@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.StorageZoneService;
-import pl.coderslab.cls_wms_app.service.UsersService;
-import pl.coderslab.cls_wms_app.service.WarehouseService;
+import pl.coderslab.cls_wms_app.service.storage.StorageZoneService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,14 +35,14 @@ public class StorageZoneController {
         List<StorageZone> storageZones = storageZoneService.getStorageZones();
         model.addAttribute("storageZones", storageZones);
         usersService.loggedUserData(model);
-        return "storageZones";
+        return "storage/storageZones/storageZones";
     }
 
     @GetMapping("/config/storageZonesDeactivatedList")
     public String storageZonesDeactivatedList(Model model) {
         List<StorageZone> storageZones = storageZoneService.getDeactivatedStorageZones();
         model.addAttribute("storageZones", storageZones);
-        return "storageZonesDeactivatedList";
+        return "storage/storageZones/storageZonesDeactivatedList";
     }
 
 
@@ -53,7 +53,7 @@ public class StorageZoneController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("storageZones", new StorageZone());
         usersService.loggedUserData(model);
-        return "formStorageZones";
+        return "storage/storageZones/formStorageZones";
     }
 
     @PostMapping("formStorageZones")
@@ -82,7 +82,7 @@ public class StorageZoneController {
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("localDateTime", LocalDateTime.now());
         usersService.loggedUserData(model);
-        return "formEditStorageZones";
+        return "storage/storageZones/formEditStorageZones";
     }
 
     @PostMapping("formEditStorageZone")

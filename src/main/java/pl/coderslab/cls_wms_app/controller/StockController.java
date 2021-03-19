@@ -6,7 +6,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
-import pl.coderslab.cls_wms_app.service.*;
+import pl.coderslab.cls_wms_app.service.storage.ArticleService;
+import pl.coderslab.cls_wms_app.service.storage.StockService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsValues.StatusService;
+import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
+import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 
 import java.time.LocalDateTime;
@@ -64,7 +72,7 @@ public class StockController {
         model.addAttribute("statuses", statuses);
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "formChangeStatus";
+        return "storage/formChangeStatus";
     }
 
     @PostMapping("/storage/formChangeStatus")
@@ -81,7 +89,7 @@ public class StockController {
         model.addAttribute("articles", articles);
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "formChangeArticleNumber";
+        return "storage/formChangeArticleNumber";
     }
 
     @PostMapping("/storage/formChangeArticleNumber")
@@ -98,7 +106,7 @@ public class StockController {
         customerUserDetailsService.chosenStockPosition = stock;
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "formChangeQty";
+        return "storage/formChangeQty";
     }
 
     @PostMapping("/storage/formChangeQty")
@@ -115,7 +123,7 @@ public class StockController {
         customerUserDetailsService.chosenStockPosition = stock;
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "formChangeQuality";
+        return "storage/formChangeQuality";
     }
 
     @PostMapping("/storage/formChangeQuality")
@@ -134,7 +142,7 @@ public class StockController {
         model.addAttribute("units", units);
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "formChangeUnit";
+        return "storage/formChangeUnit";
     }
 
     @PostMapping("/storage/formChangeUnit")
@@ -151,7 +159,7 @@ public class StockController {
         customerUserDetailsService.chosenStockPosition = stock;
         model.addAttribute(stock);
         usersService.loggedUserData(model);
-        return "formAddComment";
+        return "storage/formAddComment";
     }
 
     @PostMapping("/formAddComment")
@@ -185,7 +193,7 @@ public class StockController {
         model.addAttribute("companys", companys);
         model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
         usersService.loggedUserData(model);
-        return "formStock";
+        return "storage/formStock";
     }
 
     @PostMapping("/storage/formStock")

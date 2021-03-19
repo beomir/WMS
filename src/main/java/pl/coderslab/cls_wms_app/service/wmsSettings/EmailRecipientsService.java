@@ -1,0 +1,31 @@
+package pl.coderslab.cls_wms_app.service.wmsSettings;
+
+import pl.coderslab.cls_wms_app.entity.EmailRecipients;
+
+import java.util.List;
+
+public interface EmailRecipientsService {
+
+    void add(EmailRecipients emailRecipients);
+
+    void saveFromForm(EmailRecipients emailRecipients);
+
+    void editFromForm(EmailRecipients emailRecipients);
+
+    List<EmailRecipients> getEmailRecipientsForCompanyByUsername(String username);
+
+    List<EmailRecipients> getEmailRecipients();
+
+    EmailRecipients findByToken(String token);
+
+    void deactivate(String token);
+
+    void activate(String token);
+
+    List<EmailRecipients> getEmailRecipientsByCompanyForShipmentType(String company, String type);
+
+    List<EmailRecipients> getEmailRecipientsByCompanyForReceptionType(String company, String type);
+
+    List<EmailRecipients> getEmailRecipientsByCompanyForStockType(String type,String company);
+
+}

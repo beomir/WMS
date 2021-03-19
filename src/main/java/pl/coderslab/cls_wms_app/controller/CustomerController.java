@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Customer;
-import pl.coderslab.cls_wms_app.service.CompanyService;
-import pl.coderslab.cls_wms_app.service.CustomerService;
-import pl.coderslab.cls_wms_app.service.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CustomerService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,7 +37,7 @@ public class CustomerController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "customer";
+        return "wmsValues/customer/customer";
     }
 
     @GetMapping("/config/customerDeactivatedList")
@@ -47,7 +47,7 @@ public class CustomerController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "customerDeactivatedList";
+        return "wmsValues/customer/customerDeactivatedList";
     }
 
 
@@ -60,7 +60,7 @@ public class CustomerController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "formCustomer";
+        return "wmsValues/customer/formCustomer";
     }
 
     @PostMapping("/shipment/formCustomer")
@@ -92,7 +92,7 @@ public class CustomerController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
-        return "formEditCustomer";
+        return "wmsValues/customer/formEditCustomer";
     }
 
     @PostMapping("/shipment/formEditCustomer")

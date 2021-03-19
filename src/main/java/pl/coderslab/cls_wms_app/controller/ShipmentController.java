@@ -7,13 +7,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.ShipMethod;
 import pl.coderslab.cls_wms_app.entity.Shipment;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.*;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsOperations.ShipMethodService;
+import pl.coderslab.cls_wms_app.service.wmsOperations.ShipmentService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
+import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -59,7 +63,7 @@ public class ShipmentController {
             return "redirect:/warehouse";
         }
         else{
-            return "shipment";
+            return "wmsOperations/shipment";
         }
 
     }

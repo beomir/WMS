@@ -6,9 +6,9 @@ import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.LocationService;
-import pl.coderslab.cls_wms_app.service.StorageZoneService;
-import pl.coderslab.cls_wms_app.service.WarehouseService;
+import pl.coderslab.cls_wms_app.service.storage.LocationService;
+import pl.coderslab.cls_wms_app.service.storage.StorageZoneService;
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
 import java.util.Arrays;
 import java.util.List;
