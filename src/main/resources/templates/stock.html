@@ -31,28 +31,32 @@
 
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
+						<th th:text="#{app.location}" style="font-weight: bold" class="tables">Location</th>
 						<th th:text="#{app.handleDevice}" style="font-weight: bold" class="tables">Handle device</th>
 						<th th:text="#{app.article}" style="font-weight: bold" class="tables">Article</th>
 						<th th:text="#{app.unit}" style="font-weight: bold" class="tables">Unit</th>
 						<th th:text="#{app.piecesQty}" style="font-weight: bold" class="tables">Pieces Qty</th>
 						<th th:text="#{app.quality}" style="font-weight: bold" class="tables">Quality</th>
 						<th th:text="#{app.status}" style="font-weight: bold" class="tables">Status</th>
+						<th th:text="#{app.freeSpaceInLocation}" style="font-weight: bold" class="tables">Free space in Location</th>
 						<th th:if="${#request.remoteUser.contains('admin')}" th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
 						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
 						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
 						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
 				    <tr th:each="storage: ${stock}" th:style="${storage.status.status == 'to_send'} == TRUE ? 'background: blue;border: solid 1px;' :'border: solid 1px;'" th:styleappend="${storage.status.status == 'on_reception'} == TRUE ? 'background: green;border: solid 1px;' :'border: solid 1px' ">
+						<td class="tables" th:text="${storage.location.locationName}"></td>
 						<td th:title="${storage.comment != null} == TRUE ? ${storage.comment}" th:style="${storage.comment != null && storage.comment != ''} == TRUE ? 'background: gray;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" style="padding-bottom: 2px">
 							<ol><div th:text="${storage.hd_number}"></div>
 								<li>
 									<ul>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:href="@{/storage/formChangeStatus/{id}(id=${storage.id})}">Change Status</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:href="@{/storage/formChangeQuality/{id}(id=${storage.id})}">Change Quality</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/storage/formChangeQty/{id}(id=${storage.id})}">Change Qty</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/storage/formChangeArticleNumber/{id}(id=${storage.id})}">Change Article number</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a  th:href="@{/storage/formChangeUnit/{id}(id=${storage.id})}">Change Unit</a></li>
-										<li><a th:href="@{/formAddComment/{id}(id=${storage.id})}">Add coment</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeStatus}" th:href="@{/storage/formChangeStatus/{id}(id=${storage.id})}">Change Status</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeQuality}" th:href="@{/storage/formChangeQuality/{id}(id=${storage.id})}">Change Quality</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeQty}" th:href="@{/storage/formChangeQty/{id}(id=${storage.id})}">Change Qty</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeArticle}" th:href="@{/storage/formChangeArticleNumber/{id}(id=${storage.id})}">Change Article number</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeUnit}"  th:href="@{/storage/formChangeUnit/{id}(id=${storage.id})}">Change Unit</a></li>
+										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.transfer}" th:href="@{/storage/formTransfer/{id}(id=${storage.id})}">Transfer to another Location</a></li>
+										<li><a th:href="@{/formAddComment/{id}(id=${storage.id})}" th:text="#{app.addComment}">Add coment</a></li>
 									</ul>
 								</li>
 							</ol>
@@ -62,6 +66,7 @@
 				        <td class="tables" th:text="${storage.pieces_qty}"></td>
 				        <td class="tables" th:text="${storage.quality}"></td>
 				        <td class="tables" th:text="${storage.status.status}"></td>
+				        <td class="tables" th:text="${storage.location.volume - storage.article.volume * storage.pieces_qty}"></td>
 						<td th:if="${#request.remoteUser.contains('admin')}" class="tables" th:text="${storage.company.name}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(storage.created,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(storage.last_update,0,19),'T',' ')}"></td>

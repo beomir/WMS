@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -39,16 +41,18 @@ public class Location {
     private boolean multiItem;
     private boolean hdControl;
 
-    private int height;
-    private int width;
-    private int depth;
+    private double height;
+    private double width;
+    private double depth;
 
-    private int volume;
+    private double volume;
+
     private double maxWeight;
+    private double freeSpace;
 
 
 
-    public Location(Long id, String locationName, String locationDesc, String locationType, Warehouse warehouse, StorageZone storageZone, String created, String last_update, boolean active, String changeBy,boolean multiItem,boolean hdControl,int height,int width,int depth, int volume, double maxWeight) {
+    public Location(Long id, String locationName, String locationDesc, String locationType, Warehouse warehouse, StorageZone storageZone, String created, String last_update, boolean active, String changeBy,boolean multiItem,boolean hdControl,double height,double width,double depth, double volume, double maxWeight,double freeSpace) {
         this.id = id;
         this.locationName = locationName;
         this.locationDesc = locationDesc;
@@ -66,7 +70,11 @@ public class Location {
         this.depth = depth;
         this.volume = volume;
         this.maxWeight = maxWeight;
+        this.freeSpace = freeSpace;
     }
+
+    @OneToMany(mappedBy="location")
+    private List<Stock> stockList = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -88,6 +96,7 @@ public class Location {
                 ", depth='" + depth + '\'' +
                 ", volume='" + volume + '\'' +
                 ", maxWeight='" + maxWeight + '\'' +
+                ", freeSpace='" + freeSpace + '\'' +
                 '}';
     }
 }

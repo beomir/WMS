@@ -6,6 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
+import pl.coderslab.cls_wms_app.repository.LocationRepository;
+import pl.coderslab.cls_wms_app.repository.StockRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
@@ -31,10 +33,12 @@ public class StockController {
     private final ArticleService articleService;
     private final UnitService unitService;
     private CustomerUserDetailsService customerUserDetailsService;
+    private final LocationRepository locationRepository;
+    private final StockRepository stockRepository;
 
 
     @Autowired
-    public StockController(StockService stockService, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService) {
+    public StockController(StockService stockService, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, StockRepository stockRepository) {
         this.stockService = stockService;
         this.usersService = usersService;
         this.receptionService = receptionService;
@@ -44,6 +48,9 @@ public class StockController {
         this.articleService = articleService;
         this.unitService = unitService;
         this.customerUserDetailsService = customerUserDetailsService;
+        this.locationRepository = locationRepository;
+
+        this.stockRepository = stockRepository;
     }
 
     @GetMapping("/stock")
@@ -180,10 +187,10 @@ public class StockController {
     //Create Stock
 
     @GetMapping("/storage/formStock")
-    public String stockForm(Model model,@SessionAttribute Long warehouseId){
+    public String stockForm(Model model){
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         List<Unit> units = unitService.getUnit();
-        List<Warehouse> warehouses = warehouseService.getWarehouse(warehouseId);
+        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("articles", articles);
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("units", units);
@@ -192,6 +199,8 @@ public class StockController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("companys", companys);
         model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
+        List<Location> locations = locationRepository.locations();
+        model.addAttribute("locations", locations);
         usersService.loggedUserData(model);
         return "storage/formStock";
     }

@@ -725,7 +725,7 @@ ol > li:hover > ul
 
 ol > li > ul > li
 {
-    background-color:#00BCD4;
+    background-color: #0098d4;
     position: relative;
     z-index: 100;
 }
@@ -741,7 +741,7 @@ ol > li > ul > li
 /*}*/
 ol > li > ul > li > a:hover
 {
-    background-color: #378bf5;
+    background-color: #2309ca;
 }
 
 tr:hover > td{

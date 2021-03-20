@@ -38,7 +38,7 @@ public class Stock {
 
     private Long receptionNumber;
 
-    public Stock(Long id, Long hd_number, Article article,  Long pieces_qty,Unit unit, Status status, String quality, Warehouse warehouse, String created, String last_update, Company company,String comment,Long shipmentNumber, Long receptionNumber,String changeBy) {
+    public Stock(Long id, Long hd_number, Article article,  Long pieces_qty,Unit unit, Status status, String quality, Warehouse warehouse, String created, String last_update, Company company,String comment,Long shipmentNumber, Long receptionNumber,String changeBy,Location location) {
         this.id = id;
         this.hd_number = hd_number;
         this.article = article;
@@ -54,6 +54,7 @@ public class Stock {
         this.shipmentNumber = shipmentNumber;
         this.receptionNumber = receptionNumber;
         this.changeBy = changeBy;
+        this.location = location;
     }
 
     @NotNull
@@ -72,6 +73,10 @@ public class Stock {
     @NotNull
     @ManyToOne
     private Unit unit;
+
+    @ManyToOne
+    private Location location;
+
 
     @Override
     public String toString() {

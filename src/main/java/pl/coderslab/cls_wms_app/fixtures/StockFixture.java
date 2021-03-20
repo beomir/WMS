@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
+import pl.coderslab.cls_wms_app.service.storage.LocationService;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.StatusService;
@@ -25,33 +26,35 @@ public class StockFixture {
     private StatusService statusService;
     private ArticleService articleService;
     private UnitService unitService;
+    private LocationService locationService;
 
     private List<Stock> stockList = Arrays.asList(
-            new Stock(null, 202000000000000000L, null, 24L,null,null,"EU1",null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000001L, null, 10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000002L, null,  18L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000003L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000004L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000005L, null,  40L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000006L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000007L, null,  44L,null,null,"BW1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000008L, null,  20L,null,null,"BW1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000009L, null,  75L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000010L, null,  21L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000011L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000012L, null,  43L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system"),
-            new Stock(null, 202000000000000013L, null,  123L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system")
+            new Stock(null, 202000000000000000L, null, 10L,null,null,"EU1",null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000001L, null, 10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000002L, null,  18L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000003L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000004L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000005L, null,  5L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000006L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000007L, null,  44L,null,null,"BW1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000008L, null,  20L,null,null,"BW1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000009L, null,  75L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000010L, null,  21L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000011L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000012L, null,  43L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000013L, null,  123L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null)
     );
 
 
     @Autowired
-    public StockFixture(StockService stockService, CompanyService companyService, WarehouseService warehouseService, StatusService statusService, ArticleService articleService, UnitService unitService) {
+    public StockFixture(StockService stockService, CompanyService companyService, WarehouseService warehouseService, StatusService statusService, ArticleService articleService, UnitService unitService, LocationService locationService) {
         this.stockService = stockService;
         this.companyService = companyService;
         this.warehouseService = warehouseService;
         this.statusService = statusService;
         this.articleService = articleService;
         this.unitService = unitService;
+        this.locationService = locationService;
     }
 
     public void loadIntoDB() {
@@ -60,6 +63,7 @@ public class StockFixture {
         List<Status> status = statusService.getStatus();
         List<Article> articles = articleService.getArticles();
         List<Unit> unit = unitService.getUnit();
+        List<Location> locations = locationService.getLocations();
         Random rand = new Random();
 
         for (Stock storage : stockList) {
@@ -96,6 +100,21 @@ public class StockFixture {
         stock12.setArticle(articles.get(3));
         stock13.setArticle(articles.get(3));
         stock14.setArticle(articles.get(3));
+
+        stock1.setLocation(locations.get(0));
+        stock2.setLocation(locations.get(1));
+        stock3.setLocation(locations.get(2));
+        stock4.setLocation(locations.get(3));
+        stock5.setLocation(locations.get(6));
+        stock6.setLocation(locations.get(7));
+        stock7.setLocation(locations.get(8));
+        stock8.setLocation(locations.get(9));
+        stock9.setLocation(locations.get(10));
+        stock10.setLocation(locations.get(11));
+        stock11.setLocation(locations.get(12));
+        stock12.setLocation(locations.get(13));
+        stock13.setLocation(locations.get(14));
+        stock14.setLocation(locations.get(15));
 
         stock1.setCompany(companies.get(0));
         stock2.setCompany(companies.get(1));

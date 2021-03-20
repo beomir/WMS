@@ -57,12 +57,16 @@ public class LoadFixtures {
     @EventListener(ApplicationReadyEvent.class)
     public void runAfterStartup() {
 
+
         articleTypesFixture.loadIntoDB();
         companyFixture.loadIntoDB();
         unitFixture.loadIntoDB();
         usersRolesFixture.loadIntoDB();
         usersFixture.loadIntoDB();
         warehouseFixture.loadIntoDB();
+        storageZoneFixture.loadIntoDB();
+        locationFixture.loadIntoDB();
+
         statusFixture.loadIntoDB();
         articleFixture.loadIntoDB();
         vendorFixture.loadIntoDB();
@@ -75,7 +79,7 @@ public class LoadFixtures {
         emailRecipientsFixture.loadIntoDB();
         schedulerFixture.loadIntoDB();
         transactionFixture.loadIntoDB();
-        storageZoneFixture.loadIntoDB();
-        locationFixture.loadIntoDB();
+
+
     }
 }

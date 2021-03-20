@@ -35,4 +35,5 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     @Query("Select s from Stock s where s.shipmentNumber = ?1")
     List<Stock> getStockListByShipmentNumber(Long shipmentNumber);
+
 }

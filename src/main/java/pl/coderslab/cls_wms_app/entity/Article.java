@@ -37,18 +37,18 @@ public class Article {
     private boolean active;
     private String changeBy;
 
-    private int height;
-    private int width;
-    private int depth;
+    private double height;
+    private double width;
+    private double depth;
 
-    private int volume;
+    private double volume;
     private double weight;
 
     @NotNull
     @ManyToOne
     private ArticleTypes articleTypes;
 
-    public Article(Long id, Long article_number, String article_desc, String article_logistic_variant, Long pieces_per_carton, Company company, String created, String last_update,boolean active,String changeBy,int height,int width,int depth, int volume, double weight,ArticleTypes articleTypes) {
+    public Article(Long id, Long article_number, String article_desc, String article_logistic_variant, Long pieces_per_carton, Company company, String created, String last_update,boolean active,String changeBy,double height,double width,double depth, double volume, double weight,ArticleTypes articleTypes) {
         this.id = id;
         this.article_number = article_number;
         this.article_desc = article_desc;
