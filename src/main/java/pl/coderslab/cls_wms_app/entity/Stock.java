@@ -84,12 +84,14 @@ public class Stock {
                 "id=" + id +
                 ", hd_number=" + hd_number +
                 ", comment='" + comment + '\'' +
-                ", article=" + article +
                 ", pieces_qty=" + pieces_qty +
-                ", status=" + status +
                 ", quality='" + quality + '\'' +
+                ", shipmentNumber=" + shipmentNumber +
+                ", receptionNumber=" + receptionNumber +
                 ", created='" + created + '\'' +
                 ", last_update='" + last_update + '\'' +
+                ", changeBy='" + changeBy + '\'' +
+                ", unit=" + unit +
                 '}';
     }
 }

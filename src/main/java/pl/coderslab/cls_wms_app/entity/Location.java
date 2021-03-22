@@ -74,7 +74,7 @@ public class Location {
     }
 
     @OneToMany(mappedBy="location")
-    private List<Stock> stockList = new ArrayList<>();
+    public List<Stock> stockList = new ArrayList<>();
 
     @Override
     public String toString() {

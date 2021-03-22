@@ -26,10 +26,10 @@ public class ArticleTypes {
     private String last_update;
     private boolean active;
     private String changeBy;
-    private int mixed;
+    private String mixed;
 
 
-    public ArticleTypes(Long id,String articleClass,String articleClassDescription, String created, String last_update, boolean active, String changeBy,int mixed ) {
+    public ArticleTypes(Long id,String articleClass,String articleClassDescription, String created, String last_update, boolean active, String changeBy,String mixed ) {
         this.id = id;
         this.articleClass = articleClass;
         this.articleClassDescription = articleClassDescription;

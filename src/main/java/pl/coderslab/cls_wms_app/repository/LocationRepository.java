@@ -34,7 +34,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     @Query("Select l from Location l")
     List<Location> LocationsPlusStorageZone();
 
-    @Query("Select l from Location l left join l.stockList s  ")
+    @Query("Select l from Location l left join fetch l.stockList")
     List<Location> locations();
 
 }

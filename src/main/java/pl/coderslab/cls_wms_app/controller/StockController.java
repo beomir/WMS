@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
+import pl.coderslab.cls_wms_app.repository.ArticleTypesRepository;
 import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.repository.StockRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
@@ -35,10 +36,11 @@ public class StockController {
     private CustomerUserDetailsService customerUserDetailsService;
     private final LocationRepository locationRepository;
     private final StockRepository stockRepository;
+    private final ArticleTypesRepository articleTypesRepository;
 
 
     @Autowired
-    public StockController(StockService stockService, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, StockRepository stockRepository) {
+    public StockController(StockService stockService, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, StockRepository stockRepository, ArticleTypesRepository articleTypesRepository) {
         this.stockService = stockService;
         this.usersService = usersService;
         this.receptionService = receptionService;
@@ -51,6 +53,7 @@ public class StockController {
         this.locationRepository = locationRepository;
 
         this.stockRepository = stockRepository;
+        this.articleTypesRepository = articleTypesRepository;
     }
 
     @GetMapping("/stock")
@@ -201,6 +204,8 @@ public class StockController {
         model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
         List<Location> locations = locationRepository.locations();
         model.addAttribute("locations", locations);
+        List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
+        model.addAttribute("articleTypes", articleTypes);
         usersService.loggedUserData(model);
         return "storage/formStock";
     }
