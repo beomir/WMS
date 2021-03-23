@@ -31,7 +31,7 @@ public class StockFixture {
     private List<Stock> stockList = Arrays.asList(
             new Stock(null, 202000000000000000L, null, 10L,null,null,"EU1",null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
             new Stock(null, 202000000000000001L, null, 10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
-            new Stock(null, 202000000000000002L, null,  18L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000002L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
             new Stock(null, 202000000000000003L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
             new Stock(null, 202000000000000004L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
             new Stock(null, 202000000000000005L, null,  5L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
@@ -42,7 +42,8 @@ public class StockFixture {
             new Stock(null, 202000000000000010L, null,  21L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
             new Stock(null, 202000000000000011L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
             new Stock(null, 202000000000000012L, null,  43L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
-            new Stock(null, 202000000000000013L, null,  123L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null)
+            new Stock(null, 202000000000000013L, null,  123L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200001L,"system",null),
+            new Stock(null, 202000000000000014L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20200002L,"system",null)
     );
 
 
@@ -64,12 +65,7 @@ public class StockFixture {
         List<Article> articles = articleService.getArticles();
         List<Unit> unit = unitService.getUnit();
         List<Location> locations = locationService.getLocations();
-        Random rand = new Random();
 
-        for (Stock storage : stockList) {
-            storage.setWarehouse(warehouses.get(rand.nextInt(warehouses.size())));
-            stockService.add(storage);
-        }
 
         Stock stock1 = stockList.get(0);
         Stock stock2 = stockList.get(1);
@@ -85,6 +81,7 @@ public class StockFixture {
         Stock stock12 = stockList.get(11);
         Stock stock13 = stockList.get(12);
         Stock stock14 = stockList.get(13);
+        Stock stock15 = stockList.get(14);
 
         stock1.setArticle(articles.get(0));
         stock2.setArticle(articles.get(1));
@@ -100,6 +97,23 @@ public class StockFixture {
         stock12.setArticle(articles.get(3));
         stock13.setArticle(articles.get(3));
         stock14.setArticle(articles.get(3));
+        stock15.setArticle(articles.get(3));
+
+        stock1.setWarehouse(warehouses.get(0));
+        stock2.setWarehouse(warehouses.get(0));
+        stock3.setWarehouse(warehouses.get(0));
+        stock4.setWarehouse(warehouses.get(0));
+        stock5.setWarehouse(warehouses.get(0));
+        stock6.setWarehouse(warehouses.get(0));
+        stock7.setWarehouse(warehouses.get(0));
+        stock8.setWarehouse(warehouses.get(0));
+        stock9.setWarehouse(warehouses.get(0));
+        stock10.setWarehouse(warehouses.get(0));
+        stock11.setWarehouse(warehouses.get(0));
+        stock12.setWarehouse(warehouses.get(0));
+        stock13.setWarehouse(warehouses.get(0));
+        stock14.setWarehouse(warehouses.get(0));
+        stock15.setWarehouse(warehouses.get(1));
 
         stock1.setLocation(locations.get(0));
         stock2.setLocation(locations.get(1));
@@ -115,6 +129,7 @@ public class StockFixture {
         stock12.setLocation(locations.get(13));
         stock13.setLocation(locations.get(14));
         stock14.setLocation(locations.get(15));
+        stock15.setLocation(locations.get(16));
 
         stock1.setCompany(companies.get(0));
         stock2.setCompany(companies.get(1));
@@ -130,6 +145,7 @@ public class StockFixture {
         stock12.setCompany(companies.get(3));
         stock13.setCompany(companies.get(3));
         stock14.setCompany(companies.get(3));
+        stock15.setCompany(companies.get(3));
 
         stock1.setUnit(unit.get(0));
         stock2.setUnit(unit.get(0));
@@ -145,6 +161,7 @@ public class StockFixture {
         stock12.setUnit(unit.get(0));
         stock13.setUnit(unit.get(0));
         stock14.setUnit(unit.get(0));
+        stock15.setUnit(unit.get(0));
 
         stock1.setStatus(status.get(0));
         stock2.setStatus(status.get(0));
@@ -160,6 +177,7 @@ public class StockFixture {
         stock12.setStatus(status.get(0));
         stock13.setStatus(status.get(0));
         stock14.setStatus(status.get(0));
+        stock15.setStatus(status.get(0));
 
         stockService.add(stock1);
         stockService.add(stock2);
@@ -175,6 +193,7 @@ public class StockFixture {
         stockService.add(stock12);
         stockService.add(stock13);
         stockService.add(stock14);
+        stockService.add(stock15);
     }
 
 

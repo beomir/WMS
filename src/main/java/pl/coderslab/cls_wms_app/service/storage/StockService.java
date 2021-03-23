@@ -18,7 +18,7 @@ public interface StockService {
 
     void add(Stock stock);
 
-    void addNewStock(Stock stock);
+    void addNewStock(Stock stock,String locationName);
 
     void changeStatus(Stock stock);
 

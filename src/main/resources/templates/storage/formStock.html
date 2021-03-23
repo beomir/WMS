@@ -25,22 +25,23 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form th:object="${stock}" method="post" th:action="@{/storage/formStock}">
-			<div class="titleList">Create New Stock line</div><br/>
+		<form method="post" th:action="@{/storage/formStock}">
+			<div th:each="i: ${warehouses}" th:text="#{app.CreateNewStockLine} + ' ' +  ${i.name} + ': '" class="titleList">Create New Stock line</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.location}">Location</label><br/>
 				<span id="message" style="font-weight: bold;"></span><br/>
-				<input style="margin-top: 4px" id="location" type="text" th:field="*{location}"/>
-				<span id="currentLocationFreeSpace" style="font-weight: bold"></span>
+				<input style="margin-top: 4px" id="locationN" type="text" th:value="${locationN}"  name="locationN"/>
+				<div id="currentLocationFreeSpace" style="font-weight: bold"></div><br/>
+				<div id="currentLocationFreeWeight" style="font-weight: bold;margin-top: 4px"></div>
 			</section>
 			<section>
 				<label  style="color: white;font-weight: bold" th:text="#{app.article}">Article</label>
-				<select id="chosenArticle" class="select-css" th:field="*{article}">
+				<select style="margin-bottom: 4px" id="chosenArticle" class="select-css" th:field="*{stock.article}">
 					<option th:each="i : ${articles}" th:value="${i.id}" th:text="${i.article_number}">
 					</option>
 				</select>
 				<span id="articleInformation"></span>
-				<input type="hidden" th:field="*{id}"/>
+				<input type="hidden" th:field="*{stock.id}"/>
 				<input type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
 				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
 				<input type="hidden" th:value="1" id="status" name="status"/>
@@ -51,7 +52,7 @@
 
 			<section sec:authorize="hasRole('ROLE_ADMIN')">
 				<label style="color: white;font-weight: bold">Company</label>
-				<select class="select-css" th:field="*{company}" th:text="#{app.company}">
+				<select class="select-css" th:field="*{stock.company}" th:text="#{app.company}">
 					<option th:each="i : ${companys}" th:value="${i.id}" th:text="${i.name}">
 					</option>
 				</select>
@@ -59,7 +60,7 @@
 
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.quality}">Quality</label>
-				<select class="select-css" th:field="*{quality}">
+				<select class="select-css" th:field="*{stock.quality}">
 					<option th:value="EU1">European Union first grade</option>
 					<option th:value="EU2">European Union second grade</option>
 					<option th:value="BW1">Bonded Warehouse first grade</option>
@@ -69,7 +70,7 @@
 
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.unit}">Unit</label>
-				<select class="select-css" th:field="*{unit}" >
+				<select class="select-css" th:field="*{stock.unit}" >
 					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.name}">
 				</select><br/>
 			</section>
@@ -79,30 +80,34 @@
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.piecesQty}">Quantity</label>
-				<input id="piecesQty" type="number" th:field="*{pieces_qty}" min="1" max="6666666"/>
+				<input id="piecesQty" type="number" th:field="*{stock.pieces_qty}" min="1" max="6666666" required/>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.comment}">Comment</label>
-				<input type="text" th:field="*{comment}"/>
+				<input type="text" th:field="*{stock.comment}"/>
 			</section>
-			<br/><br/>
-
+			<br/>
 			<section>
-				<br/><button class="button" type="submit">Save</button>
+				<br/><button class="button" type="submit" onclick="return checkAllValidations()">Save</button>
 			</section>
-			<table class="d-none" >
+			<table class="d-none">
 				<tr th:each="i : ${locations}">
 					<td th:text="${i.storageZone.storageZoneName}" name="storageZone"></td>
 					<td th:text="${i.locationType}" name="locationType"></td>
 					<td th:text="${i.locationName}" name="locationName"></td>
 					<td th:text="${i.freeSpace}" name="freeSpace"></td>
+					<td th:text="${i.freeWeight}" name="freeWeight"></td>
+					<td th:text="${i.multiItem}" name="multiItem"></td>
 					<td th:text="${i.stockList.empty}" name="stockExists"></td>
-					<td th:each="j : ${i.stockList}" th:text="${j.article.articleTypes.articleClass}" name="stockArticleType"></td>
-					<td th:each="j : ${i.stockList}" th:text="${j.article.article_number}" name="stockArticleNumber"></td>
+					<td th:if="${i.stockList.empty} == false" th:each="j : ${i.stockList}" th:text="${j.article.articleTypes.articleClass}" name="stockArticleType"></td>
+					<td th:if="${i.stockList.empty} == true" name="stockArticleType"></td>
+					<td th:if="${i.stockList.empty} == false" th:each="j : ${i.stockList}" th:text="${j.article.article_number}" name="stockArticleNumber"></td>
+					<td th:if="${i.stockList.empty} == true" name="stockArticleNumber"></td>
 				</tr>
 				<tr th:each="i : ${articles}">
 					<td th:text="${i.article_number}" name="articleNumberFromExisted"></td>
 					<td th:text="${i.volume}" name="articlesVolume"></td>
+					<td th:text="${i.weight}" name="articlesWeight"></td>
 					<td th:text="${i.articleTypes.articleClass}" name="articleClasses"></td>
 					<td th:text="${i.articleTypes.mixed}" name="articleClassesMixed"></td>
 				</tr>
@@ -112,206 +117,14 @@
 				</tr>
 			</table>
 		</form>
+
 		<div th:include="fragments/footer :: footer"></div>
 	</div>
 	<div class="w3copyright-agile">
 		<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 	</div>
 </div>
-<!--//TODO add checking stock by warehouse-->
-<script>
-	let locations = document.getElementsByName('locationName');
-	let storageZones = document.getElementsByName('storageZone');
-	let stockExists = document.getElementsByName('stockExists');
-	let articleNumberFromExisted = document.getElementsByName('articleNumberFromExisted');
-	let articleClasses = document.getElementsByName('articleClasses');
-	let articleClassesMixed = document.getElementsByName('articleClassesMixed');
-
-	let articlesVolume = document.getElementsByName('articlesVolume');
-	let locationType = document.getElementsByName('locationType');
-	let freeSpace = document.getElementsByName('freeSpace');
-	let locationIsFull = 0;
-
-
-	let stockArticleType = document.getElementsByName('stockArticleType');
-	let stockArticleNumber = document.getElementsByName('stockArticleNumber');
-	let articleInformation = document.getElementById('articleInformation');
-	let canBeMixed = 0;
-
-	let counter;
-	let doorLocations;
-	let locationOccupied;
-	let selectedArticleClass;
-
-	let selectedArticleClassForMessage;
-
-	let selectedArticleClassesMixed;
-	let checkedArticleValue;
-	let currentLocationType;
-	let chosenArticle = document.getElementById('chosenArticle');
-	let message = document.getElementById('message');
-	let currentLocationFreeSpace = document.getElementById('currentLocationFreeSpace');
-	let currentArticleType;
-	let currentArticle;
-
-//input Pieces
-	$('#piecesQty').on('keyup', function (){
-		checkLocationAvailability();
-	})
-
-	//change Article Number
-	chosenArticle.addEventListener("change", function() {
-		checkLocationAvailability();
-	})
-
-	//input Location
-	$('#location').on('keyup', function () {
-		checkLocationAvailability();
-	});
-
-	function checkLocationAvailability(){
-		counter = 0
-		locationOccupied = 0;
-		let piecesQty = document.getElementById('piecesQty').value;
-		if (piecesQty==""){
-			piecesQty = 0;
-		}
-		for(let i = 0; i < storageZones.length -1; i++) {
-			if(locations[i].textContent == document.getElementById('location').value){
-				let freeSpaceInLocation = freeSpace[i].textContent
-				currentArticleType = stockArticleType[i].textContent
-				currentArticle = stockArticleNumber[i].textContent
-				currentLocationType = locationType[i].textContent;
-				currentLocationFreeSpace.innerHTML = "Current free space in location: " + freeSpaceInLocation.toString() + " cm3";
-				for(let j = 0; j < articleNumberFromExisted.length; j++) {
-					checkedArticleValue = chosenArticle.options[chosenArticle.selectedIndex].text
-					if(articleNumberFromExisted[j].textContent == checkedArticleValue){
-						selectedArticleClass = articleClasses[j].textContent
-						selectedArticleClassesMixed = articleClassesMixed[j].textContent
-						if(currentLocationType == "RDL" || currentLocationType == "SDL"){
-							doorLocations = 1;
-						}
-						else {
-							doorLocations = 0;
-
-							let volumeOfArticleToAdd = piecesQty * articlesVolume[j].textContent;
-							currentLocationFreeSpace.innerHTML = "Current free space in location: " + (freeSpaceInLocation - volumeOfArticleToAdd).toString() + " cm3";
-							if(!selectedArticleClassesMixed.includes(currentArticleType)){
-								canBeMixed = 1;
-							}
-							else if(freeSpaceInLocation < volumeOfArticleToAdd){
-								locationIsFull = 1;
-								canBeMixed = 0;
-								$('#currentLocationFreeSpace').css('color', 'red');
-								$('#currentLocationFreeSpace').css('background-color', 'black');
-								$('#currentLocationFreeSpace').css('border', '2px solid');
-								$('#currentLocationFreeSpace').css('border-radius', '5px');
-							}
-							else{
-								locationIsFull = 0;
-								canBeMixed = 0
-								$('#currentLocationFreeSpace').css('color', 'forestgreen');
-								$('#currentLocationFreeSpace').css('background-color', 'black');
-								$('#currentLocationFreeSpace').css('border', '2px solid');
-								$('#currentLocationFreeSpace').css('border-radius', '5px');
-							}
-						}
-					}
-				}
-				counter++;
-				console.log("counter: " + counter)
-				console.log("doorLocations: " + doorLocations)
-				console.log("canBeMixed: " + canBeMixed)
-				console.log("locationIsFull: " + locationIsFull)
-				console.log("locationOccupied: " + locationOccupied)
-				if(stockExists[i].textContent=="false"){
-					locationOccupied++
-				}
-			}
-		}
-		console.log("selectedArticleClass after " + selectedArticleClass)
-		if(doorLocations==1){
-			message.innerHTML = "Location exists, but is not possible create stock directly to Door locations";
-			$('#message').css('color', 'red');
-			$('#message').css('background-color', 'black');
-			$('#message').css('border', '2px solid');
-			$('#message').css('border-radius', '5px');
-			currentLocationFreeSpace.innerHTML ="";
-			$('#currentLocationFreeSpace').css('color', 'transparent');
-			$('#currentLocationFreeSpace').css('background-color', 'transparent');
-			articleInformation.innerHTML = "Class: " + selectedArticleClass;
-			$('#articleInformation').css('color', 'green');
-			$('#articleInformation').css('background-color', 'black');
-			$('#articleInformation').css('border', '2px solid');
-			$('#articleInformation').css('border-radius', '5px');
-		}
-		else if(canBeMixed == 1){
-			message.innerHTML = "Can't mix selected article ( class: " + selectedArticleClass + " ) in this location ( article: " + currentArticle  + ", class: " + currentArticleType + " )";
-			$('#message').css('color', 'red');
-			$('#message').css('background-color', 'black');
-			$('#message').css('border', '2px solid');
-			$('#message').css('border-radius', '5px');
-			articleInformation.innerHTML = "Class: " + selectedArticleClass;
-			$('#articleInformation').css('color', 'green');
-			$('#articleInformation').css('background-color', 'black');
-			$('#articleInformation').css('border', '2px solid');
-			$('#articleInformation').css('border-radius', '5px');
-			currentLocationFreeSpace.innerHTML ="";
-			$('#currentLocationFreeSpace').css('color', 'transparent');
-			$('#currentLocationFreeSpace').css('background-color', 'transparent');
-		}
-		else if(locationIsFull==1){
-			message.innerHTML = "You can not add this article with this quantity. Location have not enough space for it";
-			$('#message').css('color', 'red');
-			$('#message').css('background-color', 'black');
-			$('#message').css('border', '2px solid');
-			$('#message').css('border-radius', '5px');
-			articleInformation.innerHTML = "Class: " + selectedArticleClass;
-			$('#articleInformation').css('color', 'green');
-			$('#articleInformation').css('background-color', 'black');
-			$('#articleInformation').css('border', '2px solid');
-			$('#articleInformation').css('border-radius', '5px');
-		}
-		else if(counter == 0){
-			message.innerHTML = "Location not exists!";
-			$('#message').css('color', 'red');
-			$('#message').css('background-color', 'black');
-			$('#message').css('border', '2px solid');
-			$('#message').css('border-radius', '5px');
-			currentLocationFreeSpace.innerHTML ="";
-			$('#currentLocationFreeSpace').css('color', 'transparent');
-			$('#currentLocationFreeSpace').css('background-color', 'transparent');
-			articleInformation.innerHTML = "Class: " + selectedArticleClass;
-			$('#articleInformation').css('color', 'green');
-			$('#articleInformation').css('background-color', 'black');
-			$('#articleInformation').css('border', '2px solid');
-			$('#articleInformation').css('border-radius', '5px');
-		}
-		else if(locationOccupied>0){
-			message.innerHTML = "Location is occupied and stock can be created here";
-			$('#message').css('color', 'forestgreen');
-			$('#message').css('background-color', 'black');
-			$('#message').css('border', '2px solid');
-			$('#message').css('border-radius', '5px');
-			articleInformation.innerHTML = "Class: " + selectedArticleClass;
-			$('#articleInformation').css('color', 'green');
-			$('#articleInformation').css('background-color', 'black');
-			$('#articleInformation').css('border', '2px solid');
-			$('#articleInformation').css('border-radius', '5px');
-		}
-		else{
-			message.innerHTML = "Location is empty and stock can be created here";
-			$('#message').css('color', 'forestgreen');
-			$('#message').css('background-color', 'black');
-			$('#message').css('border', '2px solid');
-			$('#message').css('border-radius', '5px');
-			articleInformation.innerHTML = "Class: " + selectedArticleClass;
-			$('#articleInformation').css('color', 'green');
-			$('#articleInformation').css('background-color', 'black');
-			$('#articleInformation').css('border', '2px solid');
-			$('#articleInformation').css('border-radius', '5px');
-		}
-	}
-</script>
+<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+<script type="text/javascript" th:src="@{/js/formStock.js}"></script>
 </body>
 </html>

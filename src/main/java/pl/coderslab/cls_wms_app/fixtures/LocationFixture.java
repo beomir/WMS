@@ -25,25 +25,25 @@ public class LocationFixture {
     private final StorageZoneService storageZoneService;
 
     private List<Location> locationList = Arrays.asList(
-            new Location(null, "FLP00101001","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,2171000),
-            new Location(null, "FLP00101002","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5040000),
-            new Location(null, "RAP00101001","Picking rack location", "PRL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,200,80,120,1920000,500.00,624000),
-            new Location(null, "RAR00101001","Reserve rack location", "RRL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,200,80,120,1920000,5000.00,1600000),
-            new Location(null, "DOORREC01","Receiving door location", "RDL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000),
-            new Location(null, "DOORSHI01","Shipping door location", "SDL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000),
-            new Location(null, "FLP00101003","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5440000),
-            new Location(null, "FLP00101004","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,3965500),
-            new Location(null, "FLP00101005","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5510000),
-            new Location(null, "FLP00101006","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5210000),
-            new Location(null, "FLP00101007","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,4320000),
-            new Location(null, "FLP00101008","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5759625),
-            new Location(null, "FLP00101009","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5497500),
-            new Location(null, "FLP00101010","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5440000),
-            new Location(null, "FLP00101011","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5072000),
-            new Location(null, "FLP00101012","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,3792000),
-            new Location(null, "FLP00101013","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5760000),
-            new Location(null, "FLP00101014","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5760000),
-            new Location(null, "FLP00101015","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5760000)
+            new Location(null, "FLP00101001","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,2171000,2850.0),
+            new Location(null, "FLP00101002","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",true,true,200,240,120,5760000,3000.00,5040000,2700.0),
+            new Location(null, "RAP00101001","Picking rack location", "PRL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,200,80,120,1920000,500.00,624000,150),
+            new Location(null, "RAR00101001","Reserve rack location", "RRL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,200,80,120,1920000,500.00,1600000,100),
+            new Location(null, "DOORREC01","Receiving door location", "RDL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000,3000),
+            new Location(null, "DOORSHI01","Shipping door location", "SDL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000,3000),
+            new Location(null, "FLP00101003","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5440000,2600.0),
+            new Location(null, "FLP00101004","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,3965500,2925.0),
+            new Location(null, "FLP00101005","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5510000,2800.0),
+            new Location(null, "FLP00101006","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5210000,2560.0),
+            new Location(null, "FLP00101007","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,4320000,2400.0),
+            new Location(null, "FLP00101008","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5759625,2977.5),
+            new Location(null, "FLP00101009","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5497500,2790.0),
+            new Location(null, "FLP00101010","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5440000,2600.0),
+            new Location(null, "FLP00101011","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5072000,2140.0),
+            new Location(null, "FLP00101012","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,3792000,540.0),
+            new Location(null, "FLP00101013","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5760000,2800.0),
+            new Location(null, "FLP00101014","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5760000,3000),
+            new Location(null, "FLP00101015","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5760000,3000)
 
 
     );
@@ -84,25 +84,25 @@ public class LocationFixture {
         Location location18 = locationList.get(17);
         Location location19 = locationList.get(18);
 
-//        location1.setWarehouse(warehouseList.get(0));
-//        location2.setWarehouse(warehouseList.get(0));
-//        location3.setWarehouse(warehouseList.get(0));
-//        location4.setWarehouse(warehouseList.get(0));
-//        location5.setWarehouse(warehouseList.get(0));
-//        location6.setWarehouse(warehouseList.get(0));
-//        location7.setWarehouse(warehouseList.get(0));
-//        location8.setWarehouse(warehouseList.get(0));
-//        location9.setWarehouse(warehouseList.get(0));
-//        location10.setWarehouse(warehouseList.get(0));
-//        location11.setWarehouse(warehouseList.get(0));
-//        location12.setWarehouse(warehouseList.get(0));
-//        location13.setWarehouse(warehouseList.get(0));
-//        location14.setWarehouse(warehouseList.get(0));
-//        location15.setWarehouse(warehouseList.get(0));
-//        location16.setWarehouse(warehouseList.get(0));
-//        location17.setWarehouse(warehouseList.get(0));
-//        location18.setWarehouse(warehouseList.get(0));
-//        location19.setWarehouse(warehouseList.get(0));
+        location1.setWarehouse(warehouseList.get(0));
+        location2.setWarehouse(warehouseList.get(0));
+        location3.setWarehouse(warehouseList.get(0));
+        location4.setWarehouse(warehouseList.get(0));
+        location5.setWarehouse(warehouseList.get(0));
+        location6.setWarehouse(warehouseList.get(0));
+        location7.setWarehouse(warehouseList.get(0));
+        location8.setWarehouse(warehouseList.get(0));
+        location9.setWarehouse(warehouseList.get(0));
+        location10.setWarehouse(warehouseList.get(0));
+        location11.setWarehouse(warehouseList.get(0));
+        location12.setWarehouse(warehouseList.get(0));
+        location13.setWarehouse(warehouseList.get(0));
+        location14.setWarehouse(warehouseList.get(0));
+        location15.setWarehouse(warehouseList.get(0));
+        location16.setWarehouse(warehouseList.get(0));
+        location17.setWarehouse(warehouseList.get(1));
+        location18.setWarehouse(warehouseList.get(0));
+        location19.setWarehouse(warehouseList.get(1));
 
         location1.setStorageZone(storageZoneList.get(0));
         location2.setStorageZone(storageZoneList.get(1));
@@ -127,28 +127,9 @@ public class LocationFixture {
 
         int locationsFromFixtures = 19;
         for (int i = 0; i < locationsFromFixtures; i++) {
-            locationList.get(i).setWarehouse(warehouseList.get(0));
             locationService.add(locationList.get(i));
         }
 
-//        locationService.add(location1);
-//        locationService.add(location2);
-//        locationService.add(location3);
-//        locationService.add(location4);
-//        locationService.add(location5);
-//        locationService.add(location6);
-//        locationService.add(location7);
-//        locationService.add(location8);
-//        locationService.add(location9);
-//        locationService.add(location10);
-//        locationService.add(location11);
-//        locationService.add(location12);
-//        locationService.add(location13);
-//        locationService.add(location14);
-//        locationService.add(location15);
-//        locationService.add(location16);
-//        locationService.add(location17);
-//        locationService.add(location18);
-//        locationService.add(location19);
+
     }
 }

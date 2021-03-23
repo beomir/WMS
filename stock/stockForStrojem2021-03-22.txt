@@ -1,0 +1,3 @@
+Stock for: Strojem
+ArticleNumber:1234567890123455,ArticleDescription:bicycle,HandleDeviceNumber:202000000000000000,PiecesQuantity10,Unit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:system
+ArticleNumber:1234567890123455,ArticleDescription:bicycle,HandleDeviceNumber:202000000000000005,PiecesQuantity5,Unit:EA,Company:Strojem,FromWarehouse:MIE1,ChangedBy:system

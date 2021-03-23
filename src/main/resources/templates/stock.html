@@ -39,8 +39,8 @@
 						<th th:text="#{app.quality}" style="font-weight: bold" class="tables">Quality</th>
 						<th th:text="#{app.status}" style="font-weight: bold" class="tables">Status</th>
 						<th th:text="#{app.freeSpaceInLocation}" style="font-weight: bold" class="tables">Free space in Location</th>
+						<th th:text="#{app.freeWeightInLocation}" style="font-weight: bold" class="tables">Free Weight in Location</th>
 						<th th:if="${#request.remoteUser.contains('admin')}" th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
-						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
 						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
 						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
@@ -66,9 +66,9 @@
 				        <td class="tables" th:text="${storage.pieces_qty}"></td>
 				        <td class="tables" th:text="${storage.quality}"></td>
 				        <td class="tables" th:text="${storage.status.status}"></td>
-				        <td class="tables" th:text="${storage.location.volume - storage.article.volume * storage.pieces_qty}"></td>
+				        <td class="tables" th:text="${storage.location.freeSpace}"></td>
+				        <td class="tables" th:text="${storage.location.freeWeight}"></td>
 						<td th:if="${#request.remoteUser.contains('admin')}" class="tables" th:text="${storage.company.name}"></td>
-						<td class="tables" th:text="${#strings.replace(#strings.substring(storage.created,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(storage.last_update,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${storage.changeBy}"></td>
 					</tr>

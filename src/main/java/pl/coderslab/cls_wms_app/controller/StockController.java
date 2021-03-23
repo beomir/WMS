@@ -1,5 +1,6 @@
 package pl.coderslab.cls_wms_app.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.repository.StockRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
+import pl.coderslab.cls_wms_app.service.storage.StockServiceImpl;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
@@ -23,9 +25,11 @@ import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Controller
 public class StockController {
     private final StockService stockService;
+    private final StockServiceImpl stockServiceImpl;
     private final UsersService usersService;
     private final ReceptionService receptionService;
     private final WarehouseService warehouseService;
@@ -40,8 +44,9 @@ public class StockController {
 
 
     @Autowired
-    public StockController(StockService stockService, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, StockRepository stockRepository, ArticleTypesRepository articleTypesRepository) {
+    public StockController(StockService stockService, StockServiceImpl stockServiceImpl, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, StockRepository stockRepository, ArticleTypesRepository articleTypesRepository) {
         this.stockService = stockService;
+        this.stockServiceImpl = stockServiceImpl;
         this.usersService = usersService;
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
@@ -202,17 +207,19 @@ public class StockController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("companys", companys);
         model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
-        List<Location> locations = locationRepository.locations();
+        List<Location> locations = locationRepository.locations(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("locations", locations);
         List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
         model.addAttribute("articleTypes", articleTypes);
+        model.addAttribute("locationN", stockServiceImpl.locationName);
         usersService.loggedUserData(model);
         return "storage/formStock";
     }
 
     @PostMapping("/storage/formStock")
-    public String stockFormPost(Stock stock) {
-        stockService.addNewStock(stock);
+    public String stockFormPost(Stock stock,String locationN) {
+        log.error("POST: " + locationN);
+        stockService.addNewStock(stock,locationN);
         return "redirect:/stock";
     }
 

@@ -5,11 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
-import pl.coderslab.cls_wms_app.entity.EmailRecipients;
-import pl.coderslab.cls_wms_app.entity.Stock;
-import pl.coderslab.cls_wms_app.entity.Transaction;
-import pl.coderslab.cls_wms_app.entity.Warehouse;
+import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.EmailRecipientsRepository;
+import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.repository.ReceptionRepository;
 import pl.coderslab.cls_wms_app.repository.StockRepository;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
@@ -31,17 +29,20 @@ import java.util.Random;
 @Slf4j
 public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
+    private final LocationRepository locationRepository;
     private final SendEmailService sendEmailService;
     private final EmailRecipientsRepository emailRecipientsRepository;
     private final ReceptionRepository receptionRepository;
     private final TransactionService transactionService;
     private CustomerUserDetailsService customerUserDetailsService;
+    public String locationName;
 
     public List<Stock> storage = new ArrayList<>();
 
     @Autowired
-    public StockServiceImpl(StockRepository stockRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, TransactionService transactionService, CustomerUserDetailsService customerUserDetailsService) {
+    public StockServiceImpl(StockRepository stockRepository, LocationRepository locationRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, TransactionService transactionService, CustomerUserDetailsService customerUserDetailsService) {
         this.stockRepository = stockRepository;
+        this.locationRepository = locationRepository;
         this.sendEmailService = sendEmailService;
         this.emailRecipientsRepository = emailRecipientsRepository;
         this.receptionRepository = receptionRepository;
@@ -65,15 +66,20 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void addNewStock(Stock stock) {
+    public void addNewStock(Stock stock,String locationNames) {
+
+        Location location = locationRepository.findLocationByLocationName(locationNames);
+        stock.setLocation(location);
+        location.setFreeSpace(location.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
+        location.setFreeWeight(location.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Manual stock creation");
         transaction.setAdditionalInformation("New stock line created: Article: " + stock.getArticle().getArticle_number() + ", HD number:" + stock.getHd_number() + ", Qty: " + stock.getPieces_qty());
         transaction.setTransactionType("209");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
-
         stockRepository.save(stock);
+        locationRepository.save(location);
     }
 
     @Override
