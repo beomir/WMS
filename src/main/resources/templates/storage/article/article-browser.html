@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
+</div>
+
+<span th:include="fragments/articlesMenu :: articlesMenu"></span>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form th:object="${articleSearching}" method="post" th:action="@{/article-browser}">
+			<div th:text="#{app.findArticles}" class="titleList">Find Articles</div><br/>
+			<section>
+				<label th:text="#{app.article}" style="color: white;font-weight: bold">Article Number</label>
+				<input type="text" title="Number value" th:field="*{article_number}"/>
+			</section>
+			<section>
+				<label th:text="#{app.volume} + ' ' + #{app.from}" style="color: white;font-weight: bold">volumeLowerThan</label>
+				<input type="text" title="Number value" th:field="*{volumeBiggerThan}"/>
+			</section>
+			<section>
+				<label th:text="#{app.volume} + ' ' + #{app.to}" style="color: white;font-weight: bold">volumeBiggerThan</label>
+				<input type="text" title="Number value" th:field="*{volumeLowerThan}"/>
+			</section>
+			<section>
+				<label th:text="#{app.width} + ' ' + #{app.from}" style="color: white;font-weight: bold"></label>
+				<input type="text" title="Number value" th:field="*{widthBiggerThan}"/>
+			</section>
+			<section>
+				<label th:text="#{app.width} + ' ' + #{app.to}" style="color: white;font-weight: bold"></label>
+				<input type="text" title="Number value" th:field="*{widthLowerThan}"/>
+			</section>
+			<section>
+				<label th:text="#{app.depth} + ' ' + #{app.from}" style="color: white;font-weight: bold"></label>
+				<input type="text" title="Number value" th:field="*{depthBiggerThan}"/>
+			</section>
+			<section>
+				<label th:text="#{app.depth} + ' ' + #{app.to}" style="color: white;font-weight: bold"></label>
+				<input type="text" title="Number value" th:field="*{depthLowerThan}"/>
+			</section>
+			<section>
+				<label th:text="#{app.height} + ' ' + #{app.from}" style="color: white;font-weight: bold"></label>
+				<input type="text" title="Number value" th:field="*{heightBiggerThan}"/>
+			</section>
+			<section>
+				<label th:text="#{app.height} + ' ' + #{app.to}" style="color: white;font-weight: bold"></label>
+				<input type="text" title="Number value" th:field="*{heightLowerThan}"/>
+			</section>
+			<section>
+				<label th:text="#{app.weight} + ' ' + #{app.from}" style="color: white;font-weight: bold"></label>
+				<input type="text" title="Number value" th:field="*{weightBiggerThan}"/>
+			</section>
+			<section>
+				<label th:text="#{app.weight} + ' ' + #{app.to}" style="color: white;font-weight: bold"></label>
+				<input type="text" title="Number value" th:field="*{weightLowerThan}"/>
+			</section>
+			<section>
+				<label th:text="#{app.createdBy}" style="color: white;font-weight: bold">created by</label>
+				<input type="text" title="Alpha value" th:field="*{createdBy}"/>
+			</section>
+			<section>
+				<label th:text="#{app.created} + ' ' + #{app.from}" style="color: white;font-weight: bold">Created From</label>
+				<input type="date" th:field="*{creationDateFrom}"/>
+			</section>
+
+			<section>
+				<label th:text="#{app.created} + ' ' + #{app.to}" style="color: white;font-weight: bold">Created To</label>
+				<input type="date" th:field="*{creationDateTo}"/>
+			</section>
+			<section>
+				<label th:text="#{app.lastUpdate} + ' ' + #{app.from}" style="color: white;font-weight: bold">Last update From</label>
+				<input type="date" th:field="*{lastUpdateDateFrom}"/>
+			</section>
+
+			<section>
+				<label th:text="#{app.lastUpdate} + ' ' + #{app.to}" style="color: white;font-weight: bold">Last update To</label>
+				<input type="date" th:field="*{lastUpdateDateTo}"/>
+
+			</section>
+			<section sec:authorize="!hasRole('ROLE_ADMIN')">
+				<input type="hidden" th:value="${companys.name}" name="company"/>
+			</section>
+
+
+			<section sec:authorize="hasRole('ROLE_ADMIN')">
+				<label th:text="#{app.company} + ': '" style="color: white;font-weight: bold">Company</label>
+				<select class="select-css" th:field="*{company}">
+					<option th:each="i : ${company}" th:value="${i.name}" th:text="${i.name}">
+					<option th:value="'%'">All</option>
+					</option>
+				</select>
+			</section><br/>
+
+			<section>
+				<br/><button th:text="#{app.search}" class="button" type="submit">Search</button>
+			</section>
+		</form>
+	</div>
+	<div th:include="fragments/footer :: footer"></div>
+
+</div>
+<div class="w3copyright-agile">
+	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+</div>
+
+<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+
+</body>
+
+
+</html>

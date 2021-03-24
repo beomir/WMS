@@ -24,19 +24,23 @@
 	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
 </div>
 
+
 <div id="content" class="mainw3-agileinfo">
 	<div style="width: 1200px" class="login-form">
 		<div style="background-color: #00BCD4;border-radius: 3px">
-			<span sec:authorize="!hasRole('ROLE_ADMIN')">
-				<div th:each="companys: ${companys}" class="titleList" th:text="'Deactivated articles for company: ' + ${companys.name}"></div><br/><br/>
-				</span>
-			<span sec:authorize="hasRole('ROLE_ADMIN')">
-				<div  class="titleList" th:text="#{app.deactivateArticle}"></div><br/><br/>
-					</span>
+				<div  class="titleList" th:text="#{app.deactivateArticle}"></div>
+				<a th:href="@{/formArticle}"><div class="btn2" style="float: right;max-width: 20%;" th:text="#{app.addArticle}"></div></a>
+				<a th:href="@{/articleTypes}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.articleTypes}"></div></a>
+				<br/><br/>
 			<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 				<tr style="border: solid 1px">
 					<th  th:text="#{app.articleNumber}" style="font-weight: bold" class="tables">Article number</th>
 					<th  th:text="#{app.articleDescription}" style="font-weight: bold" class="tables">Article description</th>
+					<th  th:text="#{app.volume} + '[cm3]'" style="font-weight: bold" class="tables">Volume</th>
+					<th  th:text="#{app.height} + '[cm]'" style="font-weight: bold" class="tables">Height</th>
+					<th  th:text="#{app.width} + '[cm]'" style="font-weight: bold" class="tables">Width</th>
+					<th  th:text="#{app.depth} + '[cm]'" style="font-weight: bold" class="tables">Depth</th>
+					<th  th:text="#{app.weight} + '[kg]'" style="font-weight: bold" class="tables">Weight</th>
 					<th th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
 					<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
 					<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
@@ -53,6 +57,11 @@
 						</ol>
 					</td>
 					<td class="tables" th:text="${article.article_desc}"></td>
+					<td class="tables" th:text="${article.volume}"></td>
+					<td class="tables" th:text="${article.height}"></td>
+					<td class="tables" th:text="${article.width}"></td>
+					<td class="tables" th:text="${article.depth}"></td>
+					<td class="tables" th:text="${article.weight}"></td>
 					<td class="tables" th:text="${article.company.name}"></td>
 					<td class="tables" th:text="${#strings.replace(#strings.substring(article.created,0,19),'T',' ')}"></td>
 					<td class="tables" th:text="${#strings.replace(#strings.substring(article.last_update,0,19),'T',' ')}"></td>
@@ -60,8 +69,8 @@
 				</tr>
 			</table>
 
-			<a th:href="@{/templates/storage/article}"><div th:text="#{app.activatedList}" class="buttonik" style="float: right;max-width: 20%;">Activated List</div></a>
-		</div>
+			<a th:href="@{/article}"><div th:text="#{app.activatedList}" class="buttonik" style="float: right;max-width: 20%;">Activated List</div></a>
+		</div><br/><br/>
 
 		<div th:include="fragments/footer :: footer"></div>
 	</div>

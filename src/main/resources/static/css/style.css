@@ -1159,3 +1159,12 @@ table.locationPack {
     border-spacing: 50px 0;
 }
 
+input.check {
+    border: 2px solid currentcolor;
+}
+input:invalid.check {
+    border: 2px dashed red;
+}
+input:invalid:focus.check {
+    background-image: linear-gradient(pink, lightgreen);
+}

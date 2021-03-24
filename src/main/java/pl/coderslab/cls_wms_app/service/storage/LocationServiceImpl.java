@@ -64,6 +64,9 @@ public class LocationServiceImpl implements LocationService {
 
         modificationOnSingleLocation(location, locationNameConstruction);
         location.setActive(true);
+        location.setFreeWeight(location.getMaxWeight());
+        location.setVolume(location.getDepth() * location.getHeight() * location.getWidth());
+        location.setFreeSpace(location.getVolume());
         location.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         location.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         location.setChangeBy(SecurityUtils.usernameForActivations());
@@ -498,7 +501,7 @@ public class LocationServiceImpl implements LocationService {
             lCN.setFourthSepRack(location.getLocationName().substring(8, 11));
         } else {
             lCN.setFirstSepFloor(location.getLocationName().substring(0, 3));
-            lCN.setSecondSepFloor(location.getLocationName().substring(3, 10));
+            lCN.setSecondSepFloor(location.getLocationName().substring(3, 11));
         }
         return lCN;
     }

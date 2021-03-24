@@ -56,7 +56,7 @@
 										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeArticle}" th:href="@{/storage/formChangeArticleNumber/{id}(id=${storage.id})}">Change Article number</a></li>
 										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeUnit}"  th:href="@{/storage/formChangeUnit/{id}(id=${storage.id})}">Change Unit</a></li>
 										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.transfer}" th:href="@{/storage/formTransfer/{id}(id=${storage.id})}">Transfer to another Location</a></li>
-										<li><a th:href="@{/formAddComment/{id}(id=${storage.id})}" th:text="#{app.addComment}">Add coment</a></li>
+										<li><a th:href="@{/formAddComment/{id}(id=${storage.id})}" th:text="#{app.addComment}">Add comment</a></li>
 									</ul>
 								</li>
 							</ol>

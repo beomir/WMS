@@ -15,7 +15,7 @@
 	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
 
 </head>
-<body onload="logo()">
+<body onload="logo();errorMessage()">
 	<div class="main-agileits">
 		<div th:include="fragments/header :: header"></div>
 	</div>
@@ -30,18 +30,140 @@
 			<div style="background-color: #00BCD4;border-radius: 3px">
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
 				<div th:each="companys: ${companys}" class="titleList" th:text="#{app.articlesFC} + ': ' + ${companys.name}"></div>
-				<a th:href="@{/formArticle}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.addArticle}"></div></a>
+				<div th:unless="${articleMessage == null}" id="articleMessage" style="color: darkred;font-weight: bold;text-align: center" th:text="${articleMessage}"></div>
+				<a th:href="@{/formArticle}"><div class="btn2" style="float: right;max-width: 20%;" th:text="#{app.addArticle}"></div></a>
+				<a th:href="@{/articleTypes}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.articleTypes}"></div></a>
+				<a th:href="@{/article-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.changeCriteria}"></div></a>
+				<div>
+						<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
+						<table class="criteria">
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.articleNumber} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.article_number}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.transactionType} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.createdBy}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.created} + ' ' + #{app.from} + ': '"></th>
+								<th  style="color:blue;font-style:italic" th:text="${articleSearch.creationDateFrom}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.created} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.creationDateTo}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.lastUpdate} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.lastUpdateDateFrom}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.lastUpdate} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.lastUpdateDateTo}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.volume} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.volumeBiggerThan}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.volume} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.volumeLowerThan}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.weight} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.weightBiggerThan}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.weight} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.weightLowerThan}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.depth} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.depthBiggerThan}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.depth} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.depthLowerThan}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.width} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.widthBiggerThan}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.width} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.widthLowerThan}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.height} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.heightBiggerThan}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.height} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.heightLowerThan}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.company} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.company}"></th>
+							</tr>
+						</table>
+					</div>
 				<br/><br/>
 				</span>
 				<span sec:authorize="hasRole('ROLE_ADMIN')">
 				<div  class="titleList" th:text="#{app.articles}"></div>
-					<a th:href="@{/formArticle}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.addArticle}"></div></a>
+					<div th:unless="${articleMessage == null}" id="articleMessage" style="color: darkred;font-weight: bold;text-align: center" th:text="${articleMessage}"></div>
+					<a th:href="@{/formArticle}"><div class="btn2" style="float: right;max-width: 20%;" th:text="#{app.addArticle}"></div></a>
+					<a th:href="@{/articleTypes}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.articleTypes}"></div></a>
+					<a th:href="@{/article-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.changeCriteria}"></div></a>
+
+					<div>
+						<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
+						<table class="criteria">
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.articleNumber} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.article_number}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.transactionType} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.createdBy}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.created} + ' ' + #{app.from} + ': '"></th>
+								<th  style="color:blue;font-style:italic" th:text="${articleSearch.creationDateFrom}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.created} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.creationDateTo}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.lastUpdate} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.lastUpdateDateFrom}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.lastUpdate} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.lastUpdateDateTo}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.volume} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.volumeBiggerThan}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.volume} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.volumeLowerThan}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.weight} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.weightBiggerThan}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.weight} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.weightLowerThan}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.depth} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.depthBiggerThan}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.depth} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.depthLowerThan}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.width} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.widthBiggerThan}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.width} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.widthLowerThan}"></th>
+							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.height} + ' ' + #{app.from} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.heightBiggerThan}"></th>
+								<th style="color:blue;font-weight: bold" th:text="#{app.height} + ' ' + #{app.to} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.heightLowerThan}"></th>
+							</tr>
+						</table>
+					</div>
 					<br/><br/>
 					</span>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
 						<th  th:text="#{app.articleNumber}" style="font-weight: bold" class="tables">Article number</th>
 						<th  th:text="#{app.articleDescription}" style="font-weight: bold" class="tables">Article description</th>
+						<th  th:text="#{app.volume} + '[cm3]'" style="font-weight: bold" class="tables">Volume</th>
+						<th  th:text="#{app.height} + '[cm]'" style="font-weight: bold" class="tables">Height</th>
+						<th  th:text="#{app.width} + '[cm]'" style="font-weight: bold" class="tables">Width</th>
+						<th  th:text="#{app.depth} + '[cm]'" style="font-weight: bold" class="tables">Depth</th>
+						<th  th:text="#{app.weight} + '[kg]'" style="font-weight: bold" class="tables">Weight</th>
 						<th th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
 						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
 						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
@@ -59,6 +181,11 @@
 							</ol>
 						</td>
 						<td class="tables" th:text="${article.article_desc}"></td>
+						<td class="tables" th:text="${article.volume}"></td>
+						<td class="tables" th:text="${article.height}"></td>
+						<td class="tables" th:text="${article.width}"></td>
+						<td class="tables" th:text="${article.depth}"></td>
+						<td class="tables" th:text="${article.weight}"></td>
 						<td class="tables" th:text="${article.company.name}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(article.created,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(article.last_update,0,19),'T',' ')}"></td>
@@ -67,7 +194,7 @@
 				</table>
 
 				<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/config/articleDeactivatedList}"><div th:text="#{app.deactivatedList}" class="buttonik" style="float: right;max-width: 20%;">Deactivated List</div></a>
-			</div>
+			</div><br/><br/>
 
 			<div th:include="fragments/footer :: footer"></div>
 		</div>
@@ -75,7 +202,15 @@
 			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 		</div>
 	</div>
-
-
+	<script>
+		function errorMessage(){
+			setTimeout(function (){
+				errorMessage().fadeIn(5000)},5000)
+			setTimeout (function (){
+				$("#articleMessage").fadeOut(3000);
+			}, 3000)
+			$("#articleMessage").fadeIn(3000);
+		}
+	</script>
 </body>
 </html>

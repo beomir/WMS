@@ -20,15 +20,16 @@
 		<div th:include="fragments/header :: header"></div>
 	</div>
 	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
-
 		<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
-
 	</div>
+
 
 	<div id="content" class="mainw3-agileinfo">
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px">
 				<div  class="titleList" th:text="#{app.articleTypes}"></div>
+				<a th:href="@{/article}"><div class="btn2" style="float: right;max-width: 20%;" th:text="#{app.articleList}"></div></a>
+				<a th:href="@{/formArticle}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.addArticle}"></div></a>
 					<br/><br/>
 
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
