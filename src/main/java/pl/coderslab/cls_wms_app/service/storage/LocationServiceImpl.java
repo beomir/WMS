@@ -72,8 +72,28 @@ public class LocationServiceImpl implements LocationService {
         location.setChangeBy(SecurityUtils.usernameForActivations());
         if (locationRepository.findLocationByLocationName(locationName) == null) {
             locationRepository.save(location);
-            locationNameConstruction.message = "Locations created successfully";
+            lNC.setMessage("Locations created successfully");
             log.debug("location: " + location + " created");
+            Transaction transaction = new Transaction();
+            transaction.setHdNumber(0L);
+            transaction.setAdditionalInformation("Location: " + location.getLocationName() + ", created in Warehouse: " + location.getWarehouse().getName());
+            transaction.setArticle(0L);
+            transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+            transaction.setCustomer("");
+            transaction.setQuality("");
+            transaction.setQuantity(0L);
+            transaction.setReceptionNumber(0L);
+            transaction.setReceptionStatus("");
+            transaction.setShipmentNumber(0L);
+            transaction.setShipmentStatus("");
+            transaction.setTransactionDescription("Single Location Created");
+            transaction.setTransactionType("520");
+            transaction.setTransactionGroup("Configuration");
+            transaction.setUnit("");
+            transaction.setVendor("");
+            transaction.setWarehouse(location.getWarehouse());
+            transactionService.add(transaction);
         } else {
             lNC.setMessage("ERROR: Location: " + locationName + " already exists, try with another name");
             log.error("location: " + locationName + " already exists");
@@ -89,9 +109,31 @@ public class LocationServiceImpl implements LocationService {
         location.setChangeBy(SecurityUtils.usernameForActivations());
         try {
             if (location.getId() == locationRepository.findLocationByLocationName(locationName).getId()) {
+                Location oldLocation = locationRepository.getOne(location.getId());
+                lNC.setMessage("Locations edited successfully");
+                log.debug("location: " + location + " edited");
+                Transaction transaction = new Transaction();
+                transaction.setHdNumber(0L);
+                //TODO finish transaction for edit location
+                transaction.setAdditionalInformation("Before changes: " + locationName + ", " + oldLocation.getLocationDesc() + " " + " " + " After changes: " + location.getLocationName());
+                transaction.setArticle(0L);
+                transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+                transaction.setCustomer("");
+                transaction.setQuality("");
+                transaction.setQuantity(0L);
+                transaction.setReceptionNumber(0L);
+                transaction.setReceptionStatus("");
+                transaction.setShipmentNumber(0L);
+                transaction.setShipmentStatus("");
+                transaction.setTransactionDescription("Single Location Edited");
+                transaction.setTransactionType("521");
+                transaction.setTransactionGroup("Configuration");
+                transaction.setUnit("");
+                transaction.setVendor("");
+                transaction.setWarehouse(location.getWarehouse());
+                transactionService.add(transaction);
                 locationRepository.save(location);
-                locationNameConstruction.message = "Locations created successfully";
-                log.debug("location: " + location + " created");
             } else {
                 lNC.setMessage("ERROR: Location: " + locationName + " already exists, try with another name");
                 log.error("location: " + locationName + " already exists");

@@ -205,9 +205,12 @@ public class ArticleServiceImpl implements ArticleService{
 
 
     @Override
-    public List<Article> getArticleByAllCriteria(String article_number,String volumeBiggerThan,String volumeLowerThan,String widthBiggerThan,String widthLowerThan,String depthBiggerThan,String depthLowerThan,String heightBiggerThan,String heightLowerThan,String weightBiggerThan,String weightLowerThan,String createdBy,String creationDateFrom,String creationDateTo,String lastUpdateDateFrom,String lastUpdateDateTo,String company) {
+    public List<Article> getArticleByAllCriteria(String article_number,String volumeBiggerThan,String volumeLowerThan,String widthBiggerThan,String widthLowerThan,String depthBiggerThan,String depthLowerThan,String heightBiggerThan,String heightLowerThan,String weightBiggerThan,String weightLowerThan,String createdBy,String creationDateFrom,String creationDateTo,String lastUpdateDateFrom,String lastUpdateDateTo,String company,String articleDescription) {
         if(article_number == null || article_number.equals("")){
             article_number = "%";
+        }
+        if(articleDescription == null || articleDescription.equals("")){
+            articleDescription = "%";
         }
         if(company == null || company.equals("")){
             company = "%";
@@ -279,7 +282,7 @@ public class ArticleServiceImpl implements ArticleService{
         log.error("company" + company);
 
 
-        return articleRepository.getArticleByCriteria(article_number,Double.parseDouble(volumeBiggerThan),Double.parseDouble(volumeLowerThan),Double.parseDouble(widthBiggerThan),Double.parseDouble(widthLowerThan),Double.parseDouble(depthBiggerThan),Double.parseDouble(depthLowerThan),Double.parseDouble(heightBiggerThan),Double.parseDouble(heightLowerThan),Double.parseDouble(weightBiggerThan),Double.parseDouble(weightLowerThan),createdBy,creationDateFrom,creationDateTo,lastUpdateDateFrom,lastUpdateDateTo,company);
+        return articleRepository.getArticleByCriteria(article_number,Double.parseDouble(volumeBiggerThan),Double.parseDouble(volumeLowerThan),Double.parseDouble(widthBiggerThan),Double.parseDouble(widthLowerThan),Double.parseDouble(depthBiggerThan),Double.parseDouble(depthLowerThan),Double.parseDouble(heightBiggerThan),Double.parseDouble(heightLowerThan),Double.parseDouble(weightBiggerThan),Double.parseDouble(weightLowerThan),createdBy,creationDateFrom,creationDateTo,lastUpdateDateFrom,lastUpdateDateTo,company,articleDescription);
     }
 
     @Override
@@ -301,6 +304,7 @@ public class ArticleServiceImpl implements ArticleService{
         articleSearch.setVolumeLowerThan(articleSearching.getVolumeLowerThan());
         articleSearch.setVolumeBiggerThan(articleSearching.getVolumeBiggerThan());
         articleSearch.setCompany(articleSearching.getCompany());
+        articleSearch.setArticleDescription(articleSearching.getArticleDescription());
     }
 
 }

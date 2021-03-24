@@ -32,6 +32,7 @@ public class ArticleSearch {
     public String lastUpdateDateTo;
 
     public String company;
+    public String articleDescription;
 
 
 }
