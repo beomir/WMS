@@ -10,6 +10,7 @@ let locations = document.getElementsByName('locationName');
 let storageZones = document.getElementsByName('storageZone');
 let stockExists = document.getElementsByName('stockExists');
 let articleNumberFromExisted = document.getElementsByName('articleNumberFromExisted');
+
 let articleClasses = document.getElementsByName('articleClasses');
 let articleClassesMixed = document.getElementsByName('articleClassesMixed');
 let multiItem = document.getElementsByName('multiItem');
@@ -18,29 +19,28 @@ let articlesVolume = document.getElementsByName('articlesVolume');
 let articlesWeight = document.getElementsByName('articlesWeight');
 let locationType = document.getElementsByName('locationType');
 let freeSpace = document.getElementsByName('freeSpace');
+
 let freeWeight = document.getElementsByName('freeWeight');
 let locationIsFull = 0;
 let locationIsFullOfWeight = 0;
-
-
 let stockArticleType = document.getElementsByName('stockArticleType');
 let stockArticleNumber = document.getElementsByName('stockArticleNumber');
+
 let articleInformation = document.getElementById('articleInformation');
 let canBeMixed = 0;
-
 let counter;
 let doorLocations;
+
 let locationOccupied;
 let selectedArticleClass;
-
-let selectedArticleClassForMessage;
-
 let selectedArticleClassesMixed;
 let multiItemOnLocation;
+
 let checkedArticleValue;
 let currentLocationType;
 let chosenArticle = document.getElementById('chosenArticle');
 let message = document.getElementById('message');
+
 let currentLocationFreeSpace = document.getElementById('currentLocationFreeSpace');
 let currentLocationFreeWeight = document.getElementById('currentLocationFreeWeight');
 let currentArticleType;
@@ -162,6 +162,7 @@ function checkLocationAvailability(){
             console.log("locationOccupied: " + locationOccupied)
             if(stockExists[i].textContent=="false"){
                 locationOccupied++
+                $("#ifLocationEmpty").hide(500);
             }
         }
     }
@@ -228,6 +229,7 @@ function checkLocationAvailability(){
         $('#articleInformation').css('border', '2px solid');
         $('#articleInformation').css('border-radius', '5px');
         locationNotExistsValue = 1;
+        $("#ifLocationEmpty").hide(500);
     }
     else if(locationOccupied>0){
         if(multiItemOnLocation==1){
@@ -282,6 +284,8 @@ function checkLocationAvailability(){
         $('#articleInformation').css('background-color', 'black');
         $('#articleInformation').css('border', '2px solid');
         $('#articleInformation').css('border-radius', '5px');
+
+        $("#ifLocationEmpty").show(500);
     }
 }
 

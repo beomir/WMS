@@ -58,13 +58,13 @@
 				</select>
 			</section><br/>
 
-			<section class="d-none" name="ifLocationEmpty">
+			<section class="d-none" id="ifLocationEmpty">
 				<label style="color: white;font-weight: bold" th:text="#{app.handleDevice}">Handle Device number</label>
 				<input type="number" th:value="${nextPalletNbr}" name="hd_number" id="hd_number" readonly/>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.piecesQty}">Quantity</label>
-				<input id="piecesQty" type="number" th:field="*{stock.pieces_qty}" min="1" max="6666666" required/>
+				<input id="piecesQty" type="number" th:field="*{stock.pieces_qty}" min="1" th:max="${stock.pieces_qty}" required/>
 			</section>
 			<br/>
 			<section>
