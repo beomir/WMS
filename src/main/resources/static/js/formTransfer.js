@@ -10,6 +10,14 @@ let locations = document.getElementsByName('locationName');
 let storageZones = document.getElementsByName('storageZone');
 let stockExists = document.getElementsByName('stockExists');
 let articleNumberFromExisted = document.getElementsByName('articleNumberFromExisted');
+let createNewPalletNumberInLocation = document.getElementById('createNewPalletNumberInLocation')
+let createNewPalletNumberInLocationCheckbox = document.querySelector("input[name=createNewPalletNumberInLocationCheckbox]")
+let potentialPalletNbr =  new Date().getFullYear() + "00000000000";
+
+let hdNumber = document.getElementsByName('hdNumber')
+let currentPallet;
+let nextPallet = document.getElementById('nextPallet');
+let hd_number = document.getElementById('hd_number');
 
 let articleClasses = document.getElementsByName('articleClasses');
 let articleClassesMixed = document.getElementsByName('articleClassesMixed');
@@ -61,6 +69,22 @@ $('#locationN').on('keyup', function () {
     checkLocationAvailability();
 });
 
+//checkbox createNewPalletNumberInLocation
+createNewPalletNumberInLocationCheckbox.addEventListener('change', function (){
+    if(this.checked){
+        console.log("createNewPalletNumberInLocation checked")
+        $("#hd_number").attr("readonly", false);
+        $("#hd_number").attr("pattern", "[0-9]{18}");
+        $('#hd_number').val(potentialPalletNbr);
+        $('#hd_number').addClass("check");
+    }
+    else{
+        console.log("createNewPalletNumberInLocation unchecked")
+        $('#hd_number').val(currentPallet);
+        $("#hd_number").attr("readonly", true);
+    }
+})
+
 function checkLocationAvailability(){
     doorLocationValue = 0;
     notEnoughSpaceInLocation = 0;
@@ -85,6 +109,8 @@ function checkLocationAvailability(){
             currentArticleType = stockArticleType[i].textContent;
             currentArticle = stockArticleNumber[i].textContent
             currentLocationType = locationType[i].textContent;
+            currentPallet = hdNumber[i].textContent;
+            console.log("currentPallet: " + currentPallet)
             if(multiItem[i].textContent == "false"){
                 multiItemOnLocation = 1;
             }
@@ -163,11 +189,15 @@ function checkLocationAvailability(){
             if(stockExists[i].textContent=="false"){
                 locationOccupied++
                 $("#ifLocationEmpty").hide(500);
+                $("#createNewPalletNumberInLocation").hide(500);
+                $("#createNewPalletNumberInLocationCheckbox").prop( "checked", false );
+                $("#hd_number").attr("readonly", true);
+                $('#hd_number').val(currentPallet);
             }
         }
     }
     if(doorLocations==1){
-        message.innerHTML = "Location exists, but is not possible create stock directly to Door locations";
+        message.innerHTML = "Location exists, but is not possible transfer stock directly to Door locations";
         $('#message').css('color', 'red');
         $('#message').css('background-color', 'black');
         $('#message').css('border', '2px solid');
@@ -186,7 +216,7 @@ function checkLocationAvailability(){
         doorLocationValue = 1;
     }
     else if(locationIsFull==1){
-        message.innerHTML = "You can not add this article with this quantity. Location have not enough space for it";
+        message.innerHTML = "You can not transfer this article with this quantity. Location have not enough space for it";
         $('#message').css('color', 'red');
         $('#message').css('background-color', 'black');
         $('#message').css('border', '2px solid');
@@ -230,6 +260,11 @@ function checkLocationAvailability(){
         $('#articleInformation').css('border-radius', '5px');
         locationNotExistsValue = 1;
         $("#ifLocationEmpty").hide(500);
+        $("#createNewPalletNumberInLocation").hide(500);
+        $("#createNewPalletNumberInLocationCheckbox").prop( "checked", false );
+        $("#hd_number").attr("readonly", true);
+        $('#hd_number').val(currentPallet);
+
     }
     else if(locationOccupied>0){
         if(multiItemOnLocation==1){
@@ -260,7 +295,7 @@ function checkLocationAvailability(){
             classMixingNotAvailable = 1;
         }
         else{
-            message.innerHTML = "Location is occupied and stock can be created here";
+            message.innerHTML = "Location is occupied and stock can be transfer here";
             $('#message').css('color', 'forestgreen');
             $('#message').css('background-color', 'black');
             $('#message').css('border', '2px solid');
@@ -270,11 +305,14 @@ function checkLocationAvailability(){
             $('#articleInformation').css('background-color', 'black');
             $('#articleInformation').css('border', '2px solid');
             $('#articleInformation').css('border-radius', '5px');
+            $("#ifLocationEmpty").show(500);
+            $("#createNewPalletNumberInLocation").show(500);
+            $('#hd_number').val(currentPallet);
         }
 
     }
     else{
-        message.innerHTML = "Location is empty and stock can be created here";
+        message.innerHTML = "Location is empty and stock can be transfer here";
         $('#message').css('color', 'forestgreen');
         $('#message').css('background-color', 'black');
         $('#message').css('border', '2px solid');
@@ -284,8 +322,11 @@ function checkLocationAvailability(){
         $('#articleInformation').css('background-color', 'black');
         $('#articleInformation').css('border', '2px solid');
         $('#articleInformation').css('border-radius', '5px');
-
         $("#ifLocationEmpty").show(500);
+        $("#createNewPalletNumberInLocation").hide(500);
+        $("#createNewPalletNumberInLocationCheckbox").prop( "checked", false );
+        $("#hd_number").attr("readonly", true);
+        $('#hd_number').val(nextPallet.textContent);
     }
 }
 
@@ -298,7 +339,7 @@ function checkAllValidations(){
     console.log(classMixingNotAvailable)
     let qty = document.getElementById("piecesQty").value;
     if(doorLocationValue==1){
-        alert("Location exists, but is not possible create stock directly to Door locations")
+        alert("Location exists, but is not possible transfer stock directly to Door locations")
         returnToPreviousPage();
         return false;
     }

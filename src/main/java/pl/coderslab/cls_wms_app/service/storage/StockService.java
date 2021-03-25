@@ -41,5 +41,7 @@ public interface StockService {
     void sendStock(String company);
 
     void remove(Long id);
+
+    void transfer(Stock stock, String locationName);
 }
 

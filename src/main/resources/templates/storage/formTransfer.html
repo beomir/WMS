@@ -25,7 +25,7 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form method="post" th:action="@{/storage/formStock}">
+		<form method="post" th:action="@{/storage/formTransfer}">
 			<div th:text="#{app.transferFrom} +  ': ' +  ${stock.location.locationName} + ' ' + #{app.to} + ':'" class="titleList">Transfer from location to</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.location}">Location</label><br/>
@@ -57,14 +57,17 @@
 					</option>
 				</select>
 			</section><br/>
-
+			<section class="d-none" id="createNewPalletNumberInLocation">
+				<input id="createNewPalletNumberInLocationCheckbox" name="createNewPalletNumberInLocationCheckbox" type="checkbox">
+				<label style="color: white;font-weight: bold" th:text="#{app.createNewPalletNumberInLocation}"></label>
+			</section>
 			<section class="d-none" id="ifLocationEmpty">
 				<label style="color: white;font-weight: bold" th:text="#{app.handleDevice}">Handle Device number</label>
-				<input type="number" th:value="${nextPalletNbr}" name="hd_number" id="hd_number" readonly/>
+				<input type="text" minlength="18" maxlength="18" name="hd_number" id="hd_number" readonly/>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.piecesQty}">Quantity</label>
-				<input id="piecesQty" type="number" th:field="*{stock.pieces_qty}" min="1" th:max="${stock.pieces_qty}" required/>
+				<input class="check" id="piecesQty" type="number" th:field="*{stock.pieces_qty}" min="1" th:max="${stock.pieces_qty}" required/>
 			</section>
 			<br/>
 			<section>
@@ -83,6 +86,8 @@
 					<td th:if="${i.stockList.empty} == true" name="stockArticleType"></td>
 					<td th:if="${i.stockList.empty} == false" th:each="j : ${i.stockList}" th:text="${j.article.article_number}" name="stockArticleNumber"></td>
 					<td th:if="${i.stockList.empty} == true" name="stockArticleNumber"></td>
+					<td th:if="${i.stockList.empty} == false" th:each="j : ${i.stockList}" th:text="${j.hd_number}" name="hdNumber"></td>
+					<td th:if="${i.stockList.empty} == true" name="hdNumber"></td>
 				</tr>
 				<tr th:each="i : ${articles}">
 					<td th:text="${i.article_number}" name="articleNumberFromExisted"></td>
@@ -94,6 +99,10 @@
 				<tr th:each="k : ${articleTypes}" >
 					<td th:text="${k.articleClass}" name="articleTypesClasses"></td>
 					<td th:text="${k.mixed}" name="mixed"></td>
+				</tr>
+				<tr>
+					<td id="nextPallet" th:text="${nextPalletNbr}"></td>
+					<td id="originPallet" th:text="${stock.hd_number}"></td>
 				</tr>
 			</table>
 		</form>

@@ -249,8 +249,8 @@ public class StockController {
     }
 
     @PostMapping("/storage/formTransfer")
-    public String transferFromFSPost(Stock stock) {
-        stockService.changeStatus(stock);
+    public String transferFromFSPost(Stock stock,String locationN) {
+        stockService.transfer(stock,locationN);
         return "redirect:/stock";
     }
 

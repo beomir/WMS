@@ -74,7 +74,7 @@ public class StockServiceImpl implements StockService {
         location.setFreeWeight(location.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Manual stock creation");
-        transaction.setAdditionalInformation("New stock line created: Article: " + stock.getArticle().getArticle_number() + ", HD number:" + stock.getHd_number() + ", Qty: " + stock.getPieces_qty());
+        transaction.setAdditionalInformation("New stock line created: Article: " + stock.getArticle().getArticle_number() + ", HD number:" + stock.getHd_number() + ", Qty: " + stock.getPieces_qty() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("209");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
@@ -102,7 +102,10 @@ public class StockServiceImpl implements StockService {
         transaction.setTransactionType("202");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
-
+        Location location = locationRepository.findLocationByLocationName(stock.getLocation().getLocationName());
+        location.setFreeSpace(location.getVolume() - stock.getArticle().getVolume() * stock.getPieces_qty());
+        location.setFreeWeight(location.getMaxWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
+        locationRepository.save(location);
         stockRepository.save(stock);
     }
 
@@ -114,8 +117,11 @@ public class StockServiceImpl implements StockService {
         transaction.setTransactionType("203");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
-
+        Location location = locationRepository.findLocationByLocationName(stock.getLocation().getLocationName());
+        location.setFreeSpace(location.getVolume() - stock.getArticle().getVolume() * stock.getPieces_qty());
+        location.setFreeWeight(location.getMaxWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
         stockRepository.save(stock);
+        locationRepository.save(location);
     }
 
     @Override
@@ -246,5 +252,37 @@ public class StockServiceImpl implements StockService {
         stockRepository.deleteById(id);
     }
 
+    @Override
+    public void transfer(Stock stock,String locationNames) {
+
+        Location location = locationRepository.findLocationByLocationName(locationNames);
+        stock.setLocation(location);
+        stock.setUnit(customerUserDetailsService.chosenStockPosition.getUnit());
+        stock.setQuality(customerUserDetailsService.chosenStockPosition.getQuality());
+        stock.setReceptionNumber(customerUserDetailsService.chosenStockPosition.getReceptionNumber());
+        location.setFreeSpace(location.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
+        location.setFreeWeight(location.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
+        Transaction transaction = new Transaction();
+        transaction.setTransactionDescription("Transfer stock");
+        transaction.setAdditionalInformation("Transfer stock from location: " + customerUserDetailsService.chosenStockPosition.getLocation().getLocationName() +  "Article: " + customerUserDetailsService.chosenStockPosition.getArticle().getArticle_number() + ", HD number:" + customerUserDetailsService.chosenStockPosition.getHd_number() + ", Qty: " + customerUserDetailsService.chosenStockPosition.getPieces_qty() + ", to Location: " + stock.getLocation().getLocationName());
+        transaction.setTransactionType("210");
+        transaction.setTransactionGroup("Stock");
+        transaction.setReceptionNumber(customerUserDetailsService.chosenStockPosition.getReceptionNumber());
+        transaction.setArticle(stock.getArticle().getArticle_number());
+        transaction.setQuality(customerUserDetailsService.chosenStockPosition.getQuality());
+        transaction.setUnit(customerUserDetailsService.chosenStockPosition.getUnit().getName());
+        if(stock.getReceptionNumber() != null){
+            transaction.setVendor(receptionRepository.getOneReceptionByReceptionNumber(stock.getReceptionNumber()).getVendor().getName());
+        }
+        transaction.setQuantity(stock.getPieces_qty());
+        transaction.setHdNumber(stock.getHd_number());
+        transaction.setCreated(stock.getCreated());
+        transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+        transaction.setCompany(stock.getCompany());
+        transaction.setWarehouse(stock.getWarehouse());
+        transactionService.add(transaction);
+        stockRepository.save(stock);
+        locationRepository.save(location);
+    }
 }
 
