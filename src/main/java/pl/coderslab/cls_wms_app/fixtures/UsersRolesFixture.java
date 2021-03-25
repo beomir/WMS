@@ -22,7 +22,8 @@ public class UsersRolesFixture {
             new UsersRoles(null, "ROLE_RECEPTION_USER", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to receptions modules within Company","system"),
             new UsersRoles(null, "ROLE_SHIPMENT_USER", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to shipment modules within Company","system"),
             new UsersRoles(null, "ROLE_STOCK_USER", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to stock modules within Company","system"),
-            new UsersRoles(null, "ROLE_ADMIN", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to all options","system")
+            new UsersRoles(null, "ROLE_ADMIN", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access to all options","system"),
+            new UsersRoles(null, "ROLE_SCANNER", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(), true, "User with access only to scanner area","system")
     );
 
     @Autowired

@@ -72,7 +72,7 @@ public class LocationServiceImpl implements LocationService {
         location.setChangeBy(SecurityUtils.usernameForActivations());
         if (locationRepository.findLocationByLocationName(locationName) == null) {
             locationRepository.save(location);
-            lNC.setMessage("Locations created successfully");
+            lNC.setMessage("Locations created successfully. Details saved in transaction");
             log.debug("location: " + location + " created");
             Transaction transaction = new Transaction();
             transaction.setHdNumber(0L);
@@ -90,13 +90,23 @@ public class LocationServiceImpl implements LocationService {
             transaction.setTransactionDescription("Single Location Created");
             transaction.setTransactionType("520");
             transaction.setTransactionGroup("Configuration");
+            transaction.setCompany(companyRepository.getOneCompanyByUsername(SecurityUtils.usernameForActivations()));
             transaction.setUnit("");
             transaction.setVendor("");
             transaction.setWarehouse(location.getWarehouse());
             transactionService.add(transaction);
         } else {
-            lNC.setMessage("ERROR: Location: " + locationName + " already exists, try with another name");
+            lNC.setMessage("ERROR: Location: " + locationName + " already exists, try with another name. Issue log udpated");
             log.error("location: " + locationName + " already exists");
+            IssueLog issueLog = new IssueLog();
+            issueLog.setWarehouse(location.getWarehouse());
+            issueLog.setIssueLogContent("ERROR: Location: " + locationName + " already exists, try with another name");
+            issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+            issueLog.setIssueLogFileName("");
+            issueLog.setIssueLogContent("");
+            issueLog.setIssueLogFilePath("");
+            issueLog.setAdditionalInformation("");
         }
 
     }
@@ -109,13 +119,63 @@ public class LocationServiceImpl implements LocationService {
         location.setChangeBy(SecurityUtils.usernameForActivations());
         try {
             if (location.getId() == locationRepository.findLocationByLocationName(locationName).getId()) {
+                String changes = "Changes after edit: ";
                 Location oldLocation = locationRepository.getOne(location.getId());
-                lNC.setMessage("Locations edited successfully");
+                lNC.setMessage("Locations edited successfully. Details saved in transaction");
                 log.debug("location: " + location + " edited");
                 Transaction transaction = new Transaction();
                 transaction.setHdNumber(0L);
                 //TODO finish transaction for edit location
-                transaction.setAdditionalInformation("Before changes: " + locationName + ", " + oldLocation.getLocationDesc() + " " + " " + " After changes: " + location.getLocationName());
+                if(!oldLocation.getLocationName().equals(location.getLocationName())){
+                    changes = changes + " from: " + oldLocation.getLocationName() + ", to: " + location.getLocationName();
+                }
+                if(!oldLocation.getLocationType().equals(location.getLocationType())){
+                    changes = changes + ",location type from: " + oldLocation.getLocationType() + ", to: " + location.getLocationType();
+                }
+                if(!oldLocation.getStorageZone().getStorageZoneName().equals(location.getStorageZone().getStorageZoneName()) ){
+                    changes = changes + ",storage zone from: " + oldLocation.getStorageZone().getStorageZoneName() + ", to: " + location.getStorageZone().getStorageZoneName();
+                }
+                if(oldLocation.isMultiItem() != location.isMultiItem()){
+                    changes = changes + ",multi item from: " + oldLocation.isMultiItem() + ", to: " + location.isMultiItem();
+                }
+                if(oldLocation.isHdControl() != location.isHdControl()){
+                    changes = changes + ",control HD from: " + oldLocation.isHdControl() + ", to: " + location.isHdControl();
+                }
+                if(oldLocation.isHdControl() != location.isHdControl()){
+                    changes = changes + ",warehouse from: " + oldLocation.getWarehouse().getName() + ", to: " + location.getWarehouse().getName();
+                }
+                if(oldLocation.getMaxWeight() != location.getMaxWeight()){
+                    changes = changes + ",max weight from: " + oldLocation.getMaxWeight() + ", to: " + location.getMaxWeight();
+                    location.setFreeWeight(location.getMaxWeight() - (oldLocation.getMaxWeight()-oldLocation.getFreeWeight()));
+                }
+                else{
+                    location.setFreeWeight(oldLocation.getFreeWeight());
+                }
+                if(oldLocation.getWidth() != location.getWidth()){
+                    changes = changes + ",width from: " + oldLocation.getWidth() + ", to: " + location.getWidth();
+                }
+                if(oldLocation.getDepth() != location.getDepth()){
+                    changes = changes + ",depth from: " + oldLocation.getDepth() + ", to: " + location.getDepth();
+                }
+                if(oldLocation.getHeight() != location.getHeight()){
+                    changes = changes + ",height from: " + oldLocation.getHeight() + ", to: " + location.getHeight();
+                }
+
+                if(oldLocation.isActive() != location.isActive()){
+                    changes = changes + ",active from: " + oldLocation.isActive() + ", to: " + location.isActive();
+                }
+                if(oldLocation.getVolume() != location.getVolume()){
+                    location.setVolume(location.getDepth() * location.getHeight() * location.getWidth());
+                    changes = changes + ",volume from: " + oldLocation.getVolume() + ", to: " + location.getVolume();
+                    location.setFreeSpace(location.getVolume() - (oldLocation.getVolume()-oldLocation.getFreeSpace()));
+                }
+                else{
+                    location.setFreeSpace(oldLocation.getFreeSpace());
+                }
+
+
+
+                transaction.setAdditionalInformation(changes);
                 transaction.setArticle(0L);
                 transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                 transaction.setCreatedBy(SecurityUtils.usernameForActivations());
@@ -131,12 +191,22 @@ public class LocationServiceImpl implements LocationService {
                 transaction.setTransactionGroup("Configuration");
                 transaction.setUnit("");
                 transaction.setVendor("");
+                transaction.setCompany(companyRepository.getOneCompanyByUsername(SecurityUtils.usernameForActivations()));
                 transaction.setWarehouse(location.getWarehouse());
                 transactionService.add(transaction);
                 locationRepository.save(location);
             } else {
-                lNC.setMessage("ERROR: Location: " + locationName + " already exists, try with another name");
+                lNC.setMessage("ERROR: Location: " + locationName + " already exists, try with another name. Issue log udpated");
                 log.error("location: " + locationName + " already exists");
+                IssueLog issueLog = new IssueLog();
+                issueLog.setWarehouse(location.getWarehouse());
+                issueLog.setIssueLogContent("ERROR: Location: " + locationName + " already exists, try with another name");
+                issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                issueLog.setIssueLogFileName("");
+                issueLog.setIssueLogContent("");
+                issueLog.setIssueLogFilePath("");
+                issueLog.setAdditionalInformation("");
             }
         } catch (NullPointerException e) {
             locationRepository.save(location);

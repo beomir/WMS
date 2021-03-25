@@ -48,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/storage", "/storage/**").hasAnyRole("USER", "ADMIN","STOCK_USER")
                 .antMatchers("/config", "/config/**").hasRole("ADMIN")
                 .antMatchers("/user", "/user/**").hasAnyRole("USER","ADMIN")
+                .antMatchers("/scanner", "/scanner/**").hasAnyRole("USER","ADMIN","SCANNER")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedPage("/accessDenied")
