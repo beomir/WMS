@@ -10,7 +10,10 @@ let locations = document.getElementsByName('locationName');
 let storageZones = document.getElementsByName('storageZone');
 let stockExists = document.getElementsByName('stockExists');
 let articleNumberFromExisted = document.getElementsByName('articleNumberFromExisted');
-let createNewPalletNumberInLocation = document.getElementById('createNewPalletNumberInLocation')
+//TODO make an addeventlistiner on piecesQty for set a originPallet.textContent for HD pallet if piecesQty = all Qty on pallet, if less than, nextPallet.textContent or current
+let originPallet = document.getElementById('originPallet')
+let piecesQty = document.getElementById('piecesQty')
+
 let createNewPalletNumberInLocationCheckbox = document.querySelector("input[name=createNewPalletNumberInLocationCheckbox]")
 let potentialPalletNbr =  new Date().getFullYear() + "00000000000";
 
