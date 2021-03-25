@@ -38,6 +38,7 @@ public class LocationServiceImpl implements LocationService {
     private final CompanyRepository companyRepository;
     public AddLocationToStorageZone addLocationToStorageZone;
     int counter = 0;
+    int existedLocationCounter = 0;
     int theSameStorageZone = 0;
     String locationName;
 
@@ -125,7 +126,6 @@ public class LocationServiceImpl implements LocationService {
                 log.debug("location: " + location + " edited");
                 Transaction transaction = new Transaction();
                 transaction.setHdNumber(0L);
-                //TODO finish transaction for edit location
                 if(!oldLocation.getLocationName().equals(location.getLocationName())){
                     changes = changes + " from: " + oldLocation.getLocationName() + ", to: " + location.getLocationName();
                 }
@@ -172,9 +172,6 @@ public class LocationServiceImpl implements LocationService {
                 else{
                     location.setFreeSpace(oldLocation.getFreeSpace());
                 }
-
-
-
                 transaction.setAdditionalInformation(changes);
                 transaction.setArticle(0L);
                 transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
@@ -413,6 +410,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public void createLocationPack(Location location, LocationNameConstruction locationNameConstruction) {
+        existedLocationCounter = 0;
         locationDescription(location);
         if (location.getLocationDesc().contains("door")) {
             int from = parseInt(locationNameConstruction.getThirdSepDoor());
@@ -473,22 +471,29 @@ public class LocationServiceImpl implements LocationService {
                             newLocation.setLocationName(locationNameConstruction.getFirstSepRack() + rackNumber + rackHeight + locationNbr);
                             log.debug("Created location: " + newLocation.getLocationName());
                             createLocationPackIssueLog(location, newLocation);
+
                         }
                     }
                 }
             }
+        }
+        if(existedLocationCounter==0){
+            lNC.message = "Scope of required locations created successfully";
         }
     }
 
     public void createLocationPackIssueLog(Location location, Location newLocation) {
         if (locationRepository.findLocationByLocationName(newLocation.getLocationName()) == null) {
             locationRepository.save(newLocation);
+            log.error("CREATE existedLocationCounter: "  + existedLocationCounter);
 //            log.debug("Location created: " + locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0"));
         } else {
             log.error("Location: " + newLocation.getLocationName() + " already exists and was not created");
             IssueLog issuelog = new IssueLog();
             issuelog.setIssueLogContent("Location: " + newLocation.getLocationName() + ", already exists and was not created");
             lNCMessage(location, issuelog);
+            existedLocationCounter++;
+            log.error("ALREADY IN DB existedLocationCounter: "  + existedLocationCounter);
         }
     }
 
