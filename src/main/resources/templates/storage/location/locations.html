@@ -63,7 +63,9 @@
 						<th th:text="#{app.multiItem}" style="font-weight: bold" class="tables">Multi Item</th>
 						<th th:text="#{app.hdControl}" style="font-weight: bold" class="tables">Hd control</th>
 						<th th:text="#{app.warehouseName}" style="font-weight: bold" class="tables">Warehouse</th>
-						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
+						<th th:text="#{app.occupied}" style="font-weight: bold" class="tables">Occupied</th>
+						<th th:text="#{app.volume}" style="font-weight: bold" class="tables">volume</th>
+						<th th:text="#{app.maxWeight}" style="font-weight: bold" class="tables">maxWeight</th>
 						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
 						<th th:text="#{app.createdBy}" style="font-weight: bold" class="tables">Created By</th>
 					</tr>
@@ -86,7 +88,10 @@
 				        <td th:if="${locations.hdControl == true}" class="tables">Yes</td>
 				        <td th:if="${locations.hdControl == false}" class="tables">No</td>
 				        <td class="tables" th:text="${locations.warehouse.name}"></td>
-						<td class="tables" th:text="${#strings.replace(#strings.substring(locations.created,0,19),'T',' ')}"></td>
+				        <td th:if="${locations.stockList.isEmpty() == true}" class="tables">No</td>
+				        <td th:if="${locations.stockList.isEmpty() == false}" class="tables">Yes</td>
+				        <td class="tables" th:text="${locations.volume}"></td>
+				        <td class="tables" th:text="${locations.maxWeight}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(locations.last_update,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${locations.changeBy}"></td>
 				    </tr>
