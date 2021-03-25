@@ -86,7 +86,7 @@ public class StockServiceImpl implements StockService {
     public void changeStatus(Stock stock) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Status changed on stock");
-        transaction.setAdditionalInformation("Status changed from: " + customerUserDetailsService.chosenStockPosition.getStatus().getStatus() + " on: " + stock.getStatus().getStatus() + " for article: " + stock.getArticle().getArticle_number());
+        transaction.setAdditionalInformation("Status changed from: " + customerUserDetailsService.chosenStockPosition.getStatus().getStatus() + " on: " + stock.getStatus().getStatus() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("201");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
@@ -98,7 +98,7 @@ public class StockServiceImpl implements StockService {
     public void changeArticleNumber(Stock stock) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Article number changed on stock");
-        transaction.setAdditionalInformation("Article number changed from: " + customerUserDetailsService.chosenStockPosition.getArticle().getArticle_number()  + " on: " + stock.getArticle().getArticle_number());
+        transaction.setAdditionalInformation("Article number changed from: " + customerUserDetailsService.chosenStockPosition.getArticle().getArticle_number()  + " on: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("202");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
@@ -110,7 +110,7 @@ public class StockServiceImpl implements StockService {
     public void changeQty(Stock stock) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Quantity changed on stock");
-        transaction.setAdditionalInformation("Quantity changed from: " + customerUserDetailsService.chosenStockPosition.getPieces_qty()  + " on: " + stock.getPieces_qty() + " for article: " + stock.getArticle().getArticle_number());
+        transaction.setAdditionalInformation("Quantity changed from: " + customerUserDetailsService.chosenStockPosition.getPieces_qty()  + " on: " + stock.getPieces_qty() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("203");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
@@ -122,7 +122,7 @@ public class StockServiceImpl implements StockService {
     public void changeQuality(Stock stock) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Quality changed on stock");
-        transaction.setAdditionalInformation("Quality changed from: " + customerUserDetailsService.chosenStockPosition.getQuality()  + " on: " + stock.getQuality() + " for article: " + stock.getArticle().getArticle_number());
+        transaction.setAdditionalInformation("Quality changed from: " + customerUserDetailsService.chosenStockPosition.getQuality()  + " on: " + stock.getQuality() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("204");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
@@ -134,7 +134,7 @@ public class StockServiceImpl implements StockService {
     public void changeUnit(Stock stock) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Unit changed on stock");
-        transaction.setAdditionalInformation("Unit changed from: " + customerUserDetailsService.chosenStockPosition.getUnit().getName()  + " on: " + stock.getUnit().getName() + " for article: " + stock.getArticle().getArticle_number());
+        transaction.setAdditionalInformation("Unit changed from: " + customerUserDetailsService.chosenStockPosition.getUnit().getName()  + " on: " + stock.getUnit().getName() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("205");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
@@ -146,7 +146,7 @@ public class StockServiceImpl implements StockService {
     public void changeComment(Stock stock) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Comment changed");
-        transaction.setAdditionalInformation("Comment changed from: " + customerUserDetailsService.chosenStockPosition.getComment()  + " on: " + stock.getComment() + " for article: " + stock.getArticle().getArticle_number());
+        transaction.setAdditionalInformation("Comment changed from: " + customerUserDetailsService.chosenStockPosition.getComment()  + " on: " + stock.getComment() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("206");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);

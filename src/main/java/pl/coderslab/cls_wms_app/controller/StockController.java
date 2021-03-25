@@ -223,4 +223,35 @@ public class StockController {
         return "redirect:/stock";
     }
 
+    //Transfer From FS
+    @GetMapping("/storage/formTransfer/{id}")
+    public String transferFromFS(@PathVariable Long id, Model model) {
+        List<Article> articles = articleService.getArticle(SecurityUtils.username());
+        model.addAttribute("articles", articles);
+        Stock stock = stockService.findById(id);
+        customerUserDetailsService.chosenStockPosition = stock;
+        model.addAttribute("stock", stock);
+        List<Unit> units = unitService.getUnit();
+        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
+        model.addAttribute("warehouses", warehouses);
+        model.addAttribute("units", units);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("localDateTime", LocalDateTime.now());
+        model.addAttribute("companys", companys);
+        model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
+        List<Location> locations = locationRepository.locations(customerUserDetailsService.chosenWarehouse);
+        model.addAttribute("locations", locations);
+        List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
+        model.addAttribute("articleTypes", articleTypes);
+        model.addAttribute("locationN", stockServiceImpl.locationName);
+        usersService.loggedUserData(model);
+        return "storage/formTransfer";
+    }
+
+    @PostMapping("/storage/formTransfer")
+    public String transferFromFSPost(Stock stock) {
+        stockService.changeStatus(stock);
+        return "redirect:/stock";
+    }
+
 }
