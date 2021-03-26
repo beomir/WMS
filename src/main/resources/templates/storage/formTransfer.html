@@ -45,9 +45,9 @@
 				<input type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
 				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
 				<input type="hidden" th:value="1" id="status" name="status"/>
-				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
-				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
-				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
+<!--				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>-->
+<!--				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>-->
+<!--				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>-->
 			</section>
 
 			<section sec:authorize="hasRole('ROLE_ADMIN')">
@@ -59,9 +59,10 @@
 			</section><br/>
 			<section class="d-none" id="createNewPalletNumberInLocation">
 				<input id="createNewPalletNumberInLocationCheckbox" name="createNewPalletNumberInLocationCheckbox" type="checkbox">
-				<label style="color: white;font-weight: bold" th:text="#{app.createNewPalletNumberInLocation}"></label>
+				<label style="color: white;font-weight: bold" th:text="#{app.addToExistedPalletInLocation}"></label>
 			</section>
 			<section class="d-none" id="ifLocationEmpty">
+				<div id="splitPallet"></div>
 				<label style="color: white;font-weight: bold" th:text="#{app.handleDevice}">Handle Device number</label>
 				<input type="text" minlength="18" maxlength="18" name="hd_number" id="hd_number" readonly/>
 			</section>
@@ -70,6 +71,25 @@
 				<input class="check" id="piecesQty" type="number" th:field="*{stock.pieces_qty}" min="1" th:max="${stock.pieces_qty}" required/>
 			</section>
 			<br/>
+			<section class="d-none">
+				<span id="originCompany" th:text="${stock.company.name}"></span>
+				<input type="hidden" th:field="*{chosenStockPosition.idObj}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.changeByObj}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.articleId}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.commentObj}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.companyId}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.createdObj}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.hd_numberObj}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.locationId}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.qualityObj}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.unitId}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.receptionNumberObj}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.warehouseId}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.statusId}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.last_updateObj}"/>
+				<input id="originalPiecesQty" type="hidden" th:field="*{chosenStockPosition.pieces_qtyObj}"/>
+				<input type="hidden" th:field="*{chosenStockPosition.shipmentNumberObj}"/>
+			</section>
 			<section>
 				<br/><button th:text="#{app.transferr}" class="button" type="submit" onclick="return checkAllValidations()">Save</button>
 			</section>
@@ -88,6 +108,8 @@
 					<td th:if="${i.stockList.empty} == true" name="stockArticleNumber"></td>
 					<td th:if="${i.stockList.empty} == false" th:each="j : ${i.stockList}" th:text="${j.hd_number}" name="hdNumber"></td>
 					<td th:if="${i.stockList.empty} == true" name="hdNumber"></td>
+					<td th:if="${i.stockList.empty} == false" th:each="j : ${i.stockList}" th:text="${j.company.name}" name="companyName"></td>
+					<td th:if="${i.stockList.empty} == true" name="companyName"></td>
 				</tr>
 				<tr th:each="i : ${articles}">
 					<td th:text="${i.article_number}" name="articleNumberFromExisted"></td>

@@ -5,6 +5,8 @@ var locationNotExistsValue;
 var multiItemValueOnLocation;
 var classMixingNotAvailable;
 var nothingFilled = 1;
+let splitPallet = document.getElementById('splitPallet');
+let locationIsEmpty = 0;
 
 let locations = document.getElementsByName('locationName');
 let storageZones = document.getElementsByName('storageZone');
@@ -13,14 +15,18 @@ let articleNumberFromExisted = document.getElementsByName('articleNumberFromExis
 //TODO make an addeventlistiner on piecesQty for set a originPallet.textContent for HD pallet if piecesQty = all Qty on pallet, if less than, nextPallet.textContent or current
 let originPallet = document.getElementById('originPallet')
 let piecesQty = document.getElementById('piecesQty')
+let originalPiecesQty = document.getElementById('originalPiecesQty').value
 
 let createNewPalletNumberInLocationCheckbox = document.querySelector("input[name=createNewPalletNumberInLocationCheckbox]")
 let potentialPalletNbr =  new Date().getFullYear() + "00000000000";
 
 let hdNumber = document.getElementsByName('hdNumber')
 let currentPallet;
-let nextPallet = document.getElementById('nextPallet');
+let companyForPalletToMerge = document.getElementsByName('companyName')
+let currentCompany;
+let originCompany = document.getElementById('originCompany');
 let hd_number = document.getElementById('hd_number');
+let sameCompany = 0;
 
 let articleClasses = document.getElementsByName('articleClasses');
 let articleClassesMixed = document.getElementsByName('articleClassesMixed');
@@ -72,19 +78,49 @@ $('#locationN').on('keyup', function () {
     checkLocationAvailability();
 });
 
+piecesQty.addEventListener('keyup', function() {
+    if(parseInt(document.getElementById('piecesQty').value) < parseInt(originalPiecesQty)){
+
+        $('#hd_number').val(potentialPalletNbr);
+        $("#hd_number").attr("readonly", false);
+        $("#hd_number").attr("pattern", "[0-9]{18}");
+        $('#hd_number').addClass("check");
+        console.log("locationIsEmpty: " + locationIsEmpty)
+        if(sameCompany == 1 || locationIsEmpty == 1){
+            $("#createNewPalletNumberInLocation").show(500);
+            splitPallet.innerHTML = "Less pieces than original. Fill pallet number to split quantity from origin pallet"
+            $('#splitPallet').css('color', 'red');
+            $('#splitPallet').css('background-color', 'black');
+            $('#splitPallet').css('border', '2px solid');
+            $('#splitPallet').css('border-radius', '5px');
+        }
+
+    }
+    else{
+        // $("#ifLocationEmpty").hide(500);
+        // $("#createNewPalletNumberInLocation").hide(500);
+        $('#hd_number').val(originPallet.textContent);
+        splitPallet.innerHTML = "";
+        $('#splitPallet').css('color', 'transparent');
+        $('#splitPallet').css('background-color', 'transparent');
+        console.log("locationIsEmpty: " + locationIsEmpty)
+    }
+})
+
 //checkbox createNewPalletNumberInLocation
 createNewPalletNumberInLocationCheckbox.addEventListener('change', function (){
     if(this.checked){
         console.log("createNewPalletNumberInLocation checked")
-        $("#hd_number").attr("readonly", false);
+        $("#hd_number").attr("readonly", true);
         $("#hd_number").attr("pattern", "[0-9]{18}");
-        $('#hd_number').val(potentialPalletNbr);
+        $('#hd_number').val(currentPallet);
         $('#hd_number').addClass("check");
     }
     else{
         console.log("createNewPalletNumberInLocation unchecked")
-        $('#hd_number').val(currentPallet);
-        $("#hd_number").attr("readonly", true);
+        $('#hd_number').val(potentialPalletNbr);
+        $("#hd_number").attr("readonly", false);
+        $('#hd_number').addClass("check");
     }
 })
 
@@ -113,10 +149,15 @@ function checkLocationAvailability(){
             currentArticle = stockArticleNumber[i].textContent
             currentLocationType = locationType[i].textContent;
             currentPallet = hdNumber[i].textContent;
+            currentCompany = companyForPalletToMerge[i].textContent;
             console.log("currentPallet: " + currentPallet)
             if(multiItem[i].textContent == "false"){
                 multiItemOnLocation = 1;
             }
+            if(originCompany.value == companyForPalletToMerge[i].textContent){
+                sameCompany = 1;
+            }
+            console.log("sameCompany: " + sameCompany)
             currentLocationFreeSpace.innerHTML = "Current free space in location: " + freeSpaceInLocation.toString() + " cm3";
             currentLocationFreeWeight.innerHTML = "Current free weight in location: " + freeWeightInLocation.toString() + " kg";
             for(let j = 0; j < articleNumberFromExisted.length; j++) {
@@ -196,6 +237,7 @@ function checkLocationAvailability(){
                 $("#createNewPalletNumberInLocationCheckbox").prop( "checked", false );
                 $("#hd_number").attr("readonly", true);
                 $('#hd_number').val(currentPallet);
+                locationIsEmpty = 0;
             }
         }
     }
@@ -217,6 +259,7 @@ function checkLocationAvailability(){
         $('#articleInformation').css('border', '2px solid');
         $('#articleInformation').css('border-radius', '5px');
         doorLocationValue = 1;
+        locationIsEmpty = 0;
     }
     else if(locationIsFull==1){
         message.innerHTML = "You can not transfer this article with this quantity. Location have not enough space for it";
@@ -230,6 +273,7 @@ function checkLocationAvailability(){
         $('#articleInformation').css('border', '2px solid');
         $('#articleInformation').css('border-radius', '5px');
         notEnoughSpaceInLocation = 1;
+        locationIsEmpty = 0;
     }
     else if(locationIsFullOfWeight==1){
         message.innerHTML = "You can not add this article with this quantity. Location would be overweight";
@@ -243,6 +287,7 @@ function checkLocationAvailability(){
         $('#articleInformation').css('border', '2px solid');
         $('#articleInformation').css('border-radius', '5px');
         notEnoughWeightInLocation = 1;
+        locationIsEmpty = 0;
     }
     else if(counter == 0){
         message.innerHTML = "Location not exists!";
@@ -267,6 +312,7 @@ function checkLocationAvailability(){
         $("#createNewPalletNumberInLocationCheckbox").prop( "checked", false );
         $("#hd_number").attr("readonly", true);
         $('#hd_number').val(currentPallet);
+        locationIsEmpty = 0;
 
     }
     else if(locationOccupied>0){
@@ -277,6 +323,7 @@ function checkLocationAvailability(){
             $('#message').css('border', '2px solid');
             $('#message').css('border-radius', '5px');
             multiItemValueOnLocation = 1;
+            locationIsEmpty = 0;
         }
         else if(canBeMixed == 1){
             message.innerHTML = "Can't mix selected article ( class: " + selectedArticleClass + " ) in this location ( article: " + currentArticle  + ", class: " + currentArticleType + " )";
@@ -296,6 +343,7 @@ function checkLocationAvailability(){
             $('#currentLocationFreeWeight').css('color', 'transparent');
             $('#currentLocationFreeWeight').css('background-color', 'transparent');
             classMixingNotAvailable = 1;
+            locationIsEmpty = 0;
         }
         else{
             message.innerHTML = "Location is occupied and stock can be transfer here";
@@ -309,8 +357,8 @@ function checkLocationAvailability(){
             $('#articleInformation').css('border', '2px solid');
             $('#articleInformation').css('border-radius', '5px');
             $("#ifLocationEmpty").show(500);
-            $("#createNewPalletNumberInLocation").show(500);
-            $('#hd_number').val(currentPallet);
+            $('#hd_number').val(originPallet.textContent);
+            locationIsEmpty = 0;
         }
 
     }
@@ -329,7 +377,8 @@ function checkLocationAvailability(){
         $("#createNewPalletNumberInLocation").hide(500);
         $("#createNewPalletNumberInLocationCheckbox").prop( "checked", false );
         $("#hd_number").attr("readonly", true);
-        $('#hd_number').val(nextPallet.textContent);
+        $('#hd_number').val(originPallet.textContent);
+        locationIsEmpty = 1;
     }
 }
 

@@ -26,29 +26,28 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form th:object="${stock}" method="post" th:action="@{/storage/formChangeUnit}">
+		<form method="post" th:action="@{/storage/formChangeUnit}">
 			<div class="titleList">Change Unit</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Change unit</label>
-				<select class="select-css" th:field="*{unit}" >
+				<select class="select-css" th:field="*{stock.unit}" >
 					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.description}">
 				</select>
 
-				<input type="hidden" th:field="*{id}"/>
-				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
-				<input type="hidden" th:field="*{created}" />
-				<input type="hidden" th:field="*{hd_number}" />
-				<input type="hidden" th:field="*{pieces_qty}" />
-				<input type="hidden" th:field="*{receptionNumber}" />
-				<input type="hidden" th:field="*{shipmentNumber}" />
-				<input type="hidden" th:field="*{article}" />
-				<input type="hidden" th:field="*{company}" />
-				<input type="hidden" th:field="*{quality}" />
-				<input type="hidden" th:field="*{status}" />
-				<input type="hidden" th:field="*{warehouse}" />
-				<input type="hidden" th:field="*{comment}" />
-				<input type="hidden" th:field="*{location}"/>
-				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
+				<input type="hidden" th:field="*{stock.id}"/>
+				<input type="hidden" th:field="*{stock.created}" />
+				<input type="hidden" th:field="*{stock.hd_number}" />
+				<input type="hidden" th:field="*{stock.pieces_qty}" />
+				<input type="hidden" th:field="*{stock.receptionNumber}" />
+				<input type="hidden" th:field="*{stock.shipmentNumber}" />
+				<input type="hidden" th:field="*{stock.article}" />
+				<input type="hidden" th:field="*{stock.company}" />
+				<input type="hidden" th:field="*{stock.quality}" />
+				<input type="hidden" th:field="*{stock.status}" />
+				<input type="hidden" th:field="*{stock.warehouse}" />
+				<input type="hidden" th:field="*{stock.comment}" />
+				<input type="hidden" th:field="*{stock.location}"/>
+				<input type="hidden" th:field="*{chosenStockPositionalStatus.unitId}"/>
 			</section><br/>
 			<section>
 				<br/><button class="button" type="submit">Save</button>

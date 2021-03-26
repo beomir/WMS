@@ -19,6 +19,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.StatusService;
 import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
+import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 
@@ -41,10 +42,11 @@ public class StockController {
     private final LocationRepository locationRepository;
     private final StockRepository stockRepository;
     private final ArticleTypesRepository articleTypesRepository;
+    private final ChosenStockPositional chosenStockPositional;
 
 
     @Autowired
-    public StockController(StockService stockService, StockServiceImpl stockServiceImpl, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, StockRepository stockRepository, ArticleTypesRepository articleTypesRepository) {
+    public StockController(StockService stockService, StockServiceImpl stockServiceImpl, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, StockRepository stockRepository, ArticleTypesRepository articleTypesRepository, ChosenStockPositional chosenStockPositional) {
         this.stockService = stockService;
         this.stockServiceImpl = stockServiceImpl;
         this.usersService = usersService;
@@ -56,7 +58,7 @@ public class StockController {
         this.unitService = unitService;
         this.customerUserDetailsService = customerUserDetailsService;
         this.locationRepository = locationRepository;
-
+        this.chosenStockPositional = chosenStockPositional;
         this.stockRepository = stockRepository;
         this.articleTypesRepository = articleTypesRepository;
     }
@@ -78,11 +80,13 @@ public class StockController {
         }
     }
 
-//change status
+    //change status
     @GetMapping("/storage/formChangeStatus/{id}")
     public String updateStockChangeStatus(@PathVariable Long id, Model model) {
+        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
         Stock stock = stockService.findById(id);
-        customerUserDetailsService.chosenStockPosition = stock;
+        chosenStockPositionalStatus.setStatusId(stock.getStatus().getId());
+        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
         List<Status> statuses = statusService.getStatus();
         model.addAttribute("statuses", statuses);
         model.addAttribute(stock);
@@ -91,15 +95,17 @@ public class StockController {
     }
 
     @PostMapping("/storage/formChangeStatus")
-    public String updateStockChangeStatusPost(Stock stock) {
-        stockService.changeStatus(stock);
+    public String updateStockChangeStatusPost(Stock stock, ChosenStockPositional chosenStockPositionalStatus) {
+        stockService.changeStatus(stock, chosenStockPositionalStatus);
         return "redirect:/stock";
     }
     //change article number
     @GetMapping("/storage/formChangeArticleNumber/{id}")
     public String updateStockChangeArticleNumber(@PathVariable Long id, Model model) {
+        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
         Stock stock = stockService.findById(id);
-        customerUserDetailsService.chosenStockPosition = stock;
+        chosenStockPositionalStatus.setArticleId(stock.getArticle().getId());
+        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         model.addAttribute("articles", articles);
         model.addAttribute(stock);
@@ -108,8 +114,8 @@ public class StockController {
     }
 
     @PostMapping("/storage/formChangeArticleNumber")
-    public String updateStockChangeArticleNumberPost(Stock stock) {
-        stockService.changeArticleNumber(stock);
+    public String updateStockChangeArticleNumberPost(Stock stock, ChosenStockPositional chosenStockPositionalStatus) {
+        stockService.changeArticleNumber(stock,chosenStockPositionalStatus);
         return "redirect:/stock";
     }
 
@@ -117,16 +123,19 @@ public class StockController {
 
     @GetMapping("/storage/formChangeQty/{id}")
     public String updateStockChangeQuantity(@PathVariable Long id, Model model) {
+        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
         Stock stock = stockService.findById(id);
-        customerUserDetailsService.chosenStockPosition = stock;
+        chosenStockPositionalStatus.setPieces_qtyObj(stock.getPieces_qty());
+        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
         model.addAttribute(stock);
+        log.error("GET chosenStockPositionalStatus: " + chosenStockPositionalStatus);
         usersService.loggedUserData(model);
         return "storage/formChangeQty";
     }
 
     @PostMapping("/storage/formChangeQty")
-    public String updateStockChangeQuantityPost(Stock stock) {
-        stockService.changeQty(stock);
+    public String updateStockChangeQuantityPost(Stock stock, ChosenStockPositional chosenStockPositionalStatus) {
+        stockService.changeQty(stock,chosenStockPositionalStatus);
         return "redirect:/stock";
     }
 
@@ -134,16 +143,18 @@ public class StockController {
 
     @GetMapping("/storage/formChangeQuality/{id}")
     public String updateStockChangeQuality(@PathVariable Long id, Model model) {
+        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
         Stock stock = stockService.findById(id);
-        customerUserDetailsService.chosenStockPosition = stock;
+        chosenStockPositionalStatus.setQualityObj(stock.getQuality());
+        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
         model.addAttribute(stock);
         usersService.loggedUserData(model);
         return "storage/formChangeQuality";
     }
 
     @PostMapping("/storage/formChangeQuality")
-    public String updateStockChangeQualityPost(Stock stock) {
-        stockService.changeQuality(stock);
+    public String updateStockChangeQualityPost(Stock stock, ChosenStockPositional chosenStockPositionalStatus) {
+        stockService.changeQuality(stock,chosenStockPositionalStatus);
         return "redirect:/stock";
     }
 
@@ -151,8 +162,10 @@ public class StockController {
 
     @GetMapping("/storage/formChangeUnit/{id}")
     public String updateStockChangeUnit(@PathVariable Long id, Model model) {
+        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
         Stock stock = stockService.findById(id);
-        customerUserDetailsService.chosenStockPosition = stock;
+        chosenStockPositionalStatus.setUnitId(stock.getUnit().getId());
+        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
         List<Unit> units = unitService.getUnit();
         model.addAttribute("units", units);
         model.addAttribute(stock);
@@ -161,8 +174,8 @@ public class StockController {
     }
 
     @PostMapping("/storage/formChangeUnit")
-    public String updateStockChangeUnitPost(Stock stock) {
-        stockService.changeUnit(stock);
+    public String updateStockChangeUnitPost(Stock stock, ChosenStockPositional chosenStockPositional) {
+        stockService.changeUnit(stock,chosenStockPositional);
         return "redirect:/stock";
     }
 
@@ -170,7 +183,10 @@ public class StockController {
 
     @GetMapping("/formAddComment/{id}")
     public String updateStockAddComment(@PathVariable Long id, Model model) {
+        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
         Stock stock = stockService.findById(id);
+        chosenStockPositionalStatus.setCommentObj(stock.getComment());
+        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
         customerUserDetailsService.chosenStockPosition = stock;
         model.addAttribute(stock);
         usersService.loggedUserData(model);
@@ -178,8 +194,8 @@ public class StockController {
     }
 
     @PostMapping("/formAddComment")
-    public String updateStockAddCommentPost(Stock stock) {
-        stockService.changeComment(stock);
+    public String updateStockAddCommentPost(Stock stock, ChosenStockPositional chosenStockPositional) {
+        stockService.changeComment(stock,chosenStockPositional);
         return "redirect:/stock";
     }
 
@@ -228,9 +244,28 @@ public class StockController {
     public String transferFromFS(@PathVariable Long id, Model model) {
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         model.addAttribute("articles", articles);
+        ChosenStockPositional chosenStockPositional = new ChosenStockPositional();
         Stock stock = stockService.findById(id);
-        customerUserDetailsService.chosenStockPosition = stock;
         model.addAttribute("stock", stock);
+
+        chosenStockPositional.setChangeByObj(stock.getChangeBy());
+        chosenStockPositional.setArticleId(stock.getArticle().getId());
+        chosenStockPositional.setCommentObj(stock.getComment());
+        chosenStockPositional.setCompanyId(stock.getCompany().getId());
+        chosenStockPositional.setCreatedObj(stock.getCreated());
+        chosenStockPositional.setHd_numberObj(stock.getHd_number());
+        chosenStockPositional.setLocationId(stock.getLocation().getId());
+        chosenStockPositional.setQualityObj(stock.getQuality());
+        chosenStockPositional.setUnitId(stock.getUnit().getId());
+        chosenStockPositional.setReceptionNumberObj(stock.getReceptionNumber());
+        chosenStockPositional.setWarehouseId(stock.getWarehouse().getId());
+        chosenStockPositional.setStatusId(stock.getStatus().getId());
+        chosenStockPositional.setLast_updateObj(stock.getLast_update());
+        chosenStockPositional.setPieces_qtyObj(stock.getPieces_qty());
+        chosenStockPositional.setShipmentNumberObj(stock.getShipmentNumber());
+
+        model.addAttribute("chosenStockPosition", chosenStockPositional);
+
         List<Unit> units = unitService.getUnit();
         List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("warehouses", warehouses);
@@ -249,8 +284,8 @@ public class StockController {
     }
 
     @PostMapping("/storage/formTransfer")
-    public String transferFromFSPost(Stock stock,String locationN) {
-        stockService.transfer(stock,locationN);
+    public String transferFromFSPost(Stock stock, String locationN, ChosenStockPositional chosenStockPositional) {
+        stockService.transfer(stock,locationN, chosenStockPositional);
         return "redirect:/stock";
     }
 

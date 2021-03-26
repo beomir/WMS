@@ -6,11 +6,9 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.entity.*;
-import pl.coderslab.cls_wms_app.repository.EmailRecipientsRepository;
-import pl.coderslab.cls_wms_app.repository.LocationRepository;
-import pl.coderslab.cls_wms_app.repository.ReceptionRepository;
-import pl.coderslab.cls_wms_app.repository.StockRepository;
+import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
+import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import java.io.File;
@@ -20,7 +18,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -33,6 +33,9 @@ public class StockServiceImpl implements StockService {
     private final SendEmailService sendEmailService;
     private final EmailRecipientsRepository emailRecipientsRepository;
     private final ReceptionRepository receptionRepository;
+    private final StatusRepository statusRepository;
+    private final UnitRepository unitRepository;
+    private final ArticleRepository articleRepository;
     private final TransactionService transactionService;
     private CustomerUserDetailsService customerUserDetailsService;
     public String locationName;
@@ -40,12 +43,15 @@ public class StockServiceImpl implements StockService {
     public List<Stock> storage = new ArrayList<>();
 
     @Autowired
-    public StockServiceImpl(StockRepository stockRepository, LocationRepository locationRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, TransactionService transactionService, CustomerUserDetailsService customerUserDetailsService) {
+    public StockServiceImpl(StockRepository stockRepository, LocationRepository locationRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, StatusRepository statusRepository, UnitRepository unitRepository, ArticleRepository articleRepository, TransactionService transactionService, CustomerUserDetailsService customerUserDetailsService) {
         this.stockRepository = stockRepository;
         this.locationRepository = locationRepository;
         this.sendEmailService = sendEmailService;
         this.emailRecipientsRepository = emailRecipientsRepository;
         this.receptionRepository = receptionRepository;
+        this.statusRepository = statusRepository;
+        this.unitRepository = unitRepository;
+        this.articleRepository = articleRepository;
         this.transactionService = transactionService;
         this.customerUserDetailsService = customerUserDetailsService;
     }
@@ -83,10 +89,11 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void changeStatus(Stock stock) {
+    public void changeStatus(Stock stock, ChosenStockPositional chosenStockPositional) {
+        log.error("SERVICE chosenStockPosition: " + chosenStockPositional.statusId  );
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Status changed on stock");
-        transaction.setAdditionalInformation("Status changed from: " + customerUserDetailsService.chosenStockPosition.getStatus().getStatus() + " on: " + stock.getStatus().getStatus() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
+        transaction.setAdditionalInformation("Status changed from: " + statusRepository.getStatusById(chosenStockPositional.statusId).getStatus()  + " on: " + stock.getStatus().getStatus() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("201");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
@@ -95,10 +102,10 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void changeArticleNumber(Stock stock) {
+    public void changeArticleNumber(Stock stock, ChosenStockPositional chosenStockPositional) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Article number changed on stock");
-        transaction.setAdditionalInformation("Article number changed from: " + customerUserDetailsService.chosenStockPosition.getArticle().getArticle_number()  + " on: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
+        transaction.setAdditionalInformation("Article number changed from: " + articleRepository.getOne(chosenStockPositional.articleId).getArticle_number()  + " on: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("202");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
@@ -110,10 +117,10 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void changeQty(Stock stock) {
+    public void changeQty(Stock stock, ChosenStockPositional chosenStockPositional) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Quantity changed on stock");
-        transaction.setAdditionalInformation("Quantity changed from: " + customerUserDetailsService.chosenStockPosition.getPieces_qty()  + " on: " + stock.getPieces_qty() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
+        transaction.setAdditionalInformation("Quantity changed from: " + chosenStockPositional.pieces_qtyObj  + " on: " + stock.getPieces_qty() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("203");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
@@ -125,34 +132,32 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void changeQuality(Stock stock) {
+    public void changeQuality(Stock stock, ChosenStockPositional chosenStockPositional) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Quality changed on stock");
-        transaction.setAdditionalInformation("Quality changed from: " + customerUserDetailsService.chosenStockPosition.getQuality()  + " on: " + stock.getQuality() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
+        transaction.setAdditionalInformation("Quality changed from: " + chosenStockPositional.qualityObj  + " on: " + stock.getQuality() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("204");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
-
         stockRepository.save(stock);
     }
 
     @Override
-    public void changeUnit(Stock stock) {
+    public void changeUnit(Stock stock, ChosenStockPositional chosenStockPositional) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Unit changed on stock");
-        transaction.setAdditionalInformation("Unit changed from: " + customerUserDetailsService.chosenStockPosition.getUnit().getName()  + " on: " + stock.getUnit().getName() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
+        transaction.setAdditionalInformation("Unit changed from: " + unitRepository.getOne(chosenStockPositional.getUnitId()).getName()  + " on: " + stock.getUnit().getName() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("205");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
-
         stockRepository.save(stock);
     }
 
     @Override
-    public void changeComment(Stock stock) {
+    public void changeComment(Stock stock, ChosenStockPositional chosenStockPositional) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Comment changed");
-        transaction.setAdditionalInformation("Comment changed from: " + customerUserDetailsService.chosenStockPosition.getComment()  + " on: " + stock.getComment() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
+        transaction.setAdditionalInformation("Comment changed from: " + chosenStockPositional.getCommentObj()  + " on: " + stock.getComment() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("206");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
@@ -245,6 +250,8 @@ public class StockServiceImpl implements StockService {
         transaction.setCreatedBy(SecurityUtils.usernameForActivations());
         transaction.setCompany(stock.getCompany());
         transaction.setWarehouse(stock.getWarehouse());
+        stock.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        stock.setChangeBy(SecurityUtils.usernameForActivations());
     }
 
     @Override
@@ -253,24 +260,27 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void transfer(Stock stock,String locationNames) {
-
+    public void transfer(Stock stock, String locationNames, ChosenStockPositional chosenStockPositional) {
+        //TODO situation when not all pallet content is transfered from location to location
         Location location = locationRepository.findLocationByLocationName(locationNames);
         stock.setLocation(location);
-        stock.setUnit(customerUserDetailsService.chosenStockPosition.getUnit());
-        stock.setQuality(customerUserDetailsService.chosenStockPosition.getQuality());
-        stock.setReceptionNumber(customerUserDetailsService.chosenStockPosition.getReceptionNumber());
+        stock.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()) );
+        stock.setCreated(chosenStockPositional.getCreatedObj());
+        stock.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        stock.setChangeBy(SecurityUtils.usernameForActivations());
+        stock.setQuality(chosenStockPositional.getQualityObj());
+        stock.setReceptionNumber(chosenStockPositional.getReceptionNumberObj());
         location.setFreeSpace(location.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
         location.setFreeWeight(location.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Transfer stock");
-        transaction.setAdditionalInformation("Transfer stock from location: " + customerUserDetailsService.chosenStockPosition.getLocation().getLocationName() +  "Article: " + customerUserDetailsService.chosenStockPosition.getArticle().getArticle_number() + ", HD number:" + customerUserDetailsService.chosenStockPosition.getHd_number() + ", Qty: " + customerUserDetailsService.chosenStockPosition.getPieces_qty() + ", to Location: " + stock.getLocation().getLocationName());
+        transaction.setAdditionalInformation("Transfer stock from location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName()  +  "Article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number()  + ", HD number:" + chosenStockPositional.getHd_numberObj() + ", Qty: " + chosenStockPositional.getPieces_qtyObj() + ", to Location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("210");
         transaction.setTransactionGroup("Stock");
-        transaction.setReceptionNumber(customerUserDetailsService.chosenStockPosition.getReceptionNumber());
+        transaction.setReceptionNumber(chosenStockPositional.getReceptionNumberObj());
         transaction.setArticle(stock.getArticle().getArticle_number());
-        transaction.setQuality(customerUserDetailsService.chosenStockPosition.getQuality());
-        transaction.setUnit(customerUserDetailsService.chosenStockPosition.getUnit().getName());
+        transaction.setQuality(chosenStockPositional.getQualityObj());
+        transaction.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()).getName());
         if(stock.getReceptionNumber() != null){
             transaction.setVendor(receptionRepository.getOneReceptionByReceptionNumber(stock.getReceptionNumber()).getVendor().getName());
         }
