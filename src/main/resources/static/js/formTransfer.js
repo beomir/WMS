@@ -12,10 +12,12 @@ let locations = document.getElementsByName('locationName');
 let storageZones = document.getElementsByName('storageZone');
 let stockExists = document.getElementsByName('stockExists');
 let articleNumberFromExisted = document.getElementsByName('articleNumberFromExisted');
-//TODO make an addeventlistiner on piecesQty for set a originPallet.textContent for HD pallet if piecesQty = all Qty on pallet, if less than, nextPallet.textContent or current
+
 let originPallet = document.getElementById('originPallet')
 let piecesQty = document.getElementById('piecesQty')
 let originalPiecesQty = document.getElementById('originalPiecesQty').value
+let originLocationName = document.getElementById('originLocationName')
+let sameLocation;
 
 let createNewPalletNumberInLocationCheckbox = document.querySelector("input[name=createNewPalletNumberInLocationCheckbox]")
 let potentialPalletNbr =  new Date().getFullYear() + "00000000000";
@@ -86,13 +88,13 @@ piecesQty.addEventListener('keyup', function() {
         $("#hd_number").attr("pattern", "[0-9]{18}");
         $('#hd_number').addClass("check");
         console.log("locationIsEmpty: " + locationIsEmpty)
-        if(sameCompany == 1 || locationIsEmpty == 1){
+        splitPallet.innerHTML = "Less pieces than original. Fill pallet number to split quantity from origin pallet"
+        $('#splitPallet').css('color', 'red');
+        $('#splitPallet').css('background-color', 'black');
+        $('#splitPallet').css('border', '2px solid');
+        $('#splitPallet').css('border-radius', '5px');
+        if(sameCompany == 1){
             $("#createNewPalletNumberInLocation").show(500);
-            splitPallet.innerHTML = "Less pieces than original. Fill pallet number to split quantity from origin pallet"
-            $('#splitPallet').css('color', 'red');
-            $('#splitPallet').css('background-color', 'black');
-            $('#splitPallet').css('border', '2px solid');
-            $('#splitPallet').css('border-radius', '5px');
         }
 
     }
@@ -104,6 +106,9 @@ piecesQty.addEventListener('keyup', function() {
         $('#splitPallet').css('color', 'transparent');
         $('#splitPallet').css('background-color', 'transparent');
         console.log("locationIsEmpty: " + locationIsEmpty)
+        if(sameCompany == 1){
+            $("#createNewPalletNumberInLocation").show(500);
+        }
     }
 })
 
@@ -132,6 +137,7 @@ function checkLocationAvailability(){
     multiItemValueOnLocation = 0;
     classMixingNotAvailable = 0;
     nothingFilled = 0;
+    sameLocation = 0;
 
     counter = 0
     locationOccupied = 0;
@@ -151,11 +157,17 @@ function checkLocationAvailability(){
             currentPallet = hdNumber[i].textContent;
             currentCompany = companyForPalletToMerge[i].textContent;
             console.log("currentPallet: " + currentPallet)
+            console.log("currentCompany: " + currentCompany)
+            console.log("riginCompany.value: " + originCompany.textContent)
             if(multiItem[i].textContent == "false"){
                 multiItemOnLocation = 1;
             }
-            if(originCompany.value == companyForPalletToMerge[i].textContent){
+            if(originCompany.textContent == companyForPalletToMerge[i].textContent){
                 sameCompany = 1;
+            }
+            if(originLocationName.textContent == document.getElementById('locationN').value){
+                console.log("attempt make transfer to origin locarion")
+                sameLocation = 1
             }
             console.log("sameCompany: " + sameCompany)
             currentLocationFreeSpace.innerHTML = "Current free space in location: " + freeSpaceInLocation.toString() + " cm3";
@@ -261,6 +273,13 @@ function checkLocationAvailability(){
         doorLocationValue = 1;
         locationIsEmpty = 0;
     }
+    else if(sameLocation == 1){
+        message.innerHTML = "You can not make a transfer to origin location";
+        $('#message').css('color', 'red');
+        $('#message').css('background-color', 'black');
+        $('#message').css('border', '2px solid');
+        $('#message').css('border-radius', '5px');
+    }
     else if(locationIsFull==1){
         message.innerHTML = "You can not transfer this article with this quantity. Location have not enough space for it";
         $('#message').css('color', 'red');
@@ -359,6 +378,9 @@ function checkLocationAvailability(){
             $("#ifLocationEmpty").show(500);
             $('#hd_number').val(originPallet.textContent);
             locationIsEmpty = 0;
+            if(sameCompany == 1){
+                $("#createNewPalletNumberInLocation").show(500);
+            }
         }
 
     }
@@ -427,6 +449,16 @@ function checkAllValidations(){
     }
     else if(qty==''){
         alert("Quantity field is empty")
+        returnToPreviousPage();
+        return false;
+    }
+    else if(qty==0){
+        alert("Quantity can not be 0")
+        returnToPreviousPage();
+        return false;
+    }
+    else if(sameLocation==1){
+        alert("You can not make a transfer to origin location")
         returnToPreviousPage();
         return false;
     }

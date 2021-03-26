@@ -248,6 +248,7 @@ public class StockController {
         Stock stock = stockService.findById(id);
         model.addAttribute("stock", stock);
 
+        chosenStockPositional.setIdObj(stock.getId());
         chosenStockPositional.setChangeByObj(stock.getChangeBy());
         chosenStockPositional.setArticleId(stock.getArticle().getId());
         chosenStockPositional.setCommentObj(stock.getComment());

@@ -7,6 +7,7 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.*;
+import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
 import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
@@ -37,13 +38,16 @@ public class StockServiceImpl implements StockService {
     private final UnitRepository unitRepository;
     private final ArticleRepository articleRepository;
     private final TransactionService transactionService;
+    private final WarehouseRepository warehouseRepository;
+    private final CompanyRepository companyRepository;
     private CustomerUserDetailsService customerUserDetailsService;
     public String locationName;
+    private IssueLogService issueLogService;
 
     public List<Stock> storage = new ArrayList<>();
 
     @Autowired
-    public StockServiceImpl(StockRepository stockRepository, LocationRepository locationRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, StatusRepository statusRepository, UnitRepository unitRepository, ArticleRepository articleRepository, TransactionService transactionService, CustomerUserDetailsService customerUserDetailsService) {
+    public StockServiceImpl(StockRepository stockRepository, LocationRepository locationRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, StatusRepository statusRepository, UnitRepository unitRepository, ArticleRepository articleRepository, TransactionService transactionService, WarehouseRepository warehouseRepository, CompanyRepository companyRepository, CustomerUserDetailsService customerUserDetailsService, IssueLogService issueLogService) {
         this.stockRepository = stockRepository;
         this.locationRepository = locationRepository;
         this.sendEmailService = sendEmailService;
@@ -53,7 +57,10 @@ public class StockServiceImpl implements StockService {
         this.unitRepository = unitRepository;
         this.articleRepository = articleRepository;
         this.transactionService = transactionService;
+        this.warehouseRepository = warehouseRepository;
+        this.companyRepository = companyRepository;
         this.customerUserDetailsService = customerUserDetailsService;
+        this.issueLogService = issueLogService;
     }
 
     @Override
@@ -261,38 +268,129 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public void transfer(Stock stock, String locationNames, ChosenStockPositional chosenStockPositional) {
-        //TODO situation when not all pallet content is transfered from location to location
-        Location location = locationRepository.findLocationByLocationName(locationNames);
-        stock.setLocation(location);
-        stock.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()) );
-        stock.setCreated(chosenStockPositional.getCreatedObj());
-        stock.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-        stock.setChangeBy(SecurityUtils.usernameForActivations());
-        stock.setQuality(chosenStockPositional.getQualityObj());
-        stock.setReceptionNumber(chosenStockPositional.getReceptionNumberObj());
-        location.setFreeSpace(location.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
-        location.setFreeWeight(location.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
-        Transaction transaction = new Transaction();
-        transaction.setTransactionDescription("Transfer stock");
-        transaction.setAdditionalInformation("Transfer stock from location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName()  +  "Article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number()  + ", HD number:" + chosenStockPositional.getHd_numberObj() + ", Qty: " + chosenStockPositional.getPieces_qtyObj() + ", to Location: " + stock.getLocation().getLocationName());
-        transaction.setTransactionType("210");
-        transaction.setTransactionGroup("Stock");
-        transaction.setReceptionNumber(chosenStockPositional.getReceptionNumberObj());
-        transaction.setArticle(stock.getArticle().getArticle_number());
-        transaction.setQuality(chosenStockPositional.getQualityObj());
-        transaction.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()).getName());
-        if(stock.getReceptionNumber() != null){
-            transaction.setVendor(receptionRepository.getOneReceptionByReceptionNumber(stock.getReceptionNumber()).getVendor().getName());
+        log.error("stock.getPieces_qty(): " + stock.getPieces_qty());
+        log.error("chosenStockPositional.pieces_qtyObj: " +chosenStockPositional.pieces_qtyObj);
+        if(stock.getPieces_qty() < chosenStockPositional.pieces_qtyObj){
+            Location locationForSplittedPallet = locationRepository.findLocationByLocationName(locationNames);
+            locationForSplittedPallet.setFreeSpace(locationForSplittedPallet.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
+            locationForSplittedPallet.setFreeWeight(locationForSplittedPallet.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
+            Stock splittedPallet = new Stock();
+            splittedPallet.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            splittedPallet.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            splittedPallet.setQuality(chosenStockPositional.getQualityObj());
+            splittedPallet.setChangeBy(SecurityUtils.usernameForActivations());
+            splittedPallet.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()));
+            splittedPallet.setReceptionNumber(chosenStockPositional.receptionNumberObj);
+            splittedPallet.setLocation(locationRepository.findLocationByLocationName(locationNames));
+            splittedPallet.setArticle(stock.getArticle());
+            splittedPallet.setWarehouse(warehouseRepository.getOne(chosenStockPositional.getWarehouseId()));
+            splittedPallet.setCompany(companyRepository.getOne(chosenStockPositional.getCompanyId()));
+            splittedPallet.setHd_number(stock.getHd_number());
+            splittedPallet.setPieces_qty(stock.getPieces_qty());
+            splittedPallet.setStatus(statusRepository.getOne(chosenStockPositional.getStatusId()));
+            splittedPallet.setComment(chosenStockPositional.commentObj);
+            stockRepository.save(splittedPallet);
+            locationRepository.save(locationForSplittedPallet);
+
+            Location locationForTheRemainingQuantity = locationRepository.getOne(chosenStockPositional.locationId);
+            Long remainingQuantity = chosenStockPositional.pieces_qtyObj - stock.getPieces_qty();
+            locationForTheRemainingQuantity.setFreeSpace(locationForTheRemainingQuantity.getFreeSpace() + stock.getArticle().getVolume() * stock.getPieces_qty());
+            locationForTheRemainingQuantity.setFreeWeight(locationForTheRemainingQuantity.getFreeWeight() + stock.getArticle().getWeight() * stock.getPieces_qty());
+            Stock remainingStockInLocation = stockRepository.getOne(chosenStockPositional.getIdObj());
+
+            remainingStockInLocation.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            remainingStockInLocation.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            remainingStockInLocation.setQuality(chosenStockPositional.getQualityObj());
+            remainingStockInLocation.setChangeBy(SecurityUtils.usernameForActivations());
+            remainingStockInLocation.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()));
+            remainingStockInLocation.setReceptionNumber(chosenStockPositional.receptionNumberObj);
+            remainingStockInLocation.setLocation(locationForTheRemainingQuantity);
+            remainingStockInLocation.setArticle(stock.getArticle());
+            remainingStockInLocation.setWarehouse(warehouseRepository.getOne(chosenStockPositional.getWarehouseId()));
+            remainingStockInLocation.setCompany(companyRepository.getOne(chosenStockPositional.getCompanyId()));
+            remainingStockInLocation.setHd_number(remainingStockInLocation.getHd_number());
+            remainingStockInLocation.setPieces_qty(remainingQuantity);
+            remainingStockInLocation.setStatus(statusRepository.getOne(chosenStockPositional.getStatusId()));
+            remainingStockInLocation.setComment(chosenStockPositional.commentObj);
+            stockRepository.save(remainingStockInLocation);
+            locationRepository.save(locationForTheRemainingQuantity);
         }
-        transaction.setQuantity(stock.getPieces_qty());
-        transaction.setHdNumber(stock.getHd_number());
-        transaction.setCreated(stock.getCreated());
-        transaction.setCreatedBy(SecurityUtils.usernameForActivations());
-        transaction.setCompany(stock.getCompany());
-        transaction.setWarehouse(stock.getWarehouse());
-        transactionService.add(transaction);
-        stockRepository.save(stock);
-        locationRepository.save(location);
+        else if(stock.getPieces_qty() == chosenStockPositional.pieces_qtyObj){
+            Location location = locationRepository.findLocationByLocationName(locationNames);
+            Location remainingLocation = locationRepository.getOne(chosenStockPositional.locationId);
+            try {
+                Stock stockInDestinationLocation = stockRepository.getStockByLocationName(locationNames);
+                log.error("stockInDestinationLocation.getHd_number(): " + stockInDestinationLocation.getHd_number());
+                log.error("stock.getHd_number(): " + stock.getHd_number());
+                if(stockInDestinationLocation.getHd_number().equals(stock.getHd_number())){
+                    stockInDestinationLocation.setPieces_qty(stockInDestinationLocation.getPieces_qty() + stock.getPieces_qty());
+                    log.error("Qty cumulated for one stock id");
+                    stockRepository.save(stockInDestinationLocation);
+                    stockRepository.delete(stock);
+                }
+                if(!stockInDestinationLocation.getHd_number().equals(stock.getHd_number())){
+                    stock.setLocation(location);
+                    stock.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()) );
+                    stock.setCreated(chosenStockPositional.getCreatedObj());
+                    stock.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                    stock.setChangeBy(SecurityUtils.usernameForActivations());
+                    stock.setQuality(chosenStockPositional.getQualityObj());
+                    stock.setReceptionNumber(chosenStockPositional.getReceptionNumberObj());
+                    log.error("Transfer done for separate pallet numbers");
+                    stockRepository.save(stock);
+                }
+            }
+            catch (NullPointerException e) {
+                stock.setLocation(location);
+                stock.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()) );
+                stock.setCreated(chosenStockPositional.getCreatedObj());
+                stock.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                stock.setChangeBy(SecurityUtils.usernameForActivations());
+                stock.setQuality(chosenStockPositional.getQualityObj());
+                stock.setReceptionNumber(chosenStockPositional.getReceptionNumberObj());
+                log.error("Transfer done for separate pallet numbers");
+                stockRepository.save(stock);
+            }
+            remainingLocation.setFreeSpace(remainingLocation.getFreeSpace() + stock.getArticle().getVolume() * stock.getPieces_qty());
+            remainingLocation.setFreeWeight(remainingLocation.getFreeWeight() + stock.getArticle().getWeight() * stock.getPieces_qty());
+
+            location.setFreeSpace(location.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
+            location.setFreeWeight(location.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
+            locationRepository.save(location);
+            locationRepository.save(remainingLocation);
+
+            Transaction transaction = new Transaction();
+            transaction.setTransactionDescription("Transfer stock");
+            transaction.setAdditionalInformation("Transfer stock from location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName()  +  "Article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number()  + ", HD number:" + chosenStockPositional.getHd_numberObj() + ", Qty: " + chosenStockPositional.getPieces_qtyObj() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames).getLocationName());
+            transaction.setTransactionType("210");
+            transaction.setTransactionGroup("Stock");
+            transaction.setReceptionNumber(chosenStockPositional.getReceptionNumberObj());
+            transaction.setArticle(stock.getArticle().getArticle_number());
+            transaction.setQuality(chosenStockPositional.getQualityObj());
+            transaction.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()).getName());
+            if(stock.getReceptionNumber() != null){
+                transaction.setVendor(receptionRepository.getOneReceptionByReceptionNumber(stock.getReceptionNumber()).getVendor().getName());
+            }
+            transaction.setQuantity(stock.getPieces_qty());
+            transaction.setHdNumber(stock.getHd_number());
+            transaction.setCreated(stock.getCreated());
+            transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+            transaction.setCompany(stock.getCompany());
+            transaction.setWarehouse(stock.getWarehouse());
+            transactionService.add(transaction);
+        }
+        else{
+            IssueLog issueLog = new IssueLog();
+            issueLog.setIssueLogContent("Requested qty to send: " + stock.getPieces_qty() + ", bigger than on pallet: " + chosenStockPositional.pieces_qtyObj);
+            issueLog.setIssueLogFilePath("");
+            issueLog.setIssueLogFileName("");
+            issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+            issueLog.setWarehouse(stock.getWarehouse());
+            issueLog.setAdditionalInformation("Requested qty to send: " + stock.getPieces_qty() + ", bigger than on pallet: " + chosenStockPositional.pieces_qtyObj);
+            issueLogService.add(issueLog);
+        }
+
     }
 }
 
