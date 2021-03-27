@@ -190,15 +190,15 @@
             <span th:text="#{app.receptionMenu}"></span>
             <img id="receptionImg" th:src="@{/images/list.png}" class="right"/>
         </div>
-        <span id="receptionBtn" class="d-none">
+        <div id="receptionBtn" class="d-none">
         <a th:href="@{/reception/formReception}"><div th:text="#{app.declareReception}" class="btn2">Declare Reception</div></a>
         <a th:href="@{/reception/reception}"><div th:text="#{app.checkReceptions}" class="btn2">Check Receptions</div></a>
-            </span>
+            </div>
         <div class="btn3" id="shipment">
             <span th:text="#{app.shipmentMenu}"></span>
             <img id="shipmentImg" th:src="@{/images/list.png}" class="right"/>
         </div>
-        <span id="shipmentBtn" class="d-none">
+        <div id="shipmentBtn" class="d-none">
         <a th:href="@{/shipment/formShipment}"><div th:text="#{app.declareShipment}" class="btn2">Declare Shipment</div></a>
         <a th:href="@{/shipment/shipment}">
             <ol class="btn2"><div th:text="#{app.checkShipment}" style="color: white;font-weight: normal">Check Shipments</div >
@@ -211,7 +211,7 @@
                 </li>
             </ol>
         </a>
-            </span>
+            </div>
         </span>
     </div>
     <script>

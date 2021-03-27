@@ -18,6 +18,8 @@ let piecesQty = document.getElementById('piecesQty')
 let originalPiecesQty = document.getElementById('originalPiecesQty').value
 let originLocationName = document.getElementById('originLocationName')
 let sameLocation;
+let articleInLocation;
+let originArticleNumber = document.getElementById('originArticleNumber')
 
 let createNewPalletNumberInLocationCheckbox = document.querySelector("input[name=createNewPalletNumberInLocationCheckbox]")
 let potentialPalletNbr =  new Date().getFullYear() + "00000000000";
@@ -64,6 +66,7 @@ let currentLocationFreeSpace = document.getElementById('currentLocationFreeSpace
 let currentLocationFreeWeight = document.getElementById('currentLocationFreeWeight');
 let currentArticleType;
 let currentArticle;
+let filledLocation;
 
 //input Pieces
 $('#piecesQty').on('keyup', function (){
@@ -93,6 +96,8 @@ piecesQty.addEventListener('keyup', function() {
         $('#splitPallet').css('background-color', 'black');
         $('#splitPallet').css('border', '2px solid');
         $('#splitPallet').css('border-radius', '5px');
+        console.log("checkedArticleValue + " + checkedArticleValue)
+        console.log("currentArticle + " + currentArticle)
         if(sameCompany == 1){
             $("#createNewPalletNumberInLocation").show(500);
         }
@@ -106,6 +111,8 @@ piecesQty.addEventListener('keyup', function() {
         $('#splitPallet').css('color', 'transparent');
         $('#splitPallet').css('background-color', 'transparent');
         console.log("locationIsEmpty: " + locationIsEmpty)
+        console.log("checkedArticleValue + " + checkedArticleValue)
+        console.log("currentArticle + " + currentArticle)
         if(sameCompany == 1){
             $("#createNewPalletNumberInLocation").show(500);
         }
@@ -156,6 +163,8 @@ function checkLocationAvailability(){
             currentLocationType = locationType[i].textContent;
             currentPallet = hdNumber[i].textContent;
             currentCompany = companyForPalletToMerge[i].textContent;
+
+            filledLocation = document.getElementById('locationN').value
             console.log("currentPallet: " + currentPallet)
             console.log("currentCompany: " + currentCompany)
             console.log("riginCompany.value: " + originCompany.textContent)
@@ -166,7 +175,7 @@ function checkLocationAvailability(){
                 sameCompany = 1;
             }
             if(originLocationName.textContent == document.getElementById('locationN').value){
-                console.log("attempt make transfer to origin locarion")
+                console.log("attempt make transfer to origin location")
                 sameLocation = 1
             }
             console.log("sameCompany: " + sameCompany)
@@ -174,6 +183,7 @@ function checkLocationAvailability(){
             currentLocationFreeWeight.innerHTML = "Current free weight in location: " + freeWeightInLocation.toString() + " kg";
             for(let j = 0; j < articleNumberFromExisted.length; j++) {
                 checkedArticleValue = chosenArticle.options[chosenArticle.selectedIndex].text
+                articleInLocation = articleNumberFromExisted[j].textContent;
                 if(articleNumberFromExisted[j].textContent == checkedArticleValue){
                     selectedArticleClass = articleClasses[j].textContent
                     selectedArticleClassesMixed = articleClassesMixed[j].textContent
@@ -242,6 +252,8 @@ function checkLocationAvailability(){
             console.log("locationIsFull: " + locationIsFull)
             console.log("locationIsFullOfWeight: " + locationIsFullOfWeight)
             console.log("locationOccupied: " + locationOccupied)
+            console.log("articleInLocation: " + originArticleNumber.textContent + " in location: " + originLocationName.textContent)
+            console.log("checkedArticleValue: " + checkedArticleValue + " in filled location: " + filledLocation)
             if(stockExists[i].textContent=="false"){
                 locationOccupied++
                 $("#ifLocationEmpty").hide(500);
@@ -335,7 +347,9 @@ function checkLocationAvailability(){
 
     }
     else if(locationOccupied>0){
-        if(multiItemOnLocation==1){
+        console.log("checkedArticleValue.textContent" + checkedArticleValue)
+        console.log("originArticleNumber.textContent" + originArticleNumber.textContent)
+        if(multiItemOnLocation==1 && checkedArticleValue != originArticleNumber.textContent){
             message.innerHTML = "Can't mix article in this location. Check multiItem value for this location";
             $('#message').css('color', 'red');
             $('#message').css('background-color', 'black');
@@ -381,6 +395,7 @@ function checkLocationAvailability(){
             if(sameCompany == 1){
                 $("#createNewPalletNumberInLocation").show(500);
             }
+            checkIfPartialTransfer()
         }
 
     }
@@ -401,6 +416,76 @@ function checkLocationAvailability(){
         $("#hd_number").attr("readonly", true);
         $('#hd_number').val(originPallet.textContent);
         locationIsEmpty = 1;
+        checkIfPartialTransfer()
+    }
+    piecesQty.addEventListener('keyup', function() {
+        if(parseInt(document.getElementById('piecesQty').value) < parseInt(originalPiecesQty)){
+
+            $('#hd_number').val(potentialPalletNbr);
+            $("#hd_number").attr("readonly", false);
+            $("#hd_number").attr("pattern", "[0-9]{18}");
+            $('#hd_number').addClass("check");
+            console.log("locationIsEmpty: " + locationIsEmpty)
+            splitPallet.innerHTML = "Less pieces than original. Fill pallet number to split quantity from origin pallet"
+            $('#splitPallet').css('color', 'red');
+            $('#splitPallet').css('background-color', 'black');
+            $('#splitPallet').css('border', '2px solid');
+            $('#splitPallet').css('border-radius', '5px');
+            console.log("checkedArticleValue + " + checkedArticleValue)
+            console.log("currentArticle + " + currentArticle)
+            if(sameCompany == 1){
+                $("#createNewPalletNumberInLocation").show(500);
+            }
+
+        }
+        else{
+            // $("#ifLocationEmpty").hide(500);
+            // $("#createNewPalletNumberInLocation").hide(500);
+            $('#hd_number').val(originPallet.textContent);
+            splitPallet.innerHTML = "";
+            $('#splitPallet').css('color', 'transparent');
+            $('#splitPallet').css('background-color', 'transparent');
+            console.log("locationIsEmpty: " + locationIsEmpty)
+            console.log("checkedArticleValue + " + checkedArticleValue)
+            console.log("currentArticle + " + currentArticle)
+            if(sameCompany == 1){
+                $("#createNewPalletNumberInLocation").show(500);
+            }
+        }
+    })
+
+//checkbox createNewPalletNumberInLocation
+    createNewPalletNumberInLocationCheckbox.addEventListener('change', function (){
+        if(this.checked){
+            console.log("createNewPalletNumberInLocation checked")
+            $("#hd_number").attr("readonly", true);
+            $("#hd_number").attr("pattern", "[0-9]{18}");
+            $('#hd_number').val(currentPallet);
+            $('#hd_number').addClass("check");
+        }
+        else{
+            console.log("createNewPalletNumberInLocation unchecked")
+            $('#hd_number').val(potentialPalletNbr);
+            $("#hd_number").attr("readonly", false);
+            $('#hd_number').addClass("check");
+        }
+    })
+}
+
+function checkIfPartialTransfer(){
+    if(parseInt(document.getElementById('piecesQty').value) < parseInt(originalPiecesQty)) {
+        $('#hd_number').val(potentialPalletNbr);
+        $("#hd_number").attr("readonly", false);
+        $("#hd_number").attr("pattern", "[0-9]{18}");
+        $('#hd_number').addClass("check");
+        console.log("locationIsEmpty: " + locationIsEmpty)
+        splitPallet.innerHTML = "Less pieces than original. Fill pallet number to split quantity from origin pallet"
+        $('#splitPallet').css('color', 'red');
+        $('#splitPallet').css('background-color', 'black');
+        $('#splitPallet').css('border', '2px solid');
+        $('#splitPallet').css('border-radius', '5px');
+        console.log("checkedArticleValue + " + checkedArticleValue)
+        console.log("currentArticle + " + currentArticle)
     }
 }
 

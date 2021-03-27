@@ -74,6 +74,7 @@
 			<section class="d-none">
 				<span id="originCompany" th:text="${stock.company.name}"></span>
 				<span id="originLocationName" th:text="${stock.location.locationName}"></span>
+				<span id="originArticleNumber" th:text="${stock.article.article_number}"></span>
 				<input type="hidden" th:field="*{chosenStockPosition.idObj}"/>
 				<input type="hidden" th:field="*{chosenStockPosition.changeByObj}"/>
 				<input type="hidden" th:field="*{chosenStockPosition.articleId}"/>
