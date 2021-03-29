@@ -33,6 +33,7 @@ public class ArticleSearch {
 
     public String company;
     public String articleDescription;
+    public String articleTypes;
 
 
 }

@@ -1168,3 +1168,14 @@ input:invalid.check {
 input:invalid:focus.check {
     background-image: linear-gradient(pink, lightgreen);
 }
+
+.wallpaper {
+    font-size: 1em;
+    color: #fff;
+    background: #0066d4;
+    border: 1px solid #002ed4;
+    padding: .7em 1em;
+    margin-left: 10px;
+    width: 90%;
+    border-radius: 2px;
+}

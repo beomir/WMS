@@ -19,8 +19,8 @@ public class ArticleTypesFixture {
             new ArticleTypes(null, "Chemicals", "Chemicals, can be mixed with: Metal", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system","ChemicalsMetal"),
             new ArticleTypes(null, "Metal", "Metal, can be mixed with: Plastics, Regular,Chemicals,Electronic", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system","ChemicalsMetalPlasticsRegularElectronic"),
             new ArticleTypes(null, "Plastics", "Plastic, can be mixed with: Metal,Regular,Electronic", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system","MetalPlasticsRegularElectronic"),
-            new ArticleTypes(null, "Regular", "Regular, can be mixed with: Regular,Plastic,Electronic", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system","MetalPlasticsRegularElectronic"),
-            new ArticleTypes(null, "Electronic", "Electronic, can be mixed with: Regular,Plastic,Metal", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system","MetalPlasticsRegularElectronic"),
+            new ArticleTypes(null, "Regular", "Regular, can be mixed with: Metal, Regular,Plastic,Electronic", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system","MetalPlasticsRegularElectronic"),
+            new ArticleTypes(null, "Electronic", "Electronic, can be mixed with: Metal, Regular,Plastic", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system","MetalPlasticsRegularElectronic"),
             new ArticleTypes(null, "HighValue", "HighValue, can't be mixed with other classes", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system","HighValue")
     );
 

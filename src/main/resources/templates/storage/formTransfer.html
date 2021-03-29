@@ -23,6 +23,23 @@
 	<div th:include="fragments/stockNavigation :: stockNavigation"></div>
 </div>
 
+<div style="float: right;margin-right: 3%;max-width: 10%;">
+	<form>
+		<section>
+			<input type="checkbox" id="nearbyEmptyLocation"/>
+		<label style="color: white;font-weight: bold" th:text="#{app.nearbyEmptyLocation}"></label>
+			<div class="d-none" id="nearbyEmptyLocationList">
+			</div>
+		</section>
+		<section>
+		<input type="checkbox" id="nearbyAvailableLocation"/>
+		<label style="color: white;font-weight: bold" th:text="#{app.nearbyAvailableLocation}"></label>
+			<div class="d-none" id="nearbyAvailableLocationList">
+			</div>
+		</section>
+	</form>
+</div>
+
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form method="post" th:action="@{/storage/formTransfer}">

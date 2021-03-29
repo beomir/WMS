@@ -91,6 +91,10 @@
 								<th style="color:blue;font-weight: bold" th:text="#{app.articleDescription} + ': '"></th>
 								<th style="color:blue;font-style:italic" th:text="${articleSearch.articleDescription}"></th>
 							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.articleTypes} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.articleTypes}"></th>
+							</tr>
 						</table>
 					</div>
 				<br/><br/>
@@ -153,6 +157,10 @@
 								<th style="color:blue;font-weight: bold" th:text="#{app.height} + ' ' + #{app.to} + ': '"></th>
 								<th style="color:blue;font-style:italic" th:text="${articleSearch.heightLowerThan}"></th>
 							</tr>
+							<tr>
+								<th style="color:blue;font-weight: bold" th:text="#{app.articleTypes} + ': '"></th>
+								<th style="color:blue;font-style:italic" th:text="${articleSearch.articleTypes}"></th>
+							</tr>
 						</table>
 					</div>
 					<br/><br/>
@@ -167,6 +175,7 @@
 						<th  th:text="#{app.depth} + '[cm]'" style="font-weight: bold" class="tables">Depth</th>
 						<th  th:text="#{app.weight} + '[kg]'" style="font-weight: bold" class="tables">Weight</th>
 						<th th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
+						<th th:text="#{app.type}" style="font-weight: bold" class="tables">Type</th>
 						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
 						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
 						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
@@ -189,6 +198,7 @@
 						<td class="tables" th:text="${article.depth}"></td>
 						<td class="tables" th:text="${article.weight}"></td>
 						<td class="tables" th:text="${article.company.name}"></td>
+						<td class="tables" th:text="${article.articleTypes.articleClass}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(article.created,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(article.last_update,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${article.changeBy}"></td>

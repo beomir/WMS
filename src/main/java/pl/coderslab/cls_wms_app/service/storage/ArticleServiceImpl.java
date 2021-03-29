@@ -205,7 +205,7 @@ public class ArticleServiceImpl implements ArticleService{
 
 
     @Override
-    public List<Article> getArticleByAllCriteria(String article_number,String volumeBiggerThan,String volumeLowerThan,String widthBiggerThan,String widthLowerThan,String depthBiggerThan,String depthLowerThan,String heightBiggerThan,String heightLowerThan,String weightBiggerThan,String weightLowerThan,String createdBy,String creationDateFrom,String creationDateTo,String lastUpdateDateFrom,String lastUpdateDateTo,String company,String articleDescription) {
+    public List<Article> getArticleByAllCriteria(String article_number,String volumeBiggerThan,String volumeLowerThan,String widthBiggerThan,String widthLowerThan,String depthBiggerThan,String depthLowerThan,String heightBiggerThan,String heightLowerThan,String weightBiggerThan,String weightLowerThan,String createdBy,String creationDateFrom,String creationDateTo,String lastUpdateDateFrom,String lastUpdateDateTo,String company,String articleDescription,String articleTypes) {
         if(article_number == null || article_number.equals("")){
             article_number = "%";
         }
@@ -217,6 +217,9 @@ public class ArticleServiceImpl implements ArticleService{
         }
         if(createdBy == null || createdBy.equals("")){
             createdBy = "%";
+        }
+        if(articleTypes == null || articleTypes.equals("")){
+            articleTypes = "%";
         }
         if(volumeBiggerThan == null || volumeBiggerThan.equals("")){
             volumeBiggerThan = "0.0";
@@ -282,7 +285,7 @@ public class ArticleServiceImpl implements ArticleService{
         log.error("company" + company);
 
 
-        return articleRepository.getArticleByCriteria(article_number,Double.parseDouble(volumeBiggerThan),Double.parseDouble(volumeLowerThan),Double.parseDouble(widthBiggerThan),Double.parseDouble(widthLowerThan),Double.parseDouble(depthBiggerThan),Double.parseDouble(depthLowerThan),Double.parseDouble(heightBiggerThan),Double.parseDouble(heightLowerThan),Double.parseDouble(weightBiggerThan),Double.parseDouble(weightLowerThan),createdBy,creationDateFrom,creationDateTo,lastUpdateDateFrom,lastUpdateDateTo,company,articleDescription);
+        return articleRepository.getArticleByCriteria(article_number,Double.parseDouble(volumeBiggerThan),Double.parseDouble(volumeLowerThan),Double.parseDouble(widthBiggerThan),Double.parseDouble(widthLowerThan),Double.parseDouble(depthBiggerThan),Double.parseDouble(depthLowerThan),Double.parseDouble(heightBiggerThan),Double.parseDouble(heightLowerThan),Double.parseDouble(weightBiggerThan),Double.parseDouble(weightLowerThan),createdBy,creationDateFrom,creationDateTo,lastUpdateDateFrom,lastUpdateDateTo,company,articleDescription,articleTypes);
     }
 
     @Override
@@ -305,6 +308,7 @@ public class ArticleServiceImpl implements ArticleService{
         articleSearch.setVolumeBiggerThan(articleSearching.getVolumeBiggerThan());
         articleSearch.setCompany(articleSearching.getCompany());
         articleSearch.setArticleDescription(articleSearching.getArticleDescription());
+        articleSearch.setArticleTypes(articleSearching.getArticleTypes());
     }
 
 }

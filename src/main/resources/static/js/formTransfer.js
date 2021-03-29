@@ -7,6 +7,7 @@ var classMixingNotAvailable;
 var nothingFilled = 1;
 let splitPallet = document.getElementById('splitPallet');
 let locationIsEmpty = 0;
+let iterator;
 
 let locations = document.getElementsByName('locationName');
 let storageZones = document.getElementsByName('storageZone');
@@ -67,6 +68,251 @@ let currentLocationFreeWeight = document.getElementById('currentLocationFreeWeig
 let currentArticleType;
 let currentArticle;
 let filledLocation;
+
+let nearbyEmptyLocation = document.getElementById('nearbyEmptyLocation')
+let foundEmptyNearbyLocationQty;
+let nearbyEmptyLocationList = document.getElementById('nearbyEmptyLocationList')
+let nearbyAvailableLocation = document.getElementById('nearbyAvailableLocation')
+let foundAvailableNearbyLocationQty;
+let nearbyAvailableLocationList = document.getElementById('nearbyAvailableLocationList')
+let originLocationId;
+
+
+nearbyAvailableLocation.addEventListener('change',function(){
+    if(this.checked){
+        nearbyAvailableLocationList.innerHTML = "";
+        foundAvailableNearbyLocationQty = 0;
+
+        for(let q = 0; q < storageZones.length; q++){
+            if(originLocationName.textContent == locations[q].textContent){
+                originLocationId = q;
+                break
+            }
+        }
+        for(let i = originLocationId; i < storageZones.length; i++) {
+            if (foundAvailableNearbyLocationQty == 2) {
+                break;
+            }
+            iterator = i;
+            locationOccupied = 0;
+            multiItemOnLocation = 0;
+            sameCompany = 0;
+            sameLocation = 0;
+            canBeMixed = 0;
+
+            console.log("started")
+                let freeSpaceInLocation = freeSpace[i].textContent
+                let freeWeightInLocation = freeWeight[i].textContent
+                currentArticleType = stockArticleType[i].textContent;
+                currentArticle = stockArticleNumber[i].textContent
+                currentLocationType = locationType[i].textContent;
+                currentPallet = hdNumber[i].textContent;
+                currentCompany = companyForPalletToMerge[i].textContent;
+                filledLocation = document.getElementById('locationN').value
+                if (multiItem[i].textContent == "false") {
+                    multiItemOnLocation = 1;
+                    console.log("multiitem")
+                }
+                if (originCompany.textContent == companyForPalletToMerge[i].textContent) {
+                    sameCompany = 1;
+                    console.log("company")
+                }
+                if (originLocationName.textContent == document.getElementById('locationN').value) {
+                    sameLocation = 1
+                    console.log("location")
+                }
+                for (let j = 0; j < articleNumberFromExisted.length; j++) {
+                    checkedArticleValue = chosenArticle.options[chosenArticle.selectedIndex].text
+                    articleInLocation = articleNumberFromExisted[j].textContent;
+                    console.log("article")
+                    if (articleNumberFromExisted[j].textContent == checkedArticleValue) {
+                        selectedArticleClass = articleClasses[j].textContent
+                        selectedArticleClassesMixed = articleClassesMixed[j].textContent
+                        if (currentLocationType == "RDL" || currentLocationType == "SDL") {
+                            doorLocations = 1;
+                            console.log("doorLocations")
+                        } else {
+                            doorLocations = 0;
+                            let volumeOfArticleToAdd = piecesQty * articlesVolume[j].textContent;
+                            let weightOfArticleToAdd = piecesQty * articlesWeight[j].textContent;
+                            if (!selectedArticleClassesMixed.includes(currentArticleType)) {
+                                canBeMixed = 1;
+                            } else if (freeSpaceInLocation < volumeOfArticleToAdd) {
+                                locationIsFull = 1;
+                                locationIsFullOfWeight = 0;
+                                canBeMixed = 0;
+                                console.log("freeSpaceInLocation")
+                            } else if (freeWeightInLocation < weightOfArticleToAdd) {
+                                locationIsFullOfWeight = 1;
+                                locationIsFull = 0;
+                                canBeMixed = 0;
+                                console.log("freeWeightInLocation")
+                            } else {
+                                locationIsFull = 0;
+                                locationIsFullOfWeight = 0;
+                                canBeMixed = 0
+                            }
+                        }
+                    }
+                }
+            console.log("multiItemOnLocation: " + multiItemOnLocation)
+            console.log("stockExists[i].textContent: " + stockExists[i].textContent)
+            console.log("checkedArticleValue: " + checkedArticleValue)
+            console.log("currentArticle: " + currentArticle)
+            console.log("originArticleNumber.textContent: " + originArticleNumber.textContent)
+            console.log("canBeMixed: " + canBeMixed)
+            console.log("locations[i].textContent: " + locations[i].textContent)
+            if(stockExists[i].textContent=="false") {
+                locationOccupied++
+            }
+            console.log("locationOccupied: " + locationOccupied)
+            nearbyAvailablePartialOccupiedLocationsAdd();
+
+        }
+
+        for(let i = originLocationId; i >= 0; i--) {
+            if (foundAvailableNearbyLocationQty == 2) {
+                break;
+            }
+            iterator = i;
+            locationOccupied = 0;
+            multiItemOnLocation = 0;
+            sameCompany = 0;
+            sameLocation = 0;
+            canBeMixed = 0;
+            console.log("started2")
+            let freeSpaceInLocation = freeSpace[i].textContent
+            let freeWeightInLocation = freeWeight[i].textContent
+            currentArticleType = stockArticleType[i].textContent;
+            currentArticle = stockArticleNumber[i].textContent
+            currentLocationType = locationType[i].textContent;
+            currentPallet = hdNumber[i].textContent;
+            currentCompany = companyForPalletToMerge[i].textContent;
+            filledLocation = document.getElementById('locationN').value
+            if (multiItem[i].textContent == "false") {
+                multiItemOnLocation = 1;
+            }
+            if (originCompany.textContent == companyForPalletToMerge[i].textContent) {
+                sameCompany = 1;
+            }
+            if (originLocationName.textContent == document.getElementById('locationN').value) {
+                sameLocation = 1
+            }
+            for (let j = 0; j < articleNumberFromExisted.length; j++) {
+                checkedArticleValue = chosenArticle.options[chosenArticle.selectedIndex].text
+                articleInLocation = articleNumberFromExisted[j].textContent;
+                if (articleNumberFromExisted[j].textContent == checkedArticleValue) {
+                    selectedArticleClass = articleClasses[j].textContent
+                    selectedArticleClassesMixed = articleClassesMixed[j].textContent
+                    if (currentLocationType == "RDL" || currentLocationType == "SDL") {
+                        doorLocations = 1;
+                    } else {
+                        doorLocations = 0;
+                        let volumeOfArticleToAdd = piecesQty * articlesVolume[j].textContent;
+                        let weightOfArticleToAdd = piecesQty * articlesWeight[j].textContent;
+                        if (!selectedArticleClassesMixed.includes(currentArticleType)) {
+                            canBeMixed = 1;
+                        } else if (freeSpaceInLocation < volumeOfArticleToAdd) {
+                            locationIsFull = 1;
+                            locationIsFullOfWeight = 0;
+                            canBeMixed = 0;
+                        } else if (freeWeightInLocation < weightOfArticleToAdd) {
+                            locationIsFullOfWeight = 1;
+                            locationIsFull = 0;
+                            canBeMixed = 0;
+                        } else {
+                            locationIsFull = 0;
+                            locationIsFullOfWeight = 0;
+                            canBeMixed = 0
+
+                        }
+                    }
+                }
+            }
+            console.log("multiItemOnLocation: " + multiItemOnLocation)
+            console.log("stockExists[i].textContent: " + stockExists[i].textContent)
+            console.log("checkedArticleValue: " + checkedArticleValue)
+            console.log("currentArticle: " + currentArticle)
+            console.log("originArticleNumber.textContent: " + originArticleNumber.textContent)
+            console.log("canBeMixed: " + canBeMixed)
+            console.log("locations[i].textContent: " + locations[i].textContent)
+            console.log("originLocationName.textContent: " + originLocationName.textContent)
+            if (stockExists[i].textContent == "false") {
+                locationOccupied++
+            }
+            console.log("locationOccupied: " + locationOccupied)
+            nearbyAvailablePartialOccupiedLocationsAdd();
+        }
+
+        console.log("nearbyAvailableLocationList: " + nearbyAvailableLocationList)
+        console.log("nearbyAvailableLocationList.textContent: " + nearbyAvailableLocationList.textContent)
+        if(nearbyAvailableLocationList.textContent ==""){
+            nearbyAvailableLocationList.innerHTML = "Can not find available, partially-occupied locations"
+        }
+        $("#nearbyAvailableLocationList").addClass("wallpaper")
+        $("#nearbyAvailableLocationList").show(500);
+        console.log("nearbyAvailableLocationList checkbox checked")
+    }
+    else{
+        $("#nearbyAvailableLocationList").hide(500);
+        console.log("nearbyAvailableLocationList checkbox unchecked")
+    }
+})
+
+nearbyEmptyLocation.addEventListener('change',function(){
+    if(this.checked) {
+        nearbyEmptyLocationList.innerHTML = "";
+        foundEmptyNearbyLocationQty = 0;
+        for (let i = 0; i < storageZones.length; i++) {
+            console.log("originLocationName " + originLocationName.textContent)
+            console.log("locations[i].textContent " + locations[i].textContent)
+            if (originLocationName.textContent == locations[i].textContent) {
+                originLocationId = i;
+                break;
+            }
+        }
+        for (let j = originLocationId; j >= 0; j--) {
+            console.log("stockExists[j].textContent: " + stockExists[j].textContent)
+            console.log("loop down " + locations[j].textContent)
+            if (stockExists[j].textContent == "true" && locationType[j].textContent != "RDL" && locationType[j].textContent != "SDL") {
+                foundEmptyNearbyLocationQty++
+                console.log("foundEmptyNearbyLocationQty " + foundEmptyNearbyLocationQty)
+                nearbyEmptyLocationList.append(locations[j].textContent);
+                let br = document.createElement("br")
+                nearbyEmptyLocationList.append(br);
+                if (foundEmptyNearbyLocationQty == 2) {
+                    break;
+                }
+            }
+        }
+        for (let j = originLocationId; j < storageZones.length; j++) {
+            console.log("stockExists[j].textContent: " + stockExists[j].textContent)
+            console.log("loop up " + locations[j].textContent)
+            if (stockExists[j].textContent == "true" && locationType[j].textContent != "RDL" && locationType[j].textContent != "SDL") {
+                foundEmptyNearbyLocationQty++
+                console.log("foundEmptyNearbyLocationQty " + foundEmptyNearbyLocationQty)
+                nearbyEmptyLocationList.append(locations[j].textContent);
+                let br = document.createElement("br")
+                nearbyEmptyLocationList.append(br);
+                if (foundEmptyNearbyLocationQty == 2) {
+                    break;
+                }
+            }
+        }
+        console.log("nearbyEmptyLocationList: " + nearbyEmptyLocationList)
+        console.log("nearbyEmptyLocationList.textContent: " + nearbyEmptyLocationList.textContent)
+        if(nearbyEmptyLocationList.textContent==""){
+            nearbyEmptyLocationList.innerHTML = "Can not find empty location"
+        }
+        $("#nearbyEmptyLocationList").addClass("wallpaper")
+        $("#nearbyEmptyLocationList").show(500);
+        console.log("nearbyEmptyLocation checkbox checked")
+    }
+    else{
+        $("#nearbyEmptyLocationList").hide(500);
+        console.log("nearbyEmptyLocation checkbox unchecked")
+    }
+})
 
 //input Pieces
 $('#piecesQty').on('keyup', function (){
@@ -129,10 +375,18 @@ createNewPalletNumberInLocationCheckbox.addEventListener('change', function (){
         $('#hd_number').addClass("check");
     }
     else{
-        console.log("createNewPalletNumberInLocation unchecked")
-        $('#hd_number').val(potentialPalletNbr);
-        $("#hd_number").attr("readonly", false);
-        $('#hd_number').addClass("check");
+        if(parseInt(document.getElementById('piecesQty').value) < parseInt(originalPiecesQty)){
+            console.log("createNewPalletNumberInLocation unchecked")
+            $('#hd_number').val(potentialPalletNbr);
+            $("#hd_number").attr("readonly", false);
+            $('#hd_number').addClass("check");
+        }
+        else if(parseInt(document.getElementById('piecesQty').value) == parseInt(originalPiecesQty)){
+            console.log("createNewPalletNumberInLocation unchecked")
+            $('#hd_number').val(originPallet.textContent);
+            $("#hd_number").attr("readonly", false);
+            $('#hd_number').addClass("check");
+        }
     }
 })
 
@@ -145,7 +399,7 @@ function checkLocationAvailability(){
     classMixingNotAvailable = 0;
     nothingFilled = 0;
     sameLocation = 0;
-
+    sameCompany = 0;
     counter = 0
     locationOccupied = 0;
     multiItemOnLocation = 0;
@@ -253,7 +507,9 @@ function checkLocationAvailability(){
             console.log("locationIsFullOfWeight: " + locationIsFullOfWeight)
             console.log("locationOccupied: " + locationOccupied)
             console.log("articleInLocation: " + originArticleNumber.textContent + " in location: " + originLocationName.textContent)
-            console.log("checkedArticleValue: " + checkedArticleValue + " in filled location: " + filledLocation)
+            console.log("currentArticle(ArticleInSelectedLocation: " + currentArticle + " in filled location: " + filledLocation)
+            console.log("multiItemOnLocation: " + multiItemOnLocation )
+            console.log("originArticleNumber: " + originArticleNumber.textContent )
             if(stockExists[i].textContent=="false"){
                 locationOccupied++
                 $("#ifLocationEmpty").hide(500);
@@ -348,8 +604,8 @@ function checkLocationAvailability(){
     }
     else if(locationOccupied>0){
         console.log("checkedArticleValue.textContent" + checkedArticleValue)
-        console.log("originArticleNumber.textContent" + originArticleNumber.textContent)
-        if(multiItemOnLocation==1 && checkedArticleValue != originArticleNumber.textContent){
+        console.log("currentArticle" + currentArticle)
+        if(multiItemOnLocation==1 && checkedArticleValue != currentArticle){
             message.innerHTML = "Can't mix article in this location. Check multiItem value for this location";
             $('#message').css('color', 'red');
             $('#message').css('background-color', 'black');
@@ -464,10 +720,18 @@ function checkLocationAvailability(){
             $('#hd_number').addClass("check");
         }
         else{
-            console.log("createNewPalletNumberInLocation unchecked")
-            $('#hd_number').val(potentialPalletNbr);
-            $("#hd_number").attr("readonly", false);
-            $('#hd_number').addClass("check");
+            if(parseInt(document.getElementById('piecesQty').value) < parseInt(originalPiecesQty)){
+                console.log("createNewPalletNumberInLocation unchecked")
+                $('#hd_number').val(potentialPalletNbr);
+                $("#hd_number").attr("readonly", false);
+                $('#hd_number').addClass("check");
+            }
+            else if(parseInt(document.getElementById('piecesQty').value) == parseInt(originalPiecesQty)){
+                console.log("createNewPalletNumberInLocation unchecked")
+                $('#hd_number').val(originPallet.textContent);
+                $("#hd_number").attr("readonly", false);
+                $('#hd_number').addClass("check");
+            }
         }
     })
 }
@@ -551,4 +815,26 @@ function checkAllValidations(){
 }
 function returnToPreviousPage() {
     window.history.forward(-1)
+}
+
+function nearbyAvailablePartialOccupiedLocationsAdd(){
+    if (locationOccupied > 0 && canBeMixed == 0 && originLocationName.textContent != locations[iterator].textContent) {
+        if (multiItemOnLocation == 1 && checkedArticleValue == currentArticle) {
+            foundAvailableNearbyLocationQty++
+            console.log("foundAvailableNearbyLocationQty " + foundAvailableNearbyLocationQty)
+            console.log("locations[i].textContent: " + locations[iterator].textContent)
+            document.getElementById('nearbyAvailableLocationList').append(locations[iterator].textContent);
+            let br = document.createElement("br")
+            document.getElementById('nearbyAvailableLocationList').append(br);
+        }
+        else if(multiItemOnLocation == 0){
+            foundAvailableNearbyLocationQty++
+            console.log("foundAvailableNearbyLocationQty " + foundAvailableNearbyLocationQty)
+            console.log("locations[i].textContent: " + locations[iterator].textContent)
+
+            document.getElementById('nearbyAvailableLocationList').append(locations[iterator].textContent);
+            let br = document.createElement("br")
+            document.getElementById('nearbyAvailableLocationList').append(br);
+        }
+    }
 }

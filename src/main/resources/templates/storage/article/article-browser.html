@@ -42,6 +42,14 @@
 				<label th:text="#{app.createdBy}" style="color: white;font-weight: bold">created by</label>
 				<input type="text" title="Alpha value" th:field="*{createdBy}"/>
 			</section>
+			<section>
+				<label th:text="#{app.articleTypes}" style="color: white;font-weight: bold"></label>
+				<select class="select-css" th:field="*{articleTypes}">
+					<option th:value="'%'">All</option>
+					<option th:each="i : ${articleTypes}" th:value="${i.articleClass}" th:text="${i.articleClass}">
+					</option>
+				</select>
+			</section>
 			<table  class="locationPack">
 				<tbody>
 				<tr>
