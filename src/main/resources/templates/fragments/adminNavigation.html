@@ -132,6 +132,15 @@
             <img id="configImg" th:src="@{/images/list.png}" class="right"/>
         </div>
         <span id="configBtn" class="d-none">
+        <a th:href="@{/config/extremely}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.extremely}" style="color: white;font-weight: normal">extremely</div>
+                 <li style="min-width: 100%;">
+                    <ul>
+                        <li><a th:text="#{app.addExtremely}" th:href="@{/config/formExtremelyCreation}">Create extremely</a></li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
         <a th:href="@{/user/scheduler}" style="min-width: 100%">
             <ol class="btn2"><div th:text="#{app.scheduler}" style="color: white;font-weight: normal">Scheduler</div>
                 <li style="min-width: 100%;">

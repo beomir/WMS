@@ -30,7 +30,7 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     @Query("Select s from Stock s where s.id = ?1")
     Stock getStockById(Long id);
-//TODO think about List
+
     @Query("Select s from Stock s where s.location.locationName = ?1 ")
     Stock getStockByLocationName(String locationName);
 

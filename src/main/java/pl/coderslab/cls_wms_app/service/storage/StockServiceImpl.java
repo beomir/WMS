@@ -452,7 +452,7 @@ public class StockServiceImpl implements StockService {
 
     }
 
-    //TODO check length of transactiondescription content
+
     void partialTransfer(Stock stock, String locationNames, ChosenStockPositional chosenStockPositional, Stock stockInDestinationLocation, Transaction transaction) {
         if (stockInDestinationLocation.getHd_number().equals(stock.getHd_number()) && stockInDestinationLocation.getArticle().getArticle_number() == stock.getArticle().getArticle_number()) {
             stockInDestinationLocation.setPieces_qty(stockInDestinationLocation.getPieces_qty() + stock.getPieces_qty());
@@ -539,7 +539,7 @@ public class StockServiceImpl implements StockService {
         }
     }
 
-    //TODO check length of transactiondescription content
+
     void fullTransfer(Stock stock, String locationNames, ChosenStockPositional chosenStockPositional, Stock stockInDestinationLocation, Transaction transaction) {
         Location location = locationRepository.findLocationByLocationName(locationNames);
         log.error("stockInDestinationLocation.getHd_number(): " + stockInDestinationLocation.getHd_number());
