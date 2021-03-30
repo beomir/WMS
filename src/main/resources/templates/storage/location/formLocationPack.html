@@ -112,7 +112,8 @@
 				<div style="color: white;font-weight: bold" id="floorLocationSimulation"></div><br/><br/>
 
 			</section>
-			<div style="color: white;font-weight: bold"><span th:text="#{app.maxLocationsQtyToCreateParameter} + ' '"></span><span id="maxLocationValue"></span></div>
+			<div sec:authorize="hasRole('ROLE_ADMIN')"  th:title="#{app.maxLocationsQtyToCreateParameterInfoAdmin}" style="color: white;font-weight: bold"><span  th:text="#{app.maxLocationsQtyToCreateParameter} + ' '"></span><a style="color: white" th:href="@{/config/extremely}"><span  id="maxLocationValue"></span></a></div>
+			<div sec:authorize="!hasRole('ROLE_ADMIN')" th:title="#{app.maxLocationsQtyToCreateParameterInfoUser}" style="color: white;font-weight: bold"><span th:text="#{app.maxLocationsQtyToCreateParameter} + ' '"></span><span id="maxLocationValue"></span></div>
 			<section>
 				<label th:text="#{app.locationType}" style="color: white;font-weight: bold">Location type</label>
 				<select id="selectId" class="select-css" th:field="*{location.locationType}">
