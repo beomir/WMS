@@ -70,8 +70,6 @@ public class ExtremelyController {
         return "redirect:/config/extremely";
     }
 
-
-
     @GetMapping("/deleteExtremely/{id}")
     public String removeExtremely(@PathVariable Long id) {
         extremelyService.delete(id);

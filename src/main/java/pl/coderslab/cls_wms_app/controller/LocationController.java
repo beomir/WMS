@@ -10,6 +10,7 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
+import pl.coderslab.cls_wms_app.repository.ExtremelyRepository;
 import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.repository.StockRepository;
 import pl.coderslab.cls_wms_app.repository.StorageZoneRepository;
@@ -35,9 +36,10 @@ public class LocationController {
     private final AddLocationToStorageZone addLocationToStorageZone;
     private final LocationRepository locationRepository;
     private final StockRepository stockRepository;
+    private final ExtremelyRepository extremelyRepository;
 
     @Autowired
-    public LocationController(LocationService locationService, UsersService usersService, WarehouseService warehouseService, StorageZoneRepository storageZoneRepository, LocationSearch locationSearch, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, LocationRepository locationRepository, StockRepository stockRepository) {
+    public LocationController(LocationService locationService, UsersService usersService, WarehouseService warehouseService, StorageZoneRepository storageZoneRepository, LocationSearch locationSearch, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, LocationRepository locationRepository, StockRepository stockRepository, ExtremelyRepository extremelyRepository) {
         this.locationService = locationService;
         this.usersService = usersService;
         this.warehouseService = warehouseService;
@@ -47,6 +49,7 @@ public class LocationController {
         this.addLocationToStorageZone = addLocationToStorageZone;
         this.locationRepository = locationRepository;
         this.stockRepository = stockRepository;
+        this.extremelyRepository = extremelyRepository;
     }
 
 
@@ -163,6 +166,7 @@ public class LocationController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("location", new Location());
         model.addAttribute("locationNameConstruction", new LocationNameConstruction());
+        model.addAttribute("extremelyValue",extremelyRepository.listCheckLocationScopeMax("%","Location Scope"));
         usersService.loggedUserData(model);
         return "storage/location/formLocationPack";
     }

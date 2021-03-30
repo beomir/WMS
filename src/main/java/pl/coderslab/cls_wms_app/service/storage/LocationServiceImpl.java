@@ -9,10 +9,7 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.IssueLog;
 import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.Transaction;
-import pl.coderslab.cls_wms_app.repository.CompanyRepository;
-import pl.coderslab.cls_wms_app.repository.LocationRepository;
-import pl.coderslab.cls_wms_app.repository.StorageZoneRepository;
-import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
+import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
 import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
@@ -37,13 +34,14 @@ public class LocationServiceImpl implements LocationService {
     private final TransactionService transactionService;
     private final CompanyRepository companyRepository;
     public AddLocationToStorageZone addLocationToStorageZone;
+    private ExtremelyRepository extremelyRepository;
     int counter = 0;
     int existedLocationCounter = 0;
     int theSameStorageZone = 0;
     String locationName;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC, IssueLogService issueLogService, StorageZoneRepository storageZoneRepository, WarehouseRepository warehouseRepository, TransactionService transactionService, CompanyRepository companyRepository, AddLocationToStorageZone addLocationToStorageZone) {
+    public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC, IssueLogService issueLogService, StorageZoneRepository storageZoneRepository, WarehouseRepository warehouseRepository, TransactionService transactionService, CompanyRepository companyRepository, AddLocationToStorageZone addLocationToStorageZone, ExtremelyRepository extremelyRepository) {
         this.locationRepository = locationRepository;
         this.locationSearch = locationSearch;
         this.lNC = lNC;
@@ -53,6 +51,7 @@ public class LocationServiceImpl implements LocationService {
         this.transactionService = transactionService;
         this.companyRepository = companyRepository;
         this.addLocationToStorageZone = addLocationToStorageZone;
+        this.extremelyRepository = extremelyRepository;
     }
 
     @Override
@@ -410,13 +409,34 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public void createLocationPack(Location location, LocationNameConstruction locationNameConstruction) {
+        int maxQtyOfLocationsToCreate = 0;
+        boolean extremelyValueSetup = true;
+        try{
+             maxQtyOfLocationsToCreate = parseInt(extremelyRepository.checkLocationScopeMax(location.getWarehouse().getName(),"Location Scope").getExtremelyValue());
+        }
+        catch (NumberFormatException e){
+            log.error("maxQtyOfLocationsToCreate value(table extremely, extremelyValue ) : " + maxQtyOfLocationsToCreate + " can not parse to int");
+            IssueLog issueLog = new IssueLog();
+            issueLog.setIssueLogContent("Extremely value: " + maxQtyOfLocationsToCreate + " can not parse to int");
+            maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
+            maxQtyOfLocationsToCreate = 0;
+
+        }
+        catch (NullPointerException ex){
+            log.error("Extremely value is not setup for: " + location.getWarehouse().getName() +" warehouse");
+            IssueLog issueLog = new IssueLog();
+            issueLog.setIssueLogContent("Extremely value is not setup for: " + location.getWarehouse().getName() +" warehouse");
+            maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
+            maxQtyOfLocationsToCreate = 0;
+            extremelyValueSetup = false;
+        }
         existedLocationCounter = 0;
         locationDescription(location);
         if (location.getLocationDesc().contains("door")) {
             int from = parseInt(locationNameConstruction.getThirdSepDoor());
             int to = parseInt(locationNameConstruction.getThirdSepDoorTo());
             int locationsRange = to - from;
-            if (locationsRange > 0) {
+            if (locationsRange > 0 && maxQtyOfLocationsToCreate >= locationsRange) {
                 for (int i = from; i <= to; i++) {
                     Location newLocation = new Location();
                     newLocation.setLocationName(locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0"));
@@ -425,14 +445,26 @@ public class LocationServiceImpl implements LocationService {
                     newLocation.setHdControl(true);
                     createLocationPackIssueLog(location, newLocation);
                 }
-            } else {
+            } else if(maxQtyOfLocationsToCreate < locationsRange){
+                log.error("Extremly value: " + maxQtyOfLocationsToCreate + " is lower than location range or extremelyValue is not a number check issueLog");
+                if(extremelyValueSetup == true){
+                    IssueLog issueLog = new IssueLog();
+                    issueLog.setIssueLogContent("Exteremly value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremlyValue is not a number");
+                    maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
+                    maxQtyOfLocationsToCreate = 0;
+                }
+            }
+            else{
                 log.error("ERROR: location range: " + locationsRange + " lower than 1");
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent("ERROR: location range: " + locationsRange + " lower than 1");
+                maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
             }
         } else if (location.getLocationDesc().contains("floor")) {
             int from = parseInt(locationNameConstruction.getSecondSepFloor());
             int to = parseInt(locationNameConstruction.getSecondSepFloorTo());
             int locationsRange = to - from;
-            if (locationsRange > 0) {
+            if (locationsRange > 0 && maxQtyOfLocationsToCreate >= locationsRange) {
                 for (int i = from; i <= to; i++) {
                     Location newLocation = new Location();
                     newLocation.setLocationName(locationNameConstruction.getFirstSepFloor() + StringUtils.leftPad(Integer.toString(i), 8, "0"));
@@ -440,8 +472,20 @@ public class LocationServiceImpl implements LocationService {
                     log.debug("Location created: " + locationNameConstruction.getFirstSepFloor() + StringUtils.leftPad(Integer.toString(i), 8, "0"));
                     createLocationPackIssueLog(location, newLocation);
                 }
-            } else {
+            } else if(maxQtyOfLocationsToCreate < locationsRange){
+                log.error("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
+                if(extremelyValueSetup == true) {
+                    IssueLog issueLog = new IssueLog();
+                    issueLog.setIssueLogContent("Extremly value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
+                    maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
+                    maxQtyOfLocationsToCreate = 0;
+                }
+            }
+            else{
                 log.error("ERROR: location range: " + locationsRange + " lower than 1");
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent("ERROR: location range: " + locationsRange + " lower than 1");
+                maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
             }
         } else {
             int rackNumberFrom = parseInt(locationNameConstruction.getSecondSepRack());
@@ -456,7 +500,7 @@ public class LocationServiceImpl implements LocationService {
             int locationNumberTo = parseInt(locationNameConstruction.getFourthSepRackTo());
             int locationNumberRange = locationNumberTo - locationNumberFrom;
 
-            if (rackNumberRange >= 0 && rackHeightRange >= 0 && locationNumberRange >= 0) {
+            if (rackNumberRange >= 0 && rackHeightRange >= 0 && locationNumberRange >= 0 && maxQtyOfLocationsToCreate >= rackNumberRange * rackHeightRange * locationNumberRange) {
                 for (int i = rackNumberFrom; i <= rackNumberTo; i++) {
                     String rackNumber;
                     String rackHeight;
@@ -471,15 +515,41 @@ public class LocationServiceImpl implements LocationService {
                             newLocation.setLocationName(locationNameConstruction.getFirstSepRack() + rackNumber + rackHeight + locationNbr);
                             log.debug("Created location: " + newLocation.getLocationName());
                             createLocationPackIssueLog(location, newLocation);
-
                         }
                     }
                 }
             }
+            else if(maxQtyOfLocationsToCreate < rackNumberRange * rackHeightRange * locationNumberRange){
+                log.error("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range + " + rackNumberRange * rackHeightRange * locationNumberRange + " or extremlyValue is not a number");
+                if(extremelyValueSetup == true) {
+                    IssueLog issueLog = new IssueLog();
+                    issueLog.setIssueLogContent("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range or extremelyValue is not a number check issueLog");
+                    maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
+                    maxQtyOfLocationsToCreate = 0;
+                }
+            }
         }
-        if(existedLocationCounter==0){
+        log.error("maxQtyOfLocationsToCreate in main method: " + maxQtyOfLocationsToCreate);
+        log.error("extremelyValueSetup: " + extremelyValueSetup);
+        if(extremelyValueSetup == false){
+            lNC.message = "Extremely value for warehouse: " + location.getWarehouse().getName() + " is not setup, check issue log";
+        }
+        else if(maxQtyOfLocationsToCreate == 0){
+            lNC.message = "Locations were not created because required scope was bigger than parameter setup in extremely configuration screen or extremely Value is not a number check issueLog";
+        }
+        else if(existedLocationCounter==0){
             lNC.message = "Scope of required locations created successfully";
         }
+    }
+
+    private void maxQtyOfLocationToCreateLowerThanLocationRange(Location location, IssueLog issueLog) {
+        issueLog.setCreated(LocalDateTime.now().toString());
+        issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+        issueLog.setIssueLogFilePath("");
+        issueLog.setIssueLogFileName("");
+        issueLog.setWarehouse(location.getWarehouse());
+        issueLog.setAdditionalInformation("");
+        issueLogService.add(issueLog);
     }
 
     public void createLocationPackIssueLog(Location location, Location newLocation) {

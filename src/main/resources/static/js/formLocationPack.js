@@ -1,4 +1,5 @@
 
+let extremelyValueToCheck;
 //rackLocations
 let rackFirstSep = document.getElementById("rackFirstSep")
 
@@ -51,6 +52,15 @@ function calculateRackLocations(){
     }
 
     rackLocationSimulation.innerHTML = sumOfLocationToCreate
+
+    if(sumOfLocationToCreate > extremelyValueToCheck ){
+        $("#rackLocationSimulation").css({'color' : 'red'})
+        $("#maxLocationValue").css({'color' : 'red'})
+    }
+    else{
+        $("#rackLocationSimulation").css({'color' : 'white'})
+        $("#maxLocationValue").css({'color' : 'white'})
+    }
 }
 //doorLocations
 let doorThirdSep = document.getElementById("doorThirdSep")
@@ -65,8 +75,17 @@ doorThirdSep.addEventListener("keyup", function () {
     if(firstRangeDoor<0){
         firstRangeDoor = 0;
     }
-
+    console.log("extremelyValueToCheck" + extremelyValueToCheck)
     doorLocationSimulation.innerHTML = firstRangeDoor;
+    if(firstRangeDoor > extremelyValueToCheck ){
+        $("#doorLocationSimulation").css({'color' : 'red'})
+        $("#maxLocationValue").css({'color' : 'red'})
+    }
+    else{
+        $("#doorLocationSimulation").css({'color' : 'white'})
+        $("#maxLocationValue").css({'color' : 'white'})
+    }
+
 });
 
 doorThirdSepTo.addEventListener("keyup", function () {
@@ -76,6 +95,14 @@ doorThirdSepTo.addEventListener("keyup", function () {
         firstRangeDoor = 0;
     }
     doorLocationSimulation.innerHTML = firstRangeDoor;
+    if(firstRangeDoor > extremelyValueToCheck ){
+        $("#doorLocationSimulation").css({'color' : 'red'})
+        $("#maxLocationValue").css({'color' : 'red'})
+    }
+    else{
+        $("#doorLocationSimulation").css({'color' : 'white'})
+        $("#maxLocationValue").css({'color' : 'white'})
+    }
 });
 
 
@@ -92,6 +119,14 @@ floorFirstSep.addEventListener("keyup", function () {
         firstRangeFloor = 0;
     }
     floorLocationSimulation.innerHTML = firstRangeFloor;
+    if(firstRangeFloor > extremelyValueToCheck ){
+        $("#floorLocationSimulation").css({'color' : 'red'})
+        $("#maxLocationValue").css({'color' : 'red'})
+    }
+    else{
+        $("#floorLocationSimulation").css({'color' : 'white'})
+        $("#maxLocationValue").css({'color' : 'white'})
+    }
 });
 floorSecondSepTo.addEventListener("keyup", function () {
     let firstRangeFloor = parseInt(document.getElementById("floorSecondSepTo").value) - parseInt(document.getElementById("floorSecondSep").value) +1
@@ -100,6 +135,14 @@ floorSecondSepTo.addEventListener("keyup", function () {
         firstRangeFloor = 0;
     }
     floorLocationSimulation.innerHTML = firstRangeFloor;
+    if(firstRangeFloor > extremelyValueToCheck ){
+        $("#floorLocationSimulation").css({'color' : 'red'})
+        $("#maxLocationValue").css({'color' : 'red'})
+    }
+    else{
+        $("#floorLocationSimulation").css({'color' : 'white'})
+        $("#maxLocationValue").css({'color' : 'white'})
+    }
 });
 
 
@@ -222,6 +265,49 @@ $('#width,#height,#depth').on('keyup', function (){
 
 })
 
+
+let extremelyWarehouseValue = document.getElementsByName('extremelyWarehouseValue')
+let extremelyValue = document.getElementsByName('extremelyValue')
+let maxLocationValue = document.getElementById('maxLocationValue')
+
+let chosenWarehouse = document.getElementById('chosenWarehouse');
+console.log(chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+
+chosenWarehouse.addEventListener('change', function() {
+    for(let i = 0; i < extremelyValue.length; i++ ){
+        console.log("extremelyWarehouseValue[i].textContent: " +extremelyWarehouseValue[i].textContent)
+        console.log("chosenWarehouse.options[chosenWarehouse.selectedIndex].text: " +chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+        if(extremelyWarehouseValue[i].textContent == chosenWarehouse.options[chosenWarehouse.selectedIndex].text){
+            maxLocationValue.innerHTML = extremelyWarehouseValue[i].textContent + ":  " +  extremelyValue[i].textContent
+            extremelyValueToCheck = extremelyValue[i].textContent
+            console.log("done")
+        }
+        else{
+            maxLocationValue.innerHTML = "not set for warehouse: " + chosenWarehouse.options[chosenWarehouse.selectedIndex].text;
+        }
+    }
+    console.log(chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+})
+
+function extremelyMaxLocationsCreateValue(){
+    for(let i = 0; i < extremelyValue.length; i++ ){
+        console.log("extremelyWarehouseValue[i].textContent: " +extremelyWarehouseValue[i].textContent)
+        console.log("chosenWarehouse.options[chosenWarehouse.selectedIndex].text: " +chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+        if(extremelyWarehouseValue[i].textContent == chosenWarehouse.options[chosenWarehouse.selectedIndex].text){
+            maxLocationValue.innerHTML =  extremelyWarehouseValue[i].textContent + ":  " +  extremelyValue[i].textContent
+            extremelyValueToCheck = extremelyValue[i].textContent
+            console.log("done")
+        }
+        else{
+            maxLocationValue.innerHTML = "not set for warehouse: " + extremelyWarehouseValue[i].textContent;
+        }
+    }
+    console.log(chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+}
+
+
+
+
 function checkValidation(){
     let width = document.getElementById('width').value;
     let height = document.getElementById('height').value;
@@ -256,3 +342,4 @@ function checkValidation(){
 function returnToPreviousPage() {
     window.history.forward(-1)
 }
+
