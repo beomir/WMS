@@ -63,11 +63,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedPage("/accessDenied")
                 .and()
                 .formLogin()
-                .loginPage("/index")
-                .permitAll()
                 .usernameParameter("username") // username
                 .passwordParameter("password") // password
+                .loginPage("/index")
                 .successHandler(authenticationSuccessHandler)
+                .permitAll()
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
