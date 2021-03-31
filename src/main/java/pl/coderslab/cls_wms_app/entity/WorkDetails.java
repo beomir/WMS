@@ -51,18 +51,6 @@ public class WorkDetails {
     @ManyToOne
     private Location toLocation;
 
-    public WorkDetails(Long id, Long workNumber, String workDescription, String workType,String handle, Long hdNumber, Long piecesQty, boolean status, String created, String last_update, String changeBy) {
-        this.id = id;
-        this.workNumber = workNumber;
-        this.workDescription = workDescription;
-        this.workType = workType;
-        this.handle = handle;
-        this.hdNumber = hdNumber;
-        this.piecesQty = piecesQty;
-        this.status = status;
-        this.created = created;
-        this.last_update = last_update;
-        this.changeBy = changeBy;
-    }
+
 
 }
