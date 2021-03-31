@@ -15,7 +15,7 @@
 	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
 
 </head>
-<body onload="logo()">
+<body onload="logo();extremelyMaxLocationsCreateValue()">
 <div class="main-agileits">
 	<div th:include="fragments/header :: header"></div>
 </div>
@@ -66,7 +66,8 @@
 				</table>
 
 				<label th:text="#{app.simNumOfLoc}" style="color: white;font-style: italic">Simulation number of location to create</label>
-				<div style="color: white;font-weight: bold" id="rackLocationSimulation"></div><br/><br/>
+				<div style="color: white;font-weight: bold" id="rackLocationSimulation"></div>
+				<br/><br/>
 			</section>
 			<section  id="doorLocation">
 				<span th:text="#{app.doorLocation}" style="color: white;font-weight: bold">Door Location</span><br/>
@@ -88,7 +89,8 @@
 				</table>
 
 				<label th:text="#{app.simNumOfLoc}" style="color: white;font-style: italic">Simulation number of location to create</label>
-				<div style="color: white;font-weight: bold" id="doorLocationSimulation"></div><br/><br/>
+				<div style="color: white;font-weight: bold" id="doorLocationSimulation"></div>
+				<br/><br/>
 			</section>
 			<section id="floorLocation">
 				<span th:text="#{app.floorLocation}" style="color: white;font-weight: bold">Floor Location</span><br/>
@@ -108,7 +110,10 @@
 				</table>
 				<label th:text="#{app.simNumOfLoc}" style="color: white;font-style: italic">Simulation number of location to create</label>
 				<div style="color: white;font-weight: bold" id="floorLocationSimulation"></div><br/><br/>
+
 			</section>
+			<div sec:authorize="hasRole('ROLE_ADMIN')"  th:title="#{app.maxLocationsQtyToCreateParameterInfoAdmin}" style="color: white;font-weight: bold"><span  th:text="#{app.maxLocationsQtyToCreateParameter} + ' '"></span><a style="color: white" th:href="@{/config/extremely}"><span  id="maxLocationValue"></span></a></div>
+			<div sec:authorize="!hasRole('ROLE_ADMIN')" th:title="#{app.maxLocationsQtyToCreateParameterInfoUser}" style="color: white;font-weight: bold"><span th:text="#{app.maxLocationsQtyToCreateParameter} + ' '"></span><span id="maxLocationValue"></span></div>
 			<section>
 				<label th:text="#{app.locationType}" style="color: white;font-weight: bold">Location type</label>
 				<select id="selectId" class="select-css" th:field="*{location.locationType}">
@@ -142,16 +147,41 @@
 			</section>
 			<section>
 				<label th:text="#{app.warehouseName}" style="color: white;font-weight: bold">Warehouses</label>
-				<select class="select-css" th:field="*{location.warehouse}">
+				<select id="chosenWarehouse" class="select-css" th:field="*{location.warehouse}">
 					<option th:each="i : ${warehouses}" th:value="${i.id}" th:text="${i.name}">
 					</option>
-				</select>
+				</select><br/>
 			</section>
 			<section>
-				<br/><button th:text="#{app.save}" class="button" type="submit">Save</button>
+				<label th:text="#{app.maxWeight}" style="color: white;font-weight: bold">Max weight</label>
+				<input class="check" required id="weight" th:field="*{location.maxWeight}" type="text" pattern="[0-9].{0,}" />
+			</section>
+			<section>
+				<label th:text="#{app.depth}" style="color: white;font-weight: bold">Volume</label>
+				<input class="check" required id="depth" th:field="*{location.depth}" type="text" pattern="[0-9].{0,}" />
+			</section>
+			<section>
+				<label th:text="#{app.width}" style="color: white;font-weight: bold">Volume</label>
+				<input  class="check" required id="width" th:field="*{location.width}" type="text" pattern="[0-9].{0,}"  />
+			</section>
+			<section>
+				<label th:text="#{app.height}" style="color: white;font-weight: bold">Volume</label>
+				<input class="check" required id="height" th:field="*{location.height}" type="text" pattern="[0-9].{0,}"  />
+				<div id="volume"></div>
+			</section>
+			<section>
+				<br/><button th:text="#{app.save}" class="button" type="submit" onclick="return checkValidation()">Save</button>
 			</section>
 		</form>
 	</div>
+	<section class="d-none">
+		<table>
+			<tr  th:each="i : ${extremelyValue}" >
+				<td name="extremelyValue" th:text="${i.extremelyValue}"></td>
+				<td name="extremelyWarehouseValue" th:text="${i.warehouse.name}"></td>
+			</tr>
+		</table>
+	</section>
 
 	<div th:include="fragments/footer :: footer"></div>
 
@@ -163,6 +193,7 @@
 <script type="text/javascript" th:src="@{/js/logo.js}"></script>
 <script type="text/javascript" th:src="@{/js/formLocationPack.js}"></script>
 <script>
+
 
 </script>
 

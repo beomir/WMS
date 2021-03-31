@@ -36,7 +36,6 @@ public class WarehouseController {
 
     @GetMapping("/warehouse")
     public String list(Model model) {
-        System.out.println(customerUserDetailsService.chosenWarehouse);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         List<Users> users = usersService.getUsers();
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -55,8 +54,6 @@ public class WarehouseController {
         customerUserDetailsService.chosenWarehouse = id;
         return "redirect:/stock";
     }
-
-
 
 
     @GetMapping("/config/warehouseList")

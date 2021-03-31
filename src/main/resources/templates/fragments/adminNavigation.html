@@ -84,6 +84,10 @@
                 </li>
             </ol>
         </a>
+            <a th:href="@{/articleTypes}" style="min-width: 100%">
+                <ol class="btn2"><div th:text="#{app.articleTypes}" style="color: white;font-weight: normal">Article list</div >
+                </ol>
+            </a>
         <a th:href="@{/config/unit}" style="min-width: 100%">
             <ol class="btn2"><div th:text="#{app.unitsList}" style="color: white;font-weight: normal">Units list</div >
                 <li style="min-width: 100%;">
@@ -128,6 +132,15 @@
             <img id="configImg" th:src="@{/images/list.png}" class="right"/>
         </div>
         <span id="configBtn" class="d-none">
+        <a th:href="@{/config/extremely}" style="min-width: 100%">
+            <ol class="btn2"><div th:text="#{app.extremely}" style="color: white;font-weight: normal">extremely</div>
+                 <li style="min-width: 100%;">
+                    <ul>
+                        <li><a th:text="#{app.addExtremely}" th:href="@{/config/formExtremelyCreation}">Create extremely</a></li>
+                    </ul>
+                </li>
+            </ol>
+        </a>
         <a th:href="@{/user/scheduler}" style="min-width: 100%">
             <ol class="btn2"><div th:text="#{app.scheduler}" style="color: white;font-weight: normal">Scheduler</div>
                 <li style="min-width: 100%;">
@@ -186,15 +199,15 @@
             <span th:text="#{app.receptionMenu}"></span>
             <img id="receptionImg" th:src="@{/images/list.png}" class="right"/>
         </div>
-        <span id="receptionBtn" class="d-none">
+        <div id="receptionBtn" class="d-none">
         <a th:href="@{/reception/formReception}"><div th:text="#{app.declareReception}" class="btn2">Declare Reception</div></a>
         <a th:href="@{/reception/reception}"><div th:text="#{app.checkReceptions}" class="btn2">Check Receptions</div></a>
-            </span>
+            </div>
         <div class="btn3" id="shipment">
             <span th:text="#{app.shipmentMenu}"></span>
             <img id="shipmentImg" th:src="@{/images/list.png}" class="right"/>
         </div>
-        <span id="shipmentBtn" class="d-none">
+        <div id="shipmentBtn" class="d-none">
         <a th:href="@{/shipment/formShipment}"><div th:text="#{app.declareShipment}" class="btn2">Declare Shipment</div></a>
         <a th:href="@{/shipment/shipment}">
             <ol class="btn2"><div th:text="#{app.checkShipment}" style="color: white;font-weight: normal">Check Shipments</div >
@@ -207,7 +220,7 @@
                 </li>
             </ol>
         </a>
-            </span>
+            </div>
         </span>
     </div>
     <script>

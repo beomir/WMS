@@ -725,7 +725,7 @@ ol > li:hover > ul
 
 ol > li > ul > li
 {
-    background-color:#00BCD4;
+    background-color: #0098d4;
     position: relative;
     z-index: 100;
 }
@@ -741,7 +741,7 @@ ol > li > ul > li
 /*}*/
 ol > li > ul > li > a:hover
 {
-    background-color: #378bf5;
+    background-color: #2309ca;
 }
 
 tr:hover > td{
@@ -1159,3 +1159,23 @@ table.locationPack {
     border-spacing: 50px 0;
 }
 
+input.check {
+    border: 2px solid currentcolor;
+}
+input:invalid.check {
+    border: 2px dashed red;
+}
+input:invalid:focus.check {
+    background-image: linear-gradient(pink, lightgreen);
+}
+
+.wallpaper {
+    font-size: 1em;
+    color: #fff;
+    background: #0066d4;
+    border: 1px solid #002ed4;
+    padding: .7em 1em;
+    margin-left: 10px;
+    width: 90%;
+    border-radius: 2px;
+}

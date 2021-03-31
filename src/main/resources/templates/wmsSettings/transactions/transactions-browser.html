@@ -52,6 +52,7 @@
 				<select class="select-css" th:field="*{transactionGroup}">
 					<option th:value="Reception">Reception</option>
 					<option th:value="Stock">Stock</option>
+					<option th:value="Configuration">Configuration</option>
 					<option th:value="Shipment">Shipment</option>
 					<option th:value="'%'">All</option>
 				</select> <br/><br/>
@@ -71,7 +72,7 @@
 			</section>
 
 			<section>
-				<br/><button class="button" type="submit">Search</button>
+				<br/><button class="button"  th:text="#{app.search}" type="submit">Search</button>
 			</section>
 		</form>
 

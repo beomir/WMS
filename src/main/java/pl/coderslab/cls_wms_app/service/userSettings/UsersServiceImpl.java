@@ -11,6 +11,7 @@ import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.repository.UsersRepository;
+import pl.coderslab.cls_wms_app.service.storage.ArticleServiceImpl;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionServiceImpl;
 import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.CheckPassword;
@@ -31,16 +32,17 @@ public class UsersServiceImpl implements UsersService {
     public String alertMessage = "";
     public String oldPass;
     private SendEmailService sendEmailService;
+    private ArticleServiceImpl articleServiceImpl;
 
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, SendEmailService sendEmailService) {
+    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, SendEmailService sendEmailService, ArticleServiceImpl articleServiceImpl) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
-
         this.receptionServiceImpl = receptionServiceImpl;
         this.locationNameConstruction = locationNameConstruction;
         this.addLocationToStorageZone = addLocationToStorageZone;
         this.sendEmailService = sendEmailService;
+        this.articleServiceImpl = articleServiceImpl;
     }
 
     @Override
@@ -118,6 +120,7 @@ public class UsersServiceImpl implements UsersService {
         locationNameConstruction.message = "";
         addLocationToStorageZone.message = "";
         alertMessage = "";
+        articleServiceImpl.articleMessage = "";
         String token = FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());

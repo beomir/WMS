@@ -1,4 +1,5 @@
 
+let extremelyValueToCheck;
 //rackLocations
 let rackFirstSep = document.getElementById("rackFirstSep")
 
@@ -51,6 +52,15 @@ function calculateRackLocations(){
     }
 
     rackLocationSimulation.innerHTML = sumOfLocationToCreate
+
+    if(sumOfLocationToCreate > extremelyValueToCheck ){
+        $("#rackLocationSimulation").css({'color' : 'red'})
+        $("#maxLocationValue").css({'color' : 'red'})
+    }
+    else{
+        $("#rackLocationSimulation").css({'color' : 'white'})
+        $("#maxLocationValue").css({'color' : 'white'})
+    }
 }
 //doorLocations
 let doorThirdSep = document.getElementById("doorThirdSep")
@@ -65,8 +75,17 @@ doorThirdSep.addEventListener("keyup", function () {
     if(firstRangeDoor<0){
         firstRangeDoor = 0;
     }
-
+    console.log("extremelyValueToCheck" + extremelyValueToCheck)
     doorLocationSimulation.innerHTML = firstRangeDoor;
+    if(firstRangeDoor > extremelyValueToCheck ){
+        $("#doorLocationSimulation").css({'color' : 'red'})
+        $("#maxLocationValue").css({'color' : 'red'})
+    }
+    else{
+        $("#doorLocationSimulation").css({'color' : 'white'})
+        $("#maxLocationValue").css({'color' : 'white'})
+    }
+
 });
 
 doorThirdSepTo.addEventListener("keyup", function () {
@@ -76,6 +95,14 @@ doorThirdSepTo.addEventListener("keyup", function () {
         firstRangeDoor = 0;
     }
     doorLocationSimulation.innerHTML = firstRangeDoor;
+    if(firstRangeDoor > extremelyValueToCheck ){
+        $("#doorLocationSimulation").css({'color' : 'red'})
+        $("#maxLocationValue").css({'color' : 'red'})
+    }
+    else{
+        $("#doorLocationSimulation").css({'color' : 'white'})
+        $("#maxLocationValue").css({'color' : 'white'})
+    }
 });
 
 
@@ -92,6 +119,14 @@ floorFirstSep.addEventListener("keyup", function () {
         firstRangeFloor = 0;
     }
     floorLocationSimulation.innerHTML = firstRangeFloor;
+    if(firstRangeFloor > extremelyValueToCheck ){
+        $("#floorLocationSimulation").css({'color' : 'red'})
+        $("#maxLocationValue").css({'color' : 'red'})
+    }
+    else{
+        $("#floorLocationSimulation").css({'color' : 'white'})
+        $("#maxLocationValue").css({'color' : 'white'})
+    }
 });
 floorSecondSepTo.addEventListener("keyup", function () {
     let firstRangeFloor = parseInt(document.getElementById("floorSecondSepTo").value) - parseInt(document.getElementById("floorSecondSep").value) +1
@@ -100,6 +135,14 @@ floorSecondSepTo.addEventListener("keyup", function () {
         firstRangeFloor = 0;
     }
     floorLocationSimulation.innerHTML = firstRangeFloor;
+    if(firstRangeFloor > extremelyValueToCheck ){
+        $("#floorLocationSimulation").css({'color' : 'red'})
+        $("#maxLocationValue").css({'color' : 'red'})
+    }
+    else{
+        $("#floorLocationSimulation").css({'color' : 'white'})
+        $("#maxLocationValue").css({'color' : 'white'})
+    }
 });
 
 
@@ -201,3 +244,102 @@ select.addEventListener("change", function () {
         floorSecondSepTo.setAttribute("required", "");
     }
 })
+
+$('#width,#height,#depth').on('keyup', function (){
+    let volume = document.getElementById('volume');
+    let width = document.getElementById('width').value;
+    let height = document.getElementById('height').value;
+    let depth = document.getElementById('depth').value;
+
+    if(width != "" && width != null && height != null && height != "" && depth != null && depth != ""){
+        volume.innerHTML = "Volume: " + (width * height * depth).toString() + " cm3";
+        $('#volume').css('color', 'green');
+        $('#volume').css('background-color', 'black');
+        $('#volume').css('border', '2px solid');
+        $('#volume').css('border-radius', '5px');
+    }
+    else{
+        $('#volume').css('color', 'transparent');
+        $('#volume').css('background-color', 'transparent');
+    }
+
+})
+
+
+let extremelyWarehouseValue = document.getElementsByName('extremelyWarehouseValue')
+let extremelyValue = document.getElementsByName('extremelyValue')
+let maxLocationValue = document.getElementById('maxLocationValue')
+
+let chosenWarehouse = document.getElementById('chosenWarehouse');
+console.log(chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+
+chosenWarehouse.addEventListener('change', function() {
+    for(let i = 0; i < extremelyValue.length; i++ ){
+        console.log("extremelyWarehouseValue[i].textContent: " +extremelyWarehouseValue[i].textContent)
+        console.log("chosenWarehouse.options[chosenWarehouse.selectedIndex].text: " +chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+        if(extremelyWarehouseValue[i].textContent == chosenWarehouse.options[chosenWarehouse.selectedIndex].text){
+            maxLocationValue.innerHTML = extremelyWarehouseValue[i].textContent + ":  " +  extremelyValue[i].textContent
+            extremelyValueToCheck = extremelyValue[i].textContent
+            console.log("done")
+        }
+        else{
+            maxLocationValue.innerHTML = "not set for warehouse: " + chosenWarehouse.options[chosenWarehouse.selectedIndex].text;
+        }
+    }
+    console.log(chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+})
+
+function extremelyMaxLocationsCreateValue(){
+    for(let i = 0; i < extremelyValue.length; i++ ){
+        console.log("extremelyWarehouseValue[i].textContent: " +extremelyWarehouseValue[i].textContent)
+        console.log("chosenWarehouse.options[chosenWarehouse.selectedIndex].text: " +chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+        if(extremelyWarehouseValue[i].textContent == chosenWarehouse.options[chosenWarehouse.selectedIndex].text){
+            maxLocationValue.innerHTML =  extremelyWarehouseValue[i].textContent + ":  " +  extremelyValue[i].textContent
+            extremelyValueToCheck = extremelyValue[i].textContent
+            console.log("done")
+        }
+        else{
+            maxLocationValue.innerHTML = "not set for warehouse: " + extremelyWarehouseValue[i].textContent;
+        }
+    }
+    console.log(chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+}
+
+
+
+
+function checkValidation(){
+    let width = document.getElementById('width').value;
+    let height = document.getElementById('height').value;
+    let depth = document.getElementById('depth').value;
+    let weight = document.getElementById('weight').value;
+    console.log("width: " + width)
+    console.log("height: " + height)
+    console.log("depth: " + depth)
+    console.log("weight: " + weight)
+    if(width == null || width == "" || width == 0.0 || width == 0){
+        alert("Width must be bigger than 0")
+        returnToPreviousPage();
+        return false;
+    }
+    else if(height == null || height == "" || height == 0.0 || height == 0){
+        alert("Height must be bigger than 0")
+        returnToPreviousPage();
+        return false;
+    }
+    else if(depth == null || depth == "" || depth == 0.0 || depth == 0){
+        alert("Depth must be bigger than 0")
+        returnToPreviousPage();
+        return false;
+    }
+    else if(weight == null || weight == "" || weight == 0.0 || weight == 0){
+        alert("Weight must be bigger than 0")
+        returnToPreviousPage();
+        return false;
+    }
+}
+
+function returnToPreviousPage() {
+    window.history.forward(-1)
+}
+

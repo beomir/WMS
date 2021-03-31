@@ -10,7 +10,6 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Transaction;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
@@ -25,15 +24,13 @@ public class TransactionController {
 
     private final TransactionService transactionService;
     private final CompanyService companyService;
-    private final UsersService usersService;
     private final WarehouseService warehouseService;
     public TransactionSearch transactionSearch;
 
     @Autowired
-    public TransactionController(TransactionService transactionService, CompanyService companyService, UsersService usersService, WarehouseService warehouseService, TransactionSearch transactionSearch) {
+    public TransactionController(TransactionService transactionService, CompanyService companyService,  WarehouseService warehouseService, TransactionSearch transactionSearch) {
         this.transactionService = transactionService;
         this.companyService = companyService;
-        this.usersService = usersService;
         this.warehouseService = warehouseService;
         this.transactionSearch = transactionSearch;
     }
@@ -46,7 +43,6 @@ public class TransactionController {
         model.addAttribute("transactionSearch",transactionSearch);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
         return "wmsSettings/transactions/transactions";
     }
 
@@ -59,7 +55,6 @@ public class TransactionController {
         model.addAttribute("company", company);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
-        usersService.loggedUserData(model);
         return "wmsSettings/transactions/transactions-browser";
     }
 

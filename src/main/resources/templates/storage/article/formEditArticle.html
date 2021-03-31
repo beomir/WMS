@@ -24,13 +24,15 @@
 	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
 </div>
 
+<span th:include="fragments/articlesMenu :: articlesMenu"></span>
+
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${article}" method="post" th:action="@{/formEditArticle}">
-			<div class="titleList">Edit Article</div><br/>
+			<div th:text="#{app.edit} + ' ' + #{app.article}" class="titleList">Edit Article</div><br/>
 			<section>
-				<label style="color: white;font-weight: bold">Article number (16 digits)</label>
-				<input type="number" th:field="*{article_number}" min="1000000000000000"/>
+				<label th:text="#{app.articleNumber}" style="color: white;font-weight: bold">Article number (16 digits)</label>
+				<input th:title="#{app.min16Digits}" class="check" required type="text" th:field="*{article_number}" pattern="[0-9]{16}" minlength="16" maxlength="16" />
 				<input type="hidden" th:field="*{id}"/>
 				<input type="hidden" th:field="*{created}"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
@@ -39,7 +41,24 @@
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Article Description</label>
-				<input type="text" th:field="*{article_desc}"/>
+				<input th:title="#{app.min3signs}" class="check" pattern=".{3,}[a-zA-Z0-9]"  type="text" th:field="*{article_desc}"/>
+			</section>
+			<section>
+				<label th:text="#{app.weight}" style="color: white;font-weight: bold">Weight</label>
+				<input  class="check" required id="weight" th:field="*{weight}" type="text" pattern="[0-9].{0,}"  />
+			</section>
+			<section>
+				<label th:text="#{app.depth}" style="color: white;font-weight: bold">depth</label>
+				<input class="check" required id="depth" th:field="*{depth}" type="text" pattern="[0-9].{0,}" />
+			</section>
+			<section>
+				<label th:text="#{app.width}" style="color: white;font-weight: bold">width</label>
+				<input class="check" required id="width" th:field="*{width}" type="text" pattern="[0-9].{0,}"  />
+			</section>
+			<section>
+				<label th:text="#{app.height}" style="color: white;font-weight: bold">height</label>
+				<input class="check" required id="height" th:field="*{height}" type="text" pattern="[0-9].{0,}" />
+				<div id="volume"></div>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Company</label>
@@ -49,7 +68,7 @@
 				</select>
 			</section><br/>
 			<section>
-				<br/><button class="button" type="submit">Save</button>
+				<br/><button class="button" type="submit" onclick="return checkValidation()">Save</button>
 			</section>
 		</form>
 
@@ -62,5 +81,7 @@
 	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 </div>
 </div>
+<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+<script type="text/javascript" th:src="@{/js/formArticle.js}"></script>
 </body>
 </html>

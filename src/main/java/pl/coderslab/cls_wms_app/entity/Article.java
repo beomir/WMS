@@ -37,7 +37,18 @@ public class Article {
     private boolean active;
     private String changeBy;
 
-    public Article(Long id, Long article_number, String article_desc, String article_logistic_variant, Long pieces_per_carton, Company company, String created, String last_update,boolean active,String changeBy) {
+    private double height;
+    private double width;
+    private double depth;
+
+    private double volume;
+    private double weight;
+
+    @NotNull
+    @ManyToOne
+    private ArticleTypes articleTypes;
+
+    public Article(Long id, Long article_number, String article_desc, String article_logistic_variant, Long pieces_per_carton, Company company, String created, String last_update,boolean active,String changeBy,double height,double width,double depth, double volume, double weight,ArticleTypes articleTypes) {
         this.id = id;
         this.article_number = article_number;
         this.article_desc = article_desc;
@@ -48,6 +59,12 @@ public class Article {
         this.last_update = last_update;
         this.active = active;
         this.changeBy = changeBy;
+        this.height = height;
+        this.width = width;
+        this.depth = depth;
+        this.volume = volume;
+        this.weight = weight;
+        this.articleTypes = articleTypes;
     }
 
     @OneToMany(mappedBy="article")
@@ -74,6 +91,11 @@ public class Article {
                 ", created='" + created + '\'' +
                 ", last_update='" + last_update + '\'' +
                 ", active=" + active +
+                ", changeBy=" + changeBy +
+                ", height=" + height +
+                ", width=" + width +
+                ", depth=" + depth +
+                ", volume=" + volume +
                 '}';
     }
 }

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>WMS CLS app</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+	<div class="main-agileits">
+		<div th:include="fragments/header :: header"></div>
+	</div>
+	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+
+		<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
+	</div>
+	<div id="content" class="mainw3-agileinfo">
+		<div style="width: 1200px" class="login-form">
+			<div style="background-color: #00BCD4;border-radius: 3px">
+			<span sec:authorize="!hasRole('ROLE_ADMIN')">
+				<div th:each="companies: ${companies}" class="titleList" th:text="#{app.addExtremelyFC} + ': ' + ${companies.name}"></div>
+				<a sec:authorize="hasAnyRole('ROLE_USER','ROLE_ADMIN')" th:href="@{/config/formExtremelyCreation}"><div class="buttonik2" style="float: right;max-width: 40%;" th:text="#{app.addExtremely}"></div></a>
+				<br/><br/>
+				</span>
+				<span sec:authorize="hasRole('ROLE_ADMIN')">
+				<div  class="titleList" th:text="#{app.extremely}"></div>
+					<a sec:authorize="hasAnyRole('ROLE_USER','ROLE_ADMIN')" th:href="@{/config/formExtremelyCreation}"><div class="buttonik2" style="float: right;max-width: 40%;" th:text="#{app.addExtremely}"></div></a>
+					<br/><br/>
+					</span>
+				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
+					<tr style="border: solid 1px">
+						<th th:text="#{app.extremely}" style="font-weight: bold" class="tables">extremelyName</th>
+						<th th:text="#{app.description}" style="font-weight: bold" class="tables">extremelyDesc</th>
+						<th th:text="#{app.value}" style="font-weight: bold" class="tables">extremelyValue</th>
+						<th th:text="#{app.company}" style="font-weight: bold" class="tables">company</th>
+						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
+						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
+						<th th:text="#{app.warehouseName}" style="font-weight: bold" class="tables">warehouse</th>
+					</tr>
+				    <tr style="border: solid 1px" th:each="extremely: ${extremely}">
+						<td class="tables" style="padding-bottom: 2px">
+							<ol><div th:text="${extremely.extremelyName}"></div>
+								<li>
+									<ul>
+										<li><a th:text="#{app.delete}" th:href="@{/config/deleteExtremely/{id}(id=${extremely.id})}">DELETE</a></li>
+										<li><a th:text="#{app.edit}" th:href="@{/config/formEditExtremely/{id}(id=${extremely.id})}">EDIT</a></li>
+									</ul>
+								</li>
+							</ol>
+						</td>
+						<td  class="tables" th:text="${extremely.extremelyDesc}"></td>
+						<td  class="tables" th:text="${extremely.extremelyValue}"></td>
+						<td  class="tables" th:text="${extremely.company.name}"></td>
+						<td  class="tables" th:text="${#strings.replace(#strings.substring(extremely.created,0,19),'T',' ')}"></td>
+						<td  class="tables" th:text="${#strings.replace(#strings.substring(extremely.last_update,0,19),'T',' ')}"></td>
+						<td  class="tables" th:text="${extremely.changeBy}"></td>
+						<td  class="tables" th:text="${extremely.warehouse.name}"></td>
+				    </tr>
+				</table>
+
+			</div><br/><br/>
+
+			<div th:include="fragments/footer :: footer"></div>
+		</div>
+		<div class="w3copyright-agile">
+			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+		</div>
+	</div>
+</body>
+</html>

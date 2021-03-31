@@ -1,0 +1,7 @@
+Stock for: Fábrica Nacional de Munições de Armas Ligeiras
+ArticleNumber:1234567890123458,ArticleDescription:glue,HandleDeviceNumber:202000000000000003,PiecesQuantity20,Unit:EA,Company:Fábrica Nacional de Munições de Armas Ligeiras,FromWarehouse:WRO1,ChangedBy:system
+ArticleNumber:1234567890123458,ArticleDescription:glue,HandleDeviceNumber:202000000000000004,PiecesQuantity20,Unit:EA,Company:Fábrica Nacional de Munições de Armas Ligeiras,FromWarehouse:WRO1,ChangedBy:system
+ArticleNumber:1234567890123458,ArticleDescription:glue,HandleDeviceNumber:202000000000000011,PiecesQuantity20,Unit:EA,Company:Fábrica Nacional de Munições de Armas Ligeiras,FromWarehouse:WRO1,ChangedBy:system
+ArticleNumber:1234567890123458,ArticleDescription:glue,HandleDeviceNumber:202000000000000012,PiecesQuantity43,Unit:EA,Company:Fábrica Nacional de Munições de Armas Ligeiras,FromWarehouse:WRO1,ChangedBy:system
+ArticleNumber:1234567890123458,ArticleDescription:glue,HandleDeviceNumber:202000000000000013,PiecesQuantity123,Unit:EA,Company:Fábrica Nacional de Munições de Armas Ligeiras,FromWarehouse:WRO1,ChangedBy:system
+ArticleNumber:1234567890123458,ArticleDescription:glue,HandleDeviceNumber:202000000000000014,PiecesQuantity10,Unit:EA,Company:Fábrica Nacional de Munições de Armas Ligeiras,FromWarehouse:MIE1,ChangedBy:system

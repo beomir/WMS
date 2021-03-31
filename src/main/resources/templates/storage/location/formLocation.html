@@ -99,10 +99,27 @@
 				<select class="select-css" th:field="*{location.warehouse}">
 					<option th:each="i : ${warehouses}" th:value="${i.id}" th:text="${i.name}">
 					</option>
-				</select>
+				</select> <br/>
 			</section>
 			<section>
-				<br/><button th:text="#{app.save}" class="button" type="submit">Save</button>
+				<label th:text="#{app.maxWeight}" style="color: white;font-weight: bold">Max weight</label>
+				<input class="check" required id="weight" th:field="*{location.maxWeight}" type="text"  pattern="[0-9].{0,}"/>
+			</section>
+			<section>
+				<label th:text="#{app.depth}" style="color: white;font-weight: bold">Volume</label>
+				<input class="check" required id="depth" th:field="*{location.depth}" type="text" pattern="[0-9].{0,}" />
+			</section>
+			<section>
+				<label th:text="#{app.width}" style="color: white;font-weight: bold">Volume</label>
+				<input  class="check" required id="width" th:field="*{location.width}" type="text" pattern="[0-9].{0,}" />
+			</section>
+			<section>
+				<label th:text="#{app.height}" style="color: white;font-weight: bold">Volume</label>
+				<input class="check" required id="height" th:field="*{location.height}" type="text" pattern="[0-9].{0,}"  />
+				<div id="volume"></div>
+			</section>
+			<section>
+				<br/><button th:text="#{app.save}" class="button" type="submit" onclick="return checkValidation()">Save</button>
 			</section>
 		</form>
 	</div>

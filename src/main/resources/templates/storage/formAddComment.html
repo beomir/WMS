@@ -26,25 +26,25 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form th:object="${stock}" method="post" th:action="@{/formAddComment}">
+		<form  method="post" th:action="@{/formAddComment}">
 			<div class="titleList">Add Comment</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Add comment</label>
-				<input type="text" th:field="*{comment}"/>
-				<input type="hidden" th:field="*{id}"/>
-				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
-				<input type="hidden" th:field="*{created}" />
-				<input type="hidden" th:field="*{hd_number}" />
-				<input type="hidden" th:field="*{status}" />
-				<input type="hidden" th:field="*{receptionNumber}" />
-				<input type="hidden" th:field="*{shipmentNumber}" />
-				<input type="hidden" th:field="*{article}" />
-				<input type="hidden" th:field="*{company}" />
-				<input type="hidden" th:field="*{quality}" />
-				<input type="hidden" th:field="*{unit}" />
-				<input type="hidden" th:field="*{warehouse}" />
-				<input type="hidden" th:field="*{pieces_qty}" />
-				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
+				<input type="text" th:field="*{stock.comment}"/>
+				<input type="hidden" th:field="*{stock.id}"/>
+				<input type="hidden" th:field="*{stock.created}" />
+				<input type="hidden" th:field="*{stock.hd_number}" />
+				<input type="hidden" th:field="*{stock.status}" />
+				<input type="hidden" th:field="*{stock.receptionNumber}" />
+				<input type="hidden" th:field="*{stock.shipmentNumber}" />
+				<input type="hidden" th:field="*{stock.article}" />
+				<input type="hidden" th:field="*{stock.company}" />
+				<input type="hidden" th:field="*{stock.quality}" />
+				<input type="hidden" th:field="*{stock.unit}" />
+				<input type="hidden" th:field="*{stock.warehouse}" />
+				<input type="hidden" th:field="*{stock.pieces_qty}" />
+				<input type="hidden" th:field="*{stock.location}"/>
+				<input type="hidden" th:field="*{chosenStockPositionalStatus.commentObj}"/>
 			</section><br/>
 			<section>
 				<br/><button class="button" type="submit">Save</button>

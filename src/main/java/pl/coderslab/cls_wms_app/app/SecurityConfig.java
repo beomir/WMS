@@ -1,36 +1,45 @@
 package pl.coderslab.cls_wms_app.app;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomerUserDetailsService customerUserDetailsService;
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    public SecurityConfig(CustomerUserDetailsService customerUserDetailsService, AuthenticationSuccessHandler authenticationSuccessHandler) {
+        this.customerUserDetailsService = customerUserDetailsService;
+        this.authenticationSuccessHandler = authenticationSuccessHandler;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    // Konfiguracja procesu uwierzytelniania użytkownika (potocznie: logowanie)
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .userDetailsService(customerUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    // Konfiguracja całości zasad bezpieczeństwa, np. autoryzacji ścieżek (tzw. endpointów)
-    // czy procesu logowania, czy unieważniania sesji, wylogowywania, zapamiętywania użytkownika, itd.
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -48,16 +57,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/storage", "/storage/**").hasAnyRole("USER", "ADMIN","STOCK_USER")
                 .antMatchers("/config", "/config/**").hasRole("ADMIN")
                 .antMatchers("/user", "/user/**").hasAnyRole("USER","ADMIN")
+                .antMatchers("/scanner", "/scanner/**").hasAnyRole("USER","ADMIN","SCANNER")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedPage("/accessDenied")
                 .and()
                 .formLogin()
-                .loginPage("/index")
-                .permitAll()
                 .usernameParameter("username") // username
                 .passwordParameter("password") // password
-                .defaultSuccessUrl("/warehouse")
+                .loginPage("/index")
+                .successHandler(authenticationSuccessHandler)
+                .permitAll()
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
@@ -66,5 +76,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .csrf()
 //                .disable();
 
+    }
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .inMemoryAuthentication()
+                .withUser("user").password("pass").roles("USER")
+                .and()
+                .withUser("admin").password("pass").roles("ADMIN");
     }
 }

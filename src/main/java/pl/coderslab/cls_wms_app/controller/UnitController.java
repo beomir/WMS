@@ -87,7 +87,7 @@ public class UnitController {
 
 
     @GetMapping("/formEditUnit/{id}")
-    public String updateCustomer(@PathVariable Long id, Model model) {
+    public String updateUnit(@PathVariable Long id, Model model) {
         Unit unit = unitService.findById(id);
         model.addAttribute(unit);
         model.addAttribute("localDateTime", LocalDateTime.now());
