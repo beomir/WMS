@@ -56,8 +56,6 @@ public class WarehouseController {
     }
 
 
-
-
     @GetMapping("/config/warehouseList")
     public String warehousesList(Model model) {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
