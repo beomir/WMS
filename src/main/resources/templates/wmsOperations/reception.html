@@ -39,6 +39,7 @@
 						<th th:text="#{app.piecesQty}" class="tables">Pieces Qty</th>
 						<th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{app.company}" class="tables">Company</th>
 						<th th:text="#{app.status}" class="tables">Status</th>
+						<th th:text="#{app.location}" class="tables">Location</th>
 						<th th:text="#{app.created}" class="tables">Created</th>
 						<th th:text="#{app.lastUpdate}" class="tables">Last update</th>
 						<th th:text="#{app.chandedBy}" class="tables">Changed by</th>
@@ -61,6 +62,8 @@
 				        <td class="tables" th:text="${reception.pieces_qty}"></td>
 						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${reception.company.name}"></td>
 				        <td class="tables" th:text="${reception.status.status}"></td>
+						<td th:if="${reception.location == null}" th:text="${reception.location.locationName}" class="tables"></td>
+						<td th:if="${reception.location != null}" th:text="#{app.receptionDuringCreation}" class="tables"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.created,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.last_update,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${reception.changeBy}"></td>
