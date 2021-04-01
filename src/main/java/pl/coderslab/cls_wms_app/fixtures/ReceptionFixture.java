@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
+import pl.coderslab.cls_wms_app.service.storage.LocationService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
 import pl.coderslab.cls_wms_app.service.wmsValues.*;
 
@@ -23,17 +24,18 @@ public class ReceptionFixture {
     private WarehouseService warehouseService;
     private UnitService unitService;
     private StatusService statusService;
+    private LocationService locationService;
 
 
     private List<Reception> receptionList = Arrays.asList(
-            new Reception(null, null,null,12L, null,202000000000000006L,"BW1",null,null, false ,20200001L ,false,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Reception(null, null,null,12L, null,202000000000000007L,"EU1",null,null, false,20200002L,false,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Reception(null, null,null,12L, null,202000000000000008L,"EU1",null,null, false,20200003L,false,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Reception(null, null,null,10L, null,202000000000000005L,"EU1",null,null,false,20200004L,false,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
+            new Reception(null, null,null,12L, null,202000000000000006L,"BW1",null,null, 20200001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,12L, null,202000000000000007L,"EU1",null,null, 20200002L,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,12L, null,202000000000000008L,"EU1",null,null, 20200003L,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,10L, null,202000000000000005L,"EU1",null,null,20200004L,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null)
     );
 
     @Autowired
-    public ReceptionFixture(ReceptionService receptionService, ArticleService articleService, VendorService vendorService, CompanyService companyService, WarehouseService warehouseService, UnitService unitService, StatusService statusService) {
+    public ReceptionFixture(ReceptionService receptionService, ArticleService articleService, VendorService vendorService, CompanyService companyService, WarehouseService warehouseService, UnitService unitService, StatusService statusService, LocationService locationService) {
         this.receptionService = receptionService;
         this.articleService = articleService;
         this.vendorService = vendorService;
@@ -41,6 +43,7 @@ public class ReceptionFixture {
         this.warehouseService = warehouseService;
         this.unitService = unitService;
         this.statusService = statusService;
+        this.locationService = locationService;
     }
 
     public void loadIntoDB() {
@@ -50,13 +53,14 @@ public class ReceptionFixture {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         List<Unit> unit = unitService.getUnit();
         List<Status> status = statusService.getStatus();
+        List<Location> locations = locationService.getLocations();
         Random rand = new Random();
-
 
         for (Reception reception : receptionList) {
             reception.setWarehouse(warehouses.get(rand.nextInt(warehouses.size())));
             receptionService.add(reception);
         }
+
         Reception reception1 = receptionList.get(0);
         Reception reception2 = receptionList.get(1);
         Reception reception3 = receptionList.get(2);
@@ -82,10 +86,15 @@ public class ReceptionFixture {
         reception3.setUnit(unit.get(0));
         reception4.setUnit(unit.get(0));
 
-        reception1.setStatus(status.get(0));
-        reception2.setStatus(status.get(0));
-        reception3.setStatus(status.get(0));
-        reception4.setStatus(status.get(0));
+        reception1.setStatus(status.get(5));
+        reception2.setStatus(status.get(5));
+        reception3.setStatus(status.get(5));
+        reception4.setStatus(status.get(5));
+
+        reception1.setLocation(locations.get(5));
+        reception2.setLocation(locations.get(5));
+        reception3.setLocation(locations.get(5));
+        reception4.setLocation(locations.get(5));
 
         receptionService.add(reception1);
         receptionService.add(reception2);

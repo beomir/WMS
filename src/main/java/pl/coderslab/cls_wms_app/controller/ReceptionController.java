@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
+import pl.coderslab.cls_wms_app.repository.ReceptionRepository;
+import pl.coderslab.cls_wms_app.repository.StatusRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
@@ -40,10 +42,11 @@ public class ReceptionController {
     private final UnitService unitService;
     private final UsersService usersService;
     private final ReceptionServiceImpl receptionServiceImpl;
+    private final ReceptionRepository receptionRepository;
     private CustomerUserDetailsService customerUserDetailsService;
 
     @Autowired
-    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, CustomerUserDetailsService customerUserDetailsService) {
+    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository,  CustomerUserDetailsService customerUserDetailsService) {
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.articleService = articleService;
@@ -52,6 +55,7 @@ public class ReceptionController {
         this.unitService = unitService;
         this.usersService = usersService;
         this.receptionServiceImpl = receptionServiceImpl;
+        this.receptionRepository = receptionRepository;
         this.customerUserDetailsService = customerUserDetailsService;
     }
 
@@ -73,6 +77,25 @@ public class ReceptionController {
         }
         else{
             return "wmsOperations/reception";
+        }
+    }
+
+    @GetMapping("receptionDetails/{receptionNumber}")
+    public String list(@PathVariable Long receptionNumber,Model model) {
+        List<Reception> reception = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
+        model.addAttribute("reception", reception);
+        model.addAttribute("receptionHeader", receptionNumber);
+        model.addAttribute("statusHeader", receptionRepository.getStatusByReceptionNumber(receptionNumber));
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
+        String token = usersService.FindUsernameByToken(SecurityUtils.username());
+        model.addAttribute("token", token);
+        model.addAttribute("localDateTime", LocalDateTime.now());
+        if(customerUserDetailsService.chosenWarehouse == null){
+            return "redirect:/warehouse";
+        }
+        else{
+            return "wmsOperations/receptionDetails";
         }
     }
 
@@ -107,6 +130,7 @@ public class ReceptionController {
         return "redirect:/reception/reception";
     }
 
+
     @GetMapping("formReception")
     public String receptionForm(Model model){
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
@@ -140,8 +164,6 @@ public class ReceptionController {
     @PostMapping("formReception")
     public String receptionAdd(Reception reception) {
         receptionService.addNew(reception);
-        receptionService.getCreatedReceptionById(reception.getReceptionNumber());
-        receptionService.updateCloseCreationValue(reception.getReceptionNumber());
         return "redirect:/reception/reception";
     }
 
@@ -192,9 +214,48 @@ public class ReceptionController {
     @PostMapping("editReceptionLine")
     public String updateReceptionPost(Reception reception) {
         receptionService.edit(reception);
-        receptionService.getCreatedReceptionById(reception.getReceptionNumber());
-        receptionService.updateCloseCreationValue(reception.getReceptionNumber());
+//        receptionService.getCreatedReceptionById(reception.getReceptionNumber());
+//        receptionService.updateCloseCreationValue(reception.getReceptionNumber());
         return "redirect:/reception/reception";
     }
+
+    @GetMapping("formReceptionLine/{receptionNumber}")
+    public String formReceptionLine(@PathVariable Long receptionNumber,Model model){
+        List<Article> articles = articleService.getArticle(SecurityUtils.username());
+        List<Unit> units = unitService.getUnit();
+        List<Vendor> vendors = vendorService.getVendor(SecurityUtils.username());
+        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
+        model.addAttribute("reception", new Reception());
+        model.addAttribute("articles", articles);
+        model.addAttribute("vendors", vendors);
+        model.addAttribute("warehouses", warehouses);
+        model.addAttribute("units", units);
+        model.addAttribute("receptionHeader", receptionNumber);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
+        usersService.loggedUserData(model);
+        if(customerUserDetailsService.chosenWarehouse == null){
+            return "redirect:/warehouse";
+        }
+        else{
+            return "wmsOperations/formReceptionLine";
+        }
+    }
+
+    @PostMapping("formReceptionLine")
+    public String formReceptionLinePost(Reception reception) {
+        receptionService.addNewReceptionLine(reception);
+        log.error("detail" + reception.getReceptionNumber());
+        return "redirect:/reception/receptionDetails/" + reception.getReceptionNumber();
+    }
+
+
+    @GetMapping("/deleteReceptionLine/{id}")
+    public String deleteReceptionLine(@PathVariable Long id) {
+        receptionRepository.delete(receptionRepository.getOne(id));
+        return "redirect:/reception/reception";
+    }
+
+
 
 }

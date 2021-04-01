@@ -7,7 +7,6 @@
 	<meta name="keywords" content="" />
 
 	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
 
 	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
 	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
@@ -25,29 +24,32 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form  method="post" th:action="@{/reception/formReception}">
+		<form  method="post" th:action="@{/reception/formReceptionLine}">
 
 			<span sec:authorize="hasRole('ROLE_ADMIN')">
-			<div class="titleList" th:text="#{app.createNewReception}">Create a new Reception</div><br/><br/>
+			<div class="titleList" th:text="#{app.createNewReceptionLine}  + ' ' + #{app.for} + ' ' + ${receptionHeader}">Create a new Reception line</div><br/><br/>
 			</span>
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
 				<span  >
-					<div  th:each="companys: ${companys}"  class="titleList" th:text=" #{app.createNewReception} + ' ' + #{app.forCompany} + ' ' + ${companys.name}"></div><br/>
+					<div  th:each="companys: ${companys}"  class="titleList" th:text=" #{app.createNewReceptionLine} + ' ' + #{app.for} + ' ' + ${receptionHeader} + ', ' + #{app.company} + ' ' + ${companys.name} "></div><br/>
 				</span>
 			</span>
 
 			<section>
-				<label style="color: white;font-weight: bold" th:text="#{app.newReceptionNumber}">New Reception</label>
-				<input class="check" type="text" th:value="${lastReceptionNumber}" id="receptionNumber" name="receptionNumber" pattern="[0-9].{0,}" readonly/>
-			</section>
+				<label style="color: white;font-weight: bold" th:text="#{app.receptionNumber} + ': ' + ${receptionHeader}"></label>
+			</section><br/>
 
 			<section>
+				<label style="color: white;font-weight: bold">Article</label>
+				<select class="select-css" th:field="*{reception.article}">
+					<option th:each="i : ${articles}" th:value="${i.id}" th:text="${i.article_number}">
+					</option>
+				</select>
 				<input type="hidden" th:field="*{reception.id}"/>
+				<input type="hidden" th:value="${receptionHeader}" id="receptionNumber" name="receptionNumber"/>
 				<input type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
 				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
-				<input type="hidden" th:value="false" id="reception.finished" name="reception.finished"/>
-				<input type="hidden" th:value="1" id="status" name="status"/>
 				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
 				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
@@ -60,6 +62,27 @@
 					</option>
 				</select>
 			</section><br/>
+
+			<section>
+				<label style="color: white;font-weight: bold">Quality</label>
+				<select class="select-css" th:field="*{reception.quality}">
+					<option th:value="EU1">European Union first grade</option>
+					<option th:value="EU2">European Union second grade</option>
+					<option th:value="BW1">Bonded Warehouse first grade</option>
+					<option th:value="BW2">Bonded Warehouse second grade</option>
+				</select>
+			</section><br/>
+
+			<section>
+				<label style="color: white;font-weight: bold">Unit</label>
+				<select class="select-css" th:field="*{reception.unit}" >
+					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.name}">
+				</select><br/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold">How many pieces on handle devices?</label>
+				<input class="check" type="text" th:field="*{reception.pieces_qty}" required="required" pattern="[0-9].{0,}" min="1" max="6666666"/>
+			</section>
 
 			<section>
 				<label style="color: white;font-weight: bold">Vendor</label>

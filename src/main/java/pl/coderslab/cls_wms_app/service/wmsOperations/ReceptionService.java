@@ -17,9 +17,9 @@ public interface ReceptionService {
 
     List<Reception> getReception(Long id);
 
-    int getCreatedReceptionById(Long receptionNbr);
+//    int getCreatedReceptionById(Long receptionNbr);
 
-    void updateCloseCreationValue(Long receptionNbr);
+//    void updateCloseCreationValue(Long receptionNbr);
 
     void updateFinishedReceptionValue(Long receptionNbrtoFinish);
 
@@ -46,5 +46,7 @@ public interface ReceptionService {
     void sendReceptions(String company);
 
     void insertFileContentToDB(File fsFile);
+
+    void addNewReceptionLine(Reception reception);
 
 }

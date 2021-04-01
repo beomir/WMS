@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>WMS CLS app</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+	<div class="main-agileits">
+		<div th:include="fragments/header :: header"></div>
+	</div>
+	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+		<div th:include="fragments/stockNavigation :: stockNavigation"></div>
+	</div>
+
+	<div id="content" class="mainw3-agileinfo">
+		<div style="width: 1200px" class="login-form">
+			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
+
+				<div class="titleList" th:text="#{app.receptionNumber} + ' ' + ${receptionHeader}"></div><br/>
+				<a th:href="@{/reception/reception}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.checkReceptions}"></div></a>
+				<br/><br/>
+				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
+					<tr style="border: solid 1px">
+						<th th:text="#{app.handleDevice}" class="tables">Pallet number</th>
+						<th th:text="#{app.article}" class="tables">Article</th>
+						<th th:text="#{app.unit}" class="tables">Unit</th>
+						<th th:text="#{app.piecesQty}" class="tables">Pieces Qty</th>
+						<th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{app.company}" class="tables">Company</th>
+						<th th:text="#{app.quality}" class="tables">Quality</th>
+						<th th:text="#{app.status}" class="tables">Status</th>
+						<th th:text="#{app.created}" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" class="tables">Last update</th>
+						<th th:text="#{app.chandedBy}" class="tables">Changed by</th>
+					</tr>
+				    <tr style="border: solid 1px" th:each="reception: ${reception}">
+						<td class="tables" style="padding-bottom: 2px">
+							<ol><div th:text="${reception.hd_number}"></div>
+							<li>
+								<ul>
+									<li th:if="${reception.status.status == 'creation_pending' }"><a th:href="@{/reception/editReceptionLine/{id}(id=${reception.id})}" th:text="#{app.edit}">Edit</a></li>
+									<li th:if="${reception.status.status == 'creation_pending' }"><a th:href="@{/reception/deleteReceptionLine/{id}(id=${reception.id})}" th:text="#{app.delete}">Delete</a></li>
+								</ul>
+							</li>
+						</ol>
+						</td>
+						<td class="tables" th:text="${reception.article.article_number}"></td>
+				        <td class="tables" th:text="${reception.unit.name}"></td>
+				        <td class="tables" th:text="${reception.pieces_qty}"></td>
+						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${reception.company.name}"></td>
+				        <td class="tables" th:text="${reception.quality}"></td>
+				        <td class="tables" th:text="${reception.status.status}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.created,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.last_update,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${reception.changeBy}"></td>
+				    </tr>
+				</table>
+
+				<a th:if="${statusHeader == 'creation_pending' }" th:href="@{/reception/formReceptionLine/{receptionNumber}(receptionNumber=${receptionHeader})}"><div class="buttonik" style="float: right;max-width: 20%;" th:text="#{app.createNewLine}">Create new reception line</div></a>
+			</div><br/><br/><br/>
+			<div th:include="fragments/footer :: footer"></div>
+		</div>
+		<div class="w3copyright-agile">
+			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+		</div>
+	</div>
+</body>
+</html>

@@ -17,5 +17,6 @@ public interface StatusRepository extends JpaRepository<Status, Long> {
     @Query("Select s from Status s where s.id = ?1")
     Status getStatusById(Long id);
 
-
+    @Query("Select s from Status s where s.status = ?1 and s.process =?2")
+    Status getStatusByStatusName(String statusName,String process);
 }

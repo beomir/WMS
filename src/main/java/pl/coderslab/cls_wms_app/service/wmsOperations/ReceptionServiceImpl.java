@@ -39,6 +39,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     private final CompanyRepository companyRepository;
     private final WarehouseRepository warehouseRepository;
     private final StatusService statusService;
+    private final StatusRepository statusRepository;
     private final StockRepository stockRepository;
     private final TransactionService transactionService;
     private final IssueLogService issueLogService;
@@ -46,8 +47,9 @@ public class ReceptionServiceImpl implements ReceptionService {
     private CustomerUserDetailsService customerUserDetailsService;
     private IssueLogRepository issueLogRepository;
 
+
     @Autowired
-    public ReceptionServiceImpl(ReceptionRepository receptionRepository, EmailRecipientsRepository emailRecipientsRepository, SendEmailService sendEmailService, SchedulerRepository schedulerRepository, ArticleRepository articleRepository, VendorRepository vendorRepository, UnitRepository unitRepository, CompanyRepository companyRepository, WarehouseRepository warehouseRepository, StatusService statusService, StockRepository stockRepository, TransactionService transactionService, IssueLogService issueLogService, CustomerUserDetailsService customerUserDetailsService, IssueLogRepository issueLogRepository) {
+    public ReceptionServiceImpl(ReceptionRepository receptionRepository, EmailRecipientsRepository emailRecipientsRepository, SendEmailService sendEmailService, SchedulerRepository schedulerRepository, ArticleRepository articleRepository, VendorRepository vendorRepository, UnitRepository unitRepository, CompanyRepository companyRepository, WarehouseRepository warehouseRepository, StatusService statusService, StatusRepository statusRepository, StockRepository stockRepository, TransactionService transactionService, IssueLogService issueLogService, CustomerUserDetailsService customerUserDetailsService, IssueLogRepository issueLogRepository) {
         this.receptionRepository = receptionRepository;
         this.emailRecipientsRepository = emailRecipientsRepository;
         this.sendEmailService = sendEmailService;
@@ -58,12 +60,14 @@ public class ReceptionServiceImpl implements ReceptionService {
         this.companyRepository = companyRepository;
         this.warehouseRepository = warehouseRepository;
         this.statusService = statusService;
+        this.statusRepository = statusRepository;
         this.stockRepository = stockRepository;
         this.transactionService = transactionService;
         this.issueLogService = issueLogService;
         this.customerUserDetailsService = customerUserDetailsService;
         this.issueLogRepository = issueLogRepository;
     }
+
 
     @Override
     public void add(Reception reception) {
@@ -72,11 +76,40 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     @Override
     public void addNew(Reception reception) {
+        reception.setStatus(statusRepository.getStatusByStatusName("creation_pending","Reception"));
+        reception.setPieces_qty(0L);
+        receptionRepository.save(reception);
         Transaction transactionAdded = new Transaction();
         transactionAdded.setTransactionDescription("Reception created manually");
         transactionAdded.setAdditionalInformation("Reception Number: " + reception.getReceptionNumber() + " created");
         transactionAdded.setTransactionGroup("Reception");
         transactionAdded.setTransactionType("111");
+        transactionAdded.setCreated(reception.getCreated());
+        transactionAdded.setCreatedBy(SecurityUtils.usernameForActivations());
+        transactionAdded.setCompany(reception.getCompany());
+        transactionAdded.setWarehouse(reception.getWarehouse());
+        transactionAdded.setReceptionNumber(reception.getReceptionNumber());
+        transactionAdded.setArticle(0L);
+        transactionAdded.setQuality("");
+        transactionAdded.setUnit("");
+        transactionAdded.setVendor("");
+        transactionAdded.setQuantity(0L);
+        transactionAdded.setHdNumber(0L);
+        transactionAdded.setReceptionStatus("Created");
+
+        transactionService.add(transactionAdded);
+    }
+
+    @Override
+    public void addNewReceptionLine(Reception reception) {
+        reception.setStatus(statusRepository.getStatusByStatusName("creation_pending","Reception"));
+        reception.setHd_number(nextPalletNbr());
+        receptionRepository.save(reception);
+        Transaction transactionAdded = new Transaction();
+        transactionAdded.setTransactionDescription("Reception Line created manually");
+        transactionAdded.setAdditionalInformation("Reception line for reception number: " + reception.getReceptionNumber() + " created");
+        transactionAdded.setTransactionGroup("Reception");
+        transactionAdded.setTransactionType("116");
         transactionAdded.setCreated(reception.getCreated());
         transactionAdded.setCreatedBy(SecurityUtils.usernameForActivations());
         transactionAdded.setCompany(reception.getCompany());
@@ -88,18 +121,31 @@ public class ReceptionServiceImpl implements ReceptionService {
         transactionAdded.setVendor(reception.getVendor().getName());
         transactionAdded.setQuantity(reception.getPieces_qty());
         transactionAdded.setHdNumber(reception.getHd_number());
-        transactionAdded.setReceptionStatus("Created");
-        receptionRepository.save(reception);
+        transactionAdded.setReceptionStatus("creation_pending");
         transactionService.add(transactionAdded);
     }
 
     @Override
     public void edit(Reception reception) {
         Transaction transactionEdited = new Transaction();
-        transactionEdited.setTransactionDescription("Reception edited manually");
-        transactionEdited.setAdditionalInformation("Reception Number: " + reception.getReceptionNumber() + " edited");
+        if (reception.getStatus() == null){
+            transactionEdited.setTransactionDescription("First line for Reception created");
+            transactionEdited.setAdditionalInformation("First line for Reception number: " + reception.getReceptionNumber() + " created");
+            transactionEdited.setTransactionType("117");
+            reception.setStatus(statusRepository.getStatusByStatusName("creation_pending","Reception"));
+            reception.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        }
+        if (reception.getStatus() != null){
+            transactionEdited.setTransactionDescription("Reception edited manually");
+            transactionEdited.setAdditionalInformation("Reception Number: " + reception.getReceptionNumber() + " edited");
+            transactionEdited.setTransactionType("112");
+        }
+
+        if(reception.getHd_number() == null){
+            reception.setHd_number(nextPalletNbr());
+        }
+
         transactionEdited.setTransactionGroup("Reception");
-        transactionEdited.setTransactionType("112");
         transactionEdited.setCreated(reception.getCreated());
         transactionEdited.setCreatedBy(SecurityUtils.usernameForActivations());
         transactionEdited.setCompany(reception.getCompany());
@@ -111,32 +157,28 @@ public class ReceptionServiceImpl implements ReceptionService {
         transactionEdited.setVendor(reception.getVendor().getName());
         transactionEdited.setQuantity(reception.getPieces_qty());
         transactionEdited.setHdNumber(reception.getHd_number());
-        if(reception.isFinished()){
-            transactionEdited.setReceptionStatus("Finished");
-        }
-        else if(reception.isCreation_closed() && !reception.isFinished()){
-            transactionEdited.setReceptionStatus("Closed");
-        }
-        else if(!reception.isCreation_closed() && !reception.isFinished()){
-            transactionEdited.setReceptionStatus("Created");
-        }
-
+        transactionEdited.setReceptionStatus(reception.getStatus().getStatus());
         transactionService.add(transactionEdited);
         receptionRepository.save(reception);
     }
 
-    @Override
-    public int getCreatedReceptionById(Long receptionNbr) {
-        return receptionRepository.getCreatedReceptionById(receptionNbr);
-    }
+//    @Override
+//    public int getCreatedReceptionById(Long receptionNbr) {
+//        return receptionRepository.getCreatedReceptionById(receptionNbr);
+//    }
 
-    @Override
-    public void updateCloseCreationValue(Long receptionNbr) {
-        if (getCreatedReceptionById(receptionNbr) > 0) {
-            List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNbr);
-                receptionRepository.updateCloseCreationValue(receptionNbr);
-        }
-    }
+//    @Override
+//    public void updateCloseCreationValue(Long receptionNbr) {
+//        if (getCreatedReceptionById(receptionNbr) > 0) {
+//            Status creationReceptionFinished = statusRepository.getStatusByStatusName("unloading_pending","Reception");
+//            List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNbr);
+//            for (Reception value : receptions) {
+//                value.setStatus(creationReceptionFinished);
+//
+//            }
+//            receptionRepository.updateCloseCreationValue(receptionNbr);
+//        }
+//    }
 
 
     @Override
@@ -213,19 +255,18 @@ public class ReceptionServiceImpl implements ReceptionService {
             }
 
         } catch (IOException ex) {
-            System.out.println("Cannot save a file" + reception);
+            log.error("Cannot save a file" + reception);
         }
         String filePath = String.valueOf(reception);
         Path path = Paths.get(filePath);
-        System.out.println(path + " of reception file");
+        log.error(path + " of reception file");
         if (Files.exists(path)) {
             for (EmailRecipients value : mailGroup) {
                 sendEmailService.sendEmail(value.getEmail(), "Dear client,<br/><br/>in Warehouse: <b>" + warehouse + "</b> our team receipt of goods for Reception number: <b>" + receptionNbr + "</b>. After couple of minutes goods should be located in proper warehouse areas and available to proceed", "Reception " + receptionNbr, filePath);
 
             }
         } else {
-            System.out.println(path + " is empty, cannot send the email");
-            log.debug(path + " is empty, cannot send the email");
+            log.error(path + " is empty, cannot send the email");
         }
 
     }
@@ -266,6 +307,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     public void closeCreation(Long id) {
         Reception reception = receptionRepository.getOne(id);
+        List<Status> statuses = statusService.getStatus();
         List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(reception.getReceptionNumber());
         for(Reception value : receptions){
             Transaction transactionEdited = new Transaction();
@@ -287,7 +329,7 @@ public class ReceptionServiceImpl implements ReceptionService {
             transactionEdited.setWarehouse(value.getWarehouse());
             transactionService.add(transactionEdited);
         }
-        reception.setCreation_closed(true);
+        reception.setStatus(statuses.get(6));
         Long receptionNmbr = receptionRepository.getOne(id).getReceptionNumber();
         receptionRepository.updateCloseCreationValue(receptionNmbr);
     }
@@ -295,6 +337,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     public void openCreation(Long id) {
         Reception reception = receptionRepository.getOne(id);
+        List<Status> statuses = statusService.getStatus();
         List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(reception.getReceptionNumber());
         for(Reception value : receptions){
             Transaction transactionEdited = new Transaction();
@@ -316,7 +359,7 @@ public class ReceptionServiceImpl implements ReceptionService {
             transactionEdited.setWarehouse(value.getWarehouse());
             transactionService.add(transactionEdited);
         }
-        reception.setCreation_closed(false);
+        reception.setStatus(statuses.get(5));
         receptionRepository.save(reception);
     }
 
@@ -344,15 +387,19 @@ public class ReceptionServiceImpl implements ReceptionService {
                 fileWriter.append("Unit:" + values.getUnit().getName() + "\n");
                 fileWriter.append("Company:" + values.getCompany().getName() + "\n");
                 fileWriter.append("Warehouse:" + values.getWarehouse().getName() + "\n");
-                if (values.isCreation_closed() && !values.isFinished()) {
-                    fileWriter.append("Reception status: Closed - Goods are on reception locations and checking is started" + "\n");
+                if (values.getStatus().getStatus() == "closed") {
+                    fileWriter.append("Reception status: Closed - Goods were transferred to stock locations" + "\n");
                     fileWriter.append("Closed:" + values.getLast_update() + "\n");
                     fileWriter.append("Closed by:" + values.getChangeBy() + "\n");
-                } else if (values.isFinished()) {
-                    fileWriter.append("Reception status: Finished - Goods were counted properly and starts be available on stock" + "\n");
+                } else if (values.getStatus().getStatus() == "put_away_pending") {
+                    fileWriter.append("Reception status: Put away pending - Goods are checking by our employee and locate in stock locations" + "\n");
                     fileWriter.append("Finished:" + values.getLast_update() + "\n");
                     fileWriter.append("Finished by:" + values.getChangeBy() + "\n");
-                } else if (!values.isCreation_closed() && !values.isFinished()) {
+                } else if (values.getStatus().getStatus() == "unloading_pending") {
+                    fileWriter.append("Reception status: Unloading pending - Truck arrived to our warehouse and unloading is started" + "\n");
+                    fileWriter.append("Created:" + values.getLast_update() + "\n");
+                    fileWriter.append("Created by:" + values.getChangeBy() + "\n");
+                } else if (values.getStatus().getStatus() == "creation_pending") {
                     fileWriter.append("Reception status: Created - Reception created but physically are not in warehouse yet" + "\n");
                     fileWriter.append("Created:" + values.getLast_update() + "\n");
                     fileWriter.append("Created by:" + values.getChangeBy() + "\n");

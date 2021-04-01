@@ -16,11 +16,19 @@ public class StatusFixture {
 
     private StatusService statusService;
     private List<Status> statusList = Arrays.asList(
-            new Status(null, "on_hand", "Available on stock", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Status(null, "to_send", "Assigned to send", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Status(null, "on_reception", "Assigned to receipt", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Status(null, "destroyed", "Destroyed, ready to utilization", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Status(null, "damaged", "Damaged", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
+            new Status(null, "on_hand", "Available on stock","Stock", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "to_send", "Assigned to send","StockShipment", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "on_reception", "Assigned to receipt","StockReception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "destroyed", "Destroyed, ready to utilization","Stock", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "damaged", "Damaged","Stock", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "creation_pending", "Reception during creation","Reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "unloading_pending", "Reception during creation","Reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "put_away_pending", "Reception during putting away to destination location process","Reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "closed", "Reception","Put away process finished for all handle devices for reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "creation_pending", "Shipment","Put away process finished for all handle devices for reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "picking_pending", "Shipment","Put away process finished for all handle devices for reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "put_away_pending", "Shipment","Put away process finished for all handle devices for reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "closed", "Shipment","Put away process finished for all handle devices for reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
 
     );
 
