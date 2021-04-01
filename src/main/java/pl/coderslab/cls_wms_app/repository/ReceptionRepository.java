@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cls_wms_app.entity.Reception;
-import pl.coderslab.cls_wms_app.entity.Shipment;
 
+
+import javax.persistence.SqlResultSetMapping;
 import java.util.List;
 
 @Repository
@@ -27,6 +28,9 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
 
     //TODO Think about replace getReceptions on query like below or make a logic by Thymeleaf to display proper data in view
     // Select reception_number, sum(pieces_qty), s.status,max(r.created),max(r.last_update),r.change_by from receptions r inner join status s on r.status_id = s.id group by reception_number, s.status, change_by
+
+
+
 
     @Query(value ="Select count(distinct r.reception_number) From receptions r inner join status s on r.status_id = s.id join  company c on r.company_id = c.id join  warehouse w on r.warehouse_id = w.id JOIN  users u on u.company = c.name where s.status = 'creation_pending' and w.id =?1 and u.username like ?2", nativeQuery = true)
     int qtyOfOpenedReceptions(Long id, String username);
@@ -75,5 +79,20 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
 
     @Query(value="Select distinct s.status from receptions r inner join status s on s.id = r.status_id where reception_number = ?1",nativeQuery = true)
     String getStatusByReceptionNumber(Long receptionNumber);
+
+
+    @Query(value ="Select reception_number receptionNumber, sum(pieces_qty) pieces_qty, s.status,max(r.created) created,max(r.last_update) last_update,max(r.change_by) changeBy,c.name company, l.location_name location from receptions r inner join status s on r.status_id = s.id inner join warehouse w on r.warehouse_id = w.id inner join company c on r.company_id = c.id left join location l on r.location_id = l.id where c.name =?1 and w.name = ?2 group by c.name, l.location_name, s.status, reception_number",nativeQuery = true)
+    List<ReceptionViewObject> getReceptionSummary(String companyName,String warehouseName);
+
+    public static interface ReceptionViewObject {
+         Long getReceptionNumber();
+         Long getPieces_qty();
+         String getStatus();
+         String getCreated();
+         String getLast_update();
+         String getChangeBy();
+         String getCompany();
+         String getLocation();
+    }
 
 }

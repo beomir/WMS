@@ -78,6 +78,9 @@ public class Location {
     @OneToMany(mappedBy="location")
     public List<Stock> stockList = new ArrayList<>();
 
+    @OneToMany(mappedBy="location")
+    public List<Reception> receptionList = new ArrayList<>();
+
     @Override
     public String toString() {
         return "Location{" +

@@ -22,13 +22,13 @@ public class StatusFixture {
             new Status(null, "destroyed", "Destroyed, ready to utilization","Stock", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
             new Status(null, "damaged", "Damaged","Stock", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
             new Status(null, "creation_pending", "Reception during creation","Reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Status(null, "unloading_pending", "Reception during creation","Reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "unloading_pending", "Reception during unloading","Reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
             new Status(null, "put_away_pending", "Reception during putting away to destination location process","Reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Status(null, "closed", "Reception","Put away process finished for all handle devices for reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Status(null, "creation_pending", "Shipment","Put away process finished for all handle devices for reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Status(null, "picking_pending", "Shipment","Put away process finished for all handle devices for reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Status(null, "put_away_pending", "Shipment","Put away process finished for all handle devices for reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Status(null, "closed", "Shipment","Put away process finished for all handle devices for reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
+            new Status(null, "closed", "Put away process finished for all handle devices for reception","Reception", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "creation_pending", "Shipment during creation","Shipment", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "picking_pending", "Shipment picking","Shipment", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "put_away_pending", "Shipment putaway","Shipment", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "closed", "Shipment closed","Shipment", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
 
     );
 

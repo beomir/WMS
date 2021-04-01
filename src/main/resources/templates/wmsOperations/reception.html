@@ -49,21 +49,21 @@
 							<ol><div th:text="${reception.receptionNumber}"></div>
 							<li>
 								<ul>
-									<li th:if="${reception.status.status == 'put_away_pending'}"><a th:href="@{/reception/finishedReception/{id}(id=${reception.id})}" th:text="#{app.finishPutAwayWorks}">Finish put away Works</a></li>
-									<li th:if="${reception.status.status == 'unloading_pending'}"><a th:href="@{/reception/finishedReception/{id}(id=${reception.id})}" th:text="#{app.unloadingFinished}">Unloading Finished</a></li>
-									<li th:if="${reception.status.status == 'unloading_pending'}"><a th:href="@{/reception/openCreationReception/{id}(id=${reception.id})}" th:text="#{app.backToCreation}">Back to Create</a></li>
-									<li th:if="${reception.status.status == 'creation_pending' }"><a th:href="@{/reception/closeCreationReception/{id}(id=${reception.id})}" th:text="#{app.truckArrived}">Creation Finish - truck arrived</a></li>
-									<li th:if="${reception.status.status == 'creation_pending' && reception.pieces_qty != 0}"><a th:href="@{/reception/receptionDetails/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.checkDetails}">Check Details</a></li>
+									<li th:if="${reception.status == 'put_away_pending'}"><a th:href="@{/reception/finishedReception/{receptionNumber}(id=${reception.receptionNumber})}" th:text="#{app.finishPutAwayWorks}">Finish put away Works</a></li>
+									<li th:if="${reception.status == 'unloading_pending'}"><a th:href="@{/reception/finishedReception/{receptionNumber}(id=${reception.receptionNumber})}" th:text="#{app.unloadingFinished}">Unloading Finished</a></li>
+									<li th:if="${reception.status == 'unloading_pending'}"><a th:href="@{/reception/openCreationReception/{receptionNumber}(id=${reception.receptionNumber})}" th:text="#{app.backToCreation}">Back to Create</a></li>
+									<li th:if="${reception.status == 'creation_pending' }"><a th:href="@{/reception/closeCreationReception/{receptionNumber}(id=${reception.receptionNumber})}" th:text="#{app.truckArrived}">Creation Finish - truck arrived</a></li>
+									<li th:if="${reception.status == 'creation_pending' && reception.pieces_qty != 0}"><a th:href="@{/reception/receptionDetails/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.checkDetails}">Check Details</a></li>
 									<li th:if="${reception.pieces_qty == 0 }"><a th:href="@{/reception/editReceptionLine/{id}(id=${reception.id})}" th:text="#{app.createNewReceptionLine}">Create New Reception line</a></li>
 								</ul>
 							</li>
 						</ol>
 						</td>
 				        <td class="tables" th:text="${reception.pieces_qty}"></td>
-						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${reception.company.name}"></td>
-				        <td class="tables" th:text="${reception.status.status}"></td>
-						<td th:if="${reception.location == null}" th:text="${reception.location.locationName}" class="tables"></td>
-						<td th:if="${reception.location != null}" th:text="#{app.receptionDuringCreation}" class="tables"></td>
+						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${reception.company}"></td>
+				        <td class="tables" th:text="${reception.status}"></td>
+						<td th:if="${reception.location != null}" th:text="${reception.location}" class="tables"></td>
+						<td th:if="${reception.location == null}" th:text="#{app.receptionDuringCreation}" class="tables"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.created,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.last_update,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${reception.changeBy}"></td>

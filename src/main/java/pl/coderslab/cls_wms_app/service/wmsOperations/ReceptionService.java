@@ -39,9 +39,9 @@ public interface ReceptionService {
 
     List<Integer> pallets();
 
-    void closeCreation(Long id);
+    void closeCreation(Long receptionNumber);
 
-    void openCreation(Long id);
+    void openCreation(Long receptionNumber);
 
     void sendReceptions(String company);
 

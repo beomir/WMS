@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
+import pl.coderslab.cls_wms_app.repository.CompanyRepository;
 import pl.coderslab.cls_wms_app.repository.ReceptionRepository;
-import pl.coderslab.cls_wms_app.repository.StatusRepository;
+import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
@@ -43,10 +44,12 @@ public class ReceptionController {
     private final UsersService usersService;
     private final ReceptionServiceImpl receptionServiceImpl;
     private final ReceptionRepository receptionRepository;
+    private final WarehouseRepository warehouseRepository;
+    private final CompanyRepository companyRepository;
     private CustomerUserDetailsService customerUserDetailsService;
 
     @Autowired
-    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository,  CustomerUserDetailsService customerUserDetailsService) {
+    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository, WarehouseRepository warehouseRepository, CompanyRepository companyRepository, CustomerUserDetailsService customerUserDetailsService) {
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.articleService = articleService;
@@ -56,13 +59,16 @@ public class ReceptionController {
         this.usersService = usersService;
         this.receptionServiceImpl = receptionServiceImpl;
         this.receptionRepository = receptionRepository;
+        this.warehouseRepository = warehouseRepository;
+        this.companyRepository = companyRepository;
         this.customerUserDetailsService = customerUserDetailsService;
     }
 
 
     @GetMapping("reception")
     public String list(Model model) {
-        List<Reception> receptions = receptionService.getReceptions(customerUserDetailsService.chosenWarehouse,SecurityUtils.username());
+//        List<Reception> receptions = receptionService.getReceptions(customerUserDetailsService.chosenWarehouse,SecurityUtils.username());
+        List<ReceptionRepository.ReceptionViewObject> receptions = receptionRepository.getReceptionSummary(companyRepository.getOneCompanyByUsername(SecurityUtils.username()).getName(),warehouseRepository.getOne(customerUserDetailsService.chosenWarehouse).getName());
         List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("fileStatus", receptionServiceImpl.insertReceptionFileResult);
         model.addAttribute("receptions", receptions);
@@ -167,18 +173,18 @@ public class ReceptionController {
         return "redirect:/reception/reception";
     }
 
-    @GetMapping("/finishedReception/{id}")
-    public String finishedReception(@PathVariable Long id) {
-        Long getReceptionById = receptionService.findById(id).getReceptionNumber();
+    @GetMapping("/finishedReception/{receptionNumber}")
+    public String finishedReception(@PathVariable Long receptionNumber) {
+        Long getReceptionById = receptionNumber;
         receptionService.updateFinishedReceptionValue(getReceptionById);
         receptionService.insertDataToStockAfterFinishedReception(getReceptionById);
         receptionService.finishReception(getReceptionById);
         return "redirect:/reception/reception";
     }
 
-    @GetMapping("/closeCreationReception/{id}")
-    public String closeCreationReception(@PathVariable Long id) {
-        receptionService.closeCreation(id);
+    @GetMapping("/closeCreationReception/{receptionNumber}")
+    public String closeCreationReception(@PathVariable Long receptionNumber) {
+        receptionService.closeCreation(receptionNumber);
         return "redirect:/reception/reception";
     }
 

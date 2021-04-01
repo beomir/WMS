@@ -47,9 +47,6 @@ public class Reception {
     private Warehouse warehouse;
 
 
-//    private boolean creation_closed;
-//    private boolean finished;
-
     private String created;
 
     private String last_update;

@@ -305,10 +305,8 @@ public class ReceptionServiceImpl implements ReceptionService {
 
 
     @Override
-    public void closeCreation(Long id) {
-        Reception reception = receptionRepository.getOne(id);
-        List<Status> statuses = statusService.getStatus();
-        List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(reception.getReceptionNumber());
+    public void closeCreation(Long receptionNumber) {
+        List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
         for(Reception value : receptions){
             Transaction transactionEdited = new Transaction();
             transactionEdited.setTransactionDescription("Reception Closed");
@@ -328,17 +326,14 @@ public class ReceptionServiceImpl implements ReceptionService {
             transactionEdited.setCompany(value.getCompany());
             transactionEdited.setWarehouse(value.getWarehouse());
             transactionService.add(transactionEdited);
+            value.setStatus(statusRepository.getStatusByStatusName("unloading_pending","Reception"));
+            receptionRepository.save(value);
         }
-        reception.setStatus(statuses.get(6));
-        Long receptionNmbr = receptionRepository.getOne(id).getReceptionNumber();
-        receptionRepository.updateCloseCreationValue(receptionNmbr);
     }
 
     @Override
-    public void openCreation(Long id) {
-        Reception reception = receptionRepository.getOne(id);
-        List<Status> statuses = statusService.getStatus();
-        List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(reception.getReceptionNumber());
+    public void openCreation(Long receptionNumber) {
+        List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
         for(Reception value : receptions){
             Transaction transactionEdited = new Transaction();
             transactionEdited.setTransactionDescription("Reception Opened");
@@ -358,9 +353,10 @@ public class ReceptionServiceImpl implements ReceptionService {
             transactionEdited.setCompany(value.getCompany());
             transactionEdited.setWarehouse(value.getWarehouse());
             transactionService.add(transactionEdited);
+            value.setStatus(statusRepository.getStatusByStatusName("creation_pending","Reception"));
+            receptionRepository.save(value);
         }
-        reception.setStatus(statuses.get(5));
-        receptionRepository.save(reception);
+
     }
 
     @Override
