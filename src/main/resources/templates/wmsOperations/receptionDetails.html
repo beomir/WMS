@@ -21,12 +21,16 @@
 		<div th:include="fragments/stockNavigation :: stockNavigation"></div>
 	</div>
 
+
 	<div id="content" class="mainw3-agileinfo">
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
 				<div class="titleList" th:text="#{app.receptionNumber} + ' ' + ${receptionHeader}"></div><br/>
-				<a th:href="@{/reception/reception}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.checkReceptions}"></div></a>
+				<a th:href="@{/reception/reception}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.checkReceptions}"></div></a>
+				<a th:href="@{/reception/receptions-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.findReception}"></div></a>
+				<a  th:href="@{reception/formReception}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.CreateReception}"></div></a>
+				<a th:href="@{/workDetails}" target="_blank"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.works}"></div></a>
 				<br/><br/>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">

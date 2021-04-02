@@ -1,6 +1,7 @@
 package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 import pl.coderslab.cls_wms_app.entity.Reception;
+import pl.coderslab.cls_wms_app.temporaryObjects.ReceptionSearch;
 
 import java.io.File;
 import java.util.List;
@@ -17,11 +18,6 @@ public interface ReceptionService {
 
     List<Reception> getReception(Long id);
 
-//    int getCreatedReceptionById(Long receptionNbr);
-
-//    void updateCloseCreationValue(Long receptionNbr);
-
-    void updateFinishedReceptionValue(Long receptionNbrtoFinish);
 
     void insertDataToStockAfterFinishedReception(Long receptionNbr);
 
@@ -48,5 +44,13 @@ public interface ReceptionService {
     void insertFileContentToDB(File fsFile);
 
     void addNewReceptionLine(Reception reception);
+
+    void assignDoorLocationToReception(Long receptionNumber, Long doorLocation);
+
+    void finishUnloading(Long receptionNumber);
+
+    void save(ReceptionSearch receptionSearch);
+
+    List<Reception> getReceptionsByCriteria(String createdBy, String warehouse, String company,String vendor, String receptionNumber,String hdNumber,String status,String location,String createdFrom,String createdTo);
 
 }

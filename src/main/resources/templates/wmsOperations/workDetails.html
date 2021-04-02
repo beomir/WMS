@@ -46,9 +46,8 @@
 						<th th:text="#{app.from} + ' ' + #{app.location}" class="tables">From location</th>
 						<th th:text="#{app.to} + ' ' + #{app.location}" class="tables">To location</th>
 						<th sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="#{app.company}"></th>
-						<th class="tables">Created</th>
-						<th class="tables">Last update</th>
-						<th class="tables">Changed by</th>
+						<th th:text="#{app.created}" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" class="tables">Last update</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="workDetails: ${workDetails}">
 						<td class="tables" style="padding-bottom: 2px">
@@ -73,9 +72,7 @@
 						<td class="tables" th:text="${workDetails.toLocation.locationName}"></td>
 						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${workDetails.company.name}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(workDetails.created,0,19),'T',' ')}"></td>
-						<td class="tables" th:text="${#strings.replace(#strings.substring(workDetails.last_update,0,19),'T',' ')}"></td>
-						<td class="tables" th:text="${workDetails.changeBy}"></td>
-
+						<td th:title="${workDetails.changeBy}" class="tables" th:text="${#strings.replace(#strings.substring(workDetails.last_update,0,19),'T',' ')}"></td>
 				    </tr>
 				</table>
 

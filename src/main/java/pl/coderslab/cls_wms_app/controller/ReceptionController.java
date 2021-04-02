@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
-import pl.coderslab.cls_wms_app.repository.CompanyRepository;
-import pl.coderslab.cls_wms_app.repository.ReceptionRepository;
-import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
+import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
@@ -22,6 +20,8 @@ import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
 import pl.coderslab.cls_wms_app.service.wmsValues.VendorService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
+import pl.coderslab.cls_wms_app.temporaryObjects.ReceptionSearch;
+import pl.coderslab.cls_wms_app.temporaryObjects.TransactionSearch;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -46,10 +46,13 @@ public class ReceptionController {
     private final ReceptionRepository receptionRepository;
     private final WarehouseRepository warehouseRepository;
     private final CompanyRepository companyRepository;
+    private final LocationRepository locationRepository;
+    private final StatusRepository statusRepository;
     private CustomerUserDetailsService customerUserDetailsService;
+    public ReceptionSearch receptionSearch;
 
     @Autowired
-    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository, WarehouseRepository warehouseRepository, CompanyRepository companyRepository, CustomerUserDetailsService customerUserDetailsService) {
+    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository, WarehouseRepository warehouseRepository, CompanyRepository companyRepository, LocationRepository locationRepository, StatusRepository statusRepository, CustomerUserDetailsService customerUserDetailsService,ReceptionSearch receptionSearch) {
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.articleService = articleService;
@@ -61,7 +64,10 @@ public class ReceptionController {
         this.receptionRepository = receptionRepository;
         this.warehouseRepository = warehouseRepository;
         this.companyRepository = companyRepository;
+        this.locationRepository = locationRepository;
+        this.statusRepository = statusRepository;
         this.customerUserDetailsService = customerUserDetailsService;
+        this.receptionSearch = receptionSearch;
     }
 
 
@@ -73,11 +79,13 @@ public class ReceptionController {
         model.addAttribute("fileStatus", receptionServiceImpl.insertReceptionFileResult);
         model.addAttribute("receptions", receptions);
         model.addAttribute("warehouse", warehouse);
+        model.addAttribute("message", receptionSearch.message);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         String token = usersService.FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());
+        log.error("reception get receptionSearch.message: " + receptionSearch.message);
         if(customerUserDetailsService.chosenWarehouse == null){
             return "redirect:/warehouse";
         }
@@ -173,20 +181,7 @@ public class ReceptionController {
         return "redirect:/reception/reception";
     }
 
-    @GetMapping("/finishedReception/{receptionNumber}")
-    public String finishedReception(@PathVariable Long receptionNumber) {
-        Long getReceptionById = receptionNumber;
-        receptionService.updateFinishedReceptionValue(getReceptionById);
-        receptionService.insertDataToStockAfterFinishedReception(getReceptionById);
-        receptionService.finishReception(getReceptionById);
-        return "redirect:/reception/reception";
-    }
 
-    @GetMapping("/closeCreationReception/{receptionNumber}")
-    public String closeCreationReception(@PathVariable Long receptionNumber) {
-        receptionService.closeCreation(receptionNumber);
-        return "redirect:/reception/reception";
-    }
 
     @GetMapping("/openCreationReception/{id}")
     public String openCreationReception(@PathVariable Long id) {
@@ -194,10 +189,69 @@ public class ReceptionController {
         return "redirect:/reception/reception";
     }
 
+
+    @GetMapping("/unloadingDoor/{receptionNumber}")
+    public String closeCreationAndStartUnloading(@PathVariable Long receptionNumber,Model model) {
+        receptionService.closeCreation(receptionNumber);
+        Long doorLocation = 0L;
+        List<Location> receptionDoorLocations = locationRepository.receptionDoorLocations(customerUserDetailsService.chosenWarehouse);
+        model.addAttribute("locations", receptionDoorLocations);
+        model.addAttribute(receptionNumber);
+        model.addAttribute(doorLocation);
+        usersService.loggedUserData(model);
+        return "wmsOperations/unloadingDoor";
+    }
+
+    @PostMapping("unloadingDoor")
+    public String closeCreationAndStartUnloadingPost(Long receptionNumber, Long doorLocation) {
+        receptionService.assignDoorLocationToReception(receptionNumber,doorLocation);
+        return "redirect:/reception/reception";
+    }
+
+    @GetMapping("/finishUnloadingReception/{receptionNumber}")
+    public String finishUnloading(@PathVariable Long receptionNumber) {
+        receptionService.finishUnloading(receptionNumber);
+        return "redirect:/reception/reception";
+    }
+
+    @GetMapping("/finishedReception/{receptionNumber}")
+    public String finishedReception(@PathVariable Long receptionNumber) {
+        receptionService.insertDataToStockAfterFinishedReception(receptionNumber);
+        receptionService.finishReception(receptionNumber);
+        return "redirect:/reception/reception";
+    }
+
     //edit
 
+    @GetMapping("/editReception/{receptionNumber}")
+    public String updateReception(@PathVariable Long receptionNumber, Model model,@SessionAttribute Long warehouseId) {
+        Reception reception = receptionRepository.getOneReceptionByReceptionNumber(receptionNumber);
+        List<Article> articles = articleService.getArticle(SecurityUtils.username());
+        List<Integer> pallets = receptionService.pallets();
+        List<Unit> units = unitService.getUnit();
+        List<Vendor> vendors = vendorService.getVendor(SecurityUtils.username());
+        List<Warehouse> warehouses = warehouseService.getWarehouse(warehouseId);
+        model.addAttribute(reception);
+        model.addAttribute("articles", articles);
+        model.addAttribute("vendors", vendors);
+        model.addAttribute("warehouses", warehouses);
+        model.addAttribute("units", units);
+        model.addAttribute("pallets", pallets);
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
+        model.addAttribute("localDateTime", LocalDateTime.now());
+        usersService.loggedUserData(model);
+        return "wmsOperations/editReception";
+    }
+
+    @PostMapping("editReception")
+    public String updateReceptionPost(Reception reception) {
+        receptionService.edit(reception);
+        return "redirect:/reception/reception";
+    }
+
     @GetMapping("/editReceptionLine/{id}")
-    public String updateReception(@PathVariable Long id, Model model,@SessionAttribute Long warehouseId) {
+    public String updateReceptionLine(@PathVariable Long id, Model model,@SessionAttribute Long warehouseId) {
         Reception reception = receptionService.findById(id);
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         List<Integer> pallets = receptionService.pallets();
@@ -218,11 +272,9 @@ public class ReceptionController {
     }
 
     @PostMapping("editReceptionLine")
-    public String updateReceptionPost(Reception reception) {
+    public String updateReceptionLinePost(Reception reception) {
         receptionService.edit(reception);
-//        receptionService.getCreatedReceptionById(reception.getReceptionNumber());
-//        receptionService.updateCloseCreationValue(reception.getReceptionNumber());
-        return "redirect:/reception/reception";
+        return "redirect:/reception/receptionDetails/" + reception.getReceptionNumber();
     }
 
     @GetMapping("formReceptionLine/{receptionNumber}")
@@ -262,6 +314,35 @@ public class ReceptionController {
         return "redirect:/reception/reception";
     }
 
+    @GetMapping("receptions-browser")
+    public String browser(Model model) {
+        model.addAttribute("receptionSearching", new ReceptionSearch());
+        Company companys = companyService.getOneCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
+        List<Warehouse> warehouses = warehouseService.getWarehouse();
+        model.addAttribute("warehouses", warehouses);
+        List<Vendor> vendors = vendorService.getVendor(SecurityUtils.username());
+        model.addAttribute("vendors", vendors);
+        List<Status> status = statusRepository.getStatusesByProcess("Reception");
+        model.addAttribute("status", status);
+        return "wmsOperations/receptions-browser";
+    }
+
+    @PostMapping("receptions-browser")
+    public String findReceptions(ReceptionSearch receptionSearching) {
+        log.error("Post createdBy: " + receptionSearching.createdBy);
+        log.error("Post warehouse: " + receptionSearching.warehouse);
+        log.error("Post company: " + receptionSearching.company);
+        log.error("Post vendor: " + receptionSearching.vendor);
+        log.error("Post receptionNumber: " + receptionSearching.receptionNumber);
+        log.error("Post hdNumber: " + receptionSearching.hdNumber);
+        log.error("Post status: " + receptionSearching.status);
+        log.error("Post location: " + receptionSearching.location);
+        log.error("Post createdFrom: " + receptionSearching.createdFrom);
+        log.error("Post createdTo: " + receptionSearching.createdTo);
+        receptionService.save(receptionSearching);
+        return "redirect:/reception/reception";
+    }
 
 
 }

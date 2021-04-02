@@ -11,8 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
-import pl.coderslab.cls_wms_app.service.wmsValues.StatusService;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
+import pl.coderslab.cls_wms_app.temporaryObjects.ReceptionSearch;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -38,7 +38,8 @@ public class ReceptionServiceImpl implements ReceptionService {
     private final UnitRepository unitRepository;
     private final CompanyRepository companyRepository;
     private final WarehouseRepository warehouseRepository;
-    private final StatusService statusService;
+    private final WorkDetailsRepository workDetailsRepository;
+    private final LocationRepository locationRepository;
     private final StatusRepository statusRepository;
     private final StockRepository stockRepository;
     private final TransactionService transactionService;
@@ -46,10 +47,10 @@ public class ReceptionServiceImpl implements ReceptionService {
     public String insertReceptionFileResult;
     private CustomerUserDetailsService customerUserDetailsService;
     private IssueLogRepository issueLogRepository;
-
+    public ReceptionSearch receptionSearch;
 
     @Autowired
-    public ReceptionServiceImpl(ReceptionRepository receptionRepository, EmailRecipientsRepository emailRecipientsRepository, SendEmailService sendEmailService, SchedulerRepository schedulerRepository, ArticleRepository articleRepository, VendorRepository vendorRepository, UnitRepository unitRepository, CompanyRepository companyRepository, WarehouseRepository warehouseRepository, StatusService statusService, StatusRepository statusRepository, StockRepository stockRepository, TransactionService transactionService, IssueLogService issueLogService, CustomerUserDetailsService customerUserDetailsService, IssueLogRepository issueLogRepository) {
+    public ReceptionServiceImpl(ReceptionRepository receptionRepository, EmailRecipientsRepository emailRecipientsRepository, SendEmailService sendEmailService, SchedulerRepository schedulerRepository, ArticleRepository articleRepository, VendorRepository vendorRepository, UnitRepository unitRepository, CompanyRepository companyRepository, WarehouseRepository warehouseRepository, WorkDetailsRepository workDetailsRepository, LocationRepository locationRepository, StatusRepository statusRepository, StockRepository stockRepository, TransactionService transactionService, IssueLogService issueLogService, CustomerUserDetailsService customerUserDetailsService, IssueLogRepository issueLogRepository,ReceptionSearch receptionSearch) {
         this.receptionRepository = receptionRepository;
         this.emailRecipientsRepository = emailRecipientsRepository;
         this.sendEmailService = sendEmailService;
@@ -59,13 +60,15 @@ public class ReceptionServiceImpl implements ReceptionService {
         this.unitRepository = unitRepository;
         this.companyRepository = companyRepository;
         this.warehouseRepository = warehouseRepository;
-        this.statusService = statusService;
+        this.workDetailsRepository = workDetailsRepository;
+        this.locationRepository = locationRepository;
         this.statusRepository = statusRepository;
         this.stockRepository = stockRepository;
         this.transactionService = transactionService;
         this.issueLogService = issueLogService;
         this.customerUserDetailsService = customerUserDetailsService;
         this.issueLogRepository = issueLogRepository;
+        this.receptionSearch = receptionSearch;
     }
 
 
@@ -110,81 +113,143 @@ public class ReceptionServiceImpl implements ReceptionService {
         transactionAdded.setAdditionalInformation("Reception line for reception number: " + reception.getReceptionNumber() + " created");
         transactionAdded.setTransactionGroup("Reception");
         transactionAdded.setTransactionType("116");
-        transactionAdded.setCreated(reception.getCreated());
-        transactionAdded.setCreatedBy(SecurityUtils.usernameForActivations());
-        transactionAdded.setCompany(reception.getCompany());
-        transactionAdded.setWarehouse(reception.getWarehouse());
-        transactionAdded.setReceptionNumber(reception.getReceptionNumber());
-        transactionAdded.setArticle(reception.getArticle().getArticle_number());
-        transactionAdded.setQuality(reception.getQuality());
-        transactionAdded.setUnit(reception.getUnit().getName());
-        transactionAdded.setVendor(reception.getVendor().getName());
-        transactionAdded.setQuantity(reception.getPieces_qty());
-        transactionAdded.setHdNumber(reception.getHd_number());
+        saveTransactionModel(reception, transactionAdded);
         transactionAdded.setReceptionStatus("creation_pending");
         transactionService.add(transactionAdded);
     }
 
     @Override
+    public void assignDoorLocationToReception(Long receptionNumber, Long doorLocation) {
+        log.debug("receptionNumber: " + receptionNumber);
+        log.debug("doorLocation: " + doorLocation);
+        List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
+        Location location = locationRepository.getOne(doorLocation);
+        Transaction transaction = new Transaction();
+        transaction.setTransactionDescription("Reception assigned to reception dock door");
+        for (Reception singularReception: receptions) {
+            singularReception.setStatus(statusRepository.getStatusByStatusName("unloading_pending","Reception"));
+            singularReception.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            singularReception.setLocation(location);
+            receptionRepository.save(singularReception);
+            transaction.setAdditionalInformation("Assign reception: " + receptionNumber + " to dock door: " + location.getLocationName());
+            transaction.setReceptionStatus(singularReception.getStatus().getStatus());
+            saveTransactionModel(singularReception, transaction);
+        }
+        transaction.setTransactionType("118");
+        transactionService.add(transaction);
+
+        receptionSearch.message = ("Reception: " + receptionNumber + " assigned to door: " + location.getLocationName());
+
+        log.error("close creation service receptionSearch.message: " + receptionSearch.message);
+    }
+
+    @Override
+    public void finishUnloading(Long receptionNumber) {
+        log.debug("receptionNumber: " + receptionNumber);
+        List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
+        Transaction transaction = new Transaction();
+        for (Reception singularReception: receptions) {
+            singularReception.setStatus(statusRepository.getStatusByStatusName("put_away_pending","Reception"));
+            receptionRepository.save(singularReception);
+            String destinationLocation = locationRepository.getAvailableLocation("%" + singularReception.getArticle().getArticleTypes().getArticleClass() + "%",singularReception.getArticle().getWeight(),singularReception.getArticle().getVolume(),singularReception.getWarehouse().getName()).getLocation();
+            log.error("destinationLocation: " + destinationLocation);
+            WorkDetails work = new WorkDetails();
+            work.setPiecesQty(singularReception.getPieces_qty());
+            work.setArticle(singularReception.getArticle());
+            work.setCompany(singularReception.getCompany());
+            work.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            work.setChangeBy(SecurityUtils.usernameForActivations());
+            work.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            work.setWarehouse(singularReception.getWarehouse());
+            work.setHdNumber(singularReception.getHd_number());
+            work.setStatus(false);
+            work.setFromLocation(singularReception.getLocation());
+            work.setToLocation(locationRepository.findLocationByLocationName(destinationLocation));
+            work.setHandle("Reception PutAway");
+            work.setWorkDescription("Reception Put Away");
+            work.setWorkNumber(LocalDate.now().getYear() + LocalDate.now().getDayOfMonth() + receptionNumber + singularReception.getId());
+            work.setWorkType("Reception");
+            workDetailsRepository.save(work);
+
+            transaction.setTransactionDescription("Reception unloaded");
+            transaction.setAdditionalInformation("Reception: " + receptionNumber + " unloaded");
+            transaction.setReceptionStatus(singularReception.getStatus().getStatus());
+            saveTransactionModel(singularReception, transaction);
+
+            Transaction workCreation = new Transaction();
+            workCreation.setTransactionDescription("Reception PutAway Work created");
+            workCreation.setAdditionalInformation("Work number: " + work.getWorkNumber() + "for pallet: " + work.getHdNumber() + ", from location: " + work.getFromLocation().getLocationName() + " to: " + work.getToLocation().getLocationName() + " with : " + work.getPiecesQty() + " pieces of article: " + work.getArticle().getArticle_number() + "created" );
+            workCreation.setReceptionStatus(singularReception.getStatus().getStatus());
+            saveTransactionModel(singularReception, workCreation);
+            transactionService.add(workCreation);
+
+            Stock stock = new Stock();
+            stock.setStatus(statusRepository.getStatusByStatusName("on_reception","Stock"));
+            stock.setWarehouse(singularReception.getWarehouse());
+            stock.setReceptionNumber(singularReception.getReceptionNumber());
+            stock.setPieces_qty(singularReception.getPieces_qty());
+            stock.setCompany(singularReception.getCompany());
+            stock.setArticle(singularReception.getArticle());
+            stock.setUnit(singularReception.getUnit());
+            stock.setLocation(singularReception.getLocation());
+            stock.setHd_number(singularReception.getHd_number());
+            stock.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            stock.setChangeBy(SecurityUtils.usernameForActivations());
+            stock.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            stockRepository.save(stock);
+        }
+        transaction.setTransactionType("119");
+        transactionService.add(transaction);
+
+        receptionSearch.message = ("Reception: " + receptionNumber + " unloaded completely, put away works created");
+
+        log.error("close creation service receptionSearch.message: " + receptionSearch.message);
+    }
+
+
+    @Override
     public void edit(Reception reception) {
-        Transaction transactionEdited = new Transaction();
+        Transaction transaction = new Transaction();
         if (reception.getStatus() == null){
-            transactionEdited.setTransactionDescription("First line for Reception created");
-            transactionEdited.setAdditionalInformation("First line for Reception number: " + reception.getReceptionNumber() + " created");
-            transactionEdited.setTransactionType("117");
+            transaction.setTransactionDescription("First line for Reception created");
+            transaction.setAdditionalInformation("First line for Reception number: " + reception.getReceptionNumber() + " created");
+            transaction.setTransactionType("117");
             reception.setStatus(statusRepository.getStatusByStatusName("creation_pending","Reception"));
             reception.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         }
         if (reception.getStatus() != null){
-            transactionEdited.setTransactionDescription("Reception edited manually");
-            transactionEdited.setAdditionalInformation("Reception Number: " + reception.getReceptionNumber() + " edited");
-            transactionEdited.setTransactionType("112");
+            transaction.setTransactionDescription("Reception edited manually");
+            transaction.setAdditionalInformation("Reception Number: " + reception.getReceptionNumber() + " edited");
+            transaction.setTransactionType("112");
         }
 
         if(reception.getHd_number() == null){
             reception.setHd_number(nextPalletNbr());
         }
 
-        transactionEdited.setTransactionGroup("Reception");
-        transactionEdited.setCreated(reception.getCreated());
-        transactionEdited.setCreatedBy(SecurityUtils.usernameForActivations());
-        transactionEdited.setCompany(reception.getCompany());
-        transactionEdited.setWarehouse(reception.getWarehouse());
-        transactionEdited.setReceptionNumber(reception.getReceptionNumber());
-        transactionEdited.setArticle(reception.getArticle().getArticle_number());
-        transactionEdited.setQuality(reception.getQuality());
-        transactionEdited.setUnit(reception.getUnit().getName());
-        transactionEdited.setVendor(reception.getVendor().getName());
-        transactionEdited.setQuantity(reception.getPieces_qty());
-        transactionEdited.setHdNumber(reception.getHd_number());
-        transactionEdited.setReceptionStatus(reception.getStatus().getStatus());
-        transactionService.add(transactionEdited);
+        saveTransactionModel(reception, transaction);
+        transaction.setReceptionStatus(reception.getStatus().getStatus());
+        transactionService.add(transaction);
         receptionRepository.save(reception);
     }
 
-//    @Override
-//    public int getCreatedReceptionById(Long receptionNbr) {
-//        return receptionRepository.getCreatedReceptionById(receptionNbr);
-//    }
-
-//    @Override
-//    public void updateCloseCreationValue(Long receptionNbr) {
-//        if (getCreatedReceptionById(receptionNbr) > 0) {
-//            Status creationReceptionFinished = statusRepository.getStatusByStatusName("unloading_pending","Reception");
-//            List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNbr);
-//            for (Reception value : receptions) {
-//                value.setStatus(creationReceptionFinished);
-//
-//            }
-//            receptionRepository.updateCloseCreationValue(receptionNbr);
-//        }
-//    }
-
-
-    @Override
-    public void updateFinishedReceptionValue(Long receptionNbrtoFinish) {
-        receptionRepository.updateFinishedReceptionValue(receptionNbrtoFinish);
+    private void saveTransactionModel(Reception reception, Transaction transaction) {
+        transaction.setTransactionGroup("Reception");
+        transaction.setCreated(reception.getCreated());
+        transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+        transaction.setCompany(reception.getCompany());
+        transaction.setWarehouse(reception.getWarehouse());
+        transaction.setReceptionNumber(reception.getReceptionNumber());
+        transaction.setArticle(reception.getArticle().getArticle_number());
+        transaction.setQuality(reception.getQuality());
+        transaction.setUnit(reception.getUnit().getName());
+        transaction.setVendor(reception.getVendor().getName());
+        transaction.setQuantity(reception.getPieces_qty());
+        transaction.setHdNumber(reception.getHd_number());
     }
+
+
+
 
     @Override
     public void insertDataToStockAfterFinishedReception(Long receptionNbr) {
@@ -211,25 +276,15 @@ public class ReceptionServiceImpl implements ReceptionService {
     public void finishReception(Long receptionNmbr) {
         List<Reception> finishedReception = receptionRepository.getReceptionByReceptionNumber(receptionNmbr);
         //transaction
-        for(Reception value : finishedReception){
-            Transaction transactionEdited = new Transaction();
-            transactionEdited.setTransactionDescription("Reception Finished");
-            transactionEdited.setAdditionalInformation("Reception Number: " + value.getReceptionNumber()  +  ", HD number: " + value.getHd_number() + " received on stock");
-            transactionEdited.setTransactionGroup("Reception");
-            transactionEdited.setReceptionNumber(value.getReceptionNumber());
-            transactionEdited.setReceptionStatus("Finished");
-            transactionEdited.setArticle(value.getArticle().getArticle_number());
-            transactionEdited.setQuality(value.getQuality());
-            transactionEdited.setUnit(value.getUnit().getName());
-            transactionEdited.setVendor(value.getVendor().getName());
-            transactionEdited.setQuantity(value.getPieces_qty());
-            transactionEdited.setHdNumber(value.getHd_number());
-            transactionEdited.setTransactionType("114");
-            transactionEdited.setCreated(value.getCreated());
-            transactionEdited.setCreatedBy(SecurityUtils.usernameForActivations());
-            transactionEdited.setCompany(value.getCompany());
-            transactionEdited.setWarehouse(value.getWarehouse());
-            transactionService.add(transactionEdited);
+        for(Reception reception : finishedReception){
+            Transaction transaction = new Transaction();
+            transaction.setTransactionDescription("Reception Finished");
+            transaction.setAdditionalInformation("Reception Number: " + reception.getReceptionNumber()  +  ", HD number: " + reception.getHd_number() + " received on stock");
+            transaction.setTransactionGroup("Reception");
+            transaction.setReceptionStatus("Closed");
+            transaction.setTransactionType("114");
+            saveTransactionModel(reception, transaction);
+            transactionService.add(transaction);
         }
 
         List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForShipmentType(receptionRepository.getCompanyNameByReceptionNumber(receptionNmbr), "%Receptions%");
@@ -307,56 +362,43 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     public void closeCreation(Long receptionNumber) {
         List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
-        for(Reception value : receptions){
-            Transaction transactionEdited = new Transaction();
-            transactionEdited.setTransactionDescription("Reception Closed");
-            transactionEdited.setAdditionalInformation("Reception Number: " + value.getReceptionNumber()  +  ", HD number: " + value.getHd_number() + " closed");
-            transactionEdited.setTransactionGroup("Reception");
-            transactionEdited.setReceptionNumber(value.getReceptionNumber());
-            transactionEdited.setReceptionStatus("Closed");
-            transactionEdited.setArticle(value.getArticle().getArticle_number());
-            transactionEdited.setQuality(value.getQuality());
-            transactionEdited.setUnit(value.getUnit().getName());
-            transactionEdited.setVendor(value.getVendor().getName());
-            transactionEdited.setQuantity(value.getPieces_qty());
-            transactionEdited.setHdNumber(value.getHd_number());
-            transactionEdited.setTransactionType("113");
-            transactionEdited.setCreated(value.getCreated());
-            transactionEdited.setCreatedBy(SecurityUtils.usernameForActivations());
-            transactionEdited.setCompany(value.getCompany());
-            transactionEdited.setWarehouse(value.getWarehouse());
-            transactionService.add(transactionEdited);
-            value.setStatus(statusRepository.getStatusByStatusName("unloading_pending","Reception"));
-            receptionRepository.save(value);
+        for(Reception reception : receptions){
+            Transaction transaction = new Transaction();
+            transaction.setTransactionDescription("Reception Start to be unloaded");
+            transaction.setAdditionalInformation("Reception Number: " + reception.getReceptionNumber()  +  ", HD number: " + reception.getHd_number() + " starts unloading");
+            transaction.setReceptionStatus("unloading_pending");
+            transaction.setTransactionType("113");
+            transaction.setTransactionGroup("Reception");
+            saveTransactionModel(reception, transaction);
+            transactionService.add(transaction);
+            reception.setStatus(statusRepository.getStatusByStatusName("unloading_pending","Reception"));
+            receptionRepository.save(reception);
         }
+        receptionSearch.message =("Truck with reception: " + receptionNumber + " arrived to warehouse");
+
+        log.error("close creation service receptionSearch.message: " + receptionSearch.message);
+
     }
 
     @Override
     public void openCreation(Long receptionNumber) {
         List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
-        for(Reception value : receptions){
-            Transaction transactionEdited = new Transaction();
-            transactionEdited.setTransactionDescription("Reception Opened");
-            transactionEdited.setAdditionalInformation("Reception Number: " + value.getReceptionNumber()  +  ", HD number: " + value.getHd_number() + " opened");
-            transactionEdited.setTransactionGroup("Reception");
-            transactionEdited.setReceptionNumber(value.getReceptionNumber());
-            transactionEdited.setReceptionStatus("Created");
-            transactionEdited.setArticle(value.getArticle().getArticle_number());
-            transactionEdited.setQuality(value.getQuality());
-            transactionEdited.setUnit(value.getUnit().getName());
-            transactionEdited.setVendor(value.getVendor().getName());
-            transactionEdited.setQuantity(value.getPieces_qty());
-            transactionEdited.setHdNumber(value.getHd_number());
-            transactionEdited.setTransactionType("115");
-            transactionEdited.setCreated(value.getCreated());
-            transactionEdited.setCreatedBy(SecurityUtils.usernameForActivations());
-            transactionEdited.setCompany(value.getCompany());
-            transactionEdited.setWarehouse(value.getWarehouse());
-            transactionService.add(transactionEdited);
-            value.setStatus(statusRepository.getStatusByStatusName("creation_pending","Reception"));
-            receptionRepository.save(value);
+        for(Reception reception : receptions){
+            Transaction transaction = new Transaction();
+            transaction.setTransactionDescription("Reception Opened");
+            transaction.setAdditionalInformation("Reception Number: " + reception.getReceptionNumber()  +  ", HD number: " + reception.getHd_number() + " opened");
+            transaction.setTransactionGroup("Reception");
+            transaction.setTransactionType("115");
+            transaction.setReceptionStatus("Created");
+            saveTransactionModel(reception, transaction);
+            transactionService.add(transaction);
+            reception.setStatus(statusRepository.getStatusByStatusName("creation_pending","Reception"));
+            reception.setLocation(null);
+            receptionRepository.save(reception);
         }
+        receptionSearch.message =("Reception: " + receptionNumber + " back to creating");
 
+        log.error("close creation service receptionSearch.message: " + receptionSearch.message);
     }
 
     @Override
@@ -383,19 +425,19 @@ public class ReceptionServiceImpl implements ReceptionService {
                 fileWriter.append("Unit:" + values.getUnit().getName() + "\n");
                 fileWriter.append("Company:" + values.getCompany().getName() + "\n");
                 fileWriter.append("Warehouse:" + values.getWarehouse().getName() + "\n");
-                if (values.getStatus().getStatus() == "closed") {
+                if (values.getStatus().getStatus().equals("closed")) {
                     fileWriter.append("Reception status: Closed - Goods were transferred to stock locations" + "\n");
                     fileWriter.append("Closed:" + values.getLast_update() + "\n");
                     fileWriter.append("Closed by:" + values.getChangeBy() + "\n");
-                } else if (values.getStatus().getStatus() == "put_away_pending") {
+                } else if (values.getStatus().getStatus().equals("put_away_pending")) {
                     fileWriter.append("Reception status: Put away pending - Goods are checking by our employee and locate in stock locations" + "\n");
                     fileWriter.append("Finished:" + values.getLast_update() + "\n");
                     fileWriter.append("Finished by:" + values.getChangeBy() + "\n");
-                } else if (values.getStatus().getStatus() == "unloading_pending") {
+                } else if (values.getStatus().getStatus().equals("unloading_pending")) {
                     fileWriter.append("Reception status: Unloading pending - Truck arrived to our warehouse and unloading is started" + "\n");
                     fileWriter.append("Created:" + values.getLast_update() + "\n");
                     fileWriter.append("Created by:" + values.getChangeBy() + "\n");
-                } else if (values.getStatus().getStatus() == "creation_pending") {
+                } else if (values.getStatus().getStatus().equals("creation_pending")) {
                     fileWriter.append("Reception status: Created - Reception created but physically are not in warehouse yet" + "\n");
                     fileWriter.append("Created:" + values.getLast_update() + "\n");
                     fileWriter.append("Created by:" + values.getChangeBy() + "\n");
@@ -590,8 +632,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                     }
                 }
 
-                List<Status> statusList = statusService.getStatus();
-                reception.setStatus(statusList.get(0));
+                reception.setStatus(statusRepository.getStatusByStatusName("creation_pending","Reception"));
                 reception.setChangeBy(SecurityUtils.usernameForActivations());
                 reception.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                 reception.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
@@ -602,26 +643,16 @@ public class ReceptionServiceImpl implements ReceptionService {
                     transaction.setTransactionDescription("Create Reception from File");
                     transaction.setAdditionalInformation("Reception number: " + reception.getReceptionNumber() + " created from file");
                     transaction.setTransactionGroup("Reception");
-                    transaction.setReceptionNumber(reception.getReceptionNumber());
-                    transaction.setReceptionStatus("Created");
-                    transaction.setArticle(reception.getArticle().getArticle_number());
-                    transaction.setQuality(reception.getQuality());
-                    transaction.setUnit(reception.getUnit().getName());
-                    transaction.setVendor(reception.getVendor().getName());
-                    transaction.setQuantity(reception.getPieces_qty());
-                    transaction.setHdNumber(reception.getHd_number());
+                    transaction.setReceptionStatus("creation_pending");
                     transaction.setTransactionType("121");
-                    transaction.setCreated(reception.getCreated());
-                    transaction.setCreatedBy(SecurityUtils.usernameForActivations());
-                    transaction.setCompany(reception.getCompany());
-                    transaction.setWarehouse(reception.getWarehouse());
+                    saveTransactionModel(reception, transaction);
                     transactionService.add(transaction);
 
                     String fileName = fsFile.toPath().getFileName().toString();
                     Path passedPath = Paths.get("src/main/resources/static/files/input/receptions/passed/Passed-" + TimeUtils.timeNowShort() + fileName);
                     Files.copy(fsFile.toPath(), passedPath, StandardCopyOption.REPLACE_EXISTING);
                     log.debug("Reception created. File transferred to directory passed. Transaction Log 121 Created");
-                    insertReceptionFileResult = "File " + fsFile.toPath().getFileName().toString() + " succesfully inserted to DB";
+                    insertReceptionFileResult = "File " + fsFile.toPath().getFileName().toString() + " successfully inserted to DB";
 
                 } else {
 
@@ -682,6 +713,81 @@ public class ReceptionServiceImpl implements ReceptionService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+    @Override
+    public List<Reception> getReceptionsByCriteria(String createdBy, String warehouse, String company,String vendor, String receptionNumber,String hdNumber,String status,String location,String createdFrom,String createdTo) {
+        log.error("getReceptionsByCriteria createdBy: " + createdBy);
+        log.error("getReceptionsByCriteria warehouse: " + warehouse);
+        log.error("getReceptionsByCriteria company: " + company);
+        log.error("getReceptionsByCriteria vendor: " + vendor);
+        log.error("getReceptionsByCriteria receptionNumber: " + receptionNumber);
+        log.error("getReceptionsByCriteria hdNumber: " + hdNumber);
+        log.error("getReceptionsByCriteria status: " + status);
+        log.error("getReceptionsByCriteria location: " + location);
+        log.error("getReceptionsByCriteria createdFrom: " + createdFrom);
+        log.error("getReceptionsByCriteria createdTo: " + createdTo);
+
+
+
+        if(createdBy == null || createdBy.equals("")){
+            createdBy = "%";
+        }
+        if(warehouse == null || warehouse.equals("")){
+            warehouse = "%";
+        }
+        if(vendor == null || vendor.equals("")){
+            vendor = "%";
+        }
+        if(receptionNumber == null || receptionNumber.equals("")){
+            receptionNumber = "%";
+        }
+        if(hdNumber == null || hdNumber.equals("")){
+            hdNumber = "%";
+        }
+        if(status == null || status.equals("")){
+            status = "%";
+        }
+        if(location == null || location.equals("")){
+            location = "%";
+        }
+        if(createdFrom == null || createdFrom.equals("")){
+            createdFrom = "1970-01-01";
+        }
+        if(createdTo == null || createdTo.equals("")){
+            createdTo = "2222-02-02";
+        }
+        if(company == null || company.equals("all")){
+            company = "%";
+        }
+        return receptionRepository.getReceptionByCriteria(createdBy,warehouse,company,vendor,receptionNumber,hdNumber,status,location,createdFrom,createdTo);
+    }
+
+    @Override
+    public void save(ReceptionSearch receptionSearching) {
+        log.error("receptionSearching createdBy: " + receptionSearching.createdBy);
+        log.error("receptionSearching warehouse: " + receptionSearching.warehouse);
+        log.error("receptionSearching company: " + receptionSearching.company);
+        log.error("receptionSearching vendor: " + receptionSearching.vendor);
+        log.error("receptionSearching receptionNumber: " + receptionSearching.receptionNumber);
+        log.error("receptionSearching hdNumber: " + receptionSearching.hdNumber);
+        log.error("receptionSearching status: " + receptionSearching.status);
+        log.error("receptionSearching location: " + receptionSearching.location);
+        log.error("receptionSearching createdFrom: " + receptionSearching.createdFrom);
+        log.error("receptionSearching createdTo: " + receptionSearching.createdTo);
+        receptionSearch.setReceptionNumber(receptionSearching.getReceptionNumber());
+        receptionSearch.setCreatedFrom(receptionSearching.getCreatedFrom());
+        receptionSearch.setCreatedTo(receptionSearching.getCreatedTo());
+        receptionSearch.setCreatedBy(receptionSearching.getCreatedBy());
+        receptionSearch.setLocation(receptionSearching.getLocation());
+        receptionSearch.setHdNumber(receptionSearching.getHdNumber());
+        receptionSearch.setStatus(receptionSearching.getStatus());
+        receptionSearch.setVendor(receptionSearching.getVendor());
+        receptionSearch.setMessage(receptionSearching.getMessage());
+        receptionSearch.setCompany(receptionSearching.getCompany());
+        receptionSearch.setWarehouse(receptionSearching.getWarehouse());
     }
 
 }

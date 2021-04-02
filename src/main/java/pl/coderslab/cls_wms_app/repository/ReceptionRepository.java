@@ -7,12 +7,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cls_wms_app.entity.Reception;
 
-
-import javax.persistence.SqlResultSetMapping;
 import java.util.List;
 
 @Repository
 public interface ReceptionRepository extends JpaRepository<Reception, Long> {
+
+    @Query("Select r from Reception r where r.changeBy like ?1 and r.warehouse.name like ?2 and r.company.name like ?3 and r.vendor.name like ?4 and CONCAT(r.receptionNumber,'') like ?5 and CONCAT(r.hd_number,'') like ?6 and r.status.status like ?7 and r.location.locationName like ?8 and r.created > ?9 and r.created < ?10")
+    List<Reception> getReceptionByCriteria(String createdBy, String warehouse, String company,String vendor, String receptionNumber,String hdNumber,String status,String location,String createdFrom,String createdTo);
 
     @Query("Select r from Reception r join fetch r.article a join fetch r.warehouse w where w.id =?1")
     List<Reception> getReception(Long id);
@@ -26,27 +27,9 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
     @Query("Select distinct r from Reception r join fetch r.company c join fetch r.warehouse w JOIN fetch Users u on u.company = c.name where w.id =?1 and u.username like ?2 order by r.receptionNumber")
     List<Reception> getReceptions(Long id, String username);
 
-    //TODO Think about replace getReceptions on query like below or make a logic by Thymeleaf to display proper data in view
-    // Select reception_number, sum(pieces_qty), s.status,max(r.created),max(r.last_update),r.change_by from receptions r inner join status s on r.status_id = s.id group by reception_number, s.status, change_by
-
-
-
-
     @Query(value ="Select count(distinct r.reception_number) From receptions r inner join status s on r.status_id = s.id join  company c on r.company_id = c.id join  warehouse w on r.warehouse_id = w.id JOIN  users u on u.company = c.name where s.status = 'creation_pending' and w.id =?1 and u.username like ?2", nativeQuery = true)
     int qtyOfOpenedReceptions(Long id, String username);
 
-//    @Query(value = "Select count(r.reception_number) from receptions r inner join status s on r.status_id = s.id where r.reception_number = ?1 and s.status = 'creation_pending' ", nativeQuery = true)
-//    int getCreatedReceptionById(Long receptionNbr);
-
-    @Modifying
-    @Transactional
-    @Query(value = "update receptions SET creation_closed = true where reception_number = ?1",nativeQuery = true)
-    void updateCloseCreationValue(Long receptionNbr);
-
-    @Modifying
-    @Transactional
-    @Query(value = "update receptions SET finished = true where reception_number = ?1",nativeQuery = true)
-    void updateFinishedReceptionValue(Long receptionNbr);
 
     @Modifying
     @Transactional
@@ -81,7 +64,7 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
     String getStatusByReceptionNumber(Long receptionNumber);
 
 
-    @Query(value ="Select reception_number receptionNumber, sum(pieces_qty) pieces_qty, s.status,max(r.created) created,max(r.last_update) last_update,max(r.change_by) changeBy,c.name company, l.location_name location from receptions r inner join status s on r.status_id = s.id inner join warehouse w on r.warehouse_id = w.id inner join company c on r.company_id = c.id left join location l on r.location_id = l.id where c.name =?1 and w.name = ?2 group by c.name, l.location_name, s.status, reception_number",nativeQuery = true)
+    @Query(value ="Select reception_number receptionNumber, sum(pieces_qty) pieces_qty, s.status,max(r.created) created,max(r.last_update) last_update,max(r.change_by) changeBy,c.name company, l.location_name location, count(hd_number) Hd_number from receptions r inner join status s on r.status_id = s.id inner join warehouse w on r.warehouse_id = w.id inner join company c on r.company_id = c.id left join location l on r.location_id = l.id where c.name =?1 and w.name = ?2 group by c.name, l.location_name, s.status, reception_number",nativeQuery = true)
     List<ReceptionViewObject> getReceptionSummary(String companyName,String warehouseName);
 
     public static interface ReceptionViewObject {
@@ -93,6 +76,7 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
          String getChangeBy();
          String getCompany();
          String getLocation();
+         Long getHd_number();
     }
 
 }

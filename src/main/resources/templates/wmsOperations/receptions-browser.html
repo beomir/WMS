@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+
+<span th:include="fragments/receptionMenu :: receptionMenu"></span>
+
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
+</div>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form th:object="${receptionSearching}" method="post" th:action="@{/reception/receptions-browser}">
+			<div th:text="#{app.findReception}" class="titleList"></div><br/>
+			<section>
+				<label th:text="#{app.warehouseName}" style="color: white;font-weight: bold">Warehouse</label>
+				<select class="select-css" th:field="*{warehouse}">
+					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}">
+					<option th:value="'%'">All</option>
+					</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label th:text="#{app.company}" style="color: white;font-weight: bold">Company</label>
+				<select class="select-css" th:field="*{company}">
+					<option th:each="i : ${companys}" th:value="${i.name}" th:text="${i.name}">
+					</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label th:text="#{app.vendorsName}" style="color: white;font-weight: bold"></label>
+				<select class="select-css" th:field="*{vendor}">
+					<option th:each="i : ${vendors}" th:value="${i.name}" th:text="${i.name}">
+					<option th:value="'%'">All</option>
+					</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label th:text="#{app.status}" style="color: white;font-weight: bold"></label>
+				<select class="select-css" th:field="*{status}">
+					<option th:each="i : ${status}" th:value="${i.status}" th:text="${i.status}">
+					<option th:value="'%'">All</option>
+					</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label th:text="#{app.location}" style="color: white;font-weight: bold">Location</label>
+				<input type="text" th:field="*{location}"/>
+			</section>
+			<section>
+				<label th:text="#{app.receptionNumber}" style="color: white;font-weight: bold">reception number</label>
+				<input type="text" th:field="*{receptionNumber}"/>
+			</section>
+			<section>
+				<label th:text="#{app.handleDevice}" style="color: white;font-weight: bold"></label>
+				<input type="text" th:field="*{hdNumber}"/>
+			</section>
+			<section>
+				<label th:text="#{app.createdBy}" style="color: white;font-weight: bold"></label>
+				<input type="text" th:field="*{createdBy}"/>
+			</section>
+			<section>
+				<label th:text="#{app.receptionCreated} + ' ' + #{app.from}" style="color: white;font-weight: bold"></label>
+				<input type="date" th:field="*{createdFrom}"/>
+			</section>
+
+			<section>
+				<label th:text="#{app.receptionCreated} + ' ' + #{app.to}" style="color: white;font-weight: bold"></label>
+				<input type="date" th:field="*{createdTo}"/>
+			</section>
+
+			<section>
+				<br/><button class="button"  th:text="#{app.search}" type="submit">Search</button>
+			</section>
+		</form>
+
+	</div>
+
+	<div th:include="fragments/footer :: footer"></div>
+
+</div>
+<div class="w3copyright-agile">
+	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+</div>
+</div>
+</body>
+</html>
