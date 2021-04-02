@@ -90,7 +90,7 @@ public class ReceptionFixture {
         reception2.setStatus(status.get(5));
         reception3.setStatus(status.get(5));
         reception4.setStatus(status.get(5));
-        
+
 
         receptionService.add(reception1);
         receptionService.add(reception2);
