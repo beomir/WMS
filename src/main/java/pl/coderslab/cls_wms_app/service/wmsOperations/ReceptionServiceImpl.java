@@ -140,7 +140,7 @@ public class ReceptionServiceImpl implements ReceptionService {
 
         receptionSearch.message = ("Reception: " + receptionNumber + " assigned to door: " + location.getLocationName());
 
-        log.error("close creation service receptionSearch.message: " + receptionSearch.message);
+        log.debug("close creation service receptionSearch.message: " + receptionSearch.message);
     }
 
     @Override
@@ -152,7 +152,7 @@ public class ReceptionServiceImpl implements ReceptionService {
             singularReception.setStatus(statusRepository.getStatusByStatusName("put_away_pending","Reception"));
             receptionRepository.save(singularReception);
             String destinationLocation = locationRepository.getAvailableLocation("%" + singularReception.getArticle().getArticleTypes().getArticleClass() + "%",singularReception.getArticle().getWeight(),singularReception.getArticle().getVolume(),singularReception.getWarehouse().getName()).getLocation();
-            log.error("destinationLocation: " + destinationLocation);
+            log.debug("destinationLocation: " + destinationLocation);
             WorkDetails work = new WorkDetails();
             work.setPiecesQty(singularReception.getPieces_qty());
             work.setArticle(singularReception.getArticle());
@@ -256,16 +256,6 @@ public class ReceptionServiceImpl implements ReceptionService {
         receptionRepository.insertDataToStockAfterFinishedReception(receptionNbr);
     }
 
-
-    @Override
-    public List<Reception> getReceptions(Long id, String username) {
-        return receptionRepository.getReceptions(id, username);
-    }
-
-    @Override
-    public List<Reception> getReception(Long id) {
-        return receptionRepository.getReception(id);
-    }
 
     @Override
     public Reception findById(Long id) {
@@ -716,67 +706,51 @@ public class ReceptionServiceImpl implements ReceptionService {
     }
 
 
-
-    @Override
-    public List<Reception> getReceptionsByCriteria(String createdBy, String warehouse, String company,String vendor, String receptionNumber,String hdNumber,String status,String location,String createdFrom,String createdTo) {
-        log.error("getReceptionsByCriteria createdBy: " + createdBy);
-        log.error("getReceptionsByCriteria warehouse: " + warehouse);
-        log.error("getReceptionsByCriteria company: " + company);
-        log.error("getReceptionsByCriteria vendor: " + vendor);
-        log.error("getReceptionsByCriteria receptionNumber: " + receptionNumber);
-        log.error("getReceptionsByCriteria hdNumber: " + hdNumber);
-        log.error("getReceptionsByCriteria status: " + status);
-        log.error("getReceptionsByCriteria location: " + location);
-        log.error("getReceptionsByCriteria createdFrom: " + createdFrom);
-        log.error("getReceptionsByCriteria createdTo: " + createdTo);
-
-
-
-        if(createdBy == null || createdBy.equals("")){
-            createdBy = "%";
-        }
-        if(warehouse == null || warehouse.equals("")){
-            warehouse = "%";
-        }
-        if(vendor == null || vendor.equals("")){
-            vendor = "%";
-        }
-        if(receptionNumber == null || receptionNumber.equals("")){
-            receptionNumber = "%";
-        }
-        if(hdNumber == null || hdNumber.equals("")){
-            hdNumber = "%";
-        }
-        if(status == null || status.equals("")){
-            status = "%";
-        }
-        if(location == null || location.equals("")){
-            location = "%";
-        }
-        if(createdFrom == null || createdFrom.equals("")){
-            createdFrom = "1970-01-01";
-        }
-        if(createdTo == null || createdTo.equals("")){
-            createdTo = "2222-02-02";
-        }
-        if(company == null || company.equals("all")){
-            company = "%";
-        }
-        return receptionRepository.getReceptionByCriteria(createdBy,warehouse,company,vendor,receptionNumber,hdNumber,status,location,createdFrom,createdTo);
-    }
-
     @Override
     public void save(ReceptionSearch receptionSearching) {
-        log.error("receptionSearching createdBy: " + receptionSearching.createdBy);
-        log.error("receptionSearching warehouse: " + receptionSearching.warehouse);
-        log.error("receptionSearching company: " + receptionSearching.company);
-        log.error("receptionSearching vendor: " + receptionSearching.vendor);
-        log.error("receptionSearching receptionNumber: " + receptionSearching.receptionNumber);
-        log.error("receptionSearching hdNumber: " + receptionSearching.hdNumber);
-        log.error("receptionSearching status: " + receptionSearching.status);
-        log.error("receptionSearching location: " + receptionSearching.location);
-        log.error("receptionSearching createdFrom: " + receptionSearching.createdFrom);
-        log.error("receptionSearching createdTo: " + receptionSearching.createdTo);
+        if(receptionSearching.getCreatedBy() == null || receptionSearching.getCreatedBy().equals("")){
+            receptionSearching.setCreatedBy("%");
+        }
+        if(receptionSearching.getWarehouse() == null || receptionSearching.getWarehouse().equals("")){
+            receptionSearching.setWarehouse("%");
+        }
+        if(receptionSearching.getVendor() == null || receptionSearching.getVendor().equals("")){
+            receptionSearching.setVendor("%") ;
+        }
+        if(receptionSearching.getReceptionNumber() == null || receptionSearching.getReceptionNumber().equals("")){
+            receptionSearching.setReceptionNumber("%");
+        }
+        if( receptionSearching.getReceptionNumber() == null || receptionSearching.getReceptionNumber().equals("")){
+            receptionSearching.setReceptionNumber("%");
+        }
+        if(receptionSearching.getStatus() == null || receptionSearching.getStatus().equals("")){
+            receptionSearching.setStatus("%");
+        }
+        if(receptionSearching.getHdNumber() == null || receptionSearching.getHdNumber().equals("")){
+            receptionSearching.setHdNumber("%");
+        }
+        if(receptionSearching.getLocation() == null || receptionSearching.getLocation().equals("")){
+            receptionSearching.setLocation("%");
+        }
+        if(receptionSearching.getCreatedFrom() == null || receptionSearching.getCreatedFrom().equals("")){
+            receptionSearching.setCreatedFrom("1970-01-01");
+        }
+        if(receptionSearching.getCreatedTo() == null || receptionSearching.getCreatedTo().equals("")){
+            receptionSearching.setCreatedTo("2222-02-02");
+        }
+        if(receptionSearching.getCompany() == null || receptionSearching.getCompany().equals("all")){
+            receptionSearching.setCompany("%");
+        }
+        log.debug("receptionSearching createdBy: " + receptionSearching.createdBy);
+        log.debug("receptionSearching warehouse: " + receptionSearching.warehouse);
+        log.debug("receptionSearching company: " + receptionSearching.company);
+        log.debug("receptionSearching vendor: " + receptionSearching.vendor);
+        log.debug("receptionSearching receptionNumber: " + receptionSearching.receptionNumber);
+        log.debug("receptionSearching hdNumber: " + receptionSearching.hdNumber);
+        log.debug("receptionSearching status: " + receptionSearching.status);
+        log.debug("receptionSearching location: " + receptionSearching.location);
+        log.debug("receptionSearching createdFrom: " + receptionSearching.createdFrom);
+        log.debug("receptionSearching createdTo: " + receptionSearching.createdTo);
         receptionSearch.setReceptionNumber(receptionSearching.getReceptionNumber());
         receptionSearch.setCreatedFrom(receptionSearching.getCreatedFrom());
         receptionSearch.setCreatedTo(receptionSearching.getCreatedTo());

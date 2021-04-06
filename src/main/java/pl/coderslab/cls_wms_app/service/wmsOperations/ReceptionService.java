@@ -14,10 +14,6 @@ public interface ReceptionService {
 
     void edit(Reception reception);
 
-    List<Reception> getReceptions(Long id,String username);
-
-    List<Reception> getReception(Long id);
-
 
     void insertDataToStockAfterFinishedReception(Long receptionNbr);
 
@@ -50,7 +46,5 @@ public interface ReceptionService {
     void finishUnloading(Long receptionNumber);
 
     void save(ReceptionSearch receptionSearch);
-
-    List<Reception> getReceptionsByCriteria(String createdBy, String warehouse, String company,String vendor, String receptionNumber,String hdNumber,String status,String location,String createdFrom,String createdTo);
 
 }

@@ -73,15 +73,19 @@ public class ReceptionController {
 
     @GetMapping("reception")
     public String list(Model model) {
-//        List<Reception> receptions = receptionService.getReceptions(customerUserDetailsService.chosenWarehouse,SecurityUtils.username());
-        List<ReceptionRepository.ReceptionViewObject> receptions = receptionRepository.getReceptionSummary(companyRepository.getOneCompanyByUsername(SecurityUtils.username()).getName(),warehouseRepository.getOne(customerUserDetailsService.chosenWarehouse).getName());
-        List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
-        model.addAttribute("fileStatus", receptionServiceImpl.insertReceptionFileResult);
+        List<ReceptionRepository.ReceptionViewObject> receptions = receptionRepository.getReceptionSummary(receptionSearch.getCompany(),receptionSearch.getWarehouse(),receptionSearch.getVendor(),receptionSearch.getStatus(),receptionSearch.getLocation(),receptionSearch.getReceptionNumber(),receptionSearch.getHdNumber(),receptionSearch.getCreatedFrom(),receptionSearch.getCreatedTo(),receptionSearch.getCreatedBy());
         model.addAttribute("receptions", receptions);
+
+
+        List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("warehouse", warehouse);
-        model.addAttribute("message", receptionSearch.message);
+
+        model.addAttribute("fileStatus", receptionServiceImpl.insertReceptionFileResult);
+        model.addAttribute("receptionSearch", receptionSearch);
+
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+
         String token = usersService.FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());
