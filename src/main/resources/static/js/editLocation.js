@@ -62,11 +62,26 @@ floorSecondSep.addEventListener("keyup", function () {
     floorLocationSimulation.innerHTML = document.getElementById("floorFirstSep").value + document.getElementById("floorSecondSep").value
 });
 
+//equipment
+let equipmentFirstSep = document.getElementById("equipmentFirstSep")
+let equipmentSecondSep = document.getElementById("equipmentSecondSep")
+
+let equipmentSimulation = document.getElementById("equipmentSimulation")
+
+equipmentFirstSep.addEventListener("keyup", function () {
+    equipmentSimulation.innerHTML = document.getElementById("equipmentFirstSep").value + document.getElementById("equipmentSecondSep").value
+});
+equipmentSecondSep.addEventListener("keyup", function () {
+    equipmentSimulation.innerHTML = document.getElementById("equipmentFirstSep").value + document.getElementById("equipmentSecondSep").value
+});
+
 
 //switching location type
 let rackLocation = document.getElementById("rackLocation")
 let doorLocation = document.getElementById("doorLocation")
 let floorLocation = document.getElementById("floorLocation")
+let equipment = document.getElementById("equipment")
+
 let select = document.getElementById('selectId')
 let hdControl = document.getElementById("hdControling")
 let multiItem = document.getElementById("multiItem")
@@ -77,6 +92,8 @@ select.addEventListener("change", function () {
         $("#doorLocation").show(500);
         $("#rackLocation").hide(500);
         $("#floorLocation").hide(500);
+        $("#equipment").hide(500);
+
         $("#hdControling").hide(500);
         $("#multiItem").hide(500);
 
@@ -90,6 +107,10 @@ select.addEventListener("change", function () {
         $("#floorFirstSep").removeAttr('required').val("")
         floorLocationSimulation.innerHTML = "";
 
+        $("#equipmentFirstSep").removeAttr('required').val("")
+        $("#equipmentSecondSep").removeAttr('required').val("")
+        equipmentSimulation.innerHTML = "";
+
         doorFirstSep.setAttribute("required", "");
         doorSecondSep.setAttribute("required", "");
         doorThirdSep.setAttribute("required", "");
@@ -100,6 +121,7 @@ select.addEventListener("change", function () {
         $("#rackLocation").show(500);
         $("#doorLocation").hide(500);
         $("#floorLocation").hide(500);
+        $("#equipment").hide(500);
 
         $("#hdControling").show(500);
         $("#multiItem").show(500);
@@ -118,11 +140,44 @@ select.addEventListener("change", function () {
         $("#doorSecondSep").removeAttr('required').val("")
         $("#doorThirdSep").removeAttr('required').val("")
         doorLocationSimulation.innerHTML = "";
+
+        $("#equipmentFirstSep").removeAttr('required').val("")
+        $("#equipmentSecondSep").removeAttr('required').val("")
+        equipmentSimulation.innerHTML = "";
+    }
+    else if(document.getElementById('selectId').value == "EQL"){
+        $("#rackLocation").hide(500);
+        $("#doorLocation").hide(500);
+        $("#floorLocation").hide(500);
+        $("#equipment").show(500);
+
+        $("#hdControling").show(500);
+        $("#multiItem").show(500);
+
+        $("#rackSecondSep").removeAttr('required').val("")
+        $("#rackFirstSep").removeAttr('required').val("")
+        $("#rackThirdSep").removeAttr('required').val("")
+        $("#rackFourthSep").removeAttr('required').val("")
+        rackLocationSimulation.innerHTML = "";
+
+        $("#floorSecondSep").removeAttr('required').val("")
+        $("#floorFirstSep").removeAttr('required').val("")
+        floorLocationSimulation.innerHTML = "";
+
+        equipmentFirstSep.setAttribute("required", "");
+        equipmentSecondSep.setAttribute("required", "");
+
+        $("#doorFirstSep").removeAttr('required').val("")
+        $("#doorSecondSep").removeAttr('required').val("")
+        $("#doorThirdSep").removeAttr('required').val("")
+        doorLocationSimulation.innerHTML = "";
     }
     else{
         $("#floorLocation").show(500);
         $("#rackLocation").hide(500);
         $("#doorLocation").hide(500);
+        $("#equipment").hide(500);
+
         $("#hdControling").show(500);
         $("#multiItem").show(500);
 
@@ -136,6 +191,10 @@ select.addEventListener("change", function () {
         $("#rackThirdSep").removeAttr('required').val("")
         $("#rackFourthSep").removeAttr('required').val("")
         rackLocationSimulation.innerHTML = "";
+
+        $("#equipmentFirstSep").removeAttr('required').val("")
+        $("#equipmentSecondSep").removeAttr('required').val("")
+        equipmentSimulation.innerHTML = "";
 
         floorFirstSep.setAttribute("required", "");
         floorSecondSep.setAttribute("required", "");

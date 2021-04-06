@@ -63,14 +63,24 @@
 				<label th:text="#{app.locationNameSimulation}" style="color: white;font-style: italic">Location name simulation</label>
 				<div style="color: white;font-weight: bold" id="floorLocationSimulation"></div><br/><br/>
 			</section>
+			<section id="equipment">
+				<span th:text="#{app.equipment}" style="color: white;font-weight: bold">Equipment</span><br/>
+				<label th:text="#{app.equi1}" style="color: white;font-style: italic" title="For example PFL like Picking floor location">Name (ten alpha)</label>
+				<input class="location" id="equipmentFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{10}" type="text" maxlength="10" title="For example PALLETJACK" th:field="*{locationNameConstruction.firstSepEquipment}"/>
+				<label th:text="#{app.equi2}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (three numeric)</label>
+				<input class="location" id="equipmentSecondSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{locationNameConstruction.secondSepEquipment}"/>
+				<label th:text="#{app.locationNameSimulation}" style="color: white;font-style: italic">Location name simulation</label>
+				<div style="color: white;font-weight: bold" id="equipmentSimulation"></div><br/><br/>
+			</section>
 			<section>
 				<label th:text="#{app.locationType}" style="color: white;font-weight: bold">Location type</label>
 				<select id="selectId" class="select-css" th:field="*{location.locationType}">
-					<option th:value="RDL">Reception Door</option>
-					<option th:value="PFL">Stock Picking Floor</option>
-					<option th:value="PRL">Stock Picking Racks</option>
-					<option th:value="RRL">Stock Reserve Racks</option>
-					<option th:value="SDL">Ship Door</option>
+					<option th:text="#{app.receptionDoor}" th:value="RDL">Reception Door</option>
+					<option th:text="#{app.stockPickingFloor}" th:value="PFL">Stock Picking Floor</option>
+					<option th:text="#{app.stockPickingRacks}" th:value="PRL">Stock Picking Racks</option>
+					<option th:text="#{app.stockReserveRacks}" th:value="RRL">Stock Reserve Racks</option>
+					<option th:text="#{app.shipDoor}" th:value="SDL">Ship Door</option>
+					<option th:text="#{app.equipment}" th:value="EQL">Equipment</option>
 				</select> <br/>
 			</section>
 			<section>

@@ -3,16 +3,13 @@ package pl.coderslab.cls_wms_app.fixtures;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
-import pl.coderslab.cls_wms_app.entity.ArticleTypes;
 import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.service.storage.ArticleTypesService;
 import pl.coderslab.cls_wms_app.service.storage.LocationService;
 import pl.coderslab.cls_wms_app.service.storage.StorageZoneService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,13 +41,13 @@ public class LocationFixture {
             new Location(null, "FLP00101013","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5760000,2800.0),
             new Location(null, "FLP00101014","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",true,true,200,240,120,5760000,3000.00,5760000,3000),
             new Location(null, "FLP00101015","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5760000,3000),
-            new Location(null, "DOORREC01","Receiving door location", "RDL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000,3000)
-
-
+            new Location(null, "DOORREC01","Receiving door location", "RDL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000,3000),
+            new Location(null, "PALLETJACK001","Equipment location", "EQL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,200,80,120,1920000,1000,1920000,1000),
+            new Location(null, "PALLETJACK001","Equipment location", "EQL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,200,80,120,1920000,1000,1920000,1000)
     );
 
     @Autowired
-    public LocationFixture(LocationService locationService, WarehouseService warehouseService, StorageZoneService storageZoneService, ArticleTypesService articleTypesService) {
+    public LocationFixture(LocationService locationService, WarehouseService warehouseService, StorageZoneService storageZoneService) {
         this.locationService = locationService;
         this.warehouseService = warehouseService;
         this.storageZoneService = storageZoneService;
@@ -85,6 +82,8 @@ public class LocationFixture {
         Location location18 = locationList.get(17);
         Location location19 = locationList.get(18);
         Location location20 = locationList.get(19);
+        Location location21 = locationList.get(20);
+        Location location22 = locationList.get(21);
 
         location1.setWarehouse(warehouseList.get(0));
         location2.setWarehouse(warehouseList.get(0));
@@ -106,6 +105,8 @@ public class LocationFixture {
         location18.setWarehouse(warehouseList.get(0));
         location19.setWarehouse(warehouseList.get(1));
         location20.setWarehouse(warehouseList.get(1));
+        location21.setWarehouse(warehouseList.get(0));
+        location22.setWarehouse(warehouseList.get(1));
 
         location1.setStorageZone(storageZoneList.get(0));
         location2.setStorageZone(storageZoneList.get(1));
@@ -127,9 +128,11 @@ public class LocationFixture {
         location18.setStorageZone(storageZoneList.get(0));
         location19.setStorageZone(storageZoneList.get(0));
         location20.setStorageZone(storageZoneList.get(0));
+        location21.setStorageZone(storageZoneList.get(5));
+        location22.setStorageZone(storageZoneList.get(5));
 
 
-        int locationsFromFixtures = 20;
+        int locationsFromFixtures = 22;
         for (int i = 0; i < locationsFromFixtures; i++) {
             locationService.add(locationList.get(i));
         }

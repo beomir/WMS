@@ -215,22 +215,40 @@ public class LocationServiceImpl implements LocationService {
             if (locationNameConstruction.getFirstSepDoor().length() == 4 && StringUtils.isAlpha(locationNameConstruction.getFirstSepDoor()) && locationNameConstruction.getSecondSepDoor().length() == 3 && StringUtils.isAlpha(locationNameConstruction.getSecondSepDoor()) && locationNameConstruction.getThirdSepDoor().length() == 2 && StringUtils.isNumeric(locationNameConstruction.getThirdSepDoor())) {
                 locationName = locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + locationNameConstruction.getThirdSepDoor();
             } else {
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent("Single door location creation with incorrect name: " + locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + locationNameConstruction.getThirdSepDoor());
+                maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
                 log.error("Location Door name is incorrect: 1sep: " + locationNameConstruction.getFirstSepDoor().length() + StringUtils.isAlpha(locationNameConstruction.getFirstSepDoor()) + " ,2sep: " + locationNameConstruction.getSecondSepDoor().length() + StringUtils.isAlpha(locationNameConstruction.getSecondSepDoor()) + " ,3sep: " + locationNameConstruction.getThirdSepDoor().length() + StringUtils.isAlpha(locationNameConstruction.getThirdSepDoor()));
-
             }
         } else if (location.getLocationDesc().contains("rack")) {
             if (locationNameConstruction.getFirstSepRack().length() == 3 && StringUtils.isAlpha(locationNameConstruction.getFirstSepRack()) && locationNameConstruction.getSecondSepRack().length() == 3 && StringUtils.isNumeric(locationNameConstruction.getSecondSepRack()) && locationNameConstruction.getThirdSepRack().length() == 2 && StringUtils.isNumeric(locationNameConstruction.getThirdSepRack()) && locationNameConstruction.getFourthSepRack().length() == 3 && StringUtils.isNumeric(locationNameConstruction.getFourthSepRack())) {
                 locationName = locationNameConstruction.getFirstSepRack() + locationNameConstruction.getSecondSepRack() + locationNameConstruction.getThirdSepRack() + locationNameConstruction.getFourthSepRack();
             } else {
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent("Single rack location creation with incorrect name: " + locationNameConstruction.getFirstSepRack() + locationNameConstruction.getSecondSepRack() + locationNameConstruction.getThirdSepRack() + locationNameConstruction.getFourthSepRack());
+                maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
                 log.error("Location Rack name is incorrect: 1sep: " + locationNameConstruction.getFirstSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getFirstSepRack()) + " ,2sep: " + locationNameConstruction.getSecondSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getSecondSepRack()) + " ,3sep: " + locationNameConstruction.getThirdSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getThirdSepRack()) + locationNameConstruction.getFourthSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getFourthSepRack()));
             }
-        } else {
+        } else if(location.getLocationType().equals("EQL")){
+            if(locationNameConstruction.getFirstSepEquipment().length() == 10 && StringUtils.isAlpha(locationNameConstruction.firstSepEquipment) && locationNameConstruction.getSecondSepEquipment().length() == 3 && StringUtils.isNumeric(locationNameConstruction.secondSepEquipment)){
+                locationName = locationNameConstruction.getFirstSepEquipment() + locationNameConstruction.getSecondSepEquipment();
+            }
+            else {
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent("Single equipment creation with incorrect name: " + locationNameConstruction.getFirstSepEquipment() + locationNameConstruction.getSecondSepEquipment());
+                maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
+                log.error("Equipment name: " + locationNameConstruction.getFirstSepEquipment() + locationNameConstruction.getSecondSepEquipment() + " is incorrect");
+            }
+        }
+        else {
             if (locationNameConstruction.getFirstSepFloor().length() == 3 && StringUtils.isAlpha(locationNameConstruction.getFirstSepFloor()) && locationNameConstruction.getSecondSepFloor().length() == 8 && StringUtils.isNumeric(locationNameConstruction.getSecondSepFloor())) {
                 locationName = locationNameConstruction.getFirstSepFloor() + locationNameConstruction.getSecondSepFloor();
 
             } else {
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent("Single floor location creation with incorrect name: " + locationNameConstruction.getFirstSepFloor() + locationNameConstruction.getSecondSepFloor());
+                maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
                 log.error("Location Floor name is incorrect: " + locationName);
-                log.error("Location Door name is incorrect: 1sep: " + locationNameConstruction.getFirstSepFloor().length() + StringUtils.isAlpha(locationNameConstruction.getFirstSepFloor()) + " ,2sep: " + locationNameConstruction.getSecondSepFloor().length() + StringUtils.isAlpha(locationNameConstruction.getSecondSepFloor()));
             }
         }
         location.setLocationName(locationName);
@@ -607,6 +625,9 @@ public class LocationServiceImpl implements LocationService {
         if (location.getLocationType().equals("SDL")) {
             location.setLocationDesc("Shipping door location");
         }
+        if (location.getLocationType().equals("EQL")) {
+            location.setLocationDesc("Equipment location");
+        }
     }
 
 
@@ -686,7 +707,11 @@ public class LocationServiceImpl implements LocationService {
             lCN.setSecondSepRack(location.getLocationName().substring(3, 6));
             lCN.setThirdSepRack(location.getLocationName().substring(6, 8));
             lCN.setFourthSepRack(location.getLocationName().substring(8, 11));
-        } else {
+        } else if(location.getLocationDesc().contains("Equipment")){
+            lCN.setFirstSepEquipment((location.getLocationName().substring(0,10)));
+            lCN.setSecondSepEquipment((location.getLocationName().substring(10,13)));
+        }
+        else {
             lCN.setFirstSepFloor(location.getLocationName().substring(0, 3));
             lCN.setSecondSepFloor(location.getLocationName().substring(3, 11));
         }
