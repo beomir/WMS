@@ -164,7 +164,7 @@ public class ReceptionServiceImpl implements ReceptionService {
             work.setHdNumber(singularReception.getHd_number());
             work.setStatus(false);
             work.setFromLocation(singularReception.getLocation());
-            work.setToLocation(locationRepository.findLocationByLocationName(destinationLocation));
+            work.setToLocation(locationRepository.findLocationByLocationName(destinationLocation,singularReception.getWarehouse().getName()));
             work.setHandle("Reception PutAway");
             work.setWorkDescription("Reception Put Away");
             work.setWorkNumber(LocalDate.now().getYear() + LocalDate.now().getDayOfMonth() + receptionNumber + singularReception.getId());

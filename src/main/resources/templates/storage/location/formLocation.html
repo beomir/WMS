@@ -65,7 +65,7 @@
 			</section>
 			<section id="equipment">
 				<span th:text="#{app.equipment}" style="color: white;font-weight: bold">Equipment</span><br/>
-				<label th:text="#{app.equi1}" style="color: white;font-style: italic" title="For example PFL like Picking floor location">Name (ten alpha)</label>
+				<label th:text="#{app.equi1}" style="color: white;font-style: italic" title="For example PALLETJACK">Name (ten alpha)</label>
 				<input class="location" id="equipmentFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{10}" type="text" maxlength="10" title="For example PALLETJACK" th:field="*{locationNameConstruction.firstSepEquipment}"/>
 				<label th:text="#{app.equi2}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (three numeric)</label>
 				<input class="location" id="equipmentSecondSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{locationNameConstruction.secondSepEquipment}"/>
@@ -93,8 +93,8 @@
 			<section id="multiItem">
 				<label th:text="#{app.multiItem}" style="color: white;font-weight: bold">Multi Item allowed</label>
 				<select class="select-css" th:field="*{location.multiItem}">
-					<option th:value="true">Yes</option>
-					<option th:value="false">No</option>
+					<option th:text="#{app.control}" selected th:value="true">Control</option>
+					<option th:text="#{app.notControl}" th:value="false">Not control</option>
 				</select> <br/>
 			</section>
 			<section id="hdControling">
@@ -143,6 +143,7 @@
 
 <script type="text/javascript" th:src="@{/js/logo.js}"></script>
 <script type="text/javascript" th:src="@{/js/formLocation.js}"></script>
+<script type="text/javascript" th:src="@{/js/switchingLocationTypes.js}"></script>
 </body>
 
 

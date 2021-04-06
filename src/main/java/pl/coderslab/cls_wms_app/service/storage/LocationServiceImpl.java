@@ -70,7 +70,7 @@ public class LocationServiceImpl implements LocationService {
         location.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         location.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         location.setChangeBy(SecurityUtils.usernameForActivations());
-        if (locationRepository.findLocationByLocationName(locationName) == null) {
+        if (locationRepository.findLocationByLocationName(locationName,location.getWarehouse().getName()) == null) {
             locationRepository.save(location);
             lNC.setMessage("Locations created successfully. Details saved in transaction");
             log.debug("location: " + location + " created");
@@ -118,11 +118,12 @@ public class LocationServiceImpl implements LocationService {
         location.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         location.setChangeBy(SecurityUtils.usernameForActivations());
         try {
-            if (location.getId() == locationRepository.findLocationByLocationName(locationName).getId()) {
+            if (location.getId().equals(locationRepository.findLocationByLocationName(locationName,location.getWarehouse().getName()).getId())) {
                 String changes = "Changes after edit: ";
                 Location oldLocation = locationRepository.getOne(location.getId());
                 lNC.setMessage("Locations edited successfully. Details saved in transaction");
                 log.debug("location: " + location + " edited");
+                log.error("oldLocation volume: " + oldLocation.getVolume());
                 Transaction transaction = new Transaction();
                 transaction.setHdNumber(0L);
                 if(!oldLocation.getLocationName().equals(location.getLocationName())){
@@ -147,7 +148,7 @@ public class LocationServiceImpl implements LocationService {
                     changes = changes + ",max weight from: " + oldLocation.getMaxWeight() + ", to: " + location.getMaxWeight();
                     location.setFreeWeight(location.getMaxWeight() - (oldLocation.getMaxWeight()-oldLocation.getFreeWeight()));
                 }
-                else{
+                if(oldLocation.getMaxWeight() == location.getMaxWeight()){
                     location.setFreeWeight(oldLocation.getFreeWeight());
                 }
                 if(oldLocation.getWidth() != location.getWidth()){
@@ -167,9 +168,13 @@ public class LocationServiceImpl implements LocationService {
                     location.setVolume(location.getDepth() * location.getHeight() * location.getWidth());
                     changes = changes + ",volume from: " + oldLocation.getVolume() + ", to: " + location.getVolume();
                     location.setFreeSpace(location.getVolume() - (oldLocation.getVolume()-oldLocation.getFreeSpace()));
+                    log.error("oldLocation volume not equal new " + oldLocation.getVolume());
                 }
-                else{
+                if(oldLocation.getVolume() == location.getVolume()){
                     location.setFreeSpace(oldLocation.getFreeSpace());
+                    location.setVolume(location.getDepth() * location.getHeight() * location.getWidth());
+
+                    log.error("oldLocation volume equal new " + oldLocation.getVolume());
                 }
                 transaction.setAdditionalInformation(changes);
                 transaction.setArticle(0L);
@@ -203,8 +208,13 @@ public class LocationServiceImpl implements LocationService {
                 issueLog.setIssueLogContent("");
                 issueLog.setIssueLogFilePath("");
                 issueLog.setAdditionalInformation("");
+                issueLogService.add(issueLog);
             }
         } catch (NullPointerException e) {
+            location.setVolume(location.getDepth() * location.getHeight() * location.getWidth());
+            Location oldLocation = locationRepository.getOne(location.getId());
+            location.setFreeSpace(location.getVolume() - (oldLocation.getVolume()-oldLocation.getFreeSpace()));
+            location.setFreeWeight(location.getMaxWeight() - (oldLocation.getMaxWeight()-oldLocation.getFreeWeight()));
             locationRepository.save(location);
         }
     }
@@ -258,12 +268,12 @@ public class LocationServiceImpl implements LocationService {
     public void addLocationsToStorageZone(AddLocationToStorageZone aLTSZ) {
         String requestedLocationToAdd;
         if (aLTSZ.locationType.equals("RDL") || aLTSZ.locationType.equals("SDL")) {
-            log.debug(aLTSZ.storageZone);
-            log.debug(aLTSZ.warehouse);
-            log.debug(aLTSZ.firstSepDoor);
-            log.debug(aLTSZ.secondSepDoor);
-            log.debug(aLTSZ.thirdSepDoor);
-            log.debug(aLTSZ.thirdSepDoorTo);
+            log.debug("Door: " + aLTSZ.storageZone);
+            log.debug("Door: " + aLTSZ.warehouse);
+            log.debug("Door: " + aLTSZ.firstSepDoor);
+            log.debug("Door: " + aLTSZ.secondSepDoor);
+            log.debug("Door: " + aLTSZ.thirdSepDoor);
+            log.debug("Door: " + aLTSZ.thirdSepDoorTo);
             int from = parseInt(aLTSZ.getThirdSepDoor());
             int to = parseInt(aLTSZ.getThirdSepDoorTo());
             int locationsRange = to - from + 1;
@@ -272,7 +282,7 @@ public class LocationServiceImpl implements LocationService {
             if (locationsRange > 0) {
                 for (int i = from; i <= to; i++) {
                     requestedLocationToAdd = aLTSZ.getFirstSepDoor() + aLTSZ.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0");
-                    log.error("location: " + requestedLocationToAdd + " old storage zone: " + locationRepository.findLocationByLocationName(requestedLocationToAdd).getStorageZone().getStorageZoneName() + ", requested storage zone: " + aLTSZ.storageZone);
+                    log.error("location: " + requestedLocationToAdd + " old storage zone: " + locationRepository.findLocationByLocationName(requestedLocationToAdd,aLTSZ.warehouse).getStorageZone().getStorageZoneName() + ", requested storage zone: " + aLTSZ.storageZone);
                     addLocationsToStorageZoneIssueLogCreation(requestedLocationToAdd, aLTSZ);
                 }
                 log.error("Counter value: " + counter);
@@ -281,11 +291,11 @@ public class LocationServiceImpl implements LocationService {
                 addLocationsToStorageZoneMessage(locationsRange);
             }
         } else if (aLTSZ.locationType.equals("PFL")) {
-            log.debug(aLTSZ.storageZone);
-            log.debug(aLTSZ.warehouse);
-            log.debug(aLTSZ.firstSepFloor);
-            log.debug(aLTSZ.secondSepFloor);
-            log.debug(aLTSZ.secondSepFloorTo);
+            log.debug("PFL: " +aLTSZ.storageZone);
+            log.debug("PFL: " +aLTSZ.warehouse);
+            log.debug("PFL: " +aLTSZ.firstSepFloor);
+            log.debug("PFL: " +aLTSZ.secondSepFloor);
+            log.debug("PFL: " +aLTSZ.secondSepFloorTo);
             int from = parseInt(aLTSZ.getSecondSepFloor());
             int to = parseInt(aLTSZ.getSecondSepFloorTo());
             int locationsRange = to - from + 1;
@@ -300,12 +310,33 @@ public class LocationServiceImpl implements LocationService {
                 log.error("doorLocationsRange value: " + locationsRange);
                 addLocationsToStorageZoneMessage(locationsRange);
             }
-        } else {
-            log.debug(aLTSZ.storageZone);
-            log.debug(aLTSZ.warehouse);
-            log.debug(aLTSZ.firstSepFloor);
-            log.debug(aLTSZ.secondSepFloor);
-            log.debug(aLTSZ.secondSepFloorTo);
+        } else if(aLTSZ.locationType.equals("EQL")){
+            log.debug("EQL: " + aLTSZ.storageZone);
+            log.debug("EQL: " +aLTSZ.warehouse);
+            log.debug("EQL: " +aLTSZ.firstSepEquipment);
+            log.debug("EQL: " +aLTSZ.secondSepEquipment);
+            log.debug("EQL: " +aLTSZ.secondSepEquipmentTo);
+            int from = parseInt(aLTSZ.getSecondSepEquipment());
+            int to = parseInt(aLTSZ.getSecondSepEquipmentTo());
+            int locationsRange = to - from + 1;
+            counter = 0;
+            theSameStorageZone = 0;
+            if (locationsRange > 0) {
+                for (int i = from; i <= to; i++) {
+                    requestedLocationToAdd = aLTSZ.getFirstSepEquipment() + StringUtils.leftPad(Integer.toString(i), 3, "0");
+                    addLocationsToStorageZoneIssueLogCreation(requestedLocationToAdd, aLTSZ);
+                }
+                log.error("Counter value: " + counter);
+                log.error("doorLocationsRange value: " + locationsRange);
+                addLocationsToStorageZoneMessage(locationsRange);
+            }
+        }
+        else {
+            log.debug("Rack: " + aLTSZ.storageZone);
+            log.debug("Rack: " +aLTSZ.warehouse);
+            log.debug("Rack: " +aLTSZ.firstSepFloor);
+            log.debug("Rack: " +aLTSZ.secondSepFloor);
+            log.debug("Rack: " +aLTSZ.secondSepFloorTo);
             int rackNumberFrom = parseInt(aLTSZ.getSecondSepRack());
             int rackNumberTo = parseInt(aLTSZ.getSecondSepRackTo());
             int rackNumberRange = rackNumberTo - rackNumberFrom + 1;
@@ -356,7 +387,7 @@ public class LocationServiceImpl implements LocationService {
 
     private void addLocationsToStorageZoneIssueLogCreation(String requestedLocationToAdd, AddLocationToStorageZone aLTSZ) {
 
-        if (locationRepository.findLocationByLocationName(requestedLocationToAdd) == null) {
+        if (locationRepository.findLocationByLocationName(requestedLocationToAdd,aLTSZ.warehouse) == null) {
             IssueLog issuelog = new IssueLog();
             issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", not exists in DB");
             issuelog.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
@@ -368,7 +399,7 @@ public class LocationServiceImpl implements LocationService {
             issueLogService.add(issuelog);
             log.error("Location: " + requestedLocationToAdd + " tried be add to Storage Zone by range generation, but is not exists in DB. Front End validation was broken");
 
-        } else if (locationRepository.findLocationByLocationName(requestedLocationToAdd).getStorageZone().getStorageZoneName().equals(aLTSZ.storageZone)) {
+        } else if (locationRepository.findLocationByLocationName(requestedLocationToAdd,aLTSZ.warehouse).getStorageZone().getStorageZoneName().equals(aLTSZ.storageZone)) {
             IssueLog issuelog = new IssueLog();
             issuelog.setIssueLogContent("Location: " + requestedLocationToAdd + ", is already in storage zone: " + aLTSZ.storageZone);
             issuelog.setWarehouse(warehouseRepository.getWarehouseByName(aLTSZ.getWarehouse()));
@@ -380,7 +411,7 @@ public class LocationServiceImpl implements LocationService {
             issueLogService.add(issuelog);
             theSameStorageZone++;
         } else {
-            Location location = locationRepository.findLocationByLocationName(requestedLocationToAdd);
+            Location location = locationRepository.findLocationByLocationName(requestedLocationToAdd,aLTSZ.warehouse);
             Transaction transaction = new Transaction();
             transaction.setAdditionalInformation("Location: " + requestedLocationToAdd + " have changed Storage Zone from: " + location.getStorageZone().getStorageZoneName() + ", to: " + aLTSZ.getStorageZone());
             location.setStorageZone(storageZoneRepository.findStorageZoneByStorageZoneName(aLTSZ.getStorageZone()));
@@ -431,6 +462,7 @@ public class LocationServiceImpl implements LocationService {
         boolean extremelyValueSetup = true;
         try{
              maxQtyOfLocationsToCreate = parseInt(extremelyRepository.checkLocationScopeMax(location.getWarehouse().getName(),"Location Scope").getExtremelyValue());
+             log.error("maxQtyOfLocationsToCreate: " + maxQtyOfLocationsToCreate);
         }
         catch (NumberFormatException e){
             log.error("maxQtyOfLocationsToCreate value(table extremely, extremelyValue ) : " + maxQtyOfLocationsToCreate + " can not parse to int");
@@ -454,7 +486,7 @@ public class LocationServiceImpl implements LocationService {
             int from = parseInt(locationNameConstruction.getThirdSepDoor());
             int to = parseInt(locationNameConstruction.getThirdSepDoorTo());
             int locationsRange = to - from;
-            if (locationsRange > 0 && maxQtyOfLocationsToCreate >= locationsRange) {
+            if (locationsRange > 0 && maxQtyOfLocationsToCreate > locationsRange) {
                 for (int i = from; i <= to; i++) {
                     Location newLocation = new Location();
                     newLocation.setLocationName(locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0"));
@@ -463,7 +495,7 @@ public class LocationServiceImpl implements LocationService {
                     newLocation.setHdControl(true);
                     createLocationPackIssueLog(location, newLocation);
                 }
-            } else if(maxQtyOfLocationsToCreate < locationsRange){
+            } else if(maxQtyOfLocationsToCreate <= locationsRange){
                 log.error("Extremly value: " + maxQtyOfLocationsToCreate + " is lower than location range or extremelyValue is not a number check issueLog");
                 if(extremelyValueSetup == true){
                     IssueLog issueLog = new IssueLog();
@@ -482,7 +514,7 @@ public class LocationServiceImpl implements LocationService {
             int from = parseInt(locationNameConstruction.getSecondSepFloor());
             int to = parseInt(locationNameConstruction.getSecondSepFloorTo());
             int locationsRange = to - from;
-            if (locationsRange > 0 && maxQtyOfLocationsToCreate >= locationsRange) {
+            if (locationsRange > 0 && maxQtyOfLocationsToCreate > locationsRange) {
                 for (int i = from; i <= to; i++) {
                     Location newLocation = new Location();
                     newLocation.setLocationName(locationNameConstruction.getFirstSepFloor() + StringUtils.leftPad(Integer.toString(i), 8, "0"));
@@ -490,7 +522,7 @@ public class LocationServiceImpl implements LocationService {
                     log.debug("Location created: " + locationNameConstruction.getFirstSepFloor() + StringUtils.leftPad(Integer.toString(i), 8, "0"));
                     createLocationPackIssueLog(location, newLocation);
                 }
-            } else if(maxQtyOfLocationsToCreate < locationsRange){
+            } else if(maxQtyOfLocationsToCreate <= locationsRange){
                 log.error("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
                 if(extremelyValueSetup == true) {
                     IssueLog issueLog = new IssueLog();
@@ -505,7 +537,36 @@ public class LocationServiceImpl implements LocationService {
                 issueLog.setIssueLogContent("ERROR: location range: " + locationsRange + " lower than 1");
                 maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
             }
-        } else {
+        } else if (location.getLocationType().equals("EQL")) {
+            int from = parseInt(locationNameConstruction.getSecondSepEquipment());
+            int to = parseInt(locationNameConstruction.getSecondSepEquipmentTo());
+            int locationsRange = to - from;
+            log.error("EQL locationsRange: " + locationsRange );
+            if (locationsRange > 0 && maxQtyOfLocationsToCreate > locationsRange) {
+                for (int i = from; i <= to; i++) {
+                    Location newLocation = new Location();
+                    newLocation.setLocationName(locationNameConstruction.getFirstSepEquipment() + StringUtils.leftPad(Integer.toString(i), 3, "0"));
+                    LocationPackRestData(location, newLocation);
+                    log.debug("Location created: " + locationNameConstruction.getFirstSepEquipment() + StringUtils.leftPad(Integer.toString(i), 3, "0"));
+                    createLocationPackIssueLog(location, newLocation);
+                }
+            } else if(maxQtyOfLocationsToCreate <= locationsRange){
+                log.error("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
+                if(extremelyValueSetup == true) {
+                    IssueLog issueLog = new IssueLog();
+                    issueLog.setIssueLogContent("Extremly value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
+                    maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
+                    maxQtyOfLocationsToCreate = 0;
+                }
+            }
+            else{
+                log.error("ERROR: location range: " + locationsRange + " lower than 1");
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent("ERROR: location range: " + locationsRange + " lower than 1");
+                maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
+            }
+        }
+        else {
             int rackNumberFrom = parseInt(locationNameConstruction.getSecondSepRack());
             int rackNumberTo = parseInt(locationNameConstruction.getSecondSepRackTo());
             int rackNumberRange = rackNumberTo - rackNumberFrom;
@@ -518,7 +579,7 @@ public class LocationServiceImpl implements LocationService {
             int locationNumberTo = parseInt(locationNameConstruction.getFourthSepRackTo());
             int locationNumberRange = locationNumberTo - locationNumberFrom;
 
-            if (rackNumberRange >= 0 && rackHeightRange >= 0 && locationNumberRange >= 0 && maxQtyOfLocationsToCreate >= rackNumberRange * rackHeightRange * locationNumberRange) {
+            if (rackNumberRange >= 0 && rackHeightRange >= 0 && locationNumberRange >= 0 && maxQtyOfLocationsToCreate > rackNumberRange * rackHeightRange * locationNumberRange) {
                 for (int i = rackNumberFrom; i <= rackNumberTo; i++) {
                     String rackNumber;
                     String rackHeight;
@@ -537,7 +598,7 @@ public class LocationServiceImpl implements LocationService {
                     }
                 }
             }
-            else if(maxQtyOfLocationsToCreate < rackNumberRange * rackHeightRange * locationNumberRange){
+            else if(maxQtyOfLocationsToCreate <= rackNumberRange * rackHeightRange * locationNumberRange){
                 log.error("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range + " + rackNumberRange * rackHeightRange * locationNumberRange + " or extremlyValue is not a number");
                 if(extremelyValueSetup == true) {
                     IssueLog issueLog = new IssueLog();
@@ -571,7 +632,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     public void createLocationPackIssueLog(Location location, Location newLocation) {
-        if (locationRepository.findLocationByLocationName(newLocation.getLocationName()) == null) {
+        if (locationRepository.findLocationByLocationName(newLocation.getLocationName(),location.getWarehouse().getName()) == null) {
             locationRepository.save(newLocation);
             log.error("CREATE existedLocationCounter: "  + existedLocationCounter);
 //            log.debug("Location created: " + locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0"));
@@ -606,6 +667,13 @@ public class LocationServiceImpl implements LocationService {
         doorLocation.setStorageZone(location.getStorageZone());
         doorLocation.setMultiItem(location.isMultiItem());
         doorLocation.setHdControl(location.isHdControl());
+        doorLocation.setWidth(location.getWidth());
+        doorLocation.setHeight(location.getHeight());
+        doorLocation.setDepth(location.getDepth());
+        doorLocation.setMaxWeight(location.getMaxWeight());
+        doorLocation.setFreeWeight(location.getMaxWeight());
+        doorLocation.setVolume(location.getWidth() * location.getHeight() * location.getDepth());
+        doorLocation.setFreeSpace(location.getWidth() * location.getHeight() * location.getDepth());
         doorLocation.setActive(true);
     }
 

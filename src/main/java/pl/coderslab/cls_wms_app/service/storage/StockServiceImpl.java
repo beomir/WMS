@@ -81,7 +81,7 @@ public class StockServiceImpl implements StockService {
     @Override
     public void addNewStock(Stock stock, String locationNames) {
 
-        Location location = locationRepository.findLocationByLocationName(locationNames);
+        Location location = locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName());
         stock.setLocation(location);
         location.setFreeSpace(location.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
         location.setFreeWeight(location.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
@@ -110,7 +110,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public void changeArticleNumber(Stock stock, ChosenStockPositional chosenStockPositional) {
-        Location location = locationRepository.findLocationByLocationName(stock.getLocation().getLocationName());
+        Location location = locationRepository.findLocationByLocationName(stock.getLocation().getLocationName(),stock.getWarehouse().getName());
         if (articleRepository.getOne(chosenStockPositional.articleId).getArticleTypes().getMixed().contains(stock.getArticle().getArticleTypes().getArticleClass()) && location.getVolume() - stock.getArticle().getVolume() * stock.getPieces_qty() > 0 && location.getMaxWeight() - stock.getArticle().getWeight() * stock.getPieces_qty() > 0) {
             Transaction transaction = new Transaction();
             transaction.setTransactionDescription("Article number changed on stock");
@@ -160,7 +160,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public void changeQty(Stock stock, ChosenStockPositional chosenStockPositional) {
-        Location location = locationRepository.findLocationByLocationName(stock.getLocation().getLocationName());
+        Location location = locationRepository.findLocationByLocationName(stock.getLocation().getLocationName(),stock.getWarehouse().getName());
         if(location.getVolume() - stock.getArticle().getVolume() * stock.getPieces_qty() > 0 && location.getMaxWeight() - stock.getArticle().getWeight() * stock.getPieces_qty() > 0){
             Transaction transaction = new Transaction();
             transaction.setTransactionDescription("Quantity changed on stock");
@@ -356,11 +356,11 @@ public class StockServiceImpl implements StockService {
                 }
 
             } catch (NullPointerException e) {
-                transaction.setAdditionalInformation("Transfer partial quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames).getLocationName() + " destiny location was empty before transfer");
+                transaction.setAdditionalInformation("Transfer partial quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()).getLocationName() + " destiny location was empty before transfer");
                 transaction.setTransactionDescription("Transfer stock Partial: New pallet created, destiny location was empty before transfer");
                 transaction.setTransactionType("317");
                 transactionService.add(transaction);
-                Location locationForSplittedPallet = locationRepository.findLocationByLocationName(locationNames);
+                Location locationForSplittedPallet = locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName());
                 locationForSplittedPallet.setFreeSpace(locationForSplittedPallet.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
                 locationForSplittedPallet.setFreeWeight(locationForSplittedPallet.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
                 Stock splittedPallet = new Stock();
@@ -370,7 +370,7 @@ public class StockServiceImpl implements StockService {
                 splittedPallet.setChangeBy(SecurityUtils.usernameForActivations());
                 splittedPallet.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()));
                 splittedPallet.setReceptionNumber(chosenStockPositional.receptionNumberObj);
-                splittedPallet.setLocation(locationRepository.findLocationByLocationName(locationNames));
+                splittedPallet.setLocation(locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()));
                 splittedPallet.setArticle(stock.getArticle());
                 splittedPallet.setWarehouse(warehouseRepository.getOne(chosenStockPositional.getWarehouseId()));
                 splittedPallet.setCompany(companyRepository.getOne(chosenStockPositional.getCompanyId()));
@@ -408,7 +408,7 @@ public class StockServiceImpl implements StockService {
         }
         //transfer all qty
         else if (stock.getPieces_qty() == chosenStockPositional.pieces_qtyObj) {
-            Location location = locationRepository.findLocationByLocationName(locationNames);
+            Location location = locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName());
             Location remainingLocation = locationRepository.getOne(chosenStockPositional.locationId);
             try {
 
@@ -426,7 +426,7 @@ public class StockServiceImpl implements StockService {
                 stock.setReceptionNumber(chosenStockPositional.getReceptionNumberObj());
                 log.error("Transfer to not occupied location");
                 stockRepository.save(stock);
-                transaction.setAdditionalInformation("Transfer stock full pallet: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames).getLocationName() + " destiny location was empty before transfer");
+                transaction.setAdditionalInformation("Transfer stock full pallet: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()).getLocationName() + " destiny location was empty before transfer");
                 transaction.setTransactionDescription("Transfer stock full pallet: New pallet created, destiny location was empty before transfer");
                 transaction.setTransactionType("318");
                 transactionService.add(transaction);
@@ -458,11 +458,11 @@ public class StockServiceImpl implements StockService {
             stockInDestinationLocation.setPieces_qty(stockInDestinationLocation.getPieces_qty() + stock.getPieces_qty());
             log.error("Qty cumulated for one stock id, for partial transfer, the same article ( destination == original)");
             stockRepository.save(stockInDestinationLocation);
-            Location locationForSplittedPallet = locationRepository.findLocationByLocationName(locationNames);
+            Location locationForSplittedPallet = locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName());
             locationForSplittedPallet.setFreeSpace(locationForSplittedPallet.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
             locationForSplittedPallet.setFreeWeight(locationForSplittedPallet.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
 
-            transaction.setAdditionalInformation("Transfer partial quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number());
+            transaction.setAdditionalInformation("Transfer partial quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number());
             transaction.setTransactionDescription("Transfer stock Partial: cumulate to destination HD with the same article");
             transaction.setTransactionType("311");
             transactionService.add(transaction);
@@ -470,7 +470,7 @@ public class StockServiceImpl implements StockService {
 
         if (!stockInDestinationLocation.getHd_number().equals(stock.getHd_number()) && stockInDestinationLocation.getArticle().getArticle_number() != stock.getArticle().getArticle_number()) {
             log.error("Qty transfer to different pallet number, for partial transfer, different article ( destination != original)");
-            Location locationForSplittedPallet = locationRepository.findLocationByLocationName(locationNames);
+            Location locationForSplittedPallet = locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName());
             locationForSplittedPallet.setFreeSpace(locationForSplittedPallet.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
             locationForSplittedPallet.setFreeWeight(locationForSplittedPallet.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
             Stock splittedPallet = new Stock();
@@ -480,7 +480,7 @@ public class StockServiceImpl implements StockService {
             splittedPallet.setChangeBy(SecurityUtils.usernameForActivations());
             splittedPallet.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()));
             splittedPallet.setReceptionNumber(chosenStockPositional.receptionNumberObj);
-            splittedPallet.setLocation(locationRepository.findLocationByLocationName(locationNames));
+            splittedPallet.setLocation(locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()));
             splittedPallet.setArticle(stock.getArticle());
             splittedPallet.setWarehouse(warehouseRepository.getOne(chosenStockPositional.getWarehouseId()));
             splittedPallet.setCompany(companyRepository.getOne(chosenStockPositional.getCompanyId()));
@@ -491,14 +491,14 @@ public class StockServiceImpl implements StockService {
             stockRepository.save(splittedPallet);
             locationRepository.save(locationForSplittedPallet);
 
-            transaction.setAdditionalInformation("Transfer partial quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number() + " remaining pieces stayed on origin location");
+            transaction.setAdditionalInformation("Transfer partial quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number() + " remaining pieces stayed on origin location");
             transaction.setTransactionDescription("Transfer stock Partial: new pallet in destination location created, with different article");
             transaction.setTransactionType("312");
             transactionService.add(transaction);
         }
         if (!stockInDestinationLocation.getHd_number().equals(stock.getHd_number()) && stockInDestinationLocation.getArticle().getArticle_number() == stock.getArticle().getArticle_number()) {
             log.error("Qty transfer to different pallet number, for partial transfer, the same article ( destination == original)");
-            Location locationForSplittedPallet = locationRepository.findLocationByLocationName(locationNames);
+            Location locationForSplittedPallet = locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName());
             locationForSplittedPallet.setFreeSpace(locationForSplittedPallet.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
             locationForSplittedPallet.setFreeWeight(locationForSplittedPallet.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
             Stock splittedPallet = new Stock();
@@ -508,7 +508,7 @@ public class StockServiceImpl implements StockService {
             splittedPallet.setChangeBy(SecurityUtils.usernameForActivations());
             splittedPallet.setUnit(unitRepository.getOne(chosenStockPositional.getUnitId()));
             splittedPallet.setReceptionNumber(chosenStockPositional.receptionNumberObj);
-            splittedPallet.setLocation(locationRepository.findLocationByLocationName(locationNames));
+            splittedPallet.setLocation(locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()));
             splittedPallet.setArticle(stock.getArticle());
             splittedPallet.setWarehouse(warehouseRepository.getOne(chosenStockPositional.getWarehouseId()));
             splittedPallet.setCompany(companyRepository.getOne(chosenStockPositional.getCompanyId()));
@@ -519,7 +519,7 @@ public class StockServiceImpl implements StockService {
             stockRepository.save(splittedPallet);
             locationRepository.save(locationForSplittedPallet);
 
-            transaction.setAdditionalInformation("Transfer partial quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number() + " remaining pieces stayed on origin location");
+            transaction.setAdditionalInformation("Transfer partial quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number() + " remaining pieces stayed on origin location");
             transaction.setTransactionDescription("Transfer stock Partial: new pallet in destination location created, with the same article");
             transaction.setTransactionType("313");
             transactionService.add(transaction);
@@ -528,11 +528,11 @@ public class StockServiceImpl implements StockService {
             stockInDestinationLocation.setPieces_qty(stockInDestinationLocation.getPieces_qty() + stock.getPieces_qty());
             log.error("Qty cumulated for one stock id, for partial transfer, different article ( destination != original)");
             stockRepository.save(stockInDestinationLocation);
-            Location locationForSplittedPallet = locationRepository.findLocationByLocationName(locationNames);
+            Location locationForSplittedPallet = locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName());
             locationForSplittedPallet.setFreeSpace(locationForSplittedPallet.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
             locationForSplittedPallet.setFreeWeight(locationForSplittedPallet.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
 
-            transaction.setAdditionalInformation("Transfer partial quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number());
+            transaction.setAdditionalInformation("Transfer partial quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number());
             transaction.setTransactionDescription("Transfer stock Partial: cumulate to destination HD with different article");
             transaction.setTransactionType("320");
             transactionService.add(transaction);
@@ -541,7 +541,7 @@ public class StockServiceImpl implements StockService {
 
 
     void fullTransfer(Stock stock, String locationNames, ChosenStockPositional chosenStockPositional, Stock stockInDestinationLocation, Transaction transaction) {
-        Location location = locationRepository.findLocationByLocationName(locationNames);
+        Location location = locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName());
         log.error("stockInDestinationLocation.getHd_number(): " + stockInDestinationLocation.getHd_number());
         log.error("stockInDestinationLocation.location: " + stockInDestinationLocation.getLocation().getLocationName());
         log.error("stock.getHd_number(): " + stock.getHd_number());
@@ -552,7 +552,7 @@ public class StockServiceImpl implements StockService {
             stockRepository.delete(stock);
             log.error("transfer all qty from origin pallet and cumulate to destination pallet - article on pallets are the same");
 
-            transaction.setAdditionalInformation("Transfer all quantity: " + stock.getPieces_qty() + " from location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + "Article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", HD number:" + chosenStockPositional.getHd_numberObj() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number() + ". Quantity after transfer on pallet: " + (stockInDestinationLocation.getPieces_qty()));
+            transaction.setAdditionalInformation("Transfer all quantity: " + stock.getPieces_qty() + " from location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + "Article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", HD number:" + chosenStockPositional.getHd_numberObj() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number() + ". Quantity after transfer on pallet: " + (stockInDestinationLocation.getPieces_qty()));
             transaction.setTransactionDescription("Transfer stock full pallet: cumulate all pieces from origin pallet to pallet in destination location. Article are the same");
             transaction.setTransactionType("314");
             transactionService.add(transaction);
@@ -570,7 +570,7 @@ public class StockServiceImpl implements StockService {
             log.error("transfer all qty from origin pallet with keeping pallet number - article on origin pallet is the same like on pallet with destination location");
             stockRepository.save(stock);
 
-            transaction.setAdditionalInformation("Transfer all quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames).getLocationName() + " transferred pieces are kept on the same origin pallet number, same articles");
+            transaction.setAdditionalInformation("Transfer all quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()).getLocationName() + " transferred pieces are kept on the same origin pallet number, same articles");
             transaction.setTransactionDescription("Transfer stock full pallet: origin pallet number kept, article in destiny location is the same like in origin location");
             transaction.setTransactionType("315");
             transactionService.add(transaction);
@@ -585,7 +585,7 @@ public class StockServiceImpl implements StockService {
             stock.setQuality(chosenStockPositional.getQualityObj());
             stock.setReceptionNumber(chosenStockPositional.getReceptionNumberObj());
             log.error("transfer all qty from origin pallet and cumulate to destination pallet - articles are not the same");
-            transaction.setAdditionalInformation("Transfer all quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number() + " where are multiple items");
+            transaction.setAdditionalInformation("Transfer all quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()).getLocationName() + " and cumulate it to HD number: " + stockInDestinationLocation.getHd_number() + " where are multiple items");
             transaction.setTransactionDescription("Transfer stock full pallet: cumulate all pieces from origin pallet to pallet in destination location. Article are different");
             transaction.setTransactionType("316");
             transactionService.add(transaction);
@@ -603,7 +603,7 @@ public class StockServiceImpl implements StockService {
             log.error("transfer all qty from origin pallet with keeping pallet number - article on origin pallet is the same like on pallet with destination location");
             stockRepository.save(stock);
 
-            transaction.setAdditionalInformation("Transfer all quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames).getLocationName() + " transferred pieces are kept on the same origin pallet number, different articles");
+            transaction.setAdditionalInformation("Transfer all quantity: " + stock.getPieces_qty() + " from origin pallet: " + chosenStockPositional.getHd_numberObj() + " in location: " + locationRepository.getOne(chosenStockPositional.locationId).getLocationName() + ", article: " + articleRepository.getOne(chosenStockPositional.getArticleId()).getArticle_number() + ", to Location: " + locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName()).getLocationName() + " transferred pieces are kept on the same origin pallet number, different articles");
             transaction.setTransactionDescription("Transfer stock full pallet: origin pallet number kept, article in destiny location is different than this from origin location");
             transaction.setTransactionType("319");
             transactionService.add(transaction);
