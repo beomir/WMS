@@ -110,12 +110,13 @@
         </a>
 
         </span>
-         <div class="btn" id="warehouseOperations">
+         <div class="btn" id="warehouseOperations" >
               <span th:text="#{app.warehouseOperations}"></span>
             <img id="whsOperationsImg" th:src="@{/images/list.png}" class="right"/>
          </div>
-        <span id="whsOperationsBtn" class="d-none" style="min-width: 100%">
-        <a th:href="@{/warehouse}"><div  class="btn3">
+        <span id="whsOperationsBtn" class="d-none" style="width: 100%">
+        <a th:href="@{/warehouse}" >
+            <div class="btn3">
             <span th:text="#{app.chWarehouse}"></span>
             <img th:src="@{/images/return.png}" class="right"/>
             </div></a>

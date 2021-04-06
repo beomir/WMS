@@ -189,12 +189,15 @@
             <span th:text="#{app.warehouseOperations}"></span>
             <img id="whsOperationsImg" th:src="@{/images/list.png}" class="right"/>
         </div>
-        <span id="whsOperationsBtn" class="d-none" style="min-width: 100%">
-        <a th:href="@{/warehouse}"><div  class="btn3">
-            <span th:text="#{app.chWarehouse}"></span>
+        <span id="whsOperationsBtn" style="width: 100%" class="d-none" >
+        <a th:href="@{/warehouse}">
+            <div  class="btn3">
+            <span th:text="#{app.chWarehouse}" ></span>
             <img th:src="@{/images/return.png}" class="right"/>
             </div></a>
-        <a th:href="@{/stock}" ><div th:text="#{app.checkStock}" class="btn3">Check Stock</div></a>
+        <a th:href="@{/stock}" >
+            <div th:text="#{app.checkStock}" class="btn3">Check Stock</div>
+        </a>
         <div class="btn3" id="reception">
             <span th:text="#{app.receptionMenu}"></span>
             <img id="receptionImg" th:src="@{/images/list.png}" class="right"/>
@@ -307,6 +310,7 @@
             if (switcherSet % 2 == 0) {
                 document.getElementById('configImg').src  = '/images/list.png';
                 $("#configBtn").hide(500);
+
             }
             else {
                 document.getElementById('configImg').src = '/images/close.png';

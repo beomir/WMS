@@ -635,7 +635,6 @@ public class LocationServiceImpl implements LocationService {
         if (locationRepository.findLocationByLocationName(newLocation.getLocationName(),location.getWarehouse().getName()) == null) {
             locationRepository.save(newLocation);
             log.error("CREATE existedLocationCounter: "  + existedLocationCounter);
-//            log.debug("Location created: " + locationNameConstruction.getFirstSepDoor() + locationNameConstruction.getSecondSepDoor() + StringUtils.leftPad(Integer.toString(i), 2, "0"));
         } else {
             log.error("Location: " + newLocation.getLocationName() + " already exists and was not created");
             IssueLog issuelog = new IssueLog();

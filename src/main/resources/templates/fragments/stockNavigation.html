@@ -15,7 +15,7 @@
             <div th:each="companys: ${companys}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': ' + ${companys.name}"></div><br/>
         </div>
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span sec:authentication="principal.authorities"></span></div><br/>
-        <a th:href="@{/warehouse}"><div  class="btn">
+        <a id="checkStock" th:href="@{/warehouse}"><div  class="btn">
             <span th:text="#{app.chWarehouse}"></span>
             <img th:src="@{/images/return.png}" class="right"/>
             </div></a>
@@ -52,7 +52,7 @@
             <span th:text="#{app.setting}"></span>
             <img id="settingImg" th:src="@{/images/list.png}" class="right"/>
         </div>
-        <span id="configBtn" class="d-none">
+        <span id="configBtn" class="d-none" style="width:100%">
             <span sec:authorize="!hasRole('ROLE_ADMIN')">
         <a th:href="@{/user/scheduler}" style="min-width: 100%">
             <ol class="btn2"><div th:text="#{app.scheduler}" style="color: white;font-weight: normal">Scheduler</div>
@@ -151,7 +151,7 @@
             <img id="companyImg" th:src="@{/images/list.png}" class="right"/>
         </div>
         <span id="companyBtn" class="d-none">
-            <a th:href="@{/config/warehouseList}" style="min-width: 100%">
+            <a th:href="@{/config/warehouseList}" >
             <ol class="btn2"><div th:text="#{app.warehousesList}" style="color: white;font-weight: normal">Warehouses list</div >
                 <li style="min-width: 100%;">
                     <ul>
@@ -337,6 +337,9 @@
             if (switcherRec % 2 == 0) {
                 document.getElementById('receptionImg').src  = '/images/list.png';
                 $("#receptionBtn").hide(500);
+                $('html, body').animate({
+                    scrollTop: $("#topA").offset().top
+                }, 1000);
             }
             else {
                 document.getElementById('receptionImg').src = '/images/close.png';
@@ -361,6 +364,9 @@
             if (switcherShi % 2 == 0) {
                 document.getElementById('shipmentImg').src  = '/images/list.png';
                 $("#shipmentBtn").hide(500);
+                $('html, body').animate({
+                    scrollTop: $("#topA").offset().top
+                }, 1000);
             }
             else {
                 document.getElementById('shipmentImg').src = '/images/close.png';
@@ -385,6 +391,9 @@
             if (switcherSet % 2 == 0) {
                 document.getElementById('settingImg').src  = '/images/list.png';
                 $("#configBtn").hide(500);
+                $('html, body').animate({
+                    scrollTop: $("#topA").offset().top
+                }, 1000);
             }
             else {
                 document.getElementById('settingImg').src = '/images/close.png';
@@ -410,6 +419,9 @@
             if (switcherCom % 2 == 0) {
                 document.getElementById('companyImg').src  = '/images/list.png';
                 $("#companyBtn").hide(500);
+                $('html, body').animate({
+                    scrollTop: $("#checkStock").offset().top
+                }, 1000);
             }
             else {
                 document.getElementById('companyImg').src = '/images/close.png';
@@ -433,6 +445,9 @@
             if (switcherSto % 2 == 0) {
                 document.getElementById('stockImg').src  = '/images/list.png';
                 $("#stockBtn").hide(500);
+                $('html, body').animate({
+                    scrollTop: $("#checkStock").offset().top
+                }, 1000);
             }
             else {
                 document.getElementById('stockImg').src = '/images/close.png';
@@ -457,6 +472,9 @@
             if (switcherUsr % 2 == 0) {
                 document.getElementById('userImg').src  = '/images/list.png';
                 $("#userBtn").hide(500);
+                $('html, body').animate({
+                    scrollTop: $("#checkStock").offset().top
+                }, 1000);
             }
             else {
                 document.getElementById('userImg').src = '/images/close.png';
@@ -481,6 +499,9 @@
             if (switcherCon % 2 == 0) {
                 document.getElementById('configImg').src  = '/images/list.png';
                 $("#configBt").hide(500);
+                $('html, body').animate({
+                    scrollTop: $("#checkStock").offset().top
+                }, 1000);
             }
             else {
                 document.getElementById('configImg').src = '/images/close.png';
