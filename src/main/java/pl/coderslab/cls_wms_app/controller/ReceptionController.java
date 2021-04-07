@@ -21,7 +21,6 @@ import pl.coderslab.cls_wms_app.service.wmsValues.VendorService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 import pl.coderslab.cls_wms_app.temporaryObjects.ReceptionSearch;
-import pl.coderslab.cls_wms_app.temporaryObjects.TransactionSearch;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -44,15 +43,13 @@ public class ReceptionController {
     private final UsersService usersService;
     private final ReceptionServiceImpl receptionServiceImpl;
     private final ReceptionRepository receptionRepository;
-    private final WarehouseRepository warehouseRepository;
-    private final CompanyRepository companyRepository;
     private final LocationRepository locationRepository;
     private final StatusRepository statusRepository;
     private CustomerUserDetailsService customerUserDetailsService;
     public ReceptionSearch receptionSearch;
 
     @Autowired
-    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository, WarehouseRepository warehouseRepository, CompanyRepository companyRepository, LocationRepository locationRepository, StatusRepository statusRepository, CustomerUserDetailsService customerUserDetailsService,ReceptionSearch receptionSearch) {
+    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository, LocationRepository locationRepository, StatusRepository statusRepository, CustomerUserDetailsService customerUserDetailsService,ReceptionSearch receptionSearch) {
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.articleService = articleService;
@@ -62,8 +59,6 @@ public class ReceptionController {
         this.usersService = usersService;
         this.receptionServiceImpl = receptionServiceImpl;
         this.receptionRepository = receptionRepository;
-        this.warehouseRepository = warehouseRepository;
-        this.companyRepository = companyRepository;
         this.locationRepository = locationRepository;
         this.statusRepository = statusRepository;
         this.customerUserDetailsService = customerUserDetailsService;

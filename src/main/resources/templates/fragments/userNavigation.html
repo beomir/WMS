@@ -148,7 +148,7 @@
         </a>
             </div>
             <a th:href="@{/workDetails}" ><div th:text="#{app.works}" class="btn3">Works</div></a>
-            <a th:href="@{/scanner}" ><div th:text="#{app.scanner}" class="btn3">scanner</div></a>
+            <a th:href="@{/scanner/{token}(token=${token})}" ><div th:text="#{app.scanner}" class="btn3">scanner</div></a>
         </span>
         <script>
             const warehouseOperations = document.getElementById("warehouseOperations");

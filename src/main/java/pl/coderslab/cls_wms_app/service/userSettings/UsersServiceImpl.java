@@ -16,6 +16,7 @@ import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionServiceImpl;
 import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.CheckPassword;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
+import pl.coderslab.cls_wms_app.temporaryObjects.ReceptionSearch;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,18 +30,20 @@ public class UsersServiceImpl implements UsersService {
     private final ReceptionServiceImpl receptionServiceImpl;
     private final LocationNameConstruction locationNameConstruction;
     private final AddLocationToStorageZone addLocationToStorageZone;
+    private final ReceptionSearch receptionSearch;
     public String alertMessage = "";
     public String oldPass;
     private SendEmailService sendEmailService;
     private ArticleServiceImpl articleServiceImpl;
 
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, SendEmailService sendEmailService, ArticleServiceImpl articleServiceImpl) {
+    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ReceptionSearch receptionSearch, SendEmailService sendEmailService, ArticleServiceImpl articleServiceImpl) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.receptionServiceImpl = receptionServiceImpl;
         this.locationNameConstruction = locationNameConstruction;
         this.addLocationToStorageZone = addLocationToStorageZone;
+        this.receptionSearch = receptionSearch;
         this.sendEmailService = sendEmailService;
         this.articleServiceImpl = articleServiceImpl;
     }
@@ -121,6 +124,8 @@ public class UsersServiceImpl implements UsersService {
         addLocationToStorageZone.message = "";
         alertMessage = "";
         articleServiceImpl.articleMessage = "";
+        receptionSearch.message = "";
+
         String token = FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());

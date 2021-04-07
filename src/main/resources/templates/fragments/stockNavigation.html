@@ -3,25 +3,25 @@
 <body>
 <div th:fragment="stockNavigation">
     <div style="display: flex">
-    <div class="hamburger hamburger--active">
+    <div th:classappend="${#httpServletRequest.requestURI.contains('/scanner')} ? 'hamburger' : 'hamburger hamburger--active'">
             <span class="hamburger__box">
                 <span class="hamburger__inner"></span>
             </span>
     </div>
-    <div class="navigation navigation--active">
+    <div th:classappend="${#httpServletRequest.requestURI.contains('/scanner')} ? 'navigation' : 'navigation navigation--active'">
 
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.hello} + ': ' + ${#request.remoteUser} "></div><br/>
         <div sec:authorize="!hasRole('ROLE_ADMIN')">
             <div th:each="companys: ${companys}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': ' + ${companys.name}"></div><br/>
         </div>
-        <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span sec:authentication="principal.authorities"></span></div><br/>
+        <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span id="loggedUserRole" sec:authentication="principal.authorities"></span></div><br/>
         <a id="checkStock" th:href="@{/warehouse}"><div  class="btn">
             <span th:text="#{app.chWarehouse}"></span>
             <img th:src="@{/images/return.png}" class="right"/>
             </div></a>
         <a th:href="@{/stock}" ><div th:text="#{app.checkStock}" class="btn">Check Stock</div></a>
         <a th:href="@{/workDetails}" ><div th:text="#{app.works}" class="btn">Works</div></a>
-        <a th:href="@{/scanner}" ><div th:text="#{app.scanner}" class="btn">scanner</div></a>
+        <a th:href="@{/scanner/{token}(token=${token})}" ><div th:text="#{app.scanner}" class="btn">scanner</div></a>
         <div class="btn" id="reception">
             <span th:text="#{app.receptionMenu}"></span>
             <img id="receptionImg" th:src="@{/images/list.png}" class="right"/>
@@ -325,6 +325,16 @@
     </div>
     </div>
     <script>
+        // let loggedUserRole = $('#loggedUserRole').text()
+        //
+        // function hamburgerMenuActivation(){
+        //     if(loggedUserRole != "[ROLE_SCANNER]"){
+        //         $('#hamburgerMenuStatus').removeClass().addClass("hamburger")
+        //         $('#navigationMenuStatus').removeClass().addClass("navigation")
+        //     }
+        //
+        // }
+
         const reception = document.getElementById("reception");
         let switcherRec = 0;
 

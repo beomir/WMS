@@ -924,6 +924,28 @@ tr:hover > td{
     font-weight: bold;
 }
 
+.underTitle {
+    color: white;
+    text-align: center;
+    font-size: 25px;
+    font-style: italic;
+}
+
+.formDescription {
+    color: white;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.formContent {
+    color: white;
+    text-align: left;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 15%;
+}
+
 .btn3 {
     color: #fff;
     background: #024594;
@@ -1178,4 +1200,58 @@ input:invalid:focus.check {
     margin-left: 10px;
     width: 90%;
     border-radius: 2px;
+}
+
+.circle {
+    width: 70px;
+    line-height: 70px;
+    cursor: pointer;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 21px;
+    font-weight: bold;
+    color: white;
+    border: 1px solid white;
+    background-image: linear-gradient(orange, red);
+    margin-left: 10px;
+    margin-right: 10px;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+}
+
+.circle:hover{
+    -o-transition: all 0.6s;
+    -moz-transition: all 0.6s;
+    -webkit-transition: all 0.6s;
+    -moz-transform: scale(1.4);
+    -o-transform:scale(1.4);
+    -webkit-transform: scale(1.4);
+}
+
+.circleBig {
+    width: 130px;
+    line-height: 130px;
+    cursor: pointer;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    border: 1px solid white;
+    background-image: linear-gradient(orange, red);
+    margin-left: 10px;
+    margin-right: 10px;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+}
+
+.circleBig:hover{
+    -o-transition: all 0.6s;
+    -moz-transition: all 0.6s;
+    -webkit-transition: all 0.6s;
+    -moz-transform: scale(1.2);
+    -o-transform:scale(1.2);
+    -webkit-transform: scale(1.2);
 }

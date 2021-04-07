@@ -46,4 +46,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     public static interface AvailableLocations {
         String getLocation();
     }
+
+    @Query(value = "Select count(location_name) from location where location_name = ?1 and location_type = 'EQL'",nativeQuery = true)
+    int checkEquipment(String locationName);
 }
