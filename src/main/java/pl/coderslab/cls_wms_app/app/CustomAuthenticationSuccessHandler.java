@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import pl.coderslab.cls_wms_app.repository.UsersRepository;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
 
@@ -18,6 +19,11 @@ import java.util.Set;
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private UsersService usersService;
+    private UsersRepository usersRepository;
+
+    public CustomAuthenticationSuccessHandler(UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
+    }
 
     @Autowired
     public void setUsersService(UsersService usersService) {
@@ -32,7 +38,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
         if (roles.contains("ROLE_SCANNER")) {
-            httpServletResponse.sendRedirect("/scanner");
+
+            httpServletResponse.sendRedirect("/scanner/" + usersRepository.getUsersbyUsername(SecurityUtils.username()).getActivateToken());
         } else {
             httpServletResponse.sendRedirect("/warehouse");
         }
