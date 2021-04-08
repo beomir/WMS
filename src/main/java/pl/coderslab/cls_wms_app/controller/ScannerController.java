@@ -9,13 +9,9 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
-import pl.coderslab.cls_wms_app.repository.LocationRepository;
-import pl.coderslab.cls_wms_app.repository.ReceptionRepository;
-import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
-import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
+import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
-import pl.coderslab.cls_wms_app.temporaryObjects.Scanner;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -30,6 +26,7 @@ public class ScannerController {
     private final CompanyService companyService;
     private final LocationRepository locationRepository;
     private final WorkDetailsRepository workDetailsRepository;
+    //TODO think about cleaning message value between views
     public String message;
 
     @Autowired
@@ -119,6 +116,7 @@ public class ScannerController {
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
+        model.addAttribute("message", message);
         return "wmsOperations/scanner/scannerReception";
     }
     @PostMapping("scannerReception")
@@ -233,14 +231,15 @@ public class ScannerController {
         model.addAttribute("message", message);
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(receptionNumberSearch.toString(),warehouse);
         model.addAttribute("workToDoFound",workToDoFound);
-        return "wmsOperations/scanner/scannerReceptionWorkFoundHdNumber";
+        return "wmsOperations/scanner/scannerReceptionWorkFoundArticle";
     }
 
     @PostMapping("receptionMenuManualWorkReceptionNumberFoundArticle")
     public String receptionMenuManualWorkReceptionNumberFoundArticlePost(@SessionAttribute String scannerChosenWarehouse,
                                                                           String token,@RequestParam String expectedArticle, @RequestParam String enteredArticle,
                                                                           HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
-                                                                          @SessionAttribute int workReceptionScannerChoice,@SessionAttribute Long receptionNumberSearch) {
+                                                                          @SessionAttribute int workReceptionScannerChoice,@SessionAttribute Long receptionNumberSearch,
+                                                                          @SessionAttribute String enteredHdNumber, @SessionAttribute String fromLocation) {
         log.error("Article found by query: " + expectedArticle);
         log.error("Article enter by user: " + enteredArticle);
         String nextPath = "toLocation";
@@ -248,11 +247,57 @@ public class ScannerController {
         String prevprevious = "hdNumber";
         if(expectedArticle.equals(enteredArticle)){
             session.setAttribute("enteredArticle", enteredArticle);
+            workDetailsService.pickUpGoods(fromLocation,enteredArticle,enteredHdNumber,scannerChosenEquipment,scannerChosenWarehouse,companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName());
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + prevprevious + '/' +  previous + '/' + nextPath ;
+
         }
         else{
             message = "Entered article: " + enteredArticle + " is incorrect";
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + prevprevious + '/' + previous;
+        }
+    }
+
+    //scan destinationLocation
+    @GetMapping("{token}/{warehouse}/{equipment}/1/1/{receptionNumber}/hdNumber/article/toLocation")
+    public String receptionMenuManualWorkReceptionNumberFoundDestinationLocation(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,@SessionAttribute Long receptionNumberSearch ) {
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
+        model.addAttribute("token", token);
+        model.addAttribute("equipment", equipment);
+        model.addAttribute("warehouse", warehouse);
+        model.addAttribute("receptionNumber", receptionNumberSearch);
+        model.addAttribute("message", message);
+        WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(receptionNumberSearch.toString(),warehouse);
+        model.addAttribute("workToDoFound",workToDoFound);
+        return "wmsOperations/scanner/scannerReceptionWorkFoundDestinationLocation";
+    }
+
+    @PostMapping("receptionMenuManualWorkReceptionNumberFoundDestinationLocation")
+    public String receptionMenuManualWorkReceptionNumberFoundDestinationLocationPost(@SessionAttribute String scannerChosenWarehouse,
+                                                                         String token,@RequestParam String expectedDestinationLocation, @RequestParam String enteredDestinationLocation,
+                                                                         HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
+                                                                         @SessionAttribute int workReceptionScannerChoice,@SessionAttribute Long receptionNumberSearch,
+                                                                         @SessionAttribute String enteredHdNumber, @SessionAttribute Long enteredArticle) {
+        log.error("Destination location found by query: " + expectedDestinationLocation);
+        log.error("Destination location enter by user: " + enteredDestinationLocation);
+        String nextPath = "toLocation";
+        String previous = "article";
+        String prevprevious = "hdNumber";
+        if(expectedDestinationLocation.equals(enteredDestinationLocation)){
+            session.setAttribute("enteredDestinationLocation", enteredDestinationLocation);
+            WorkDetails workDetails = workDetailsRepository.workLineFinish(Long.parseLong(enteredHdNumber),scannerChosenWarehouse,receptionNumberSearch.toString(),enteredArticle);
+            workDetailsService.workLineFinish(workDetails,scannerChosenEquipment);
+            if(workDetailsRepository.checkIfWorksExistsForHandle(receptionNumberSearch.toString(),scannerChosenWarehouse) == 0 ){
+                workDetailsService.workFinished(workDetails);
+                message = "Work: " + workDetails.getWorkNumber() + " finished. Goods are available on stock";
+                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + '1';
+            }
+            return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch;
+
+        }
+        else{
+            message = "Entered destination location: " + enteredDestinationLocation + " is incorrect";
+            return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + prevprevious + '/' +  previous + '/' + nextPath;
         }
     }
     //Automatic Selection Work

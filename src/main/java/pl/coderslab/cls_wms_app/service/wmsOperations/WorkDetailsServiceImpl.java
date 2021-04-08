@@ -1,24 +1,38 @@
 package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coderslab.cls_wms_app.entity.Reception;
+import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.Transaction;
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
-import pl.coderslab.cls_wms_app.repository.TransactionRepository;
-import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
+import pl.coderslab.cls_wms_app.repository.*;
+import pl.coderslab.cls_wms_app.service.storage.StockService;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class WorkDetailsServiceImpl implements WorkDetailsService{
     private final WorkDetailsRepository workDetailsRepository;
     private final TransactionRepository transactionRepository;
+    private final StockRepository stockRepository;
+    private final LocationRepository locationRepository;
+    private final StockService stockService;
+    private final StatusRepository statusRepository;
+    private final ReceptionRepository receptionRepository;
 
     @Autowired
-    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository) {
+    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository) {
         this.workDetailsRepository = workDetailsRepository;
         this.transactionRepository = transactionRepository;
+        this.stockRepository = stockRepository;
+        this.locationRepository = locationRepository;
+        this.stockService = stockService;
+        this.statusRepository = statusRepository;
+        this.receptionRepository = receptionRepository;
     }
 
     @Override
@@ -102,5 +116,36 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         workDetailsRepository.save(workDetails);
     }
 
+    @Override
+    public void pickUpGoods(String fromLocation, String enteredArticle, String enteredHdNumber, String equipment, String warehouse, String company) {
+        Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(Long.parseLong(enteredHdNumber),Long.parseLong(enteredArticle),fromLocation,warehouse,company);
+        stock.setLocation(locationRepository.findLocationByLocationName(equipment,warehouse));
+        stockService.add(stock);
+    }
 
+    @Override
+    public void workLineFinish(WorkDetails workDetails,String scannerChosenEquipment){
+        //TODO add operations which will change location free volume and free weight & transaction
+        Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(workDetails.getHdNumber(),workDetails.getArticle().getArticle_number(),scannerChosenEquipment,workDetails.getWarehouse().getName(),workDetails.getCompany().getName());
+        stock.setLocation(locationRepository.findLocationByLocationName(workDetails.getToLocation().getLocationName(),workDetails.getWarehouse().getName()));
+        stockService.add(stock);
+        workDetails.setStatus(true);
+        workDetailsRepository.save(workDetails);
+    }
+
+    @Override
+    public void workFinished(WorkDetails workDetails){
+        //TODO add operations which will change location free volume and free weight & transaction
+        List<Stock> stock = stockRepository.getStockListByReceptionNumber(Long.parseLong(workDetails.getHandle()));
+        for (Stock value:stock) {
+            value.setStatus(statusRepository.getStatusByStatusName("on_hand","Stock"));
+            stockRepository.save(value);
+        }
+        List<Reception> reception = receptionRepository.getReceptionByReceptionNumber(Long.parseLong(workDetails.getHandle()));
+        for (Reception value: reception) {
+            value.setStatus(statusRepository.getStatusByStatusName("closed","Reception"));
+            receptionRepository.save(value);
+        }
+        workDetailsRepository.save(workDetails);
+    }
 }

@@ -18,4 +18,10 @@ public interface WorkDetailsService {
 
     void edit(WorkDetails workDetails);
 
+    void pickUpGoods(String fromLocation,String enteredArticle, String enteredHdNumber , String equipment,String warehouse, String company);
+
+    void workLineFinish(WorkDetails workDetails,String scannerChosenEquipment);
+
+    void workFinished(WorkDetails workDetails);
+
 }

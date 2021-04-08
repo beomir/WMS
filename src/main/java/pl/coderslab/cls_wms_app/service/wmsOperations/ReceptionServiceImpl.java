@@ -185,13 +185,14 @@ public class ReceptionServiceImpl implements ReceptionService {
             transactionService.add(workCreation);
 
             Stock stock = new Stock();
-            stock.setStatus(statusRepository.getStatusByStatusName("on_reception","Stock"));
+            stock.setStatus(statusRepository.getStatusByStatusName("on_reception","StockReception"));
             stock.setWarehouse(singularReception.getWarehouse());
             stock.setReceptionNumber(singularReception.getReceptionNumber());
             stock.setPieces_qty(singularReception.getPieces_qty());
             stock.setCompany(singularReception.getCompany());
             stock.setArticle(singularReception.getArticle());
             stock.setUnit(singularReception.getUnit());
+            stock.setQuality(singularReception.getQuality());
             stock.setLocation(singularReception.getLocation());
             stock.setHd_number(singularReception.getHd_number());
             stock.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
