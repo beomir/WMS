@@ -1,6 +1,7 @@
 package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
@@ -165,12 +166,12 @@ public class ReceptionServiceImpl implements ReceptionService {
             work.setStatus(false);
             work.setFromLocation(singularReception.getLocation());
             work.setToLocation(locationRepository.findLocationByLocationName(destinationLocation,singularReception.getWarehouse().getName()));
-            work.setHandle("Reception PutAway");
+            work.setHandle(receptionNumber.toString());
             work.setWorkDescription("Reception Put Away");
-            work.setWorkNumber(LocalDate.now().getYear() + LocalDate.now().getDayOfMonth() + receptionNumber + singularReception.getId());
+            log.error(LocalDate.now().getYear() +""+ StringUtils.leftPad(Integer.toString(LocalDate.now().getDayOfMonth()), 2, "0") +"" + receptionNumber + "" +singularReception.getId());
+            work.setWorkNumber(Long.parseLong(LocalDate.now().getYear() +""+ StringUtils.leftPad(Integer.toString(LocalDate.now().getDayOfMonth()), 2, "0") +"" + receptionNumber));
             work.setWorkType("Reception");
             workDetailsRepository.save(work);
-
             transaction.setTransactionDescription("Reception unloaded");
             transaction.setAdditionalInformation("Reception: " + receptionNumber + " unloaded");
             transaction.setReceptionStatus(singularReception.getStatus().getStatus());

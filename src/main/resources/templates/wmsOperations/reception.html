@@ -93,7 +93,7 @@
 									<li th:if="${reception.status == 'put_away_pending'}"><a th:href="@{/reception/finishedReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.finishPutAwayWorks}">Finish put away Works</a></li>
 									<li th:if="${reception.status == 'unloading_pending'}"><a th:href="@{/reception/finishUnloadingReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.unloadingFinished}">Unloading Finished</a></li>
 									<li th:if="${reception.status == 'unloading_pending'}"><a th:href="@{/reception/openCreationReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.backToCreation}">Back to Create</a></li>
-									<li th:if="${reception.status == 'creation_pending' }"><a th:href="@{/reception/unloadingDoor/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.truckArrived}">Creation Finish - truck arrived</a></li>
+									<li th:if="${reception.status == 'creation_pending' && reception.hd_number > 0}"><a th:href="@{/reception/unloadingDoor/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.truckArrived}">Creation Finish - truck arrived</a></li>
 									<li th:if="${reception.pieces_qty != 0}"><a th:href="@{/reception/receptionDetails/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.checkDetails}">Check Details</a></li>
 									<li th:if="${reception.pieces_qty == 0 }"><a th:href="@{/reception/editReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.createNewReceptionLine}">Create New Reception line</a></li>
 								</ul>
@@ -105,8 +105,8 @@
 				        <td class="tables" th:text="${reception.hd_number}"></td>
 						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${reception.company}"></td>
 				        <td class="tables" th:text="${reception.status}"></td>
-						<td th:if="${#strings.equals(reception.location,' ')}" class="tables"><span th:text="${reception.location}" ></span></td>
-						<td th:if="${!#strings.equals(reception.location,' ')}" class="tables"><span th:text="#{app.receptionDuringCreation}"></span></td>
+						<td th:if="${#strings.equals(reception.location,'')}" class="tables"><span th:text="#{app.receptionDuringCreation}" ></span></td>
+						<td th:if="${!#strings.equals(reception.location,'')}" class="tables"><span th:text="${reception.location}"></span></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.created,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.last_update,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${reception.changeBy}"></td>

@@ -43,7 +43,7 @@
 			</section><br/>
 
 			<section>
-				<label style="color: white;font-weight: bold">Article</label>
+				<label th:text="#{app.article}" style="color: white;font-weight: bold">Article</label>
 				<select class="select-css" th:field="*{reception.article}">
 					<option th:each="i : ${articles}" th:value="${i.id}" th:text="${i.article_number}">
 					</option>
@@ -66,7 +66,7 @@
 			</section><br/>
 
 			<section>
-				<label style="color: white;font-weight: bold">Quality</label>
+				<label  th:text="#{app.quality}" style="color: white;font-weight: bold">Quality</label>
 				<select class="select-css" th:field="*{reception.quality}">
 					<option th:value="EU1">European Union first grade</option>
 					<option th:value="EU2">European Union second grade</option>
@@ -76,18 +76,18 @@
 			</section><br/>
 
 			<section>
-				<label style="color: white;font-weight: bold">Unit</label>
+				<label th:text="#{app.unit}" style="color: white;font-weight: bold">Unit</label>
 				<select class="select-css" th:field="*{reception.unit}" >
 					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.name}">
 				</select><br/>
 			</section>
 			<section>
-				<label style="color: white;font-weight: bold">How many pieces on handle devices?</label>
+				<label th:text="#{app.howManyPiecesOnHandleDevice}" style="color: white;font-weight: bold">How many pieces on handle devices?</label>
 				<input class="check" type="text" th:field="*{reception.pieces_qty}" required="required" pattern="[0-9].{0,}" min="1" max="6666666"/>
 			</section>
 
 			<section>
-				<label style="color: white;font-weight: bold">Vendor</label>
+				<label th:text="#{app.vendor}" style="color: white;font-weight: bold">Vendor</label>
 				<select class="select-css" th:field="*{reception.vendor}">
 					<option th:each="i : ${vendors}" th:value="${i.id}" th:text="${i.name}">
 					</option>

@@ -56,8 +56,8 @@
 			<section>
 				<label th:text="#{app.status}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{status}">
+					<option selected th:value="'%'">All</option>
 					<option th:each="i : ${status}" th:value="${i.status}" th:text="${i.status}">
-					<option th:value="'%'">All</option>
 					</option>
 				</select>
 			</section><br/><br/>

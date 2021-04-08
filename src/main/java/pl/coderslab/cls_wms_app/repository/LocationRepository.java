@@ -47,6 +47,6 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
         String getLocation();
     }
 
-    @Query(value = "Select count(location_name) from location where location_name = ?1 and location_type = 'EQL'",nativeQuery = true)
-    int checkEquipment(String locationName);
+    @Query(value = "Select count(location_name) from location l inner join warehouse w on l.warehouse_id = w.id where location_name = ?1 and w.name = ?2 and location_type = 'EQL'",nativeQuery = true)
+    int checkEquipment(String locationName,String scannerChosenWarehouse);
 }

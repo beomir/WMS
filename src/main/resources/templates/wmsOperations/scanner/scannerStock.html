@@ -35,7 +35,7 @@
 			<input  type="hidden" th:value="${token}" name="token"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
 
-				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + equipment}}"><div class="circle" th:title="#{app.moveBack}"><-</div></a>
+				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment}}"><div class="circle" th:title="#{app.moveBack}"><-</div></a>
 <!--				<button name="scannerReception" type="submit"  th:value="1" class="circle">1</button>-->
 <!--				<button name="scannerReception" type="submit"  th:value="2" class="circle">2</button>-->
 			</section>

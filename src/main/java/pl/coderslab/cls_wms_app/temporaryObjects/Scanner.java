@@ -14,4 +14,5 @@ public class Scanner {
    public int scannerMenu;
    public int scannerReception;
    public String equipment;
+   public String warehouse;
 }

@@ -25,14 +25,15 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form method="post" th:action="@{/scanner/scannerEquipment}">
-			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/><br/>
+			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
+			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}">selected Warehouse</div><br/><br/>
 			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
 			<div class="formDescription" th:text="#{app.insertYourEquipmentName}"> </div>
-<!--			<br/><br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[0-9].{0,}" min="1" type="text" th:field="*{scanner.scannerMenu}"/>-->
 			<br/><br/>
 			<input  type="hidden" th:value="${token}" name="token"/>
 			<input  type="text" name="equipment"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
+				<a style="color:white"  th:href="@{${'/scanner/' + token}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
 				<button type="submit" class="circleBig" th:text="#{app.save}"></button>
 			</section>
 		</form>
