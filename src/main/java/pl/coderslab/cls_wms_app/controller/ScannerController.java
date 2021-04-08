@@ -105,7 +105,8 @@ public class ScannerController {
         return "wmsOperations/scanner/scannerMenu";
     }
     @PostMapping("scannerMenu")
-    public String scannerMenuPost(@SessionAttribute String scannerChosenWarehouse,@SessionAttribute String scannerChosenEquipment,String token,@RequestParam int scannerMenu, HttpSession session) {
+    public String scannerMenuPost(@SessionAttribute String scannerChosenWarehouse,@SessionAttribute String scannerChosenEquipment,
+                                  String token,@RequestParam int scannerMenu, HttpSession session) {
         log.debug("Scanner Menu Step scanner.scannerMenu: " +  scannerMenu);
         session.setAttribute("scannerMenuChoice", scannerMenu);
         return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenu;
@@ -121,7 +122,9 @@ public class ScannerController {
         return "wmsOperations/scanner/scannerReception";
     }
     @PostMapping("scannerReception")
-    public String receptionMenuPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerReception, HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment) {
+    public String receptionMenuPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerReception,
+                                    HttpSession session,@SessionAttribute int scannerMenuChoice,
+                                    @SessionAttribute String scannerChosenEquipment) {
         log.debug("Reception Step scanner.scannerMenu: " +  scannerReception);
         session.setAttribute("workReceptionScannerChoice", scannerReception);
         return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerReception;
@@ -138,7 +141,9 @@ public class ScannerController {
         return "wmsOperations/scanner/scannerReceptionManualWork";
     }
     @PostMapping("scannerReceptionManualWork")
-    public String receptionMenuManualWorkPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam Long receptionNumber, HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment, @SessionAttribute int workReceptionScannerChoice) {
+    public String receptionMenuManualWorkPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam Long receptionNumber,
+                                              HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
+                                              @SessionAttribute int workReceptionScannerChoice) {
         if(workDetailsRepository.checkIfWorksExistsForHandle(receptionNumber.toString(),scannerChosenWarehouse)>0){
             session.setAttribute("receptionNumberSearch", receptionNumber);
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumber;
@@ -158,13 +163,17 @@ public class ScannerController {
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
         model.addAttribute("receptionNumber", receptionNumberSearch);
+        model.addAttribute("message", message);
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(receptionNumberSearch.toString(),warehouse);
         model.addAttribute("workToDoFound",workToDoFound);
         return "wmsOperations/scanner/scannerReceptionWorkFoundOriginLocation";
     }
 
     @PostMapping("receptionMenuManualWorkReceptionNumberFound")
-    public String receptionMenuManualWorkReceptionNumberFoundPost(@SessionAttribute String scannerChosenWarehouse,String token,@RequestParam String fromLocation, @RequestParam String originLocation, HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment, @SessionAttribute int workReceptionScannerChoice,@SessionAttribute Long receptionNumberSearch) {
+    public String receptionMenuManualWorkReceptionNumberFoundPost(@SessionAttribute String scannerChosenWarehouse,String token,@RequestParam String fromLocation,
+                                                                  @RequestParam String originLocation, HttpSession session,@SessionAttribute int scannerMenuChoice,
+                                                                  @SessionAttribute String scannerChosenEquipment, @SessionAttribute int workReceptionScannerChoice,
+                                                                  @SessionAttribute Long receptionNumberSearch) {
         log.error("Location found by query: " + fromLocation);
         log.error("Location enter by user: " + originLocation);
         if(fromLocation.equals(originLocation)){
@@ -177,6 +186,8 @@ public class ScannerController {
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch;
         }
     }
+
+    //scan HdNumber
     @GetMapping("{token}/{warehouse}/{equipment}/1/1/{receptionNumber}/hdNumber")
     public String receptionMenuManualWorkReceptionNumberFoundHdNumber(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,@SessionAttribute Long receptionNumberSearch ) {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -185,23 +196,63 @@ public class ScannerController {
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
         model.addAttribute("receptionNumber", receptionNumberSearch);
+        model.addAttribute("message", message);
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(receptionNumberSearch.toString(),warehouse);
         model.addAttribute("workToDoFound",workToDoFound);
-        return "wmsOperations/scanner/scannerReceptionWorkFoundOriginLocation";
+        return "wmsOperations/scanner/scannerReceptionWorkFoundHdNumber";
     }
 
     @PostMapping("receptionMenuManualWorkReceptionNumberFoundHdNumber")
-    public String receptionMenuManualWorkReceptionNumberFoundHdNumberPost(@SessionAttribute String scannerChosenWarehouse,String token,@RequestParam String fromLocation, @RequestParam String originLocation, HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment, @SessionAttribute int workReceptionScannerChoice,@SessionAttribute Long receptionNumberSearch) {
-        log.error("Location found by query: " + fromLocation);
-        log.error("Location enter by user: " + originLocation);
-        if(fromLocation.equals(originLocation)){
-            session.setAttribute("fromLocation", fromLocation);
-            String nextPath = "article";
-            return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + nextPath ;
+    public String receptionMenuManualWorkReceptionNumberFoundHdNumberPost(@SessionAttribute String scannerChosenWarehouse,
+                                                                          String token,@RequestParam String expectedHdNumber, @RequestParam String enteredHdNumber,
+                                                                          HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
+                                                                          @SessionAttribute int workReceptionScannerChoice,@SessionAttribute Long receptionNumberSearch) {
+        log.error("HdNumber found by query: " + expectedHdNumber);
+        log.error("HdNumber enter by user: " + enteredHdNumber);
+        String nextPath = "article";
+        String previous = "hdNumber";
+        if(expectedHdNumber.equals(enteredHdNumber)){
+            session.setAttribute("enteredHdNumber", enteredHdNumber);
+            return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + previous + '/' + nextPath ;
         }
         else{
-            message = "Location from where you want pick up: " + originLocation + " is incorrect";
-            return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch;
+            message = "Entered HdNumber: " + enteredHdNumber + " is incorrect";
+            return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + previous;
+        }
+    }
+
+    //scan Article
+    @GetMapping("{token}/{warehouse}/{equipment}/1/1/{receptionNumber}/hdNumber/article")
+    public String receptionMenuManualWorkReceptionNumberFoundArticle(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,@SessionAttribute Long receptionNumberSearch ) {
+        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companys", companys);
+        model.addAttribute("token", token);
+        model.addAttribute("equipment", equipment);
+        model.addAttribute("warehouse", warehouse);
+        model.addAttribute("receptionNumber", receptionNumberSearch);
+        model.addAttribute("message", message);
+        WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(receptionNumberSearch.toString(),warehouse);
+        model.addAttribute("workToDoFound",workToDoFound);
+        return "wmsOperations/scanner/scannerReceptionWorkFoundHdNumber";
+    }
+
+    @PostMapping("receptionMenuManualWorkReceptionNumberFoundArticle")
+    public String receptionMenuManualWorkReceptionNumberFoundArticlePost(@SessionAttribute String scannerChosenWarehouse,
+                                                                          String token,@RequestParam String expectedArticle, @RequestParam String enteredArticle,
+                                                                          HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
+                                                                          @SessionAttribute int workReceptionScannerChoice,@SessionAttribute Long receptionNumberSearch) {
+        log.error("Article found by query: " + expectedArticle);
+        log.error("Article enter by user: " + enteredArticle);
+        String nextPath = "toLocation";
+        String previous = "article";
+        String prevprevious = "hdNumber";
+        if(expectedArticle.equals(enteredArticle)){
+            session.setAttribute("enteredArticle", enteredArticle);
+            return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + prevprevious + '/' +  previous + '/' + nextPath ;
+        }
+        else{
+            message = "Entered article: " + enteredArticle + " is incorrect";
+            return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + prevprevious + '/' + previous;
         }
     }
     //Automatic Selection Work
@@ -215,7 +266,8 @@ public class ScannerController {
         return "wmsOperations/scanner/scannerReceptionAutomatWork";
     }
     @PostMapping("scannerReceptionAutomatWork")
-    public String receptionMenuAutomaticWorkPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerReception, HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment) {
+    public String receptionMenuAutomaticWorkPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerReception,
+                                                 HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment) {
         log.debug("Reception Step scanner.scannerMenu: " +  scannerReception);
         session.setAttribute("workReceptionScannerChoice", scannerReception);
         return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerReception;
@@ -232,7 +284,8 @@ public class ScannerController {
         return "wmsOperations/scanner/scannerShipment";
     }
     @PostMapping("scannerShipment")
-    public String shipmentMenuPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerShipment, HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment) {
+    public String shipmentMenuPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerShipment,
+                                   HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment) {
         log.debug("Shipment Step scanner.scannerMenu: " +  scannerShipment);
         session.setAttribute("workReceptionScannerChoice", scannerShipment);
         return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerShipment;
@@ -249,7 +302,8 @@ public class ScannerController {
         return "wmsOperations/scanner/scannerPreview";
     }
     @PostMapping("scannerPreview")
-    public String previewMenuPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerPreview, HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment) {
+    public String previewMenuPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerPreview,
+                                  HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment) {
         log.debug("Shipment Step scanner.scannerMenu: " +  scannerPreview);
         session.setAttribute("workReceptionScannerChoice", scannerPreview);
         return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerPreview;
@@ -268,7 +322,8 @@ public class ScannerController {
         return "wmsOperations/scanner/scannerStock";
     }
     @PostMapping("scannerStock")
-    public String stockMenuPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerPreview, HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment) {
+    public String stockMenuPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerPreview,
+                                HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment) {
         log.debug("Shipment Step scanner.scannerMenu: " +  scannerPreview);
         session.setAttribute("workReceptionScannerChoice", scannerPreview);
         return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerPreview;
