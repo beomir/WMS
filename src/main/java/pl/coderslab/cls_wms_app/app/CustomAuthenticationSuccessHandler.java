@@ -1,12 +1,11 @@
 package pl.coderslab.cls_wms_app.app;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import pl.coderslab.cls_wms_app.repository.UsersRepository;
-import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+
 
 
 import javax.servlet.ServletException;
@@ -18,16 +17,11 @@ import java.util.Set;
 @Configuration
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private UsersService usersService;
+
     private UsersRepository usersRepository;
 
     public CustomAuthenticationSuccessHandler(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
-    }
-
-    @Autowired
-    public void setUsersService(UsersService usersService) {
-        this.usersService = usersService;
     }
 
 
