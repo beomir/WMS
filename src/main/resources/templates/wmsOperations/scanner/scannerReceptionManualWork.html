@@ -26,6 +26,7 @@
 	<div class="login-form">
 		<form method="post" th:action="@{/scanner/scannerReceptionManualWork}">
 			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
+			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
 			<div class="underTitle" th:text="#{app.reception}">reception</div><br/>
 			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
 			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
@@ -35,8 +36,8 @@
 			<br/><br/>
 			<input  type="hidden" th:value="${token}" name="token"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
-				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/1'}}"><div class="circle" th:title="#{app.moveBack}"><-</div></a>
-				<button type="submit" class="circle" style="font-size:12px" th:text="#{app.search}"></button>
+				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/1'}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
+				<button type="submit" class="circleBig" style="font-size:12px" th:text="#{app.search}"></button>
 			</section>
 		</form>
 

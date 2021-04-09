@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
@@ -254,12 +255,6 @@ public class ReceptionServiceImpl implements ReceptionService {
 
 
     @Override
-    public void insertDataToStockAfterFinishedReception(Long receptionNbr) {
-        receptionRepository.insertDataToStockAfterFinishedReception(receptionNbr);
-    }
-
-
-    @Override
     public Reception findById(Long id) {
         return receptionRepository.getOne(id);
     }
@@ -267,6 +262,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     public void finishReception(Long receptionNmbr) {
         List<Reception> finishedReception = receptionRepository.getReceptionByReceptionNumber(receptionNmbr);
+        List<WorkDetails> workDetailsList = workDetailsRepository.getWorkDetailsByHandle(receptionNmbr.toString());
         //transaction
         for(Reception reception : finishedReception){
             Transaction transaction = new Transaction();
@@ -299,6 +295,15 @@ public class ReceptionServiceImpl implements ReceptionService {
                 fileWriter.append("Company:" + value.getCompany().getName() + ",");
                 fileWriter.append("FromWarehouse:" + value.getWarehouse().getName() + ",");
                 fileWriter.append("ChangedBy:" + value.getChangeBy() + "\n");
+                for(WorkDetails workDetails : workDetailsList){
+                    log.error("workDetails.getHdNumber: " + workDetails.getHdNumber());
+                    log.error("value.getHd_number: " + value.getHd_number());
+                    if(workDetails.getHdNumber().equals(value.getHd_number())){
+                        fileWriter.append("Receive in door: " + workDetails.getFromLocation().getLocationName()  + "\n");
+                        fileWriter.append("Located in: " + workDetails.getToLocation().getLocationName());
+                    }
+
+                }
             }
 
         } catch (IOException ex) {
@@ -309,11 +314,44 @@ public class ReceptionServiceImpl implements ReceptionService {
         log.error(path + " of reception file");
         if (Files.exists(path)) {
             for (EmailRecipients value : mailGroup) {
-                sendEmailService.sendEmail(value.getEmail(), "Dear client,<br/><br/>in Warehouse: <b>" + warehouse + "</b> our team receipt of goods for Reception number: <b>" + receptionNbr + "</b>. After couple of minutes goods should be located in proper warehouse areas and available to proceed", "Reception " + receptionNbr, filePath);
+                sendEmailService.sendEmail(value.getEmail(), "Dear client,<br/><br/>in Warehouse: <b>" + warehouse + "</b> our team receipt of goods for Reception number: <b>" + receptionNbr + "</b>. Goods are already available on our stock. Details you can find in attachment", "Reception " + receptionNbr, filePath);
 
             }
         } else {
             log.error(path + " is empty, cannot send the email");
+        }
+        if(workDetailsRepository.checkIfWorksExistsOnlyByHandle(receptionNmbr.toString())>0){
+            for (Reception valueReception : finishedReception){
+                valueReception.setStatus(statusRepository.getStatusByStatusName("closed","Reception"));
+                add(valueReception);
+            }
+            for (WorkDetails workDetails : workDetailsList){
+                workDetails.setStatus(true);
+                workDetailsRepository.save(workDetails);
+            }
+            receptionSearch.message = ("Reception: " + receptionNmbr + " closed manually by user from reception management screen without scanner confirmation");
+            Transaction transaction = new Transaction();
+            transaction.setTransactionGroup("Reception");
+            transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+            transaction.setCompany(companyRepository.getOneCompanyByUsername(SecurityUtils.usernameForActivations()));
+            transaction.setWarehouse(warehouseRepository.getWarehouseByName(warehouse));
+            transaction.setReceptionNumber(receptionNmbr);
+            transaction.setArticle(0L);
+            transaction.setQuality("");
+            transaction.setUnit("");
+            transaction.setVendor("");
+            transaction.setQuantity(0L);
+            transaction.setHdNumber(0L);
+            transaction.setTransactionDescription("Reception: " + receptionNmbr + " closed manually by user from reception management screen without scanner confirmation");
+            transactionService.add(transaction);
+
+            List<Stock> stockList = stockRepository.getStockListByReceptionNumber(receptionNmbr);
+            for(Stock stock : stockList){
+                stock.setStatus(statusRepository.getStatusByStatusName("on_hand","Stock"));
+                stockRepository.save(stock);
+            }
+
         }
 
     }

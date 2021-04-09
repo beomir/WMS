@@ -23,9 +23,10 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     private final StockService stockService;
     private final StatusRepository statusRepository;
     private final ReceptionRepository receptionRepository;
+    private final ReceptionService receptionService;
 
     @Autowired
-    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository) {
+    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository, ReceptionService receptionService) {
         this.workDetailsRepository = workDetailsRepository;
         this.transactionRepository = transactionRepository;
         this.stockRepository = stockRepository;
@@ -33,6 +34,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         this.stockService = stockService;
         this.statusRepository = statusRepository;
         this.receptionRepository = receptionRepository;
+        this.receptionService = receptionService;
     }
 
     @Override
@@ -147,5 +149,6 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
             receptionRepository.save(value);
         }
         workDetailsRepository.save(workDetails);
+        receptionService.finishReception(Long.parseLong(workDetails.getHandle()));
     }
 }

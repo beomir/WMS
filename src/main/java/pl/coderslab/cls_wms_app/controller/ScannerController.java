@@ -28,6 +28,17 @@ public class ScannerController {
     private final WorkDetailsRepository workDetailsRepository;
     //TODO think about cleaning message value between views
     public String message;
+    public String equipmentMessage;
+    public String menuScannerMessage;
+    public String receptionMenuMessage;
+    public String manualReceptionMessage;
+    public String locationFromMessage;
+    public String locationToMessage;
+    public String hdNumberMessage;
+    public String articleMessage;
+
+
+
 
     @Autowired
     public ScannerController(WorkDetailsService workDetailsService, WarehouseRepository warehouseRepository, CompanyService companyService, LocationRepository locationRepository, WorkDetailsRepository workDetailsRepository) {
@@ -43,11 +54,18 @@ public class ScannerController {
     public String scannerWarehouse(@PathVariable String token, Model model) {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         List<Warehouse> warehouses = warehouseRepository.getWarehouse();
+        equipmentMessage = "";
+        menuScannerMessage = "";
+        receptionMenuMessage = "";
+        manualReceptionMessage = "";
+        locationFromMessage = "";
+        locationToMessage = "";
+        hdNumberMessage = "";
+        articleMessage = "";
         model.addAttribute("companys", companys);
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("token", token);
         model.addAttribute("message", message);
-
         return "wmsOperations/scanner/scannerWarehouse";
     }
     @PostMapping("scannerWarehouse")
@@ -70,9 +88,16 @@ public class ScannerController {
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
         model.addAttribute("token", token);
-        model.addAttribute("message", message);
+        model.addAttribute("message", equipmentMessage);
         model.addAttribute("warehouse", warehouse);
-
+        message = "";
+        menuScannerMessage = "";
+        receptionMenuMessage = "";
+        manualReceptionMessage = "";
+        locationFromMessage = "";
+        locationToMessage = "";
+        hdNumberMessage = "";
+        articleMessage = "";
         return "wmsOperations/scanner/scannerEquipment";
     }
     @PostMapping("scannerEquipment")
@@ -83,7 +108,7 @@ public class ScannerController {
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + equipment;
         }
         else {
-            message = "Equipment: " + equipment +" ,not exists in DB";
+            equipmentMessage = "Equipment: " + equipment +" ,not exists in DB";
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse;
         }
 
@@ -96,15 +121,23 @@ public class ScannerController {
         model.addAttribute("companys", companys);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
+        model.addAttribute("message", menuScannerMessage);
         model.addAttribute("warehouse", warehouse);
         message = "";
+        equipmentMessage = "";
+        receptionMenuMessage = "";
+        manualReceptionMessage = "";
+        locationFromMessage = "";
+        locationToMessage = "";
+        hdNumberMessage = "";
+        articleMessage = "";
 
         return "wmsOperations/scanner/scannerMenu";
     }
     @PostMapping("scannerMenu")
     public String scannerMenuPost(@SessionAttribute String scannerChosenWarehouse,@SessionAttribute String scannerChosenEquipment,
                                   String token,@RequestParam int scannerMenu, HttpSession session) {
-        log.debug("Scanner Menu Step scanner.scannerMenu: " +  scannerMenu);
+        log.debug("Scanner Menu Step: " +  scannerMenu);
         session.setAttribute("scannerMenuChoice", scannerMenu);
         return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenu;
     }
@@ -116,7 +149,15 @@ public class ScannerController {
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
-        model.addAttribute("message", message);
+        model.addAttribute("message", receptionMenuMessage);
+        message = "";
+        equipmentMessage = "";
+        menuScannerMessage = "";
+        manualReceptionMessage = "";
+        locationFromMessage = "";
+        locationToMessage = "";
+        hdNumberMessage = "";
+        articleMessage = "";
         return "wmsOperations/scanner/scannerReception";
     }
     @PostMapping("scannerReception")
@@ -135,7 +176,16 @@ public class ScannerController {
         model.addAttribute("companys", companys);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
+        model.addAttribute("message", manualReceptionMessage);
         model.addAttribute("warehouse", warehouse);
+        message = "";
+        equipmentMessage = "";
+        menuScannerMessage = "";
+        receptionMenuMessage = "";
+        locationFromMessage = "";
+        locationToMessage = "";
+        hdNumberMessage = "";
+        articleMessage = "";
         return "wmsOperations/scanner/scannerReceptionManualWork";
     }
     @PostMapping("scannerReceptionManualWork")
@@ -147,7 +197,7 @@ public class ScannerController {
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumber;
         }
         else{
-            message = "To reception number: " + receptionNumber + " are not assigned any works to do";
+            manualReceptionMessage = "To reception number: " + receptionNumber + " are not assigned any works to do";
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice;
         }
     }
@@ -161,7 +211,15 @@ public class ScannerController {
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
         model.addAttribute("receptionNumber", receptionNumberSearch);
-        model.addAttribute("message", message);
+        model.addAttribute("message", locationFromMessage);
+        message = "";
+        equipmentMessage = "";
+        menuScannerMessage = "";
+        receptionMenuMessage = "";
+        manualReceptionMessage = "";
+        locationToMessage = "";
+        hdNumberMessage = "";
+        articleMessage = "";
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(receptionNumberSearch.toString(),warehouse);
         model.addAttribute("workToDoFound",workToDoFound);
         return "wmsOperations/scanner/scannerReceptionWorkFoundOriginLocation";
@@ -180,7 +238,7 @@ public class ScannerController {
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + nextPath ;
         }
         else{
-            message = "Location from where you want pick up: " + originLocation + " is incorrect";
+            locationFromMessage = "Location from where you want pick up: " + originLocation + " is incorrect";
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch;
         }
     }
@@ -194,7 +252,15 @@ public class ScannerController {
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
         model.addAttribute("receptionNumber", receptionNumberSearch);
-        model.addAttribute("message", message);
+        model.addAttribute("message", hdNumberMessage);
+        message = "";
+        equipmentMessage = "";
+        menuScannerMessage = "";
+        receptionMenuMessage = "";
+        manualReceptionMessage = "";
+        locationToMessage = "";
+        locationFromMessage = "";
+        articleMessage = "";
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(receptionNumberSearch.toString(),warehouse);
         model.addAttribute("workToDoFound",workToDoFound);
         return "wmsOperations/scanner/scannerReceptionWorkFoundHdNumber";
@@ -214,7 +280,7 @@ public class ScannerController {
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + previous + '/' + nextPath ;
         }
         else{
-            message = "Entered HdNumber: " + enteredHdNumber + " is incorrect";
+            hdNumberMessage = "Entered HdNumber: " + enteredHdNumber + " is incorrect";
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + previous;
         }
     }
@@ -228,9 +294,17 @@ public class ScannerController {
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
         model.addAttribute("receptionNumber", receptionNumberSearch);
-        model.addAttribute("message", message);
+        model.addAttribute("message", articleMessage);
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(receptionNumberSearch.toString(),warehouse);
         model.addAttribute("workToDoFound",workToDoFound);
+        message = "";
+        equipmentMessage = "";
+        menuScannerMessage = "";
+        receptionMenuMessage = "";
+        manualReceptionMessage = "";
+        locationToMessage = "";
+        locationFromMessage = "";
+        hdNumberMessage = "";
         return "wmsOperations/scanner/scannerReceptionWorkFoundArticle";
     }
 
@@ -252,7 +326,7 @@ public class ScannerController {
 
         }
         else{
-            message = "Entered article: " + enteredArticle + " is incorrect";
+            articleMessage = "Entered article: " + enteredArticle + " is incorrect";
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + prevprevious + '/' + previous;
         }
     }
@@ -266,9 +340,17 @@ public class ScannerController {
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
         model.addAttribute("receptionNumber", receptionNumberSearch);
-        model.addAttribute("message", message);
+        model.addAttribute("message", locationToMessage);
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(receptionNumberSearch.toString(),warehouse);
         model.addAttribute("workToDoFound",workToDoFound);
+        message = "";
+        equipmentMessage = "";
+        menuScannerMessage = "";
+        receptionMenuMessage = "";
+        manualReceptionMessage = "";
+        articleMessage = "";
+        locationFromMessage = "";
+        hdNumberMessage = "";
         return "wmsOperations/scanner/scannerReceptionWorkFoundDestinationLocation";
     }
 
@@ -289,14 +371,15 @@ public class ScannerController {
             workDetailsService.workLineFinish(workDetails,scannerChosenEquipment);
             if(workDetailsRepository.checkIfWorksExistsForHandle(receptionNumberSearch.toString(),scannerChosenWarehouse) == 0 ){
                 workDetailsService.workFinished(workDetails);
-                message = "Work: " + workDetails.getWorkNumber() + " finished. Goods are available on stock";
+                receptionMenuMessage = "Work: " + workDetails.getWorkNumber() + " for reception: " + workDetails.getHandle() + " finished. Goods are available on stock. Mail to customer sent";
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + '1';
             }
+            locationFromMessage = "Work for: " + workDetails.getHdNumber() + " finished, start next one from your reception";
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch;
 
         }
         else{
-            message = "Entered destination location: " + enteredDestinationLocation + " is incorrect";
+            locationToMessage = "Entered destination location: " + enteredDestinationLocation + " is incorrect";
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + prevprevious + '/' +  previous + '/' + nextPath;
         }
     }

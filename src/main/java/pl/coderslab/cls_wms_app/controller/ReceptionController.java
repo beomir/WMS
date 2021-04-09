@@ -215,7 +215,6 @@ public class ReceptionController {
 
     @GetMapping("/finishedReception/{receptionNumber}")
     public String finishedReception(@PathVariable Long receptionNumber) {
-        receptionService.insertDataToStockAfterFinishedReception(receptionNumber);
         receptionService.finishReception(receptionNumber);
         return "redirect:/reception/reception";
     }

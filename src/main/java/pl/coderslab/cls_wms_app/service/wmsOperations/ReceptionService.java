@@ -1,6 +1,7 @@
 package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 import pl.coderslab.cls_wms_app.entity.Reception;
+import pl.coderslab.cls_wms_app.entity.WorkDetails;
 import pl.coderslab.cls_wms_app.temporaryObjects.ReceptionSearch;
 
 import java.io.File;
@@ -14,8 +15,6 @@ public interface ReceptionService {
 
     void edit(Reception reception);
 
-
-    void insertDataToStockAfterFinishedReception(Long receptionNbr);
 
     Reception findById(Long id);
 
