@@ -70,6 +70,8 @@ public class UsersFixture {
         Users users15 = usersList.get(14);
         Users users16 = usersList.get(15);
         Users users17 = usersList.get(16);
+        Users users18 = usersList.get(17);
+        Users users19 = usersList.get(18);
 //
         users1.setUsersRoles(usersRolesList.get(0));
         users2.setUsersRoles(usersRolesList.get(1));
@@ -88,6 +90,8 @@ public class UsersFixture {
         users15.setUsersRoles(usersRolesList.get(4));
         users16.setUsersRoles(usersRolesList.get(0));
         users17.setUsersRoles(usersRolesList.get(5));
+        users18.setUsersRoles(usersRolesList.get(0));
+        users19.setUsersRoles(usersRolesList.get(5));
 //
         usersService.addWithoutCodePass(users1);
         usersService.addWithoutCodePass(users2);
@@ -106,5 +110,7 @@ public class UsersFixture {
         usersService.addWithoutCodePass(users15);
         usersService.addWithoutCodePass(users16);
         usersService.addWithoutCodePass(users17);
+        usersService.addWithoutCodePass(users18);
+        usersService.addWithoutCodePass(users19);
     }
 }

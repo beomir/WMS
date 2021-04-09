@@ -5,7 +5,7 @@ function logo(){
     document.getElementById("div1").innerHTML = "CLS";
 
 
-    if(window.location.pathname != "/index"){
+    if(window.location.pathname != "/index" || window.location.pathname != "/cls-wms.herokuapp.com"){
         const hamburger = document.querySelector('.hamburger');
         const nav = document.querySelector('.navigation');
 
