@@ -325,15 +325,8 @@
     </div>
     </div>
     <script>
-        // let loggedUserRole = $('#loggedUserRole').text()
-        //
-        // function hamburgerMenuActivation(){
-        //     if(loggedUserRole != "[ROLE_SCANNER]"){
-        //         $('#hamburgerMenuStatus').removeClass().addClass("hamburger")
-        //         $('#navigationMenuStatus').removeClass().addClass("navigation")
-        //     }
-        //
-        // }
+        let loggedUserRole = $('#loggedUserRole').text()
+
 
         const reception = document.getElementById("reception");
         let switcherRec = 0;
@@ -417,112 +410,118 @@
         configuration.addEventListener('click', handleClickConfiguration);
 
 
-        const companyMenu = document.getElementById("companyMenu");
-        let switcherCom = 0;
+        /////// FOR ADMIN
+        if(loggedUserRole == "[ROLE_ADMIN]"){
+            const companyMenu = document.getElementById("companyMenu");
+            let switcherCom = 0;
 
-        const handleClickCompany = () => {
-            switcherCom = switcherCom + 1;
-            imgSwitcherCom();
+            const handleClickCompany = () => {
+                switcherCom = switcherCom + 1;
+                imgSwitcherCom();
+            }
+
+            function imgSwitcherCom(){
+                if (switcherCom % 2 == 0) {
+                    document.getElementById('companyImg').src  = '/images/list.png';
+                    $("#companyBtn").hide(500);
+                    $('html, body').animate({
+                        scrollTop: $("#checkStock").offset().top
+                    }, 1000);
+                }
+                else {
+                    document.getElementById('companyImg').src = '/images/close.png';
+                    $("#companyBtn").show(500);
+                    $('html, body').animate({
+                        scrollTop: $("#companyMenu").offset().top
+                    }, 2000);
+                }
+            }
+
+            companyMenu.addEventListener('click', handleClickCompany);
+
+            const stockMenu = document.getElementById("stockMenu");
+            let switcherSto = 0;
+
+            const handleClickStock = () => {
+                switcherSto = switcherSto + 1;
+                imgSwitcherSto();
+            }
+
+            function imgSwitcherSto(){
+                if (switcherSto % 2 == 0) {
+                    document.getElementById('stockImg').src  = '/images/list.png';
+                    $("#stockBtn").hide(500);
+                    $('html, body').animate({
+                        scrollTop: $("#checkStock").offset().top
+                    }, 1000);
+                }
+                else {
+                    document.getElementById('stockImg').src = '/images/close.png';
+                    $("#stockBtn").show(500);
+                    $('html, body').animate({
+                        scrollTop: $("#stockMenu").offset().top
+                    }, 2000);
+                }
+            }
+
+            stockMenu.addEventListener('click', handleClickStock);
+
+            const userThings = document.getElementById("userThings");
+            let switcherUsr = 0;
+
+            const handleClickUser = () => {
+                switcherUsr = switcherUsr + 1;
+                imgSwitcherUsr();
+            }
+
+            function imgSwitcherUsr(){
+                if (switcherUsr % 2 == 0) {
+                    document.getElementById('userImg').src  = '/images/list.png';
+                    $("#userBtn").hide(500);
+                    $('html, body').animate({
+                        scrollTop: $("#checkStock").offset().top
+                    }, 1000);
+                }
+                else {
+                    document.getElementById('userImg').src = '/images/close.png';
+                    $("#userBtn").show(500);
+                    $('html, body').animate({
+                        scrollTop: $("#userThings").offset().top
+                    }, 2000);
+                }
+            }
+
+            userThings.addEventListener('click', handleClickUser);
+
+            const config = document.getElementById("config");
+            let switcherCon = 0;
+
+            const handleClickConfig = () => {
+                switcherCon = switcherCon + 1;
+                imgSwitcherCon();
+            }
+
+            function imgSwitcherCon(){
+                if (switcherCon % 2 == 0) {
+                    document.getElementById('configImg').src  = '/images/list.png';
+                    $("#configBt").hide(500);
+                    $('html, body').animate({
+                        scrollTop: $("#checkStock").offset().top
+                    }, 1000);
+                }
+                else {
+                    document.getElementById('configImg').src = '/images/close.png';
+                    $("#configBt").show(500);
+                    $('html, body').animate({
+                        scrollTop: $("#config").offset().top
+                    }, 2000);
+                }
+            }
+
+            config.addEventListener('click', handleClickConfig);
+
         }
 
-        function imgSwitcherCom(){
-            if (switcherCom % 2 == 0) {
-                document.getElementById('companyImg').src  = '/images/list.png';
-                $("#companyBtn").hide(500);
-                $('html, body').animate({
-                    scrollTop: $("#checkStock").offset().top
-                }, 1000);
-            }
-            else {
-                document.getElementById('companyImg').src = '/images/close.png';
-                $("#companyBtn").show(500);
-                $('html, body').animate({
-                    scrollTop: $("#companyMenu").offset().top
-                }, 2000);
-            }
-        }
-
-        companyMenu.addEventListener('click', handleClickCompany);
-        const stockMenu = document.getElementById("stockMenu");
-        let switcherSto = 0;
-
-        const handleClickStock = () => {
-            switcherSto = switcherSto + 1;
-            imgSwitcherSto();
-        }
-
-        function imgSwitcherSto(){
-            if (switcherSto % 2 == 0) {
-                document.getElementById('stockImg').src  = '/images/list.png';
-                $("#stockBtn").hide(500);
-                $('html, body').animate({
-                    scrollTop: $("#checkStock").offset().top
-                }, 1000);
-            }
-            else {
-                document.getElementById('stockImg').src = '/images/close.png';
-                $("#stockBtn").show(500);
-                $('html, body').animate({
-                    scrollTop: $("#stockMenu").offset().top
-                }, 2000);
-            }
-        }
-
-        stockMenu.addEventListener('click', handleClickStock);
-
-        const userThings = document.getElementById("userThings");
-        let switcherUsr = 0;
-
-        const handleClickUser = () => {
-            switcherUsr = switcherUsr + 1;
-            imgSwitcherUsr();
-        }
-
-        function imgSwitcherUsr(){
-            if (switcherUsr % 2 == 0) {
-                document.getElementById('userImg').src  = '/images/list.png';
-                $("#userBtn").hide(500);
-                $('html, body').animate({
-                    scrollTop: $("#checkStock").offset().top
-                }, 1000);
-            }
-            else {
-                document.getElementById('userImg').src = '/images/close.png';
-                $("#userBtn").show(500);
-                $('html, body').animate({
-                    scrollTop: $("#userThings").offset().top
-                }, 2000);
-            }
-        }
-
-        userThings.addEventListener('click', handleClickUser);
-
-        const config = document.getElementById("config");
-        let switcherCon = 0;
-
-        const handleClickConfig = () => {
-            switcherCon = switcherCon + 1;
-            imgSwitcherCon();
-        }
-
-        function imgSwitcherCon(){
-            if (switcherCon % 2 == 0) {
-                document.getElementById('configImg').src  = '/images/list.png';
-                $("#configBt").hide(500);
-                $('html, body').animate({
-                    scrollTop: $("#checkStock").offset().top
-                }, 1000);
-            }
-            else {
-                document.getElementById('configImg').src = '/images/close.png';
-                $("#configBt").show(500);
-                $('html, body').animate({
-                    scrollTop: $("#config").offset().top
-                }, 2000);
-            }
-        }
-
-        config.addEventListener('click', handleClickConfig);
     </script>
 </div>
 </body>
