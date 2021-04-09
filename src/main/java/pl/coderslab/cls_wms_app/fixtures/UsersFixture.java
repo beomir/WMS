@@ -34,7 +34,9 @@ public class UsersFixture {
             new Users(null, "ReezeAdmin", "Rap", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"reeze1602@gmail.com",true,"Strojem","system",null),
             new Users(null, "AraggornAdmin", "Olus124", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"zerelik@gmail.com",true,"Strojem","system",null),
             new Users(null, "Araggorn", "Olek157", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"zerelik@gmail.com",true,"Strojem","system",null),
-            new Users(null, "AnnaA", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"anna_leszka@wp.pl",true,"Strojem","system",null)
+            new Users(null, "AnnaA", "123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"anna_leszka@wp.pl",true,"Strojem","system",null),
+            new Users(null, "AdamM", "AdamM123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"adam.mowszet@gmail.com",true,"Strojem","system",null),
+            new Users(null, "AdamMScanner", "AdamM123", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,"adam.mowszet@gmail.com",true,"Strojem","system",null)
     );
 
     @Autowired
