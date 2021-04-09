@@ -2,7 +2,6 @@ package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
@@ -47,8 +46,8 @@ public class ReceptionServiceImpl implements ReceptionService {
     private final TransactionService transactionService;
     private final IssueLogService issueLogService;
     public String insertReceptionFileResult;
-    private CustomerUserDetailsService customerUserDetailsService;
-    private IssueLogRepository issueLogRepository;
+    private final CustomerUserDetailsService customerUserDetailsService;
+    private final IssueLogRepository issueLogRepository;
     public ReceptionSearch receptionSearch;
 
     @Autowired
@@ -503,7 +502,6 @@ public class ReceptionServiceImpl implements ReceptionService {
                 int round = 0;
                 Reception reception = new Reception();
                 for (String value : receptionFile) {
-//                    System.out.println("Linia: " + counter);
                     round++;
                     //reception number
                     if (value.contains("Reception_Number:") && round == 1) {
@@ -528,7 +526,6 @@ public class ReceptionServiceImpl implements ReceptionService {
                         Article articleFromFile = articleRepository.findArticleByArticle_number(Long.parseLong(articleNbr));
                         if (articleFromFile != null) {
                             reception.setArticle(articleFromFile);
-//                            System.out.println("Numer Artykułu: " + articleNbr);
                             log.debug("Article number: " + articleNbr + " is proper");
                         } else {
                             log.error(" Line: " + counter + " Article number: " + articleNbr + "  not exists in DB");
@@ -546,7 +543,6 @@ public class ReceptionServiceImpl implements ReceptionService {
                         String handleDeviceNbr = value.substring(value.lastIndexOf("HandleDeviceNumber:") + 19);
                         if (stockRepository.checkIfHdNumberExistsOnStock(Long.parseLong(handleDeviceNbr)) < 1 && receptionRepository.checkIfHdNumberExistsOnReception(Long.parseLong(handleDeviceNbr))<1) {
                             reception.setHd_number(Long.parseLong(handleDeviceNbr));
-//                            System.out.println("Numer Palety: " + handleDeviceNbr);
                             log.debug("HD number: " + handleDeviceNbr + " not exists already in WMS and is ready to be add");
                         } else {
                             log.error("Line: " + counter + " HD number: " + handleDeviceNbr + " already exists on stock");
@@ -564,7 +560,6 @@ public class ReceptionServiceImpl implements ReceptionService {
                         String piecesQuantity = value.substring(value.lastIndexOf("PiecesQuantity:") + 15);
                         reception.setPieces_qty(Long.parseLong(piecesQuantity));
                         log.debug("Proper data about PiecesQuantity: " + Long.parseLong(piecesQuantity));
-//                        System.out.println("Ilość sztuk: " + piecesQuantity);
                     } else if (!value.contains(("PiecesQuantity:")) && round == 4) {
                         log.error("Line: " + counter + " Lack of information about PiecesQuantity: or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber");
                         issueLog = issueLog + "\n Line: " + counter + " Lack of information about PiecesQuantity: or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber )" + LocalDateTime.now();
@@ -579,7 +574,6 @@ public class ReceptionServiceImpl implements ReceptionService {
                         if (vendorFromFile != null) {
                             reception.setVendor(vendorFromFile);
                             log.debug("Vendor: " + vendorName + " from file exists in DB");
-//                            System.out.println("Nazwa dostawcy: " + vendorName);
                         } else {
                             log.error(" Line: " + counter + " Vendor " + vendorName + " not exists in DB");
                         }
@@ -598,7 +592,6 @@ public class ReceptionServiceImpl implements ReceptionService {
                         if (unitFromFile != null) {
                             reception.setUnit(unitFromFile);
                             log.debug("Unit from file: " + unit + " is properly in DB");
-//                            System.out.println("Jednostka: " + unit);
                         } else {
                             log.error("Line: " + counter + " Unit: " + unit + " not exists in DB");
                         }
@@ -617,7 +610,6 @@ public class ReceptionServiceImpl implements ReceptionService {
                         if (companyFromFile != null) {
                             reception.setCompany(companyFromFile);
                             log.debug("Company: " + company + " is properly in DB");
-//                            System.out.println("Firma: " + company);
                         } else {
                             log.error("Line: " + counter + " Company: " + company + " not exists in DB");
                         }
@@ -637,7 +629,6 @@ public class ReceptionServiceImpl implements ReceptionService {
                         if (warehouseFromFile != null) {
                             reception.setWarehouse(warehouseFromFile);
                             log.debug("Warehouse: " + warehouse + " from file is properly in DB");
-//                            System.out.println("Magazyn: " + warehouse);
                         } else {
                             log.error("Line: " + counter + " warehouse: " + warehouse + " not exists in DB");
                         }
@@ -650,7 +641,6 @@ public class ReceptionServiceImpl implements ReceptionService {
                     //quality
                     if (value.contains("Quality:") && round == 9 ) {
                         String quality = value.substring(value.lastIndexOf("Quality:") + 8);
-//                        System.out.println("Jakość: " + quality);
                         reception.setQuality(quality);
                         log.debug("Quality: " + quality + " is ok");
                     } else if (!value.contains("Quality:") && round == 9 ) {
