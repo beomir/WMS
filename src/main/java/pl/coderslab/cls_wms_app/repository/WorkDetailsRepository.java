@@ -21,6 +21,9 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
     @Query("Select w from WorkDetails w ")
     List<WorkDetails> getAll();
 
+    @Query("Select w from WorkDetails w join w.warehouse wh where wh.id = ?1")
+    List<WorkDetails> getWorkDetailsPerWarehouse(Long warehouseId);
+
     @Query("Select w from WorkDetails w where w.handle = ?1")
     List<WorkDetails> getWorkDetailsByHandle(String handle);
 

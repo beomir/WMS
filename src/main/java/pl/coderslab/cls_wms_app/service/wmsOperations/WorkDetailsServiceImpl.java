@@ -65,6 +65,11 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     }
 
     @Override
+    public List<WorkDetails> getWorkDetailsPerWarehouse(Long warehouseId) {
+        return workDetailsRepository.getWorkDetailsPerWarehouse(warehouseId);
+    }
+
+    @Override
     public WorkDetails findById(Long id) {
         return workDetailsRepository.getOne(id);
     }

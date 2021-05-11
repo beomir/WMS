@@ -10,6 +10,8 @@ public interface WorkDetailsService {
 
     List<WorkDetails> getWorkDetails();
 
+    List<WorkDetails> getWorkDetailsPerWarehouse(Long warehouseId);
+
     WorkDetails findById(Long id);
 
     void save(WorkDetails workDetails);

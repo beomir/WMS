@@ -299,7 +299,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                     log.error("value.getHd_number: " + value.getHd_number());
                     if(workDetails.getHdNumber().equals(value.getHd_number())){
                         fileWriter.append("Receive in door: " + workDetails.getFromLocation().getLocationName()  + "\n");
-                        fileWriter.append("Located in: " + workDetails.getToLocation().getLocationName());
+                        fileWriter.append("Located in: " + workDetails.getToLocation().getLocationName() + "\n");
                     }
 
                 }

@@ -22,6 +22,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 import pl.coderslab.cls_wms_app.temporaryObjects.ReceptionSearch;
 
+import javax.servlet.http.HttpSession;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -70,7 +71,6 @@ public class ReceptionController {
     public String list(Model model) {
         List<ReceptionRepository.ReceptionViewObject> receptions = receptionRepository.getReceptionSummary(receptionSearch.getCompany(),receptionSearch.getWarehouse(),receptionSearch.getVendor(),receptionSearch.getStatus(),receptionSearch.getLocation(),receptionSearch.getReceptionNumber(),receptionSearch.getHdNumber(),receptionSearch.getCreatedFrom(),receptionSearch.getCreatedTo(),receptionSearch.getCreatedBy());
         model.addAttribute("receptions", receptions);
-
 
         List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("warehouse", warehouse);
@@ -145,26 +145,27 @@ public class ReceptionController {
 
 
     @GetMapping("formReception")
-    public String receptionForm(Model model){
+    public String receptionForm(Model model, @SessionAttribute String searchingWarehouse){
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         List<Integer> pallets = receptionService.pallets();
         List<Unit> units = unitService.getUnit();
         List<Vendor> vendors = vendorService.getVendor(SecurityUtils.username());
-        List<Reception> openedReceptions = receptionService.openedReceptions(customerUserDetailsService.chosenWarehouse,SecurityUtils.username());
-        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
-        int qtyOfOpenedReceptions = receptionService.qtyOfOpenedReceptions(customerUserDetailsService.chosenWarehouse,SecurityUtils.username());
+        List<Warehouse> warehouses = warehouseService.getWarehouse();
+        Warehouse warehouse = warehouseService.getWarehouseByName(searchingWarehouse);
         model.addAttribute("lastReceptionNumber", receptionService.lastReception());
         model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
         model.addAttribute("reception", new Reception());
         model.addAttribute("articles", articles);
         model.addAttribute("vendors", vendors);
+        model.addAttribute("warehouse", warehouse);
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("units", units);
         model.addAttribute("pallets", pallets);
-        model.addAttribute("qtyOfOpenedReceptions", qtyOfOpenedReceptions);
-        model.addAttribute("openedReception", openedReceptions);
+
+        model.addAttribute("searchingWarehouse", searchingWarehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        log.error("searchingWarehouse: " + searchingWarehouse);
         usersService.loggedUserData(model);
         if(customerUserDetailsService.chosenWarehouse == null){
             return "redirect:/warehouse";
@@ -222,17 +223,17 @@ public class ReceptionController {
     //edit
 
     @GetMapping("/editReception/{receptionNumber}")
-    public String updateReception(@PathVariable Long receptionNumber, Model model,@SessionAttribute Long warehouseId) {
+    public String updateReception(@PathVariable Long receptionNumber, Model model) {
         Reception reception = receptionRepository.getOneReceptionByReceptionNumber(receptionNumber);
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         List<Integer> pallets = receptionService.pallets();
         List<Unit> units = unitService.getUnit();
         List<Vendor> vendors = vendorService.getVendor(SecurityUtils.username());
-        List<Warehouse> warehouses = warehouseService.getWarehouse(warehouseId);
+        Warehouse warehouse = warehouseService.getWarehouseByReceptionNumber(receptionNumber);
         model.addAttribute(reception);
         model.addAttribute("articles", articles);
         model.addAttribute("vendors", vendors);
-        model.addAttribute("warehouses", warehouses);
+        model.addAttribute("warehouse", warehouse);
         model.addAttribute("units", units);
         model.addAttribute("pallets", pallets);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -249,17 +250,17 @@ public class ReceptionController {
     }
 
     @GetMapping("/editReceptionLine/{id}")
-    public String updateReceptionLine(@PathVariable Long id, Model model,@SessionAttribute Long warehouseId) {
+    public String updateReceptionLine(@PathVariable Long id, Model model) {
         Reception reception = receptionService.findById(id);
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         List<Integer> pallets = receptionService.pallets();
         List<Unit> units = unitService.getUnit();
         List<Vendor> vendors = vendorService.getVendor(SecurityUtils.username());
-        List<Warehouse> warehouses = warehouseService.getWarehouse(warehouseId);
+        Warehouse warehouse = warehouseService.getWarehouseByReceptionNumber(reception.getReceptionNumber());
         model.addAttribute(reception);
         model.addAttribute("articles", articles);
         model.addAttribute("vendors", vendors);
-        model.addAttribute("warehouses", warehouses);
+        model.addAttribute("warehouse", warehouse);
         model.addAttribute("units", units);
         model.addAttribute("pallets", pallets);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -280,22 +281,19 @@ public class ReceptionController {
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         List<Unit> units = unitService.getUnit();
         List<Vendor> vendors = vendorService.getVendor(SecurityUtils.username());
-        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
+        Warehouse warehouse = warehouseService.getWarehouseByReceptionNumber(receptionNumber);
         model.addAttribute("reception", new Reception());
         model.addAttribute("articles", articles);
         model.addAttribute("vendors", vendors);
-        model.addAttribute("warehouses", warehouses);
+        model.addAttribute("warehouse", warehouse);
         model.addAttribute("units", units);
         model.addAttribute("receptionHeader", receptionNumber);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
+        log.error("WarehouseName: " + warehouse.getName());
         usersService.loggedUserData(model);
-        if(customerUserDetailsService.chosenWarehouse == null){
-            return "redirect:/warehouse";
-        }
-        else{
-            return "wmsOperations/formReceptionLine";
-        }
+        return "wmsOperations/formReceptionLine";
+
     }
 
     @PostMapping("formReceptionLine")
@@ -327,7 +325,8 @@ public class ReceptionController {
     }
 
     @PostMapping("receptions-browser")
-    public String findReceptions(ReceptionSearch receptionSearching) {
+    public String findReceptions(ReceptionSearch receptionSearching, HttpSession session) {
+        session.setAttribute("searchingWarehouse", receptionSearching.warehouse);
         log.error("Post createdBy: " + receptionSearching.createdBy);
         log.error("Post warehouse: " + receptionSearching.warehouse);
         log.error("Post company: " + receptionSearching.company);

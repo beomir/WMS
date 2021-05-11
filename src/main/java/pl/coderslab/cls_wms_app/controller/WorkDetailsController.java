@@ -40,9 +40,9 @@ public class WorkDetailsController {
 
     @GetMapping("workDetails")
     public String list(Model model) {
-        List<WorkDetails> workDetails = workDetailsService.getWorkDetails();
+        List<WorkDetails> workDetails = workDetailsService.getWorkDetailsPerWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("workDetails", workDetails);
-        List<Warehouse> warehouses =warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse );
+        List<Warehouse> warehouses =warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("warehouses", warehouses);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);

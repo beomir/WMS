@@ -56,6 +56,16 @@ public class WareohuseServiceImpl implements WarehouseService{
     }
 
     @Override
+    public Warehouse getWarehouseByName(String warehouseName) {
+        return warehouseRepository.getWarehouseByName(warehouseName);
+    }
+
+    @Override
+    public Warehouse getWarehouseByReceptionNumber(Long receptionNumber) {
+        return warehouseRepository.getWarehouseByReceptionNumber(receptionNumber);
+    }
+
+    @Override
     public void delete(Long id) {
         Warehouse warehouse = warehouseRepository.getOne(id);
         warehouse.setActive(false);

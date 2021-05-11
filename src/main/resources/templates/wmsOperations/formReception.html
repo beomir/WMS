@@ -35,7 +35,8 @@
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
 				<span  >
-					<div  th:each="companys: ${companys}"  class="titleList" th:text=" #{app.createNewReception} + ' ' + #{app.forCompany} + ' ' + ${companys.name}"></div><br/>
+					<div th:if="${searchingWarehouse} == '%'"  th:each="companys: ${companys}"  class="titleList" th:text=" #{app.createNewReception} + ' ' + #{app.forCompany} + ' ' + ${companys.name} + ' ' + #{app.andChoseWarehouse}"></div><br/>
+					<div th:if="${searchingWarehouse} != '%'"  th:each="companys: ${companys}"  class="titleList" th:text=" #{app.createNewReception} + ' ' + #{app.forCompany} + ' ' + ${companys.name} + ' ' + #{app.inWarehouse} + ' ' + ${searchingWarehouse}"></div><br/>
 				</span>
 			</span>
 
@@ -47,7 +48,7 @@
 			<section>
 				<input type="hidden" th:field="*{reception.id}"/>
 				<input type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
-				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
+				<input th:if="${searchingWarehouse} != '%'" type="hidden" th:value="${warehouse.id}" id="warehouse" name="warehouse"/>
 				<input type="hidden" th:value="false" id="reception.finished" name="reception.finished"/>
 				<input type="hidden" th:value="1" id="status" name="status"/>
 				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
@@ -55,13 +56,14 @@
 				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
 			</section>
 
+
 			<section sec:authorize="hasRole('ROLE_ADMIN')">
 				<label style="color: white;font-weight: bold">Company</label>
 				<select class="select-css" th:field="*{reception.company}">
 					<option th:each="i : ${companys}" th:value="${i.id}" th:text="${i.name}">
 					</option>
 				</select>
-			</section><br/>
+			</section>
 
 			<section>
 				<label style="color: white;font-weight: bold">Vendor</label>
@@ -71,6 +73,13 @@
 				</select>
 			</section><br/>
 
+			<section th:if="${searchingWarehouse} == '%'">
+				<label style="color: white;font-weight: bold" th:text="#{app.warehouseName}"></label>
+				<select class="select-css" th:field="*{reception.warehouse}">
+					<option th:each="i : ${warehouses}" th:value="${i.id}" th:text="${i.name}">
+					</option>
+				</select>
+			</section><br/>
 
 			<section>
 				<br/><button class="button" type="submit">Save</button>

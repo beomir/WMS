@@ -26,7 +26,6 @@ public class ScannerController {
     private final CompanyService companyService;
     private final LocationRepository locationRepository;
     private final WorkDetailsRepository workDetailsRepository;
-    //TODO think about cleaning message value between views
     public String message;
     public String equipmentMessage;
     public String menuScannerMessage;

@@ -4,7 +4,7 @@
 <div th:fragment="receptionMenu">
     <a th:if="${#httpServletRequest.requestURI != '/reception/formReception'}" th:href="@{reception/formReception}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;" th:text="#{app.CreateReception}"></div></a>
     <a th:if="${#httpServletRequest.requestURI != '/reception/reception'}" th:href="@{/reception/reception}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.checkReceptions}"></div></a>
-    <a th:if="${#httpServletRequest.requestURI != '/reception/receptions-browser'}" th:href="@{/reception/reception-browser}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.findReception}"></div></a>
+    <a th:if="${#httpServletRequest.requestURI != '/reception/receptions-browser'}" th:href="@{/reception/receptions-browser}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.findReception}"></div></a>
     <a th:if="${#httpServletRequest.requestURI != '/workDetails'}" th:href="@{/workDetails}" target="_blank"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.works}"></div></a>
 </div>
 </body>

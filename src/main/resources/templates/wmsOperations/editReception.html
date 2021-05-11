@@ -53,7 +53,7 @@
 				</select>
 				<input type="hidden" th:field="*{reception.id}"/>
 				<input type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
-				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
+			<input type="hidden" th:value="${warehouse.id}" id="warehouse" name="warehouse"/>
 			<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
 			<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
 			</section>
