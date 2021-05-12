@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:include="fragments/stockNavigation :: stockNavigation"></div>
+</div>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form method="post" th:action="@{/workDetails-browser}">
+			<div class="titleList">Find Works</div><br/>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.warehouseName}"></label>
+				<select class="select-css" th:value="${workDetailsWarehouse}">
+					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}"></option>
+					<option th:value="'%'">All</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.company}"></label>
+				<select class="select-css" th:value="${workDetailsCompany}" id="workDetailsCompany" name="workDetailsCompany">
+					<option th:each="i : ${company}" th:value="${i.name}" th:text="${i.name}">
+					</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.article}"></label>
+				<input type="text" title="Number value" th:value="${workDetailsArticle}" id="workDetailsArticle" name="workDetailsArticle"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.type}"></label>
+				<input type="text" th:value="${workDetailsType}" id="workDetailsType" name="workDetailsType" />
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.handle}"></label>
+				<input type="text" th:value="${workDetailsHandle}" id="workDetailsHandle" name="workDetailsHandle"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.handleDevice}"></label>
+				<input type="text" th:value="${workDetailsHandleDevice}" id="workDetailsHandleDevice" name="workDetailsHandleDevice"/>
+			</section><br/>
+
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.status}"></label>
+				<select class="select-css" th:value="${workDetailsStatus}" id="workDetailsStatus" name="workDetailsStatus">
+					<option th:value="false" th:text="#{app.open}">
+					<option th:value="true" th:text="#{app.close}">
+					</option>
+				</select>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.from} + ' ' + #{app.location}"></label>
+				<input type="text" th:value="${workDetailsLocationFrom}" id="workDetailsLocationFrom" name="workDetailsLocationFrom"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.to} + ' ' + #{app.location}"></label>
+				<input type="text" th:value="${workDetailsLocationTo}" id="workDetailsLocationTo" name="workDetailsLocationTo"/>
+			</section>
+
+			<section>
+				<br/><button class="button"  th:text="#{app.search}" type="submit">Search</button>
+			</section>
+		</form>
+
+	</div>
+
+	<div th:include="fragments/footer :: footer"></div>
+
+</div>
+<div class="w3copyright-agile">
+	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+</div>
+</body>
+</html>

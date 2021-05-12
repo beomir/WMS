@@ -161,7 +161,6 @@ public class ReceptionController {
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("units", units);
         model.addAttribute("pallets", pallets);
-
         model.addAttribute("searchingWarehouse", searchingWarehouse);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
@@ -327,16 +326,16 @@ public class ReceptionController {
     @PostMapping("receptions-browser")
     public String findReceptions(ReceptionSearch receptionSearching, HttpSession session) {
         session.setAttribute("searchingWarehouse", receptionSearching.warehouse);
-        log.error("Post createdBy: " + receptionSearching.createdBy);
-        log.error("Post warehouse: " + receptionSearching.warehouse);
-        log.error("Post company: " + receptionSearching.company);
-        log.error("Post vendor: " + receptionSearching.vendor);
-        log.error("Post receptionNumber: " + receptionSearching.receptionNumber);
-        log.error("Post hdNumber: " + receptionSearching.hdNumber);
-        log.error("Post status: " + receptionSearching.status);
-        log.error("Post location: " + receptionSearching.location);
-        log.error("Post createdFrom: " + receptionSearching.createdFrom);
-        log.error("Post createdTo: " + receptionSearching.createdTo);
+        log.debug("Post createdBy: " + receptionSearching.createdBy);
+        log.debug("Post warehouse: " + receptionSearching.warehouse);
+        log.debug("Post company: " + receptionSearching.company);
+        log.debug("Post vendor: " + receptionSearching.vendor);
+        log.debug("Post receptionNumber: " + receptionSearching.receptionNumber);
+        log.debug("Post hdNumber: " + receptionSearching.hdNumber);
+        log.debug("Post status: " + receptionSearching.status);
+        log.debug("Post location: " + receptionSearching.location);
+        log.debug("Post createdFrom: " + receptionSearching.createdFrom);
+        log.debug("Post createdTo: " + receptionSearching.createdTo);
         receptionService.save(receptionSearching);
         return "redirect:/reception/reception";
     }

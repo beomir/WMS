@@ -34,7 +34,7 @@
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
 				<span  >
-					<div  th:each="companys: ${companys}"  class="titleList" th:text=" #{app.createNewReceptionLine} + ' ' + #{app.for} + ' ' + ${receptionHeader} + ', ' + #{app.company} + ' ' + ${companys.name} "></div><br/>
+					<div  th:each="companys: ${companys}"  class="titleList" th:text=" #{app.createNewReceptionLine} + ' ' + #{app.for} + ' ' + ${receptionHeader} + ', ' + #{app.company} + ' ' + ${companys.name} + ' ' + #{app.inWarehouse} + ' ' + ${warehouse.name} "></div><br/>
 				</span>
 			</span>
 

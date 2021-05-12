@@ -1,0 +1,4 @@
+Stock for: buDUJEm
+ArticleNumber:1234567890123456,ArticleDescription:sandbag,HandleDeviceNumber:202000000000000001,PiecesQuantity10,Unit:EA,Company:buDUJEm,FromWarehouse:WRO1,ChangedBy:system
+ArticleNumber:1234567890123456,ArticleDescription:sandbag,HandleDeviceNumber:202000000000000008,PiecesQuantity20,Unit:EA,Company:buDUJEm,FromWarehouse:WRO1,ChangedBy:system
+ArticleNumber:4234567890123458,ArticleDescription:screw,HandleDeviceNumber:202000000000000009,PiecesQuantity75,Unit:EA,Company:buDUJEm,FromWarehouse:WRO1,ChangedBy:system
