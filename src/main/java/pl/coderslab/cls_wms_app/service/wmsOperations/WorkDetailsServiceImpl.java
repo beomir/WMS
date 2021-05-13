@@ -156,4 +156,46 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         workDetailsRepository.save(workDetails);
         receptionService.finishReception(Long.parseLong(workDetails.getHandle()));
     }
+
+    @Override
+    public List<WorkDetails> getWorkDetailsByCriteria(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType,String workDetailsHandle,String workDetailsHandleDevice,String workDetailsStatus,String workDetailsLocationFrom,String workDetailsLocationTo,String workDetailsWorkNumber){
+        if(workDetailsWarehouse == null || workDetailsWarehouse.equals("")){
+            workDetailsWarehouse = "%";
+        }
+        if(workDetailsCompany == null || workDetailsCompany.equals("")){
+            workDetailsCompany = "%";
+        }
+        if(workDetailsArticle == null || workDetailsArticle.equals("")){
+            workDetailsArticle = "%";
+        }
+        if(workDetailsType == null || workDetailsType.equals("")){
+            workDetailsType = "%";
+        }
+        if(workDetailsHandle == null || workDetailsHandle.equals("")){
+            workDetailsHandle = "%";
+        }
+        if(workDetailsHandleDevice == null || workDetailsHandleDevice.equals("")){
+            workDetailsHandleDevice = "%";
+        }
+        if(workDetailsLocationFrom == null || workDetailsLocationFrom.equals("")){
+            workDetailsLocationFrom = "%";
+        }
+        if(workDetailsLocationTo == null || workDetailsLocationTo.equals("")){
+            workDetailsLocationTo = "%";
+        }
+        if(workDetailsWorkNumber == null || workDetailsWorkNumber.equals("")){
+            workDetailsWorkNumber = "%";
+        }
+        log.error("workDetailsStatus: " + workDetailsStatus);
+        if(workDetailsStatus.equals("%")){
+            log.error("getWorkDetailsByCriteria");
+            return workDetailsRepository.getWorkDetailsByCriteria(workDetailsWarehouse,workDetailsCompany,workDetailsArticle,workDetailsType,workDetailsHandle,workDetailsHandleDevice,workDetailsStatus,workDetailsLocationFrom,workDetailsLocationTo,workDetailsWorkNumber);
+        }
+        else{
+            log.error("getWorkDetailsByCriteriaAndDefinedStatus");
+            boolean workDetailsStatusBoolean = Boolean.parseBoolean(workDetailsStatus);
+            return workDetailsRepository.getWorkDetailsByCriteriaAndDefinedStatus(workDetailsWarehouse,workDetailsCompany,workDetailsArticle,workDetailsType,workDetailsHandle,workDetailsHandleDevice,workDetailsStatusBoolean,workDetailsLocationFrom,workDetailsLocationTo,workDetailsWorkNumber);
+        }
+
+    }
 }

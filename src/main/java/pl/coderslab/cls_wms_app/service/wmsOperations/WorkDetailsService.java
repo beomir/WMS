@@ -26,4 +26,6 @@ public interface WorkDetailsService {
 
     void workFinished(WorkDetails workDetails);
 
+    List<WorkDetails> getWorkDetailsByCriteria(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType,String workDetailsHandle,String workDetailsHandleDevice,String workDetailsStatus,String workDetailsLocationFrom,String workDetailsLocationTo,String workDetailsWorkNumber);
+
 }

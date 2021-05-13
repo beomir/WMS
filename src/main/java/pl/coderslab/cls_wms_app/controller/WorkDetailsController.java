@@ -17,6 +17,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 import pl.coderslab.cls_wms_app.temporaryObjects.ReceptionSearch;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,21 +41,59 @@ public class WorkDetailsController {
     }
 
     @GetMapping("workDetails")
-    public String list(Model model, HttpSession session, @SessionAttribute(required = false) String searchingWarehouse) {
-        if (session.getAttribute("searchingWarehouse") == null || session.getAttribute("searchingWarehouse").equals("")) {
-            searchingWarehouse = "%";
+    public String list(Model model, HttpSession session, @SessionAttribute(required = false) String searchingWarehouse, HttpServletRequest request,
+                       @SessionAttribute(required = false) String workDetailsWarehouse, @SessionAttribute(required = false) String workDetailsCompany,
+                       @SessionAttribute(required = false) String workDetailsArticle, @SessionAttribute(required = false) String workDetailsType,
+                       @SessionAttribute(required = false) String workDetailsHandle, @SessionAttribute(required = false) String workDetailsHandleDevice,
+                       @SessionAttribute(required = false) String workDetailsStatus, @SessionAttribute(required = false) String workDetailsLocationFrom,
+                       @SessionAttribute(required = false) String workDetailsLocationTo, @SessionAttribute(required = false) String workDetailsWorkNumber) {
+        log.error("incoming URL: " + request.getHeader("Referer"));
+
+        if (request.getHeader("Referer").contains("reception")) {
+            if (session.getAttribute("searchingWarehouse") == null || session.getAttribute("searchingWarehouse").equals("")) {
+                searchingWarehouse = "%";
+            }
+
+            model.addAttribute("searchingWarehouse", searchingWarehouse);
+
+            if (!searchingWarehouse.equals("%")) {
+                Warehouse warehouse = warehouseService.getWarehouseByName(searchingWarehouse);
+                model.addAttribute("warehouse", warehouse);
+                List<WorkDetails> workDetails = workDetailsService.getWorkDetailsPerWarehouse(warehouse.getId());
+                model.addAttribute("workDetails", workDetails);
+            }
+            if (searchingWarehouse.equals("%")) {
+                List<WorkDetails> workDetails = workDetailsService.getWorkDetails();
+                model.addAttribute("workDetails", workDetails);
+            }
         }
-        model.addAttribute("searchingWarehouse", searchingWarehouse);
-        if (!searchingWarehouse.equals("%")) {
-            Warehouse warehouse = warehouseService.getWarehouseByName(searchingWarehouse);
-            model.addAttribute("warehouse", warehouse);
-            List<WorkDetails> workDetails = workDetailsService.getWorkDetailsPerWarehouse(warehouse.getId());
+        if (request.getHeader("Referer").contains("workDetails-browser")) {
+            log.error("workDetailsWarehouse: " + workDetailsWarehouse);
+            log.error("workDetailsCompany: " + workDetailsCompany);
+            log.error("workDetailsArticle: " + workDetailsArticle);
+            log.error("workDetailsType: " + workDetailsType);
+            log.error("workDetailsHandle: " + workDetailsHandle);
+            log.error("workDetailsHandleDevice: " + workDetailsHandleDevice);
+            log.error("workDetailsStatus: " + workDetailsStatus);
+            log.error("workDetailsLocationFrom: " + workDetailsLocationFrom);
+            log.error("workDetailsLocationTo: " + workDetailsLocationTo);
+            log.error("workDetailsWorkNumber: " + workDetailsWorkNumber);
+
+            List<WorkDetails> workDetails = workDetailsService.getWorkDetailsByCriteria(workDetailsWarehouse, workDetailsCompany, workDetailsArticle, workDetailsType, workDetailsHandle, workDetailsHandleDevice, workDetailsStatus, workDetailsLocationFrom, workDetailsLocationTo, workDetailsWorkNumber);
             model.addAttribute("workDetails", workDetails);
+
+            if (workDetailsWarehouse.equals("%")) {
+                searchingWarehouse = "%";
+                model.addAttribute("searchingWarehouse", searchingWarehouse);
+            }
+            if (!workDetailsWarehouse.equals("%")) {
+                searchingWarehouse = workDetailsWarehouse;
+                Warehouse warehouse = warehouseService.getWarehouseByName(searchingWarehouse);
+                model.addAttribute("warehouse", warehouse);
+                model.addAttribute("searchingWarehouse", searchingWarehouse);
+            }
         }
-        if (searchingWarehouse.equals("%")) {
-            List<WorkDetails> workDetails = workDetailsService.getWorkDetails();
-            model.addAttribute("workDetails", workDetails);
-        }
+
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
 
@@ -97,7 +136,7 @@ public class WorkDetailsController {
     }
 
     @PostMapping("workDetails-browser")
-    public String findWorks(HttpSession session, String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType, String workDetailsHandle, String workDetailsHandleDevice, String workDetailsStatus, String workDetailsLocationFrom, String workDetailsLocationTo) {
+    public String findWorks(HttpSession session, String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType, String workDetailsHandle, String workDetailsHandleDevice, String workDetailsStatus, String workDetailsLocationFrom, String workDetailsLocationTo, String workDetailsWorkNumber) {
         session.setAttribute("workDetailsWarehouse", workDetailsWarehouse);
         session.setAttribute("workDetailsCompany", workDetailsCompany);
         session.setAttribute("workDetailsArticle", workDetailsArticle);
@@ -107,6 +146,7 @@ public class WorkDetailsController {
         session.setAttribute("workDetailsStatus", workDetailsStatus);
         session.setAttribute("workDetailsLocationFrom", workDetailsLocationFrom);
         session.setAttribute("workDetailsLocationTo", workDetailsLocationTo);
+        session.setAttribute("workDetailsWorkNumber", workDetailsWorkNumber);
         return "redirect:/workDetails";
     }
 

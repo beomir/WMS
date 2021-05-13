@@ -36,6 +36,12 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
     @Query("Select w from WorkDetails w where w.hdNumber = ?1 and w.warehouse.name = ?2 and w.handle = ?3 and w.article.article_number = ?4")
     WorkDetails workLineFinish(Long hdNumber, String warehouseName, String handle, Long articleNumber);
 
+    @Query("Select w from WorkDetails w where w.warehouse.name like ?1 and w.company.name like ?2 and CONCAT(w.article.article_number,'') like ?3 and w.workType like ?4 and w.handle like ?5 and CONCAT(w.hdNumber,'') like ?6 and CONCAT(w.status,'') like ?7 and w.fromLocation.locationName like ?8 and w.toLocation.locationName like ?9 and CONCAT(w.workNumber,'') like ?10")
+    List<WorkDetails> getWorkDetailsByCriteria(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType,String workDetailsHandle,String workDetailsHandleDevice,String workDetailsStatus,String workDetailsLocationFrom,String workDetailsLocationTo,String workDetailsWorkNumber);
+
+    @Query("Select w from WorkDetails w where w.warehouse.name like ?1 and w.company.name like ?2 and CONCAT(w.article.article_number,'') like ?3 and w.workType like ?4 and w.handle like ?5 and CONCAT(w.hdNumber,'') like ?6 and w.status = ?7 and w.fromLocation.locationName like ?8 and w.toLocation.locationName like ?9 and CONCAT(w.workNumber,'') like ?10")
+    List<WorkDetails> getWorkDetailsByCriteriaAndDefinedStatus(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType,String workDetailsHandle,String workDetailsHandleDevice,boolean workDetailsStatusBoolean,String workDetailsLocationFrom,String workDetailsLocationTo,String workDetailsWorkNumber);
+
     @Query(value="select w.id,w.handle, hd_number hdNumber, lFrom.location_name fromLocation,lTo.location_name toLocation,pieces_qty piecesQty,a.article_number article,w.status from work_details w inner join location lFrom on w.from_location_id = lFrom.id inner join location lTo on w.to_location_id = lTo.id inner join warehouse w2 on w.warehouse_id = w2.id inner join article a on w.article_id = a.id where w.handle = ?1 and status = false and w2.name = ?2 order by article_number limit 1",nativeQuery = true)
     WorkToDoFound workToDoFound(String handle,String warehouseName);
 

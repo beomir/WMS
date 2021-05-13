@@ -29,7 +29,7 @@
 			<div class="titleList">Find Works</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.warehouseName}"></label>
-				<select class="select-css" th:value="${workDetailsWarehouse}">
+				<select class="select-css" th:value="${workDetailsWarehouse}" id="workDetailsWarehouse" name="workDetailsWarehouse">
 					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}"></option>
 					<option th:value="'%'">All</option>
 				</select>
@@ -37,7 +37,7 @@
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.company}"></label>
 				<select class="select-css" th:value="${workDetailsCompany}" id="workDetailsCompany" name="workDetailsCompany">
-					<option th:each="i : ${company}" th:value="${i.name}" th:text="${i.name}">
+					<option th:each="i : ${companys}" th:value="${i.name}" th:text="${i.name}">
 					</option>
 				</select>
 			</section><br/><br/>
@@ -56,16 +56,16 @@
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.handleDevice}"></label>
 				<input type="text" th:value="${workDetailsHandleDevice}" id="workDetailsHandleDevice" name="workDetailsHandleDevice"/>
-			</section><br/>
+			</section>
 
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.status}"></label>
 				<select class="select-css" th:value="${workDetailsStatus}" id="workDetailsStatus" name="workDetailsStatus">
-					<option th:value="false" th:text="#{app.open}">
-					<option th:value="true" th:text="#{app.close}">
-					</option>
+					<option th:value="false" th:text="#{app.open}"></option>
+					<option th:value="true" th:text="#{app.close}"></option>
+					<option th:value="'%'" th:text="#{app.all}"></option>
 				</select>
-			</section>
+			</section><br/>
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.from} + ' ' + #{app.location}"></label>
 				<input type="text" th:value="${workDetailsLocationFrom}" id="workDetailsLocationFrom" name="workDetailsLocationFrom"/>
@@ -73,6 +73,11 @@
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.to} + ' ' + #{app.location}"></label>
 				<input type="text" th:value="${workDetailsLocationTo}" id="workDetailsLocationTo" name="workDetailsLocationTo"/>
+			</section>
+
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.workNumber}"></label>
+				<input type="text" th:value="${workDetailsWorkNumber}" id="workDetailsWorkNumber" name="workDetailsWorkNumber"/>
 			</section>
 
 			<section>
