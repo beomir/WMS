@@ -50,34 +50,65 @@ public class WorkDetailsController {
         log.error("incoming URL: " + request.getHeader("Referer"));
 
         if (request.getHeader("Referer").contains("reception")) {
+            model.addAttribute("searchingWarehouse", searchingWarehouse);
+
             if (session.getAttribute("searchingWarehouse") == null || session.getAttribute("searchingWarehouse").equals("")) {
                 searchingWarehouse = "%";
+                //TODO extract it to external method
+                workDetailsWarehouse = searchingWarehouse;
+                workDetailsStatus = "false";
+                workDetailsCompany = companyService.getOneCompanyByUsername(SecurityUtils.username()).getName();
+                workDetailsArticle = "";
+                workDetailsType = "";
+                workDetailsHandle = "";
+                workDetailsHandleDevice = "";
+                workDetailsLocationFrom = "";
+                workDetailsLocationTo = "";
+                workDetailsWorkNumber = "";
             }
-
-            model.addAttribute("searchingWarehouse", searchingWarehouse);
 
             if (!searchingWarehouse.equals("%")) {
                 Warehouse warehouse = warehouseService.getWarehouseByName(searchingWarehouse);
                 model.addAttribute("warehouse", warehouse);
                 List<WorkDetails> workDetails = workDetailsService.getWorkDetailsPerWarehouse(warehouse.getId());
                 model.addAttribute("workDetails", workDetails);
+                workDetailsWarehouse = searchingWarehouse;
+                workDetailsStatus = "false";
+                workDetailsCompany = companyService.getOneCompanyByUsername(SecurityUtils.username()).getName();
+                workDetailsArticle = "";
+                workDetailsType = "";
+                workDetailsHandle = "";
+                workDetailsHandleDevice = "";
+                workDetailsLocationFrom = "";
+                workDetailsLocationTo = "";
+                workDetailsWorkNumber = "";
             }
             if (searchingWarehouse.equals("%")) {
                 List<WorkDetails> workDetails = workDetailsService.getWorkDetails();
                 model.addAttribute("workDetails", workDetails);
+                workDetailsWarehouse = searchingWarehouse;
+                workDetailsStatus = "false";
+                workDetailsCompany = companyService.getOneCompanyByUsername(SecurityUtils.username()).getName();
+                workDetailsArticle = "";
+                workDetailsType = "";
+                workDetailsHandle = "";
+                workDetailsHandleDevice = "";
+                workDetailsLocationFrom = "";
+                workDetailsLocationTo = "";
+                workDetailsWorkNumber = "";
             }
         }
         if (request.getHeader("Referer").contains("workDetails-browser")) {
-            log.error("workDetailsWarehouse: " + workDetailsWarehouse);
-            log.error("workDetailsCompany: " + workDetailsCompany);
-            log.error("workDetailsArticle: " + workDetailsArticle);
-            log.error("workDetailsType: " + workDetailsType);
-            log.error("workDetailsHandle: " + workDetailsHandle);
-            log.error("workDetailsHandleDevice: " + workDetailsHandleDevice);
-            log.error("workDetailsStatus: " + workDetailsStatus);
-            log.error("workDetailsLocationFrom: " + workDetailsLocationFrom);
-            log.error("workDetailsLocationTo: " + workDetailsLocationTo);
-            log.error("workDetailsWorkNumber: " + workDetailsWorkNumber);
+            log.debug("workDetailsWarehouse: " + workDetailsWarehouse);
+            log.debug("workDetailsCompany: " + workDetailsCompany);
+            log.debug("workDetailsArticle: " + workDetailsArticle);
+            log.debug("workDetailsType: " + workDetailsType);
+            log.debug("workDetailsHandle: " + workDetailsHandle);
+            log.debug("workDetailsHandleDevice: " + workDetailsHandleDevice);
+            log.debug("workDetailsStatus: " + workDetailsStatus);
+            log.debug("workDetailsLocationFrom: " + workDetailsLocationFrom);
+            log.debug("workDetailsLocationTo: " + workDetailsLocationTo);
+            log.debug("workDetailsWorkNumber: " + workDetailsWorkNumber);
 
             List<WorkDetails> workDetails = workDetailsService.getWorkDetailsByCriteria(workDetailsWarehouse, workDetailsCompany, workDetailsArticle, workDetailsType, workDetailsHandle, workDetailsHandleDevice, workDetailsStatus, workDetailsLocationFrom, workDetailsLocationTo, workDetailsWorkNumber);
             model.addAttribute("workDetails", workDetails);
@@ -93,6 +124,16 @@ public class WorkDetailsController {
                 model.addAttribute("searchingWarehouse", searchingWarehouse);
             }
         }
+        model.addAttribute("workDetailsWarehouse", workDetailsWarehouse);
+        model.addAttribute("workDetailsCompany", workDetailsCompany);
+        model.addAttribute("workDetailsArticle", workDetailsArticle);
+        model.addAttribute("workDetailsType", workDetailsType);
+        model.addAttribute("workDetailsHandle", workDetailsHandle);
+        model.addAttribute("workDetailsHandleDevice", workDetailsHandleDevice);
+        model.addAttribute("workDetailsStatus", workDetailsStatus);
+        model.addAttribute("workDetailsLocationFrom", workDetailsLocationFrom);
+        model.addAttribute("workDetailsLocationTo", workDetailsLocationTo);
+        model.addAttribute("workDetailsWorkNumber", workDetailsWorkNumber);
 
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
@@ -149,5 +190,6 @@ public class WorkDetailsController {
         session.setAttribute("workDetailsWorkNumber", workDetailsWorkNumber);
         return "redirect:/workDetails";
     }
+
 
 }
