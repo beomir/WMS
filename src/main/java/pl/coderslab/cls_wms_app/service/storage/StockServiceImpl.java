@@ -40,14 +40,13 @@ public class StockServiceImpl implements StockService {
     private final TransactionService transactionService;
     private final WarehouseRepository warehouseRepository;
     private final CompanyRepository companyRepository;
-    private CustomerUserDetailsService customerUserDetailsService;
     public String locationName;
-    private IssueLogService issueLogService;
+    private final IssueLogService issueLogService;
 
     public List<Stock> storage = new ArrayList<>();
 
     @Autowired
-    public StockServiceImpl(StockRepository stockRepository, LocationRepository locationRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, StatusRepository statusRepository, UnitRepository unitRepository, ArticleRepository articleRepository, TransactionService transactionService, WarehouseRepository warehouseRepository, CompanyRepository companyRepository, CustomerUserDetailsService customerUserDetailsService, IssueLogService issueLogService) {
+    public StockServiceImpl(StockRepository stockRepository, LocationRepository locationRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, StatusRepository statusRepository, UnitRepository unitRepository, ArticleRepository articleRepository, TransactionService transactionService, WarehouseRepository warehouseRepository, CompanyRepository companyRepository, IssueLogService issueLogService) {
         this.stockRepository = stockRepository;
         this.locationRepository = locationRepository;
         this.sendEmailService = sendEmailService;
@@ -59,7 +58,6 @@ public class StockServiceImpl implements StockService {
         this.transactionService = transactionService;
         this.warehouseRepository = warehouseRepository;
         this.companyRepository = companyRepository;
-        this.customerUserDetailsService = customerUserDetailsService;
         this.issueLogService = issueLogService;
     }
 
@@ -97,15 +95,42 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public void changeStatus(Stock stock, ChosenStockPositional chosenStockPositional) {
-        log.error("SERVICE chosenStockPosition: " + chosenStockPositional.statusId);
-        Transaction transaction = new Transaction();
-        transaction.setTransactionDescription("Status changed on stock");
-        transaction.setAdditionalInformation("Status changed from: " + statusRepository.getStatusById(chosenStockPositional.statusId).getStatus() + " on: " + stock.getStatus().getStatus() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
-        transaction.setTransactionType("301");
-        transactionStock(stock, transaction, receptionRepository);
-        transactionService.add(transaction);
+        try {
+            if(statusRepository.checkIfStockStatusExists(stock.getStatus().getStatus()) != null){
+                log.debug("SERVICE chosenStockPosition: " + chosenStockPositional.statusId);
+                Transaction transaction = new Transaction();
+                transaction.setTransactionDescription("Status changed on stock");
+                transaction.setAdditionalInformation("Status changed from: " + statusRepository.getStatusById(chosenStockPositional.statusId).getStatus() + " on: " + stock.getStatus().getStatus() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
+                transaction.setTransactionType("301");
+                transactionStock(stock, transaction, receptionRepository);
+                transactionService.add(transaction);
+                stockRepository.save(stock);
+            }
+            else{
+                log.error("Incorrect status set: " + stock.getStatus().getStatus());
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent("Incorrect status set: " + stock.getStatus().getStatus());
+                issueLog.setIssueLogFilePath("");
+                issueLog.setIssueLogFileName("");
+                issueLog.setWarehouse(stock.getWarehouse());
+                issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                issueLog.setAdditionalInformation("Attempt of set incorrect status: " + stock.getStatus().getStatus() + ", for hd number: " + stock.getHd_number() );
+                issueLogService.add(issueLog);
+            }
+        } catch (NullPointerException e) {
+            log.error("Status not exists in DB");
+            IssueLog issueLog = new IssueLog();
+            issueLog.setIssueLogContent("Incorrect status set. Status not exists in DB");
+            issueLog.setIssueLogFilePath("");
+            issueLog.setIssueLogFileName("");
+            issueLog.setWarehouse(stock.getWarehouse());
+            issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+            issueLog.setAdditionalInformation("Attempt of set incorrect status for hd number: " + stock.getHd_number() + ".Status not exists in DB  " );
+            issueLogService.add(issueLog);
+        }
 
-        stockRepository.save(stock);
     }
 
     @Override
@@ -305,7 +330,7 @@ public class StockServiceImpl implements StockService {
         transaction.setQuality(stock.getQuality());
         transaction.setUnit(stock.getUnit().getName());
         if (stock.getReceptionNumber() != null) {
-            transaction.setVendor(receptionRepository.getOneReceptionByReceptionNumber(stock.getReceptionNumber()).getVendor().getName());
+            transaction.setVendor(receptionRepository.getVendorNameByReceptionNumber(stock.getReceptionNumber()));
         }
         transaction.setQuantity(stock.getPieces_qty());
         transaction.setHdNumber(stock.getHd_number());

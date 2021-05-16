@@ -22,4 +22,13 @@ public interface StatusRepository extends JpaRepository<Status, Long> {
 
     @Query("Select s from Status s where s.process =?1")
     List<Status> getStatusesByProcess(String process);
+
+    @Query("Select s from Status s where s.process = 'stock'")
+    List<Status> getStockStatuses();
+
+    @Query("Select s from Status s where s.process = 'stock' and s.status = ?1")
+    Status checkIfStockStatusExists(String status);
+
+    @Query("Select s from Status s where s.id = ?1")
+    Status checkIfStatusExists(Long statusId);
 }

@@ -87,7 +87,7 @@ public class StockController {
         Stock stock = stockService.findById(id);
         chosenStockPositionalStatus.setStatusId(stock.getStatus().getId());
         model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
-        List<Status> statuses = statusService.getStatus();
+        List<Status> statuses = statusService.getStockStatuses();
         model.addAttribute("statuses", statuses);
         model.addAttribute(stock);
         usersService.loggedUserData(model);
