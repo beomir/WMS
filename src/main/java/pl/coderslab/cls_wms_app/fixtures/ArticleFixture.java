@@ -127,13 +127,13 @@ public class ArticleFixture {
         article14.setCompany(companies.get(5));
         article15.setCompany(companies.get(2));
 
-        article16.setCompany(companies.get(1));
-        article17.setCompany(companies.get(1));
-        article18.setCompany(companies.get(1));
-        article19.setCompany(companies.get(1));
-        article20.setCompany(companies.get(1));
-        article21.setCompany(companies.get(1));
-        article22.setCompany(companies.get(1));
+        article16.setCompany(companies.get(0));
+        article17.setCompany(companies.get(0));
+        article18.setCompany(companies.get(0));
+        article19.setCompany(companies.get(0));
+        article20.setCompany(companies.get(0));
+        article21.setCompany(companies.get(0));
+        article22.setCompany(companies.get(0));
 
         articleService.add(article1);
         articleService.add(article2);

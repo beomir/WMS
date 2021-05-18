@@ -181,7 +181,7 @@
 						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="article: ${article}">
-						<td class="tables" style="padding-bottom: 2px">
+						<td class="tables" th:title="${article.production == true && article.productionArticleType == 'finish product'} == TRUE ? #{app.productionArticle} + ': ' + #{app.finishProduct}" th:style="${article.production == true && article.productionArticleType == 'finish product'} == TRUE ? 'background: green;padding-bottom: 2px' : 'padding-bottom: 2px'">
 							<ol><div th:text="${article.article_number}"></div>
 								<li>
 									<ul>

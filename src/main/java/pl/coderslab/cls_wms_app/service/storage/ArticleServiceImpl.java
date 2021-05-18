@@ -12,6 +12,7 @@ import pl.coderslab.cls_wms_app.repository.ArticleRepository;
 import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.temporaryObjects.ArticleSearch;
 
 
@@ -27,15 +28,17 @@ public class ArticleServiceImpl implements ArticleService{
     private TransactionService transactionService;
     private IssueLogService issueLogService;
     private WarehouseRepository warehouseRepository;
+    private CompanyService companyService;
     public String articleMessage;
     public ArticleSearch articleSearch;
 
     @Autowired
-    public ArticleServiceImpl(ArticleRepository articleRepository, TransactionService transactionService, IssueLogService issueLogService, WarehouseRepository warehouseRepository,ArticleSearch articleSearch) {
+    public ArticleServiceImpl(ArticleRepository articleRepository, TransactionService transactionService, IssueLogService issueLogService, WarehouseRepository warehouseRepository, CompanyService companyService, ArticleSearch articleSearch) {
         this.articleRepository = articleRepository;
         this.transactionService = transactionService;
         this.issueLogService = issueLogService;
         this.warehouseRepository = warehouseRepository;
+        this.companyService = companyService;
         this.articleSearch = articleSearch;
     }
 
@@ -100,6 +103,9 @@ public class ArticleServiceImpl implements ArticleService{
             issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
             issueLogService.add(issueLog);
             articleMessage = "One from dimension were 0 or under 0. Check issue log" ;
+        }
+        if(articleSearch.company == null){
+            articleSearch.company = companyService.getOneCompanyByUsername(SecurityUtils.username()).getName();
         }
     }
 

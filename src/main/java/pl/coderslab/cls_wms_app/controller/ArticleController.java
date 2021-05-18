@@ -82,9 +82,11 @@ public class ArticleController {
     @GetMapping("formArticle")
     public String articleForm(Model model){
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        List<ArticleTypes> articleTypesList = articleTypesService.getArticleTypes();
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("article", new Article());
         model.addAttribute("companies", companies);
+        model.addAttribute("articleTypesList", articleTypesList);
         usersService.loggedUserData(model);
         return "storage/article/formArticle";
     }

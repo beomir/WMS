@@ -49,3 +49,64 @@ function checkValidation(){
 function returnToPreviousPage() {
     window.history.forward(-1)
 }
+
+const hide = document.getElementById("productionArticleDetails")
+const productionArticle = document.getElementById("productionArticle")
+let productionArticleConnection = document.getElementById("productionArticleConnection")
+let production = document.getElementById("production")
+let select = document.getElementById('selectId')
+const articleNumber = document.getElementById("articleNumber")
+
+hide.classList.add("d-none")
+
+productionArticle.addEventListener("click", function (e) {
+    if (!this.checked) {
+        $("#hide").hide(400);
+        $("#productionArticleConnection").removeAttr('required').val("")
+        $("#quantityForFinishedProduct").removeAttr('required').val("")
+        production.value = "false"
+        productionArticleConnectionFunction();
+    } else {
+        $("#hide").show(400);
+        $("#productionArticleConnection").prop('required',true);
+        $("#quantityForFinishedProduct").prop('required',true);
+        productionArticleConnectionFunction()
+        production.value = "true"
+    }
+})
+$('#productionArticle').click(function() {
+    if ($(this).is(':checked')) {
+        $("#productionArticleDetails").show(400);
+        $('html, body').animate({
+            scrollTop: $("#productionArticleDetails").offset().top
+        }, 2000);
+    } else {
+        $("#productionArticleDetails").hide(400);
+        console.log("Checkbox is unchecked.")
+        $('html, body').animate({
+            scrollTop: $("#top").offset().top
+        }, 1000);
+    }
+});
+
+select.addEventListener("change", function () {
+    productionArticleConnectionFunction();
+
+})
+
+articleNumber.addEventListener("keyup", function () {
+    productionArticleConnectionFunction();
+});
+
+function productionArticleConnectionFunction(){
+    if(document.getElementById('selectId').value == "finish product"){
+        $("#productionArticleConnection").prop('readonly',true);
+        document.getElementById("productionArticleConnection").value = document.getElementById('articleNumber').value
+        productionArticleConnection.innerHTML = document.getElementById('articleNumber').value
+    }
+    else{
+        productionArticleConnection.value = "";
+        $("#productionArticleConnection").removeAttr('readonly').val("")
+
+    }
+}
