@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.service.storage;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
@@ -49,32 +50,69 @@ public class ArticleServiceImpl implements ArticleService{
 
     @Override
     public void addNew(Article article) {
+        //TODO add check about sum of intermediate goods and quantity setup for finished product
         if(article.getDepth() * article.getHeight() * article.getWidth() > 0 && article.getWeight() > 0){
             if(articleRepository.findArticleByArticle_numberAndCompanyName(article.getArticle_number(),article.getCompany()) == null){
-                article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
-                articleRepository.save(article);
-                Transaction transaction = new Transaction();
-                transaction.setHdNumber(0L);
-                transaction.setAdditionalInformation("Article: " + article.getArticle_number() + ", created for Company: " + article.getCompany().getName());
-                transaction.setArticle(article.getArticle_number());
-                transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-                transaction.setCreatedBy(SecurityUtils.usernameForActivations());
-                transaction.setCustomer("");
-                transaction.setQuality("");
-                transaction.setQuantity(0L);
-                transaction.setReceptionNumber(0L);
-                transaction.setReceptionStatus("");
-                transaction.setShipmentNumber(0L);
-                transaction.setShipmentStatus("");
-                transaction.setTransactionDescription("Article Created");
-                transaction.setTransactionType("500");
-                transaction.setTransactionGroup("Configuration");
-                transaction.setUnit("");
-                transaction.setCompany(article.getCompany());
-                transaction.setVendor("");
-                transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
-                transactionService.add(transaction);
-                articleMessage = "Article successfully created";
+                if(!article.getProductionArticleType().equals("intermediate")) {
+                    article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                    articleRepository.save(article);
+                    Transaction transaction = new Transaction();
+                    transaction.setHdNumber(0L);
+                    transaction.setAdditionalInformation("Article: " + article.getArticle_number() + ", created for Company: " + article.getCompany().getName());
+                    transaction.setArticle(article.getArticle_number());
+                    transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                    transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+                    transaction.setCustomer("");
+                    transaction.setQuality("");
+                    transaction.setQuantity(0L);
+                    transaction.setReceptionNumber(0L);
+                    transaction.setReceptionStatus("");
+                    transaction.setShipmentNumber(0L);
+                    transaction.setShipmentStatus("");
+                    transaction.setTransactionDescription("Article Created");
+                    transaction.setTransactionType("500");
+                    transaction.setTransactionGroup("Configuration");
+                    transaction.setUnit("");
+                    transaction.setCompany(article.getCompany());
+                    transaction.setVendor("");
+                    transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                    transactionService.add(transaction);
+                    articleMessage = "Article successfully created";
+                }
+                else if(article.isProduction() && article.getProductionArticleType().equals("intermediate")){
+                    try{ Long productionArticleNumberForConnection = Long.parseLong(article.getProductionArticleConnection());
+                        if(articleRepository.checkIfFinishProductExists(productionArticleNumberForConnection)>0) {
+                            article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                            articleRepository.save(article);
+                            articleMessage = "Article successfully created";
+                        } else {
+                            IssueLog issueLog = new IssueLog();
+                            issueLog.setIssueLogContent("Article connector for production: " + article.getProductionArticleConnection() + ", not exists as finish product");
+                            issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                            issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                            issueLog.setAdditionalInformation("Article connector for production: " + article.getProductionArticleConnection() + ", not exists as finish product");
+                            issueLog.setIssueLogFileName("");
+                            issueLog.setIssueLogFilePath("");
+                            issueLog.setIssueLogFileName("");
+                            issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                            issueLogService.add(issueLog);
+                            articleMessage = "Article connector for production: " + article.getProductionArticleConnection() + ", not exists as finish product. Check IssueLog ";
+                        }
+                    }
+                    catch (NumberFormatException e){
+                        IssueLog issueLog = new IssueLog();
+                        issueLog.setIssueLogContent(article.getProductionArticleConnection() + " can't be parse on number");
+                        issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                        issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                        issueLog.setAdditionalInformation("Article connector for production with name: " + article.getProductionArticleConnection() + " can't be parse on number");
+                        issueLog.setIssueLogFileName("");
+                        issueLog.setIssueLogFilePath("");
+                        issueLog.setIssueLogFileName("");
+                        issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                        issueLogService.add(issueLog);
+                        articleMessage = "Article connector for production with name: " + article.getProductionArticleConnection() + " can't be parse on number. Check IssueLog ";
+                    }
+                }
             }
             else{
                 IssueLog issueLog = new IssueLog();

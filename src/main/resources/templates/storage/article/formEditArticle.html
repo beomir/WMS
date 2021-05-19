@@ -32,7 +32,7 @@
 			<div th:text="#{app.edit} + ' ' + #{app.article}" class="titleList">Edit Article</div><br/>
 			<section>
 				<label th:text="#{app.articleNumber}" style="color: white;font-weight: bold">Article number (16 digits)</label>
-				<input th:title="#{app.min16Digits}" class="check" required type="text" th:field="*{article_number}" pattern="[0-9]{16}" minlength="16" maxlength="16" />
+				<input id="articleNumber" th:title="#{app.min16Digits}" class="check" required type="text" th:field="*{article_number}" pattern="[0-9]{16}" minlength="16" maxlength="16" />
 				<input type="hidden" th:field="*{id}"/>
 				<input type="hidden" th:field="*{created}"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
@@ -43,6 +43,12 @@
 				<label style="color: white;font-weight: bold">Article Description</label>
 				<input th:title="#{app.min3signs}" class="check" pattern=".{3,}[a-zA-Z0-9]"  type="text" th:field="*{article_desc}"/>
 			</section>
+			<section>
+				<label th:text="#{app.articleTypes}" style="color: white;font-weight: bold"></label>
+				<select class="select-css" th:field="*{articleTypes}">
+					<option th:each="i : ${articleTypesList}" th:value="${i.id}" th:text="${i.articleClass}"></option>
+				</select>
+			</section><br/>
 			<section>
 				<label th:text="#{app.weight}" style="color: white;font-weight: bold">Weight</label>
 				<input  class="check" required id="weight" th:field="*{weight}" type="text" pattern="[0-9].{0,}"  />
@@ -67,6 +73,22 @@
 					</option>
 				</select>
 			</section><br/>
+			<section>
+				<input type="checkbox" id="productionArticle"/>
+				<label th:text="#{app.productionArticle}" style="letter-spacing: 2px;color: white"></label><br/><br/>
+				<div id="productionArticleDetails">
+					<label th:text="#{app.productionArticleType}" style="color: white;font-weight: normal"></label>
+					<select id="selectId" class="select-css" th:field="*{productionArticleType}">
+						<option th:text="#{app.finishProduct}" th:value="'finish product'"></option>
+						<option th:text="#{app.intermediateProduct}" th:value="'intermediate'"></option>
+					</select><br/><br/>
+					<label th:text="#{app.productionArticleConnection}" style="color: white;font-weight: normal"></label>
+					<input class="check" id="productionArticleConnection" th:field="*{productionArticleConnection}" type="text"/>
+					<label th:text="#{app.quantityForFinishedProduct}" style="color: white;font-weight: normal"></label>
+					<input class="check" id="quantityForFinishedProduct" th:field="*{quantityForFinishedProduct}" pattern="^[0-9]*$" type="text" required/>
+					<input type="hidden" th:value="false" id="production" name="production"/>
+				</div>
+			</section>
 			<section>
 				<br/><button class="button" type="submit" onclick="return checkValidation()">Save</button>
 			</section>

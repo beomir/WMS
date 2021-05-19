@@ -113,8 +113,10 @@ public class ArticleController {
     public String updateArticle(@PathVariable Long id, Model model) {
         Article article = articleService.findById(id);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        List<ArticleTypes> articleTypesList = articleTypesService.getArticleTypes();
         model.addAttribute(article);
         model.addAttribute("companies", companies);
+        model.addAttribute("articleTypesList", articleTypesList);
         model.addAttribute("localDateTime", LocalDateTime.now());
         usersService.loggedUserData(model);
         return "storage/article/formEditArticle";

@@ -30,4 +30,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query("Select a from Article a where CONCAT(a.article_number,'') like ?1 and a.volume > ?2 and a.volume < ?3 and a.width > ?4 and a.width < ?5 and a.depth > ?6 and a.depth < ?7 and a.height > ?8 and a.height < ?9 and a.weight > ?10 and a.weight < ?11 and a.changeBy like ?12 and a.created > ?13 and a.created < ?14 and a.last_update > ?15 and a.last_update < ?16 and a.company.name like ?17 and a.article_desc like ?18 and a.articleTypes.articleClass like ?19")
     List<Article> getArticleByCriteria(String article_number,double volumeBiggerThan,double volumeLowerThan,double widthBiggerThan,double widthLowerThan,double depthBiggerThan,double depthLowerThan,double heightBiggerThan,double heightLowerThan,double weightBiggerThan,double weightLowerThan,String createdBy,String creationDateFrom,String creationDateTo,String lastUpdateDateFrom,String lastUpdateDateTo, String company, String articleDescription, String articleTypes);
 
+    @Query(value = "Select count(article_number) from article where article_number = ?1 and production_article_type = 'finish product'",nativeQuery = true)
+    int checkIfFinishProductExists(Long articleNumber);
 }
