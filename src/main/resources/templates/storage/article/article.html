@@ -34,11 +34,25 @@
 				<a th:href="@{/formArticle}"><div class="btn2" style="float: right;max-width: 20%;" th:text="#{app.addArticle}"></div></a>
 				<a th:href="@{/articleTypes}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.articleTypes}"></div></a>
 				<a th:href="@{/article-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.changeCriteria}"></div></a>
-<!--TODO Change these buttons on text-->
-				<a><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.legend}"></div></a>
-				<a><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.finishProduct}"></div></a>
-				<a><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.intermediateProduct}"></div></a>
-
+				<div style="margin-top:150px;float: right;min-width: 23%;clear:right;display: block">
+					<table>
+						<thead>
+						<tr>
+							<th colspan="2" style="font-size: 22px;font-weight: bold" th:text="#{app.legend} + ' ' + #{app.articleToProduction}"></th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td style="border: 2px solid white;min-width: 50%" th:text="#{app.finishProduct}"></td>
+							<td style="border: 2px solid white;background: green;min-width: 50%"></td>
+						</tr>
+						<tr>
+							<td style="border: 2px solid white;min-width: 50%" th:text="#{app.intermediateProduct}"></td>
+							<td style="border: 2px solid white;background: sandybrown;min-width: 50%"></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
 				<div>
 						<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
 						<table class="criteria">
