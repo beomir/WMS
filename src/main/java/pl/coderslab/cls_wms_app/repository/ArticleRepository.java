@@ -32,4 +32,10 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query(value = "Select count(article_number) from article where article_number = ?1 and production_article_type = 'finish product'",nativeQuery = true)
     int checkIfFinishProductExists(Long articleNumber);
+
+    @Query(value = "Select sum(quantity_for_finished_product) from article inner join company c on article.company_id = c.id where production_article_connection = ?1 and production_article_type = 'intermediate' and c.name = ?2",nativeQuery = true)
+    int sumOfAssignedIntermediateArticlesQty(Long articleNumber,String companyName);
+
+    @Query(value = "Select sum(quantity_for_finished_product) from article inner join company c on article.company_id = c.id where article_number = ?1 and production_article_type = 'finish product' and c.name = ?2",nativeQuery = true)
+    int qtyNeededToCreateFinishProduct(Long articleNumber,String companyName);
 }

@@ -82,9 +82,25 @@ public class ArticleServiceImpl implements ArticleService{
                 else if(article.isProduction() && article.getProductionArticleType().equals("intermediate")){
                     try{ Long productionArticleNumberForConnection = Long.parseLong(article.getProductionArticleConnection());
                         if(articleRepository.checkIfFinishProductExists(productionArticleNumberForConnection)>0) {
-                            article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
-                            articleRepository.save(article);
-                            articleMessage = "Article successfully created";
+                            if(articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) >= articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + article.getQuantityForFinishedProduct()){
+                                article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                                articleRepository.save(article);
+                                articleMessage = "Article successfully created";
+                            }
+                            else{
+                                IssueLog issueLog = new IssueLog();
+                                issueLog.setIssueLogContent("Qty needed to create finish good (article number: " + article.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + article.getQuantityForFinishedProduct());
+                                issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                                issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                                issueLog.setAdditionalInformation("Qty needed to create finish good (article number: " + article.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + article.getQuantityForFinishedProduct());
+                                issueLog.setIssueLogFileName("");
+                                issueLog.setIssueLogFilePath("");
+                                issueLog.setIssueLogFileName("");
+                                issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                                issueLogService.add(issueLog);
+                                articleMessage = "Information about sum of quantity needed to create finish good: " + article.getProductionArticleConnection() + ", is lower than sum  already assigned articles quantity + value from last intermediate article, check issuelog";
+                            }
+
                         } else {
                             IssueLog issueLog = new IssueLog();
                             issueLog.setIssueLogContent("Article connector for production: " + article.getProductionArticleConnection() + ", not exists as finish product");
