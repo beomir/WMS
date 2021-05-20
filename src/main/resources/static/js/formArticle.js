@@ -104,7 +104,7 @@ function productionArticleConnectionFunction(){
         document.getElementById("productionArticleConnection").value = document.getElementById('articleNumber').value
         productionArticleConnection.innerHTML = document.getElementById('articleNumber').value
     }
-    else{
+    else if(!window.location.href.includes("formEditArticle")){
         productionArticleConnection.value = "";
         $("#productionArticleConnection").removeAttr('readonly').val("")
 
