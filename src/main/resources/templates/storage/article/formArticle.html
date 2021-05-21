@@ -73,7 +73,7 @@
 					</option>
 				</select>
 			</section><br/>
-			<section>
+			<section th:if="${productionModule} == 'on'">
 				<input type="checkbox" id="productionArticle"/>
 				<label th:text="#{app.productionArticle}" style="letter-spacing: 2px;color: white"></label><br/><br/>
 				<div id="productionArticleDetails">

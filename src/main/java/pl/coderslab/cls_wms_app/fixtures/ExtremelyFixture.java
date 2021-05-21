@@ -23,7 +23,8 @@ public class ExtremelyFixture {
     private final CompanyService companyService;
 
     private List<Extremely> extremelyList = Arrays.asList(
-            new Extremely(null, "Location Scope", "Maximum of range locations creation by one time","50", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null,null)
+            new Extremely(null, "Location Scope", "Maximum of range locations creation by one time","50", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null,null),
+            new Extremely(null, "Production_module", "WMS module which gives possibility to use functionality connected with production finish product from intermediate articles","on", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null,null)
 
     );
 
@@ -43,9 +44,15 @@ public class ExtremelyFixture {
         }
 
         Extremely extremely1 = extremelyList.get(0);
+        Extremely extremely2 = extremelyList.get(1);
+
         extremely1.setCompany(companyList.get(0));
+        extremely2.setCompany(companyList.get(0));
+
         extremely1.setWarehouse(warehouseList.get(0));
+        extremely2.setWarehouse(warehouseList.get(0));
 
         extremelyService.save(extremely1);
+        extremelyService.save(extremely2);
     }
 }

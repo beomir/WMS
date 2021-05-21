@@ -117,7 +117,7 @@ public class ArticleServiceImpl implements ArticleService{
     public void edit(Article article) {
         if(article.getDepth() * article.getHeight() * article.getWidth() > 0 && article.getWeight() > 0){
             if(article.getId() == articleRepository.findArticleByArticle_number(article.getArticle_number()).getId()){
-                if(!article.getProductionArticleType().equals("intermediate")) {
+                if(!article.isProduction()) {
                     article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
                     articleRepository.save(article);
                     Transaction transaction = new Transaction();
@@ -142,6 +142,49 @@ public class ArticleServiceImpl implements ArticleService{
                     transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                     transactionService.add(transaction);
                     articleMessage = "Article successfully edited";
+                }
+                else if(article.isProduction() && article.getProductionArticleType().equals("finish product")){
+                    log.debug("sum of intermediate article qty needed to finish product:  " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
+                    log.debug("value from form about qty needed for finish product: " + article.getQuantityForFinishedProduct());
+                    if(article.getQuantityForFinishedProduct() >= articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName())){
+                        article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                        articleRepository.save(article);
+                        Transaction transaction = new Transaction();
+                        transaction.setHdNumber(0L);
+                        transaction.setAdditionalInformation("Article: " + article.getArticle_number() + ", edited for Company: " + article.getCompany().getName());
+                        transaction.setArticle(article.getArticle_number());
+                        transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                        transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+                        transaction.setCustomer("");
+                        transaction.setQuality("");
+                        transaction.setQuantity(0L);
+                        transaction.setReceptionNumber(0L);
+                        transaction.setReceptionStatus("");
+                        transaction.setShipmentNumber(0L);
+                        transaction.setShipmentStatus("");
+                        transaction.setTransactionDescription("Article Edited");
+                        transaction.setTransactionType("501");
+                        transaction.setTransactionGroup("Configuration");
+                        transaction.setUnit("");
+                        transaction.setCompany(article.getCompany());
+                        transaction.setVendor("");
+                        transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                        transactionService.add(transaction);
+                        articleMessage = "Finish product successfully edited";
+                    }
+                    else{
+                        IssueLog issueLog = new IssueLog();
+                        issueLog.setIssueLogContent("Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + article.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
+                        issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                        issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                        issueLog.setAdditionalInformation("Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + article.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
+                        issueLog.setIssueLogFileName("");
+                        issueLog.setIssueLogFilePath("");
+                        issueLog.setIssueLogFileName("");
+                        issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                        issueLogService.add(issueLog);
+                        articleMessage = "Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + article.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()) + ", check issueLog" ;
+                    }
                 }
                 else {
                     articleEdition(article);
@@ -171,13 +214,13 @@ public class ArticleServiceImpl implements ArticleService{
                         article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
                         articleRepository.save(article);
                         articleMessage = "Article successfully created";
-                        log.error("qty needed: " + articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) );
-                        log.error("sum of assigned:" + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()));
-                        log.error("qty in form:" + article.getQuantityForFinishedProduct());
+                        log.debug("qty needed: " + articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) );
+                        log.debug("sum of assigned:" + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()));
+                        log.debug("qty in form:" + article.getQuantityForFinishedProduct());
                     }
                     else{
                         IssueLog issueLog = new IssueLog();
-                        issueLog.setIssueLogContent("Qty needed to create finish good (article number: " + article.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + article.getQuantityForFinishedProduct());
+                        issueLog.setIssueLogContent("Qty needed to create finish product (article number: " + article.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + article.getQuantityForFinishedProduct());
                         issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                         issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
                         issueLog.setAdditionalInformation("Qty needed to create finish good (article number: " + article.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + article.getQuantityForFinishedProduct());

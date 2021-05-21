@@ -1,13 +1,14 @@
 package pl.coderslab.cls_wms_app.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
-import pl.coderslab.cls_wms_app.repository.ArticleRepository;
 import pl.coderslab.cls_wms_app.repository.ArticleTypesRepository;
+import pl.coderslab.cls_wms_app.repository.ExtremelyRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.storage.ArticleServiceImpl;
 import pl.coderslab.cls_wms_app.service.storage.ArticleTypesService;
@@ -23,6 +24,7 @@ import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Controller
 public class ArticleController {
 
@@ -37,9 +39,10 @@ public class ArticleController {
     private final AddLocationToStorageZone addLocationToStorageZone;
     public ArticleSearch articleSearch;
     private final ArticleTypesRepository articleTypesRepository;
+    private final ExtremelyRepository extremelyRepository;
 
     @Autowired
-    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository) {
+    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository, ExtremelyRepository extremelyRepository) {
         this.articleService = articleService;
         this.receptionServiceImpl = receptionServiceImpl;
         this.articleServiceImpl = articleServiceImpl;
@@ -51,6 +54,7 @@ public class ArticleController {
         this.addLocationToStorageZone = addLocationToStorageZone;
         this.articleSearch = articleSearch;
         this.articleTypesRepository = articleTypesRepository;
+        this.extremelyRepository = extremelyRepository;
     }
 
     @GetMapping("article")
@@ -83,11 +87,22 @@ public class ArticleController {
     public String articleForm(Model model){
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         List<ArticleTypes> articleTypesList = articleTypesService.getArticleTypes();
+        try{
+            Extremely extremely = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
+            model.addAttribute("productionModule", extremely.getExtremelyValue());
+            log.error("extremely value: " + extremely.getExtremelyValue());
+        }
+        catch (NullPointerException e){
+            String productionModule = "off";
+            model.addAttribute("productionModule", productionModule);
+            log.error("extremely value is null");
+        }
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("article", new Article());
         model.addAttribute("companies", companies);
         model.addAttribute("articleTypesList", articleTypesList);
         usersService.loggedUserData(model);
+
         return "storage/article/formArticle";
     }
 

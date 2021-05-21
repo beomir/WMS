@@ -37,8 +37,17 @@
 				<input type="text" th:field="*{extremelyDesc}"/>
 			</section>
 			<section>
+				<span th:if="${extremelys.extremelyName} != 'Production_module'">
 				<label th:text="#{app.value}" style="color: white;font-weight: bold">Value</label>
 				<input class="check" type="text" th:field="*{extremelyValue}"/>
+				</span>
+				<span th:if="${extremelys.extremelyName} == 'Production_module'">
+				<label th:text="#{app.value}" style="color: white;font-weight: bold">Value</label>
+					<select  class="select-css" th:field="*{extremelyValue}">
+						<option th:text="#{app.activate}" th:value="'on'"></option>
+						<option th:text="#{app.deactivate}" th:value="'off'"></option>
+					</select><br/><br/>
+				</span>
 				<input type="hidden" th:field="*{id}"/>
 				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
