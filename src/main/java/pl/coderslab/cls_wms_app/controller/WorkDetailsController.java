@@ -14,8 +14,6 @@ import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
-import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
-import pl.coderslab.cls_wms_app.temporaryObjects.ReceptionSearch;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -150,7 +148,7 @@ public class WorkDetailsController {
     }
 
     @GetMapping("formEditWork/{id}")
-    public String updateUnit(@PathVariable Long id, Model model) {
+    public String workEdit(@PathVariable Long id, Model model) {
         WorkDetails workDetails = workDetailsService.findById(id);
         model.addAttribute(workDetails);
         model.addAttribute("localDateTime", LocalDateTime.now());
@@ -161,8 +159,8 @@ public class WorkDetailsController {
         return "wmsOperations/formEditWork";
     }
 
-    @PostMapping("formEditUnit")
-    public String edit(WorkDetails workDetails) {
+    @PostMapping("formEditWork")
+    public String editPost(WorkDetails workDetails) {
         workDetailsService.add(workDetails);
         return "redirect:/workDetails";
     }

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:include="fragments/stockNavigation :: stockNavigation"></div>
+</div>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form method="post" th:action="@{/production-browser}">
+			<div class="titleList">Find Works</div><br/>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.warehouseName}"></label>
+				<select class="select-css" th:value="${productionWarehouse}" id="productionWarehouse" name="productionWarehouse">
+					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}"></option>
+					<option th:value="'%'">All</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.company}"></label>
+				<select class="select-css" th:value="${productionCompany}" id="productionCompany" name="productionCompany">
+					<option th:each="i : ${companies}" th:value="${i.name}" th:text="${i.name}">
+					</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.finishProduct}"></label>
+				<input type="text" title="Number value" th:value="${productionFinishProductNumber}" id="productionFinishProductNumber" name="productionFinishProductNumber"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.intermediateProduct}"></label>
+				<input type="text" th:value="${productionIntermediateArticleNumber}" id="productionIntermediateArticleNumber" name="productionIntermediateArticleNumber" />
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.created}"></label>
+				<input type="text" th:value="${productionCreated}" id="productionCreated" name="productionCreated"/>
+			</section>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.lastUpdate}"></label>
+				<input type="text" th:value="${productionLastUpdate}" id="productionLastUpdate" name="productionLastUpdate"/>
+			</section>
+
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.status}"></label>
+				<select class="select-css" th:value="${productionStatus}" id="productionStatus" name="productionStatus">
+					<option th:value="'in_creation'" th:text="#{app.creation}"></option>
+					<option th:value="'complatation_process'" th:text="#{app.complatationProcess}"></option>
+					<option th:value="'production_process'" th:text="#{app.productionProcess}"></option>
+					<option th:value="'%'" th:text="#{app.all}"></option>
+				</select>
+			</section><br/>
+			<section>
+				<br/><button class="button"  th:text="#{app.search}" type="submit">Search</button>
+			</section>
+		</form>
+
+	</div>
+
+	<div th:include="fragments/footer :: footer"></div>
+
+</div>
+<div class="w3copyright-agile">
+	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+</div>
+</body>
+</html>
