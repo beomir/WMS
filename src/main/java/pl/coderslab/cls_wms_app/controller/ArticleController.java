@@ -61,6 +61,16 @@ public class ArticleController {
     public String list(Model model) {
         List<Article> article = articleService.getArticleByAllCriteria(articleSearch.getArticle_number(),articleSearch.getVolumeBiggerThan(),articleSearch.getVolumeLowerThan(),articleSearch.getWidthBiggerThan(),articleSearch.getWidthLowerThan(),articleSearch.getDepthBiggerThan(),articleSearch.getDepthLowerThan(),articleSearch.getHeightBiggerThan(),articleSearch.getHeightLowerThan(),articleSearch.getWeightBiggerThan(),articleSearch.getWeightLowerThan(),articleSearch.getCreatedBy(),articleSearch.getCreationDateFrom(),articleSearch.getCreationDateTo(),articleSearch.getLastUpdateDateFrom(),articleSearch.getLastUpdateDateTo(),articleSearch.getCompany(),articleSearch.getArticleDescription(),articleSearch.getArticleTypes());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        try{
+            Extremely extremely = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
+            model.addAttribute("productionModule", extremely.getExtremelyValue());
+            log.error("extremely value: " + extremely.getExtremelyValue());
+        }
+        catch (NullPointerException e){
+            String productionModule = "off";
+            model.addAttribute("productionModule", productionModule);
+            log.error("extremely value is null");
+        }
         model.addAttribute("article", article);
         model.addAttribute("articleMessage", articleServiceImpl.articleMessage);
         model.addAttribute("companys", companys);
@@ -129,6 +139,16 @@ public class ArticleController {
         Article article = articleService.findById(id);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         List<ArticleTypes> articleTypesList = articleTypesService.getArticleTypes();
+        try{
+            Extremely extremely = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
+            model.addAttribute("productionModule", extremely.getExtremelyValue());
+            log.error("extremely value: " + extremely.getExtremelyValue());
+        }
+        catch (NullPointerException e){
+            String productionModule = "off";
+            model.addAttribute("productionModule", productionModule);
+            log.error("extremely value is null");
+        }
         model.addAttribute(article);
         model.addAttribute("companies", companies);
         model.addAttribute("articleTypesList", articleTypesList);

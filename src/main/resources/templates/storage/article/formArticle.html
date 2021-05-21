@@ -29,7 +29,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form th:object="${article}" method="post" th:action="@{/formArticle}">
-			<div th:text="#{app.createArticle}" class="titleList">Create a new Article</div><br/>
+			<div style="text-align: center"><span th:text="#{app.createArticle}" class="titleList">Create a new Article</span><img th:if="${productionModule} == 'off'" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionTurnOff}"/></div><br/>
 			<section>
 				<label th:text="#{app.articleNumber}" style="color: white;font-weight: bold">Article number (16 digits)</label>
 				<input id="articleNumber" th:title="#{app.min16Digits}" class="check" required type="text" th:field="*{article_number}" pattern="[0-9]{16}" minlength="16" maxlength="16" />
