@@ -1,4 +1,5 @@
 let volume = document.getElementById('volume');
+let volume = document.getElementById('volume');
 let width = document.getElementById('width').value;
 let height = document.getElementById('height').value;
 let depth = document.getElementById('depth').value;

@@ -6,12 +6,22 @@ let equipment = document.getElementById("equipment")
 let hdControl = document.getElementById("hdControling")
 let multiItem = document.getElementById("multiItem")
 let select = document.getElementById('selectId')
-rackLocation.classList.add("d-none")
-floorLocation.classList.add("d-none")
-equipment.classList.add("d-none")
 
-hdControl.classList.add("d-none")
-multiItem.classList.add("d-none")
+let equipmentTitleCache =   document.getElementById("equipmentTitle")
+let productionTitleCache = document.getElementById("productionTitle")
+
+console.log(window.location.href)
+
+if(!window.location.href.indexOf("formEditLocation")){
+    rackLocation.classList.add("d-none")
+    floorLocation.classList.add("d-none")
+    equipment.classList.add("d-none")
+
+    hdControl.classList.add("d-none")
+    multiItem.classList.add("d-none")
+    console.log("editLocation")
+}
+
 
 
 select.addEventListener("change", function () {
@@ -29,8 +39,6 @@ select.addEventListener("change", function () {
         doorSecondSep.setAttribute("required", "");
         doorThirdSep.setAttribute("required", "");
         doorThirdSepTo.setAttribute("required", "");
-
-
 
     } else if(document.getElementById('selectId').value == "PRL" || document.getElementById('selectId').value == "RRL"){
         floorHide();
@@ -52,20 +60,29 @@ select.addEventListener("change", function () {
 
 
     }
-    else if(document.getElementById('selectId').value == "EQL"){
+    else if(document.getElementById('selectId').value == "EQL" || document.getElementById('selectId').value == "PPL"){
         floorHide();
         doorHide();
         racksHide();
 
         $("#equipment").show(500);
-
         $("#hdControling").show(500);
         $("#multiItem").show(500);
 
-
-
         equipmentFirstSep.setAttribute("required", "");
         equipmentSecondSep.setAttribute("required", "");
+
+        if(document.getElementById('selectId').value == "EQL"){
+            $("#equipmentTitle").remove();
+            $("#productionTitle").remove();
+            $('#equiProdName').append(equipmentTitleCache);
+        }
+        if(document.getElementById('selectId').value == "PPL"){
+            $("#equipmentTitle").remove();
+            $("#productionTitle").remove();
+            $('#equiProdName').append(productionTitleCache);
+        }
+
 
     }
     else{
@@ -120,3 +137,5 @@ function doorHide(){
     doorLocationSimulation.innerHTML = "";
     $("#doorLocation").hide(500);
 }
+
+

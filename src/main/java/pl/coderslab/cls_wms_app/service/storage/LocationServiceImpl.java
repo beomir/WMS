@@ -239,15 +239,22 @@ public class LocationServiceImpl implements LocationService {
                 maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
                 log.error("Location Rack name is incorrect: 1sep: " + locationNameConstruction.getFirstSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getFirstSepRack()) + " ,2sep: " + locationNameConstruction.getSecondSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getSecondSepRack()) + " ,3sep: " + locationNameConstruction.getThirdSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getThirdSepRack()) + locationNameConstruction.getFourthSepRack().length() + StringUtils.isAlpha(locationNameConstruction.getFourthSepRack()));
             }
-        } else if(location.getLocationType().equals("EQL")){
+        } else if(location.getLocationType().equals("EQL") || location.getLocationType().equals("PPL")){
             if(locationNameConstruction.getFirstSepEquipment().length() == 10 && StringUtils.isAlpha(locationNameConstruction.firstSepEquipment) && locationNameConstruction.getSecondSepEquipment().length() == 3 && StringUtils.isNumeric(locationNameConstruction.secondSepEquipment)){
                 locationName = locationNameConstruction.getFirstSepEquipment() + locationNameConstruction.getSecondSepEquipment();
             }
             else {
                 IssueLog issueLog = new IssueLog();
-                issueLog.setIssueLogContent("Single equipment creation with incorrect name: " + locationNameConstruction.getFirstSepEquipment() + locationNameConstruction.getSecondSepEquipment());
+                if(location.getLocationType().equals("EQL")){
+                    issueLog.setIssueLogContent("Single equipment creation with incorrect name: " + locationNameConstruction.getFirstSepEquipment() + locationNameConstruction.getSecondSepEquipment());
+                    log.error("Equipment name: " + locationNameConstruction.getFirstSepEquipment() + locationNameConstruction.getSecondSepEquipment() + " is incorrect");
+                }
+                else{
+                    issueLog.setIssueLogContent("Single Production put off location creation with incorrect name: " + locationNameConstruction.getFirstSepEquipment() + locationNameConstruction.getSecondSepEquipment());
+                    log.error("Production put off location name: " + locationNameConstruction.getFirstSepEquipment() + locationNameConstruction.getSecondSepEquipment() + " is incorrect");
+                }
                 maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
-                log.error("Equipment name: " + locationNameConstruction.getFirstSepEquipment() + locationNameConstruction.getSecondSepEquipment() + " is incorrect");
+
             }
         }
         else {
@@ -267,7 +274,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public void addLocationsToStorageZone(AddLocationToStorageZone aLTSZ) {
         String requestedLocationToAdd;
-        if (aLTSZ.locationType.equals("RDL") || aLTSZ.locationType.equals("SDL")) {
+        if(aLTSZ.locationType.equals("RDL") || aLTSZ.locationType.equals("SDL")) {
             log.debug("Door: " + aLTSZ.storageZone);
             log.debug("Door: " + aLTSZ.warehouse);
             log.debug("Door: " + aLTSZ.firstSepDoor);
@@ -306,16 +313,16 @@ public class LocationServiceImpl implements LocationService {
                     requestedLocationToAdd = aLTSZ.getFirstSepFloor() + StringUtils.leftPad(Integer.toString(i), 8, "0");
                     addLocationsToStorageZoneIssueLogCreation(requestedLocationToAdd, aLTSZ);
                 }
-                log.error("Counter value: " + counter);
-                log.error("doorLocationsRange value: " + locationsRange);
+                log.debug("Counter value: " + counter);
+                log.debug("doorLocationsRange value: " + locationsRange);
                 addLocationsToStorageZoneMessage(locationsRange);
             }
-        } else if(aLTSZ.locationType.equals("EQL")){
-            log.debug("EQL: " + aLTSZ.storageZone);
-            log.debug("EQL: " +aLTSZ.warehouse);
-            log.debug("EQL: " +aLTSZ.firstSepEquipment);
-            log.debug("EQL: " +aLTSZ.secondSepEquipment);
-            log.debug("EQL: " +aLTSZ.secondSepEquipmentTo);
+        } else if(aLTSZ.locationType.equals("EQL") || aLTSZ.locationType.equals("PPL")){
+            log.debug(aLTSZ.locationType + ": " + aLTSZ.storageZone);
+            log.debug(aLTSZ.locationType + ": " +aLTSZ.warehouse);
+            log.debug(aLTSZ.locationType + ": " +aLTSZ.firstSepEquipment);
+            log.debug(aLTSZ.locationType + ": " +aLTSZ.secondSepEquipment);
+            log.debug(aLTSZ.locationType + ": " +aLTSZ.secondSepEquipmentTo);
             int from = parseInt(aLTSZ.getSecondSepEquipment());
             int to = parseInt(aLTSZ.getSecondSepEquipmentTo());
             int locationsRange = to - from + 1;
@@ -326,8 +333,9 @@ public class LocationServiceImpl implements LocationService {
                     requestedLocationToAdd = aLTSZ.getFirstSepEquipment() + StringUtils.leftPad(Integer.toString(i), 3, "0");
                     addLocationsToStorageZoneIssueLogCreation(requestedLocationToAdd, aLTSZ);
                 }
-                log.error("Counter value: " + counter);
-                log.error("doorLocationsRange value: " + locationsRange);
+                log.debug("Counter value: " + counter);
+                log.debug(aLTSZ.locationType + " Range value: " + locationsRange);
+
                 addLocationsToStorageZoneMessage(locationsRange);
             }
         }
@@ -537,11 +545,11 @@ public class LocationServiceImpl implements LocationService {
                 issueLog.setIssueLogContent("ERROR: location range: " + locationsRange + " lower than 1");
                 maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
             }
-        } else if (location.getLocationType().equals("EQL")) {
+        } else if (location.getLocationType().equals("EQL") || location.getLocationType().equals("PPL")) {
             int from = parseInt(locationNameConstruction.getSecondSepEquipment());
             int to = parseInt(locationNameConstruction.getSecondSepEquipmentTo());
             int locationsRange = to - from;
-            log.error("EQL locationsRange: " + locationsRange );
+            log.debug(location.getLocationType() + ": " + locationsRange );
             if (locationsRange > 0 && maxQtyOfLocationsToCreate > locationsRange) {
                 for (int i = from; i <= to; i++) {
                     Location newLocation = new Location();
@@ -695,6 +703,9 @@ public class LocationServiceImpl implements LocationService {
         if (location.getLocationType().equals("EQL")) {
             location.setLocationDesc("Equipment location");
         }
+        if (location.getLocationType().equals("PPL")) {
+            location.setLocationDesc("Production put off location");
+        }
     }
 
 
@@ -774,7 +785,7 @@ public class LocationServiceImpl implements LocationService {
             lCN.setSecondSepRack(location.getLocationName().substring(3, 6));
             lCN.setThirdSepRack(location.getLocationName().substring(6, 8));
             lCN.setFourthSepRack(location.getLocationName().substring(8, 11));
-        } else if(location.getLocationDesc().contains("Equipment")){
+        } else if(location.getLocationDesc().contains("Equipment") || location.getLocationDesc().contains("Production")){
             lCN.setFirstSepEquipment((location.getLocationName().substring(0,10)));
             lCN.setSecondSepEquipment((location.getLocationName().substring(10,13)));
         }

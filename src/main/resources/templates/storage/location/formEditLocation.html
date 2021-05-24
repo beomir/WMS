@@ -25,12 +25,12 @@
 </div>
 
 <span th:include="fragments/locationsMenu :: locationsMenu"></span>
-
+<!--TODO Check class for each section to fulfill location seperators because only first one is displaying-->
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form  method="post" th:action="@{/user/formEditLocation}">
 			<div th:text="#{app.editLocation}" class="titleList">Edit location</div><br/>
-			<section id="rackLocation" th:classappend="${#strings.contains(location.locationDesc,'rack')} ? 'empty' : 'd-none'">
+			<section id="rackLocation" th:classappend="${#strings.contains(location.locationDesc,'rack')} ? '' : 'd-none'">
 				<span th:text="#{app.rackLocation}" style="color: white;font-weight: bold">Rack Location</span><br/>
 				<label th:text="#{app.rack1}" style="color: white;font-style: italic" title="For example PRL like Picking rack location">Shortcut name (three alpha)</label>
 				<input class="location" id="rackFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{locationNameConstruction.firstSepRack}"/>
@@ -45,7 +45,7 @@
 				<input type="hidden" th:field="*{location.id}"/>
 				<input type="hidden" th:field="*{location.created}"/>
 			</section>
-			<section id="doorLocation" th:classappend="${#strings.contains(location.locationDesc,'door')} ? 'empty' : 'd-none'">
+			<section id="doorLocation" th:classappend="${#strings.contains(location.locationDesc,'door')} ? '' : 'd-none'">
 				<span th:text="#{app.doorLocation}" style="color: white;font-weight: bold">Door Location</span><br/>
 				<label th:text="#{app.door1}" style="color: white;font-style: italic" title="For example DOOR">Shortcut name (four alpha)</label>
 				<input class="location" id="doorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{4}" minlength="4" maxlength="4" type="text" title="For example DOOR" th:field="*{locationNameConstruction.firstSepDoor}"/>
@@ -56,7 +56,7 @@
 				<label th:text="#{app.locationNameSimulation}" style="color: white;font-style: italic">Location name simulation</label>
 				<div style="color: white;font-weight: bold" id="doorLocationSimulation"></div><br/><br/>
 			</section>
-			<section id="floorLocation" th:classappend="${#strings.contains(location.locationDesc,'floor')} ? 'empty' : 'd-none'">
+			<section id="floorLocation" th:classappend="${#strings.contains(location.locationDesc,'floor')} ? '' : 'd-none'">
 				<span th:text="#{app.floorLocation}" style="color: white;font-weight: bold">Floor Location</span><br/>
 				<label th:text="#{app.rack1}" style="color: white;font-style: italic" title="For example PFL like Picking floor location">Shortcut name (three alpha)</label>
 				<input class="location" id="floorFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{3}" type="text" maxlength="3" title="For example PFL like Picking floor location" th:field="*{locationNameConstruction.firstSepFloor}"/>
@@ -65,8 +65,11 @@
 				<label th:text="#{app.locationNameSimulation}" style="color: white;font-style: italic">Location name simulation</label>
 				<div style="color: white;font-weight: bold" id="floorLocationSimulation"></div><br/><br/>
 			</section>
-			<section id="equipment" th:classappend="${#strings.contains(location.locationDesc,'Equipment')} ? 'empty' : 'd-none'">
-				<span th:text="#{app.equipment}" style="color: white;font-weight: bold">Equipment</span><br/>
+			<section id="equipment" th:classappend="${#strings.contains(location.locationDesc,'Equipment') || #strings.contains(location.locationDesc,'PRODUCTION')}  ? '' : 'd-none'">
+				<span id="equiProdName"></span>
+				<span id="equipmentTitle" style="color: white;font-weight: bold" th:text="#{app.equipment}"></span>
+				<span id="productionTitle" style="color: white;font-weight: bold" th:text="#{app.production}"></span>
+				<br/>
 				<label th:text="#{app.equi1}" style="color: white;font-style: italic" title="For example PALLETJACK">Name (ten alpha)</label>
 				<input class="location" id="equipmentFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{10}" type="text" maxlength="10" title="For example PALLETJACK" th:field="*{locationNameConstruction.firstSepEquipment}"/>
 				<label th:text="#{app.equi2}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (three numeric)</label>
@@ -75,15 +78,7 @@
 				<div style="color: white;font-weight: bold" id="equipmentSimulation"></div><br/><br/>
 			</section>
 			<section>
-				<label th:text="#{app.locationType}" style="color: white;font-weight: bold">Location type</label>
-				<select id="selectId" class="select-css" th:field="*{location.locationType}">
-					<option th:text="#{app.receptionDoor}" th:value="RDL">Reception Door</option>
-					<option th:text="#{app.stockPickingFloor}" th:value="PFL">Stock Picking Floor</option>
-					<option th:text="#{app.stockPickingRacks}" th:value="PRL">Stock Picking Racks</option>
-					<option th:text="#{app.stockReserveRacks}" th:value="RRL">Stock Reserve Racks</option>
-					<option th:text="#{app.shipDoor}" th:value="SDL">Ship Door</option>
-					<option th:text="#{app.equipment}" th:value="EQL">Equipment</option>
-				</select> <br/>
+				<span th:include="fragments/locationTypeNav :: locationTypeNav"></span>
 			</section>
 			<section>
 				<label th:text="#{app.storageZone}" style="color: white;font-weight: bold">Storage Zone</label>
