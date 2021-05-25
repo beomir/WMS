@@ -1,5 +1,4 @@
 let volume = document.getElementById('volume');
-let volume = document.getElementById('volume');
 let width = document.getElementById('width').value;
 let height = document.getElementById('height').value;
 let depth = document.getElementById('depth').value;
@@ -8,6 +7,19 @@ $('#volume').css('color', 'green');
 $('#volume').css('background-color', 'black');
 $('#volume').css('border', '2px solid');
 $('#volume').css('border-radius', '5px');
+
+if(document.getElementById('selectId').value == "SDL" || document.getElementById('selectId').value == "RDL") {
+    document.getElementById("doorLocationSimulation").innerHTML = document.getElementById("doorFirstSep").value + document.getElementById("doorSecondSep").value + document.getElementById("doorThirdSep").value
+}
+if(document.getElementById('selectId').value == "PRL" || document.getElementById('selectId').value == "RRL"){
+    document.getElementById("floorLocationSimulation").innerHTML = document.getElementById("rackFirstSep").value + document.getElementById("rackSecondSep").value + document.getElementById("rackThirdSep").value + document.getElementById("rackFourthSep").value
+}
+if(document.getElementById('selectId').value == "EQL" || document.getElementById('selectId').value == "PPL"){
+    document.getElementById("equipmentSimulation").innerHTML = document.getElementById("equipmentFirstSep").value + document.getElementById("equipmentSecondSep").value
+}
+if(document.getElementById('selectId').value == "PFL"){
+    document.getElementById("floorLocationSimulation").innerHTML = document.getElementById("floorFirstSep").value + document.getElementById("floorSecondSep").value
+}
 
 //rackLocations
 let rackFirstSep = document.getElementById("rackFirstSep")
@@ -174,3 +186,5 @@ function checkValidation(){
 function returnToPreviousPage() {
     window.history.forward(-1)
 }
+
+
