@@ -10,21 +10,27 @@ let select = document.getElementById('selectId')
 let equipmentTitleCache =   document.getElementById("equipmentTitle")
 let productionTitleCache = document.getElementById("productionTitle")
 
-console.log(window.location.href)
 
-if(!window.location.href.indexOf("formEditLocation")){
+if(window.location.href.indexOf("formEditLocation") === - 1){
     rackLocation.classList.add("d-none")
     floorLocation.classList.add("d-none")
     equipment.classList.add("d-none")
-
     hdControl.classList.add("d-none")
     multiItem.classList.add("d-none")
-    console.log("editLocation")
+    console.log("not editLocation");
+}
+
+if(window.location.href.indexOf("formEditLocation") > - 1){
+    console.log("editLocation");
+    checkLocationType();
 }
 
 
-
 select.addEventListener("change", function () {
+    checkLocationType();
+})
+
+function checkLocationType(){
     if(document.getElementById('selectId').value == "SDL" || document.getElementById('selectId').value == "RDL") {
 
         $("#hdControling").hide(500);
@@ -99,7 +105,7 @@ select.addEventListener("change", function () {
         floorSecondSep.setAttribute("required", "");
         floorSecondSepTo.setAttribute("required", "");
     }
-})
+}
 
 function racksHide(){
     $("#rackFirstSep").removeAttr('required').val("")
