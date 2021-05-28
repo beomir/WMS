@@ -29,10 +29,11 @@ public class LoadFixtures {
     private StorageZoneFixture storageZoneFixture;
     private ArticleTypesFixture articleTypesFixture;
     private ExtremelyFixture extremelyFixture;
+    private ProductionArticleFixture productionArticleFixture;
 
 
     @Autowired
-    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture, TransactionFixture transactionFixture, LocationFixture locationFixture, StorageZoneFixture storageZoneFixture, ArticleTypesFixture articleTypesFixture, ExtremelyFixture extremelyFixture) {
+    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture, TransactionFixture transactionFixture, LocationFixture locationFixture, StorageZoneFixture storageZoneFixture, ArticleTypesFixture articleTypesFixture, ExtremelyFixture extremelyFixture, ProductionArticleFixture productionArticleFixture) {
         this.stockFixture = stockFixture;
         this.companyFixture = companyFixture;
         this.usersFixture = usersFixture;
@@ -54,6 +55,7 @@ public class LoadFixtures {
         this.storageZoneFixture = storageZoneFixture;
         this.articleTypesFixture = articleTypesFixture;
         this.extremelyFixture = extremelyFixture;
+        this.productionArticleFixture = productionArticleFixture;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -82,6 +84,7 @@ public class LoadFixtures {
         schedulerFixture.loadIntoDB();
         transactionFixture.loadIntoDB();
         extremelyFixture.loadIntoDB();
+        productionArticleFixture.loadIntoDB();
 
 
     }
