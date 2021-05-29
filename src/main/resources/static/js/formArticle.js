@@ -62,14 +62,14 @@ hide.classList.add("d-none")
 productionArticle.addEventListener("click", function (e) {
     if (!this.checked) {
         $("#hide").hide(400);
-        $("#productionArticleConnection").removeAttr('required').val("")
-        $("#quantityForFinishedProduct").removeAttr('required').val("")
+        // $("#productionArticleConnection").removeAttr('required').val("")
+        // $("#quantityForFinishedProduct").removeAttr('required').val("")
         production.value = "false"
         productionArticleConnectionFunction();
     } else {
         $("#hide").show(400);
-        $("#productionArticleConnection").prop('required',true);
-        $("#quantityForFinishedProduct").prop('required',true);
+        // $("#productionArticleConnection").prop('required',true);
+        // $("#quantityForFinishedProduct").prop('required',true);
         productionArticleConnectionFunction()
         production.value = "true"
     }
@@ -108,5 +108,12 @@ function productionArticleConnectionFunction(){
         productionArticleConnection.value = "";
         $("#productionArticleConnection").removeAttr('readonly').val("")
 
+    }
+}
+
+if(window.location.href.indexOf("formEditArticle") > -1){
+    if(document.getElementById('productionArticleStatus').innerHTML == "true"){
+        $('#productionArticle').prop('checked', true);
+        $("#productionArticleDetails").show(400);
     }
 }
