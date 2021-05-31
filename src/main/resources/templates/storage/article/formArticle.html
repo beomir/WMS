@@ -28,12 +28,12 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form th:object="${article}" method="post" th:action="@{/formArticle}">
+		<form method="post" th:action="@{/formArticle}">
 			<div style="text-align: center"><span th:text="#{app.createArticle}" class="titleList">Create a new Article</span><img th:if="${productionModule} == 'off'" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionTurnOff}"/></div><br/>
 			<section>
 				<label th:text="#{app.articleNumber}" style="color: white;font-weight: bold">Article number (16 digits)</label>
-				<input id="articleNumber" th:title="#{app.min16Digits}" class="check" required type="text" th:field="*{article_number}" pattern="[0-9]{16}" minlength="16" maxlength="16" />
-				<input type="hidden" th:field="*{id}"/>
+				<input id="articleNumber" th:title="#{app.min16Digits}" class="check" required type="text" th:field="*{article.article_number}" pattern="[0-9]{16}" minlength="16" maxlength="16" />
+				<input type="hidden" th:field="*{article.id}"/>
 				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
 				<input type="hidden" th:value="true" id="active" name="active"/>
@@ -41,34 +41,34 @@
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Article Description</label>
-				<input th:title="#{app.min3signs}" class="check" pattern=".{3,}[a-zA-Z0-9]"  type="text" th:field="*{article_desc}"/>
+				<input th:title="#{app.min3signs}" class="check" pattern=".{3,}[a-zA-Z0-9]"  type="text" th:field="*{article.article_desc}"/>
 			</section>
 			<section>
 				<label th:text="#{app.articleTypes}" style="color: white;font-weight: bold"></label>
-				<select class="select-css" th:field="*{articleTypes}">
+				<select class="select-css" th:field="*{article.articleTypes}">
 					<option th:each="i : ${articleTypesList}" th:value="${i.id}" th:text="${i.articleClass}"></option>
 				</select>
 			</section><br/>
 			<section>
 				<label th:text="#{app.weight}" style="color: white;font-weight: bold">Weight</label>
-				<input  class="check" required id="weight" th:field="*{weight}" type="text" pattern="[0-9].{0,}"  />
+				<input  class="check" required id="weight" th:field="*{article.weight}" type="text" pattern="[0-9].{0,}"  />
 			</section>
 			<section>
 				<label th:text="#{app.depth}" style="color: white;font-weight: bold">depth</label>
-				<input class="check" required id="depth" th:field="*{depth}" type="text" pattern="[0-9].{0,}" />
+				<input class="check" required id="depth" th:field="*{article.depth}" type="text" pattern="[0-9].{0,}" />
 			</section>
 			<section>
 				<label th:text="#{app.width}" style="color: white;font-weight: bold">width</label>
-				<input class="check" required id="width" th:field="*{width}" type="text" pattern="[0-9].{0,}"  />
+				<input class="check" required id="width" th:field="*{article.width}" type="text" pattern="[0-9].{0,}"  />
 			</section>
 			<section>
 				<label th:text="#{app.height}" style="color: white;font-weight: bold">height</label>
-				<input class="check" required id="height" th:field="*{height}" type="text" pattern="[0-9].{0,}" />
+				<input class="check" required id="height" th:field="*{article.height}" type="text" pattern="[0-9].{0,}" />
 				<div id="volume"></div>
 			</section>
 			<section>
 				<label style="color: white;font-weight: bold">Company</label>
-				<select class="select-css" th:field="*{company}">
+				<select class="select-css" th:field="*{article.company}">
 					<option th:each="i : ${companies}" th:value="${i.id}" th:text="${i.name}">
 					</option>
 				</select>
@@ -78,22 +78,57 @@
 				<label th:text="#{app.productionArticle}" style="letter-spacing: 2px;color: white"></label><br/><br/>
 				<div id="productionArticleDetails">
 						<label th:text="#{app.productionArticleType}" style="color: white;font-weight: normal"></label>
-						<select id="selectId" class="select-css" th:field="*{productionArticleType}">
+						<select id="selectId" class="select-css" th:field="*{article.productionArticleType}">
 							<option th:text="#{app.finishProduct}" th:value="'finish product'"></option>
 							<option th:text="#{app.intermediateProduct}" th:value="'intermediate'"></option>
 						</select><br/><br/>
 						<label th:text="#{app.productionArticleConnection}" style="color: white;font-weight: normal"></label>
-						<input class="check" id="productionArticleConnection" th:field="*{productionArticleConnection}" type="text"/>
+						<input class="check" id="productionArticleConnection" th:field="*{article.productionArticleConnection}" type="text"/>
 						<label th:text="#{app.quantityForFinishedProduct}" style="color: white;font-weight: normal"></label>
-						<input class="check" id="quantityForFinishedProduct" th:field="*{quantityForFinishedProduct}" pattern="^[0-9]*$" type="text" required/>
+						<input class="check" id="quantityForFinishedProduct" th:field="*{article.quantityForFinishedProduct}" pattern="^[0-9]*$" type="text" required/>
+						<div id="productionLocation">
+						<label th:text="#{app.locationToPutAsideAnIntermediateArticleForTheProductionOfTheFinalProduct}" style="color: white;font-weight: bold"></label>
+							<select class="select-css" id="chosenWarehouse">
+								<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}"></option>
+							</select>
+							<span id="here">
+							</span>
+<!--							<select class="select-css" id="productionLocationDetail" th:field="*{productionArticle.location}">-->
+<!--							<option></option>-->
+<!--							</select>-->
+						</div>
 						<input type="hidden" th:value="false" id="production" name="production"/>
+
+					<div><input type="checkbox" id="specialStorageZone"/><label th:text="#{app.doYouWantAddArticleToSpecialStorageZone}" style="letter-spacing: 2px;color: white"></label><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionArticleInStorageZoneInfo}"/></div><br/><br/>
+					<div id="specialStorageZoneDetails">
+						<label th:text="#{app.storageZone}" style="color: white;font-weight: normal"></label>
+						<select class="select-css" th:field="*{productionArticle.storageZone}">
+							<option th:each="i : ${storageZones}" th:value="${i.id}" th:text="${i.storageZoneName}">
+							</option>
+							<option th:text="#{app.doNotAssign}" th:value="null"></option>
+						</select>
+					</div>
 				</div>
 			</section>
+
+			<table>
+<!--			<table class="d-none" >-->
+				<tr th:each="i : ${productionLocations}">
+					<td th:text="${i.location}" name="productionLocation"></td>
+					<td th:text="${i.warehouse}" name="productionWarehouse"></td>
+					<td th:text="${i.id}" name="productionId"></td>
+				</tr>
+			</table>
 
 			<section>
 				<br/><button class="button" type="submit" onclick="return checkValidation()">Save</button>
 			</section>
 		</form>
+		<section>
+			<div>
+
+			</div>
+		</section>
 
 	</div>
 
@@ -106,6 +141,38 @@
 <script type="text/javascript" th:src="@{/js/logo.js}"></script>
 <script type="text/javascript" th:src="@{/js/formArticle.js}"></script>
 <script>
+	//TODO clean list after switching the selcted option in chosenwarehouse
+
+	let productionLocation = document.getElementsByName("productionLocation");
+	let productionWarehouse = document.getElementsByName("productionWarehouse");
+	let productionWarehouseId = document.getElementsByName("productionId");
+	let chosenWarehouse = document.getElementById("chosenWarehouse");
+	let array = []
+
+	let selectList = document.createElement("select");
+	const myParent = document.getElementById("here");
+
+	chosenWarehouse.addEventListener("change",function(){
+
+		for(let i = 0; i < productionWarehouse.length;i++){
+			// console.log("kolejny magazyn: " + i + ", " +  productionWarehouse[i].textContent)
+			// console.log("wybrane w opcji" + chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+			if(productionWarehouse[i].textContent == chosenWarehouse.options[chosenWarehouse.selectedIndex].text){
+				// console.log("yeah mamy to: " + productionLocation[i].textContent + ", " + productionWarehouse[i].textContent + ", " +  productionWarehouseId[i].textContent)
+				array.push({val: productionLocation[i].textContent, text: productionLocation[i].textContent})
+			}
+		}
+
+
+		selectList.id = "mySelect";
+		myParent.appendChild(selectList);
+		for (var i = 0; i < array.length; i++) {
+			var option = document.createElement("option");
+			option.value = array[i].value;
+			option.text = array[i].text;
+			selectList.appendChild(option);
+		}
+	})
 
 </script>
 </body>

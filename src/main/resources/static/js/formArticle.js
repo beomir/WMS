@@ -57,7 +57,21 @@ let production = document.getElementById("production")
 let select = document.getElementById('selectId')
 const articleNumber = document.getElementById("articleNumber")
 
+const specialStorageZoneDetails = document.getElementById("specialStorageZoneDetails")
+const specialStorageZone = document.getElementById("specialStorageZone");
+
 hide.classList.add("d-none")
+specialStorageZoneDetails.classList.add("d-none")
+
+specialStorageZone.addEventListener("click",function(){
+    if(!this.checked){
+        $("#specialStorageZoneDetails").hide(400);
+    }
+    else{
+        $("#specialStorageZoneDetails").show(400);
+    }
+    }
+)
 
 productionArticle.addEventListener("click", function (e) {
     if (!this.checked) {

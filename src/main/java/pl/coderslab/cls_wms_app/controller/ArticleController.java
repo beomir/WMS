@@ -7,13 +7,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
-import pl.coderslab.cls_wms_app.repository.ArticleTypesRepository;
-import pl.coderslab.cls_wms_app.repository.ExtremelyRepository;
+import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.storage.ArticleServiceImpl;
 import pl.coderslab.cls_wms_app.service.storage.ArticleTypesService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersServiceImpl;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionServiceImpl;
+import pl.coderslab.cls_wms_app.service.wmsSettings.ProductionArticleService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
@@ -40,9 +40,13 @@ public class ArticleController {
     public ArticleSearch articleSearch;
     private final ArticleTypesRepository articleTypesRepository;
     private final ExtremelyRepository extremelyRepository;
+    private final StorageZoneRepository storageZoneRepository;
+    private final ProductionArticleService productionArticleService;
+    private final LocationRepository locationRepository;
+    private final WarehouseRepository warehouseRepository;
 
     @Autowired
-    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository, ExtremelyRepository extremelyRepository) {
+    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository, ExtremelyRepository extremelyRepository, StorageZoneRepository storageZoneRepository, ProductionArticleService productionArticleService, LocationRepository locationRepository, WarehouseRepository warehouseRepository) {
         this.articleService = articleService;
         this.receptionServiceImpl = receptionServiceImpl;
         this.articleServiceImpl = articleServiceImpl;
@@ -55,6 +59,10 @@ public class ArticleController {
         this.articleSearch = articleSearch;
         this.articleTypesRepository = articleTypesRepository;
         this.extremelyRepository = extremelyRepository;
+        this.storageZoneRepository = storageZoneRepository;
+        this.productionArticleService = productionArticleService;
+        this.locationRepository = locationRepository;
+        this.warehouseRepository = warehouseRepository;
     }
 
     @GetMapping("article")
@@ -97,6 +105,10 @@ public class ArticleController {
     public String articleForm(Model model){
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         List<ArticleTypes> articleTypesList = articleTypesService.getArticleTypes();
+        List<StorageZone> storageZoneList = storageZoneRepository.getStorageZones();
+        List<LocationRepository.ProductionLocations> productionLocations = locationRepository.getProductionLocations();
+        List<Warehouse> warehouseList = warehouseRepository.getWarehouse();
+
         try{
             Extremely extremely = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
             model.addAttribute("productionModule", extremely.getExtremelyValue());
@@ -109,8 +121,15 @@ public class ArticleController {
         }
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("article", new Article());
+        model.addAttribute("productionArticle", new ProductionArticle());
         model.addAttribute("companies", companies);
+
         model.addAttribute("articleTypesList", articleTypesList);
+        model.addAttribute("storageZones",storageZoneList);
+        model.addAttribute("productionLocations",productionLocations);
+        model.addAttribute("warehouses",warehouseList);
+
+
         usersService.loggedUserData(model);
 
         return "storage/article/formArticle";
