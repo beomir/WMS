@@ -47,7 +47,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
         String getLocation();
     }
 
-    @Query(value = "Select location_name location, w.name warehouse, w.id id from location l join warehouse w on l.warehouse_id = w.id where l.location_type = 'PPL'",nativeQuery = true)
+    @Query(value = "Select location_name location, w.name warehouse, l.id id from location l join warehouse w on l.warehouse_id = w.id where l.location_type = 'PPL'",nativeQuery = true)
     List<ProductionLocations> getProductionLocations();
 
     public static interface ProductionLocations {
