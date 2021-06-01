@@ -17,7 +17,8 @@ public class ProductionArticle {
     private Long id;
 
     @NotNull
-    @ManyToOne
+    @OneToOne
+    @JoinColumn(name = "article_id", unique=true)
     private Article article;
 
     @NotNull
@@ -36,11 +37,16 @@ public class ProductionArticle {
     @ManyToOne
     private Location location; // production location
 
+    private String productionArticleType; // intermediate or finished product
+    private String productionArticleConnection; // information about connection between intermediate articles and finished product
+
+    private Long quantityForFinishedProduct;
+
     private String created;
     private String last_update;
     private String changeBy;
 
-    public ProductionArticle(Long id, Article article, StorageZone storageZone, Warehouse warehouse, String created, String last_update, String changeBy, Company company,Location location) {
+    public ProductionArticle(Long id, Article article, StorageZone storageZone, Warehouse warehouse, String created, String last_update, String changeBy, Company company,Location location, String productionArticleType,String productionArticleConnection,Long quantityForFinishedProduct) {
         this.id = id;
         this.article = article;
         this.storageZone = storageZone;
@@ -50,5 +56,8 @@ public class ProductionArticle {
         this.changeBy = changeBy;
         this.company = company;
         this.location = location;
+        this.productionArticleType = productionArticleType;
+        this.productionArticleConnection = productionArticleConnection;
+        this.quantityForFinishedProduct = quantityForFinishedProduct;
     }
 }

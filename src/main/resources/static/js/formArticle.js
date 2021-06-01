@@ -129,5 +129,51 @@ if(window.location.href.indexOf("formEditArticle") > -1){
     if(document.getElementById('productionArticleStatus').innerHTML == "true"){
         $('#productionArticle').prop('checked', true);
         $("#productionArticleDetails").show(400);
+        production.value = "true"
     }
+}
+
+/////////// 01.06.2021
+
+let productionLocation = document.getElementsByName("productionLocation");
+let productionWarehouse = document.getElementsByName("productionWarehouse");
+let productionLocationId = document.getElementsByName("productionLocationId");
+
+let chosenWarehouse = document.getElementById("chosenWarehouse");
+let array = []
+const productionLocationHeader = document.getElementById("productionLocationHeader");
+
+chooseProductionLocation();
+
+chosenWarehouse.addEventListener("change",function(){
+    chooseProductionLocation();
+})
+
+function chooseProductionLocation(){
+    const productionLocationDetail = document.getElementById("productionLocationDetail");
+    let selectList = document.createElement("select");
+    productionLocationDetail.remove();
+    array = [];
+    for(let i = 0; i < productionWarehouse.length;i++){
+        // console.log("next warehouse: " + i + ", " +  productionWarehouse[i].textContent)
+        // console.log("selected warehouse by option" + chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
+        if(productionWarehouse[i].textContent == chosenWarehouse.options[chosenWarehouse.selectedIndex].text){
+            // console.log("found: " + productionLocation[i].textContent + ", " + productionWarehouse[i].textContent + ", " +  productionWarehouseId[i].textContent)
+            array.push({val: productionLocationId[i].textContent, text: productionLocation[i].textContent})
+        }
+    }
+    console.log(array)
+
+    selectList.id = "productionLocationDetail";
+    selectList.name = "location";
+    selectList.classList.add("select-css");
+    productionLocationHeader.appendChild(selectList);
+    for (let i = 0; i < array.length; i++) {
+        let option = document.createElement("option");
+        option.value = array[i].val;
+        option.text = array[i].text;
+        selectList.appendChild(option);
+    }
+    document.getElementById("productionLocationHeader").style.display = "none";
+    $("#productionLocationHeader").show(400);
 }

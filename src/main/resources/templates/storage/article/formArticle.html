@@ -78,32 +78,32 @@
 				<label th:text="#{app.productionArticle}" style="letter-spacing: 2px;color: white"></label><br/><br/>
 				<div id="productionArticleDetails" style="background: #2309ca;border-radius:10px;padding: 8px">
 						<label th:text="#{app.productionArticleType}" style="color: white;font-weight: normal"></label>
-						<select id="selectId" class="select-css" th:field="*{article.productionArticleType}">
+						<select id="selectId" class="select-css" th:field="*{productionArticle.productionArticleType}">
 							<option th:text="#{app.finishProduct}" th:value="'finish product'"></option>
 							<option th:text="#{app.intermediateProduct}" th:value="'intermediate'"></option>
 						</select><br/><br/>
 						<label th:text="#{app.productionArticleConnection}" style="color: white;font-weight: normal"></label>
-						<input class="check" id="productionArticleConnection" th:field="*{article.productionArticleConnection}" type="text"/>
+						<input class="check" id="productionArticleConnection" th:field="*{productionArticle.productionArticleConnection}" type="text"/>
 						<label th:text="#{app.quantityForFinishedProduct}" style="color: white;font-weight: normal"></label>
-						<input class="check" id="quantityForFinishedProduct" th:field="*{article.quantityForFinishedProduct}" pattern="^[0-9]*$" type="text" required/>
+						<input class="check" id="quantityForFinishedProduct" th:field="*{productionArticle.quantityForFinishedProduct}" pattern="^[0-9]*$" type="text" required/>
 						<div id="productionLocation" style="background: #0066d4;border-radius:10px;padding: 5px">
 						<div th:text="#{app.locationToPutAsideAnIntermediateArticleForTheProductionOfTheFinalProduct}" style="color: white;font-weight: bold"></div><br/>
 							<label  th:text="#{app.whichWarehouse}" style="color: white;font-weight: bold"></label>
-							<select class="select-css" id="chosenWarehouse">
-								<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}"></option>
+							<select class="select-css" id="chosenWarehouse" th:field="*{productionArticle.warehouse}">
+								<option th:each="i : ${warehouses}" th:value="${i.id}" th:text="${i.name}"></option>
 							</select><br/><br/>
 
 							<span id="productionLocationHeader" class="d-none">
 								<label style="color: white;font-weight: bold" th:text="#{app.productionLocation}"></label>
 							<select id="productionLocationDetail" th:field="*{productionArticle.location}">
-							<option th:each="i : ${productionLocations}" th:value="${i.id}" th:text="i.locationName"></option>
+							<option th:each="i : ${productionLocations}" th:value="${i.id}" th:text="${i.location}"></option>
 							</select>
 								</span>
 
 						</div><br/>
 						<input type="hidden" th:value="false" id="production" name="production"/>
 
-					<div><input type="checkbox" id="specialStorageZone"/><label th:text="#{app.doYouWantAddArticleToSpecialStorageZone}" style="letter-spacing: 2px;color: white"></label><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionArticleInStorageZoneInfo}"/></div><br/><br/>
+					<div><input type="checkbox" id="specialStorageZone"/><label th:text="#{app.doYouWantAddArticleToSpecialStorageZone}" style="letter-spacing: 2px;color: white"></label><img class="makeItBigger" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionArticleInStorageZoneInfo}"/></div><br/><br/>
 					<div id="specialStorageZoneDetails">
 						<label th:text="#{app.storageZone}" style="color: white;font-weight: normal"></label>
 						<select class="select-css" th:field="*{productionArticle.storageZone}">
@@ -139,50 +139,6 @@
 <script type="text/javascript" th:src="@{/js/logo.js}"></script>
 <script type="text/javascript" th:src="@{/js/formArticle.js}"></script>
 <script>
-
-	let productionLocation = document.getElementsByName("productionLocation");
-	let productionWarehouse = document.getElementsByName("productionWarehouse");
-	let productionLocationId = document.getElementsByName("productionLocationId");
-
-	let chosenWarehouse = document.getElementById("chosenWarehouse");
-	let array = []
-	const productionLocationHeader = document.getElementById("productionLocationHeader");
-
-	chooseProductionLocation();
-
-	chosenWarehouse.addEventListener("change",function(){
-		chooseProductionLocation();
-	})
-
-	function chooseProductionLocation(){
-		const productionLocationDetail = document.getElementById("productionLocationDetail");
-		let selectList = document.createElement("select");
-		productionLocationDetail.remove();
-		array = [];
-		for(let i = 0; i < productionWarehouse.length;i++){
-			// console.log("next warehouse: " + i + ", " +  productionWarehouse[i].textContent)
-			// console.log("selected warehouse by option" + chosenWarehouse.options[chosenWarehouse.selectedIndex].text)
-			if(productionWarehouse[i].textContent == chosenWarehouse.options[chosenWarehouse.selectedIndex].text){
-				// console.log("found: " + productionLocation[i].textContent + ", " + productionWarehouse[i].textContent + ", " +  productionWarehouseId[i].textContent)
-				array.push({val: productionLocationId[i].textContent, text: productionLocation[i].textContent})
-			}
-		}
-		console.log(array)
-
-		selectList.id = "productionLocationDetail";
-		selectList.name = "location";
-		selectList.classList.add("select-css");
-		productionLocationHeader.appendChild(selectList);
-		for (let i = 0; i < array.length; i++) {
-			let option = document.createElement("option");
-			option.value = array[i].val;
-			option.text = array[i].text;
-			selectList.appendChild(option);
-		}
-		document.getElementById("productionLocationHeader").style.display = "none";
-		$("#productionLocationHeader").show(400);
-	}
-
 </script>
 </body>
 

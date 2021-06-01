@@ -17,4 +17,7 @@ public interface ProductionArticleRepository extends JpaRepository<ProductionArt
 
     @Query("Select ap from ProductionArticle ap")
     List<ProductionArticle> getProductionArticles();
+
+    @Query("Select ap from ProductionArticle ap where ap.article.id = ?1")
+    ProductionArticle getProductionArticleByArticleId(Long id);
 }

@@ -1,6 +1,7 @@
 package pl.coderslab.cls_wms_app.service.storage;
 
 import pl.coderslab.cls_wms_app.entity.Article;
+import pl.coderslab.cls_wms_app.entity.ProductionArticle;
 import pl.coderslab.cls_wms_app.temporaryObjects.ArticleSearch;
 
 
@@ -10,9 +11,9 @@ public interface ArticleService {
 
     void add(Article article);
 
-    void addNew(Article article);
+    void addNew(Article article, ProductionArticle productionArticle);
 
-    void edit(Article article);
+    void edit(Article article, ProductionArticle productionArticle);
 
     List<Article> getArticle(String username);
 

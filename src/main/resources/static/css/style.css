@@ -1255,3 +1255,18 @@ input:invalid:focus.check {
     -o-transform:scale(1.2);
     -webkit-transform: scale(1.2);
 }
+
+.makeItBigger{
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+}
+
+.makeItBigger:hover{
+    -o-transition: all 0.6s;
+    -moz-transition: all 0.6s;
+    -webkit-transition: all 0.6s;
+    -moz-transform: scale(1.4);
+    -o-transform:scale(1.4);
+    -webkit-transform: scale(1.4);
+}

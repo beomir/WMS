@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name="article")
 public class Article {
 
 
@@ -41,17 +40,18 @@ public class Article {
 
     private double weight;
     private boolean production; // true - article on production, false normal product
-    private String productionArticleType; // intermediate or finished product
-    private String productionArticleConnection; // information about connection between intermediate articles and finished product
 
-    private Long quantityForFinishedProduct;
 
     @NotNull
     @ManyToOne
     private ArticleTypes articleTypes;
 
+    @NotNull
+    @OneToOne(mappedBy = "article")
+    private ProductionArticle productionArticle;
 
-    public Article(Long id, Long article_number, String article_desc, String article_logistic_variant, Long pieces_per_carton, Company company, String created, String last_update,boolean active,String changeBy,double height,double width,double depth, double volume, double weight,ArticleTypes articleTypes, boolean production,String productionArticleType,String productionArticleConnection,Long quantityForFinishedProduct) {
+
+    public Article(Long id, Long article_number, String article_desc, String article_logistic_variant, Long pieces_per_carton, Company company, String created, String last_update,boolean active,String changeBy,double height,double width,double depth, double volume, double weight,ArticleTypes articleTypes, boolean production, ProductionArticle productionArticle) {
         this.id = id;
         this.article_number = article_number;
         this.article_desc = article_desc;
@@ -69,9 +69,7 @@ public class Article {
         this.weight = weight;
         this.articleTypes = articleTypes;
         this.production = production;
-        this.productionArticleType = productionArticleType;
-        this.productionArticleConnection = productionArticleConnection;
-        this.quantityForFinishedProduct = quantityForFinishedProduct;
+        this.productionArticle = productionArticle;
     }
 
     @OneToMany(mappedBy="article")
@@ -85,6 +83,8 @@ public class Article {
 
     @OneToMany(mappedBy="article")
     private List<ShipmentInCreation> ShipmentInCreationList = new ArrayList<>();
+
+
 
     @Override
     public String toString() {

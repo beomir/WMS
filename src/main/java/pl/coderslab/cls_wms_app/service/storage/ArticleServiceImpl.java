@@ -2,16 +2,17 @@ package pl.coderslab.cls_wms_app.service.storage;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.IssueLog;
+import pl.coderslab.cls_wms_app.entity.ProductionArticle;
 import pl.coderslab.cls_wms_app.entity.Transaction;
 import pl.coderslab.cls_wms_app.repository.ArticleRepository;
 import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
+import pl.coderslab.cls_wms_app.service.wmsSettings.ProductionArticleService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.temporaryObjects.ArticleSearch;
@@ -49,10 +50,10 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public void addNew(Article article) {
+    public void addNew(Article article, ProductionArticle productionArticle) {
         if(article.getDepth() * article.getHeight() * article.getWidth() > 0 && article.getWeight() > 0){
             if(articleRepository.findArticleByArticle_numberAndCompanyName(article.getArticle_number(),article.getCompany()) == null){
-                if(!article.getProductionArticleType().equals("intermediate")) {
+                if(!productionArticle.getProductionArticleType().equals("intermediate")) {
                     article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
                     articleRepository.save(article);
                     Transaction transaction = new Transaction();
@@ -77,8 +78,9 @@ public class ArticleServiceImpl implements ArticleService{
                     transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                     transactionService.add(transaction);
                     articleMessage = "Article successfully created";
+
                 }
-                else articleEdition(article);
+                else articleEdition(article, productionArticle);
             }
             else{
                 IssueLog issueLog = new IssueLog();
@@ -114,7 +116,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public void edit(Article article) {
+    public void edit(Article article,ProductionArticle productionArticle) {
         if(article.getDepth() * article.getHeight() * article.getWidth() > 0 && article.getWeight() > 0){
             if(article.getId() == articleRepository.findArticleByArticle_number(article.getArticle_number()).getId()){
                 if(!article.isProduction()) {
@@ -143,10 +145,10 @@ public class ArticleServiceImpl implements ArticleService{
                     transactionService.add(transaction);
                     articleMessage = "Article successfully edited";
                 }
-                else if(article.isProduction() && article.getProductionArticleType().equals("finish product")){
+                else if(article.isProduction() && productionArticle.getProductionArticleType().equals("finish product")){
                     log.debug("sum of intermediate article qty needed to finish product:  " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
-                    log.debug("value from form about qty needed for finish product: " + article.getQuantityForFinishedProduct());
-                    if(article.getQuantityForFinishedProduct() >= articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName())){
+                    log.debug("value from form about qty needed for finish product: " + productionArticle.getQuantityForFinishedProduct());
+                    if(productionArticle.getQuantityForFinishedProduct() >= articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName())){
                         article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
                         articleRepository.save(article);
                         Transaction transaction = new Transaction();
@@ -174,20 +176,20 @@ public class ArticleServiceImpl implements ArticleService{
                     }
                     else{
                         IssueLog issueLog = new IssueLog();
-                        issueLog.setIssueLogContent("Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + article.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
+                        issueLog.setIssueLogContent("Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + productionArticle.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
                         issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                         issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
-                        issueLog.setAdditionalInformation("Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + article.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
+                        issueLog.setAdditionalInformation("Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + productionArticle.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
                         issueLog.setIssueLogFileName("");
                         issueLog.setIssueLogFilePath("");
                         issueLog.setIssueLogFileName("");
                         issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                         issueLogService.add(issueLog);
-                        articleMessage = "Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + article.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()) + ", check issueLog" ;
+                        articleMessage = "Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + productionArticle.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()) + ", check issueLog" ;
                     }
                 }
                 else {
-                    articleEdition(article);
+                    articleEdition(article,productionArticle);
                 }
             }
         }
@@ -205,59 +207,59 @@ public class ArticleServiceImpl implements ArticleService{
             articleMessage = "One from dimension were 0 or under 0. Check issue log" ;
         }
     }
-
-    private void articleEdition(Article article) {
-        if(article.isProduction() && article.getProductionArticleType().equals("intermediate")){
-            try{ Long productionArticleNumberForConnection = Long.parseLong(article.getProductionArticleConnection());
+//TODO check formeditArticle
+    private void articleEdition(Article article,ProductionArticle productionArticle) {
+        if(article.isProduction() && productionArticle.getProductionArticleType().equals("intermediate")){
+            try{ Long productionArticleNumberForConnection = Long.parseLong(productionArticle.getProductionArticleConnection());
                 if(articleRepository.checkIfFinishProductExists(productionArticleNumberForConnection)>0) {
-                    if(articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) >= articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + article.getQuantityForFinishedProduct()){
+                    if(articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) >= articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + productionArticle.getQuantityForFinishedProduct()){
                         article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
                         articleRepository.save(article);
                         articleMessage = "Article successfully created";
                         log.debug("qty needed: " + articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) );
                         log.debug("sum of assigned:" + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()));
-                        log.debug("qty in form:" + article.getQuantityForFinishedProduct());
+                        log.debug("qty in form:" + productionArticle.getQuantityForFinishedProduct());
                     }
                     else{
                         IssueLog issueLog = new IssueLog();
-                        issueLog.setIssueLogContent("Qty needed to create finish product (article number: " + article.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + article.getQuantityForFinishedProduct());
+                        issueLog.setIssueLogContent("Qty needed to create finish product (article number: " + productionArticle.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + productionArticle.getQuantityForFinishedProduct());
                         issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                         issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
-                        issueLog.setAdditionalInformation("Qty needed to create finish good (article number: " + article.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + article.getQuantityForFinishedProduct());
+                        issueLog.setAdditionalInformation("Qty needed to create finish good (article number: " + productionArticle.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + productionArticle.getQuantityForFinishedProduct());
                         issueLog.setIssueLogFileName("");
                         issueLog.setIssueLogFilePath("");
                         issueLog.setIssueLogFileName("");
                         issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                         issueLogService.add(issueLog);
-                        articleMessage = "Information about sum of quantity needed to create finish good: " + article.getProductionArticleConnection() + ", is lower than sum  already assigned articles quantity + value from last intermediate article, check issuelog";
+                        articleMessage = "Information about sum of quantity needed to create finish good: " + productionArticle.getProductionArticleConnection() + ", is lower than sum  already assigned articles quantity + value from last intermediate article, check issuelog";
                     }
 
                 } else {
                     IssueLog issueLog = new IssueLog();
-                    issueLog.setIssueLogContent("Article connector for production: " + article.getProductionArticleConnection() + ", not exists as finish product");
+                    issueLog.setIssueLogContent("Article connector for production: " + productionArticle.getProductionArticleConnection() + ", not exists as finish product");
                     issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                     issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
-                    issueLog.setAdditionalInformation("Article connector for production: " + article.getProductionArticleConnection() + ", not exists as finish product");
+                    issueLog.setAdditionalInformation("Article connector for production: " + productionArticle.getProductionArticleConnection() + ", not exists as finish product");
                     issueLog.setIssueLogFileName("");
                     issueLog.setIssueLogFilePath("");
                     issueLog.setIssueLogFileName("");
                     issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                     issueLogService.add(issueLog);
-                    articleMessage = "Article connector for production: " + article.getProductionArticleConnection() + ", not exists as finish product. Check IssueLog ";
+                    articleMessage = "Article connector for production: " + productionArticle.getProductionArticleConnection() + ", not exists as finish product. Check IssueLog ";
                 }
             }
             catch (NumberFormatException e){
                 IssueLog issueLog = new IssueLog();
-                issueLog.setIssueLogContent(article.getProductionArticleConnection() + " can't be parse on number");
+                issueLog.setIssueLogContent(productionArticle.getProductionArticleConnection() + " can't be parse on number");
                 issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                 issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
-                issueLog.setAdditionalInformation("Article connector for production with name: " + article.getProductionArticleConnection() + " can't be parse on number");
+                issueLog.setAdditionalInformation("Article connector for production with name: " + productionArticle.getProductionArticleConnection() + " can't be parse on number");
                 issueLog.setIssueLogFileName("");
                 issueLog.setIssueLogFilePath("");
                 issueLog.setIssueLogFileName("");
                 issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                 issueLogService.add(issueLog);
-                articleMessage = "Article connector for production with name: " + article.getProductionArticleConnection() + " can't be parse on number. Check IssueLog ";
+                articleMessage = "Article connector for production with name: " + productionArticle.getProductionArticleConnection() + " can't be parse on number. Check IssueLog ";
             }
         }
     }

@@ -69,6 +69,7 @@ public class ArticleController {
     public String list(Model model) {
         List<Article> article = articleService.getArticleByAllCriteria(articleSearch.getArticle_number(),articleSearch.getVolumeBiggerThan(),articleSearch.getVolumeLowerThan(),articleSearch.getWidthBiggerThan(),articleSearch.getWidthLowerThan(),articleSearch.getDepthBiggerThan(),articleSearch.getDepthLowerThan(),articleSearch.getHeightBiggerThan(),articleSearch.getHeightLowerThan(),articleSearch.getWeightBiggerThan(),articleSearch.getWeightLowerThan(),articleSearch.getCreatedBy(),articleSearch.getCreationDateFrom(),articleSearch.getCreationDateTo(),articleSearch.getLastUpdateDateFrom(),articleSearch.getLastUpdateDateTo(),articleSearch.getCompany(),articleSearch.getArticleDescription(),articleSearch.getArticleTypes());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+
         try{
             Extremely extremely = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
             model.addAttribute("productionModule", extremely.getExtremelyValue());
@@ -136,8 +137,10 @@ public class ArticleController {
     }
 
     @PostMapping("formArticle")
-    public String articleAdd(Article article) {
-        articleService.addNew(article);
+    public String articleAdd(Article article,ProductionArticle productionArticle) {
+        articleService.addNew(article,productionArticle);
+        log.error("productionArticle value New Article Post: " + productionArticle);
+        productionArticleService.addNew(productionArticle,article);
         return "redirect:/article";
     }
 
@@ -158,10 +161,24 @@ public class ArticleController {
         Article article = articleService.findById(id);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         List<ArticleTypes> articleTypesList = articleTypesService.getArticleTypes();
+        List<StorageZone> storageZoneList = storageZoneRepository.getStorageZones();
+        List<LocationRepository.ProductionLocations> productionLocations = locationRepository.getProductionLocations();
+        List<Warehouse> warehouseList = warehouseRepository.getWarehouse();
+
+        if(productionArticleService.getProductionArticleByArticleId(id) == null){
+            model.addAttribute("productionArticle", new ProductionArticle());
+            log.error("productionArticle value is null");
+        }
+        if(productionArticleService.getProductionArticleByArticleId(id) != null){
+            ProductionArticle productionArticle = productionArticleService.getProductionArticleByArticleId(id);
+            model.addAttribute("productionArticle", productionArticle);
+            log.debug("productionArticle value: " + productionArticleService.getProductionArticleByArticleId(id));
+        }
+
         try{
             Extremely extremely = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
             model.addAttribute("productionModule", extremely.getExtremelyValue());
-            log.error("extremely value: " + extremely.getExtremelyValue());
+            log.debug("extremely value: " + extremely.getExtremelyValue());
         }
         catch (NullPointerException e){
             String productionModule = "off";
@@ -172,13 +189,22 @@ public class ArticleController {
         model.addAttribute("companies", companies);
         model.addAttribute("articleTypesList", articleTypesList);
         model.addAttribute("localDateTime", LocalDateTime.now());
+
+
+        model.addAttribute("storageZones",storageZoneList);
+        model.addAttribute("productionLocations",productionLocations);
+        model.addAttribute("warehouses",warehouseList);
+
         usersService.loggedUserData(model);
+
         return "storage/article/formEditArticle";
     }
 
     @PostMapping("formEditArticle")
-    public String edit(Article article) {
-        articleService.edit(article);
+    public String edit(Article article,ProductionArticle productionArticle) {
+        articleService.edit(article,productionArticle);
+        log.error("productionArticle value New Article Post: " + productionArticle);
+        productionArticleService.edit(productionArticle,article);
         return "redirect:/article";
     }
 
