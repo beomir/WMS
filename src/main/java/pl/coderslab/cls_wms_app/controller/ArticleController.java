@@ -172,7 +172,7 @@ public class ArticleController {
         if(productionArticleService.getProductionArticleByArticleId(id) != null){
             ProductionArticle productionArticle = productionArticleService.getProductionArticleByArticleId(id);
             model.addAttribute("productionArticle", productionArticle);
-            log.debug("productionArticle value: " + productionArticleService.getProductionArticleByArticleId(id));
+            log.error("productionArticle value: " + productionArticleService.getProductionArticleByArticleId(id));
         }
 
         try{
@@ -201,10 +201,12 @@ public class ArticleController {
     }
 
     @PostMapping("formEditArticle")
-    public String edit(Article article,ProductionArticle productionArticle) {
+    public String edit(Article article,ProductionArticle productionArticle,String warehouseName,String productionArticleId) {
         articleService.edit(article,productionArticle);
-        log.error("productionArticle value New Article Post: " + productionArticle);
-        productionArticleService.edit(productionArticle,article);
+        log.info("productionArticle value edit Article Post: " + productionArticle);
+        log.info("chosen warehouse: " +  warehouseName);
+        log.error("productionArticleId: " + productionArticleId);
+        productionArticleService.edit(productionArticle,article,warehouseName,productionArticleId);
         return "redirect:/article";
     }
 

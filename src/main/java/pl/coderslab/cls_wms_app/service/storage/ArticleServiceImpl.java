@@ -10,9 +10,9 @@ import pl.coderslab.cls_wms_app.entity.IssueLog;
 import pl.coderslab.cls_wms_app.entity.ProductionArticle;
 import pl.coderslab.cls_wms_app.entity.Transaction;
 import pl.coderslab.cls_wms_app.repository.ArticleRepository;
+import pl.coderslab.cls_wms_app.repository.ProductionArticleRepository;
 import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
-import pl.coderslab.cls_wms_app.service.wmsSettings.ProductionArticleService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.temporaryObjects.ArticleSearch;
@@ -33,15 +33,19 @@ public class ArticleServiceImpl implements ArticleService{
     private CompanyService companyService;
     public String articleMessage;
     public ArticleSearch articleSearch;
+    private ProductionArticleRepository productionArticleRepository;
+
 
     @Autowired
-    public ArticleServiceImpl(ArticleRepository articleRepository, TransactionService transactionService, IssueLogService issueLogService, WarehouseRepository warehouseRepository, CompanyService companyService, ArticleSearch articleSearch) {
+    public ArticleServiceImpl(ArticleRepository articleRepository, TransactionService transactionService, IssueLogService issueLogService, WarehouseRepository warehouseRepository, CompanyService companyService, ArticleSearch articleSearch, ProductionArticleRepository productionArticleRepository) {
         this.articleRepository = articleRepository;
         this.transactionService = transactionService;
         this.issueLogService = issueLogService;
         this.warehouseRepository = warehouseRepository;
         this.companyService = companyService;
         this.articleSearch = articleSearch;
+
+        this.productionArticleRepository = productionArticleRepository;
     }
 
     @Override
@@ -207,12 +211,18 @@ public class ArticleServiceImpl implements ArticleService{
             articleMessage = "One from dimension were 0 or under 0. Check issue log" ;
         }
     }
-//TODO check formeditArticle
+
     private void articleEdition(Article article,ProductionArticle productionArticle) {
         if(article.isProduction() && productionArticle.getProductionArticleType().equals("intermediate")){
+            log.debug("getProductionArticleConnection: " + productionArticle.getProductionArticleConnection());
+            log.debug("getProductionArticleType: " + productionArticle.getProductionArticleType());
             try{ Long productionArticleNumberForConnection = Long.parseLong(productionArticle.getProductionArticleConnection());
                 if(articleRepository.checkIfFinishProductExists(productionArticleNumberForConnection)>0) {
-                    if(articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) >= articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + productionArticle.getQuantityForFinishedProduct()){
+                    log.error("qtyNeededToCreateFinishProduct: " + articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()));
+                    log.error("sumOfAssignedIntermediateArticlesQty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()));
+                    log.error("QuantityForFinishedProduct from form: " + productionArticle.getQuantityForFinishedProduct());
+                    log.error(" QuantityForFinishedProduct from DB" + articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName()));
+                    if(articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) >= articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + productionArticle.getQuantityForFinishedProduct() - articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName())){
                         article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
                         articleRepository.save(article);
                         articleMessage = "Article successfully created";

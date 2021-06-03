@@ -11,7 +11,7 @@ public interface ProductionArticleService {
 
     void addNew(ProductionArticle productionArticle, Article article);
 
-    void edit(ProductionArticle productionArticle, Article article);
+    void edit(ProductionArticle productionArticle, Article article, String warehouseName,String productionArticleId);
 
     List<ProductionArticle> getProductionArticlesByUsername(String username);
 

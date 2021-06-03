@@ -8,6 +8,8 @@ import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.ProductionArticle;
 import pl.coderslab.cls_wms_app.repository.ProductionArticleRepository;
 
+import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
+
 import java.util.List;
 
 
@@ -15,11 +17,13 @@ import java.util.List;
 @Service
 public class ProductionArticleServiceImpl implements ProductionArticleService {
     private ProductionArticleRepository productionArticleRepository;
+    private WarehouseService warehouseService;
 
 
     @Autowired
-    public ProductionArticleServiceImpl(ProductionArticleRepository productionArticleRepository) {
+    public ProductionArticleServiceImpl(ProductionArticleRepository productionArticleRepository, WarehouseService warehouseService) {
         this.productionArticleRepository = productionArticleRepository;
+        this.warehouseService = warehouseService;
     }
 
 
@@ -31,6 +35,7 @@ public class ProductionArticleServiceImpl implements ProductionArticleService {
     @Override
     public void addNew(ProductionArticle productionArticle, Article article) {
         if(article.isProduction()){
+
             productionArticle.setArticle(article);
             productionArticle.setCompany(article.getCompany());
             productionArticleRepository.save(productionArticle);
@@ -38,11 +43,21 @@ public class ProductionArticleServiceImpl implements ProductionArticleService {
     }
 
     @Override
-    public void edit(ProductionArticle productionArticle, Article article) {
+    public void edit(ProductionArticle productionArticle, Article article,String warehouseName,String productionArticleId) {
         if(article.isProduction()){
-            productionArticle.setArticle(article);
-            productionArticle.setCompany(article.getCompany());
-            productionArticleRepository.save(productionArticle);
+            Long id = Long.parseLong(productionArticleId);
+            ProductionArticle productionArticleEdited = productionArticleRepository.getOne(id);
+            productionArticleEdited.setWarehouse(warehouseService.getWarehouseByName(warehouseName));
+            productionArticleEdited.setCompany(article.getCompany());
+            productionArticleEdited.setArticle(article);
+            productionArticleEdited.setLocation(productionArticle.getLocation());
+            productionArticleEdited.setProductionArticleType(productionArticle.getProductionArticleType());
+            productionArticleEdited.setStorageZone(productionArticle.getStorageZone());
+            productionArticleEdited.setProductionArticleConnection(productionArticle.getProductionArticleConnection());
+            productionArticleEdited.setQuantityForFinishedProduct(productionArticle.getQuantityForFinishedProduct());
+            productionArticleEdited.setChangeBy(article.getChangeBy());
+            productionArticleEdited.setLast_update(article.getLast_update());
+            productionArticleRepository.save(productionArticleEdited);
         }
     }
 
