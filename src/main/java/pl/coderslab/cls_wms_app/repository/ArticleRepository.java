@@ -41,4 +41,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query(value ="Select quantity_for_finished_product from article inner join production_article pa on article.id = pa.article_id inner join company c on article.company_id = c.id where article_number = ?1 and c.name = ?2",nativeQuery = true)
     int qtyNeededToCreateFinishProductFromSingleIntermediateArticle(Long article_number, String companyName);
+
+    @Query("Select a from Article a where a.production = true and a.active = true and a.company = ?1 and a.productionArticle.warehouse.name = ?2")
+    List<Article> findProductionArticle(Company company,String warehouse);
 }

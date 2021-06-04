@@ -26,7 +26,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form method="post" th:action="@{/production-browser}">
-			<div class="titleList">Find Works</div><br/>
+			<div class="titleList" th:text="#{app.findProduction}"></div><br/>
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.warehouseName}"></label>
 				<select class="select-css" th:value="${productionWarehouse}" id="productionWarehouse" name="productionWarehouse">

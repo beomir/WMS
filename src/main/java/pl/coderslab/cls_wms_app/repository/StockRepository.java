@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.coderslab.cls_wms_app.entity.Article;
+import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 
@@ -46,4 +47,7 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     @Query("Select s from Stock s where s.receptionNumber = ?1")
     List<Stock> getStockListByReceptionNumber(Long receptionNumber);
+
+    @Query("Select s from Stock s where s.article.production = true and s.article.active = true and s.company = ?1 and s.warehouse.name = ?2 and s.article.productionArticle.productionArticleType = 'finish product'")
+    List<Stock> getStockForProductionArticleByCompanyAndWarehouse(Company company, String warehouse);
 }

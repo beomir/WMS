@@ -28,7 +28,7 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
-				<div th:if="${productionWarehouse != '%' && productionWarehouse != null}" class="titleList" th:text="#{app.production} + ' ' + #{app.for} +  ' ' +  ${productionWarehouse}"></div>
+				<div th:if="${productionWarehouse != '%' && productionWarehouse != null}" class="titleList" th:text="#{app.ongoingProductions} + ' ' + #{app.for} +  ' ' +  ${productionWarehouse}"></div>
 				<div th:if="${productionWarehouse} == '%'" class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +   #{app.allWarehouses}"></div>
 				<div th:if="${productionWarehouse} == null" class="titleList" th:text="#{app.production} + ' ' + #{app.for} +  ' ' +  #{app.allWarehouses}"></div>
 				<div sec:authorize="!hasRole('ROLE_ADMIN')">
@@ -36,6 +36,7 @@
 					<br/><br/>
 				</div>
 				<a th:href="@{/production-browser}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.changeCriteria}"></div></a>
+				<a th:href="@{/startProducting}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.startProducing}"></div></a>
 				<div>
 					<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
 					<table class="criteria">

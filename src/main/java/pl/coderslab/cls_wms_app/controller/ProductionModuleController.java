@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
-import pl.coderslab.cls_wms_app.entity.Company;
-import pl.coderslab.cls_wms_app.entity.Production;
-import pl.coderslab.cls_wms_app.entity.Warehouse;
+import pl.coderslab.cls_wms_app.entity.*;
+import pl.coderslab.cls_wms_app.repository.ArticleRepository;
 import pl.coderslab.cls_wms_app.repository.ProductionRepository;
+import pl.coderslab.cls_wms_app.repository.StockRepository;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
@@ -30,14 +30,18 @@ public class ProductionModuleController {
     private final WarehouseService warehouseService;
     private final CompanyService companyService;
     private final UsersService usersService;
+    private final ArticleRepository articleRepository;
+    private final StockRepository stockRepository;
 
 
     @Autowired
-    public ProductionModuleController(ProductionRepository productionRepository, WarehouseService warehouseService, CompanyService companyService, UsersService usersService) {
+    public ProductionModuleController(ProductionRepository productionRepository, WarehouseService warehouseService, CompanyService companyService, UsersService usersService, ArticleRepository articleRepository, StockRepository stockRepository) {
         this.productionRepository = productionRepository;
         this.warehouseService = warehouseService;
         this.companyService = companyService;
         this.usersService = usersService;
+        this.articleRepository = articleRepository;
+        this.stockRepository = stockRepository;
     }
 
     @GetMapping("production")
@@ -92,7 +96,7 @@ public class ProductionModuleController {
     }
 
     @PostMapping("production-browser")
-    public String findWorks(HttpSession session, String productionWarehouse, String productionCompany, String productionFinishProductNumber, String productionIntermediateArticleNumber, String productionCreated, String productionStatus, String productionLastUpdate) {
+    public String findProduction(HttpSession session, String productionWarehouse, String productionCompany, String productionFinishProductNumber, String productionIntermediateArticleNumber, String productionCreated, String productionStatus, String productionLastUpdate) {
         session.setAttribute("productionWarehouse", productionWarehouse);
         session.setAttribute("productionCompany", productionCompany);
         session.setAttribute("productionFinishProductNumber", productionFinishProductNumber);
@@ -101,6 +105,40 @@ public class ProductionModuleController {
         session.setAttribute("productionStatus", productionStatus);
         session.setAttribute("productionLastUpdate", productionLastUpdate);
         return "redirect:/production";
+    }
+
+    //TODO correct it
+    @GetMapping("startProducing")
+    public String startProducing(Model model,@SessionAttribute(required = false) String productionWarehouse) {
+        log.error("Session productionWarehouse: " + productionWarehouse);
+        if(productionWarehouse == null){
+            return "redirect:/startProducingWHS";
+        }
+        else{
+            List<Stock> stockList = stockRepository.getStockForProductionArticleByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()),productionWarehouse);
+            List<Warehouse> warehouseList = warehouseService.getWarehouse();
+            Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
+            model.addAttribute("warehouseList",warehouseList);
+            model.addAttribute("stockList", stockList);
+            model.addAttribute("company", company);
+            model.addAttribute("productionWarehouse",productionWarehouse);
+            usersService.loggedUserData(model);
+
+            return "wmsOperations/startProducing";
+        }
+    }
+
+    @GetMapping("startProducingWHS")
+    public String startProducingWHS(Model model) {
+        List<Warehouse> warehouses = warehouseService.getWarehouse();
+        model.addAttribute("warehouses", warehouses);
+        return "wmsOperations/startProducingWHS";
+    }
+
+    @PostMapping("startProducingWHS")
+    public String startProducingWHSPost(HttpSession session,String productionWarehouse) {
+        session.setAttribute("productionWarehouse", productionWarehouse);
+        return "redirect:/startProducing";
     }
 
 
