@@ -18,6 +18,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.temporaryObjects.ArticleSearch;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -33,11 +34,10 @@ public class ArticleServiceImpl implements ArticleService{
     private CompanyService companyService;
     public String articleMessage;
     public ArticleSearch articleSearch;
-    private ProductionArticleRepository productionArticleRepository;
 
 
     @Autowired
-    public ArticleServiceImpl(ArticleRepository articleRepository, TransactionService transactionService, IssueLogService issueLogService, WarehouseRepository warehouseRepository, CompanyService companyService, ArticleSearch articleSearch, ProductionArticleRepository productionArticleRepository) {
+    public ArticleServiceImpl(ArticleRepository articleRepository, TransactionService transactionService, IssueLogService issueLogService, WarehouseRepository warehouseRepository, CompanyService companyService, ArticleSearch articleSearch) {
         this.articleRepository = articleRepository;
         this.transactionService = transactionService;
         this.issueLogService = issueLogService;
@@ -45,7 +45,7 @@ public class ArticleServiceImpl implements ArticleService{
         this.companyService = companyService;
         this.articleSearch = articleSearch;
 
-        this.productionArticleRepository = productionArticleRepository;
+
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public void addNew(Article article, ProductionArticle productionArticle) {
+    public void addNew(Article article, ProductionArticle productionArticle,HttpServletRequest request) {
         if(article.getDepth() * article.getHeight() * article.getWidth() > 0 && article.getWeight() > 0){
             if(articleRepository.findArticleByArticle_numberAndCompanyName(article.getArticle_number(),article.getCompany()) == null){
                 if(!productionArticle.getProductionArticleType().equals("intermediate")) {
@@ -84,7 +84,7 @@ public class ArticleServiceImpl implements ArticleService{
                     articleMessage = "Article successfully created";
 
                 }
-                else articleEdition(article, productionArticle);
+                else articleEdition(article, productionArticle, request);
             }
             else{
                 IssueLog issueLog = new IssueLog();
@@ -120,7 +120,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public void edit(Article article,ProductionArticle productionArticle) {
+    public void edit(Article article,ProductionArticle productionArticle,HttpServletRequest request) {
         if(article.getDepth() * article.getHeight() * article.getWidth() > 0 && article.getWeight() > 0){
             if(article.getId() == articleRepository.findArticleByArticle_number(article.getArticle_number()).getId()){
                 if(!article.isProduction()) {
@@ -193,7 +193,7 @@ public class ArticleServiceImpl implements ArticleService{
                     }
                 }
                 else {
-                    articleEdition(article,productionArticle);
+                    articleEdition(article,productionArticle,request);
                 }
             }
         }
@@ -212,7 +212,7 @@ public class ArticleServiceImpl implements ArticleService{
         }
     }
 
-    private void articleEdition(Article article,ProductionArticle productionArticle) {
+    private void articleEdition(Article article,ProductionArticle productionArticle, HttpServletRequest request) {
         if(article.isProduction() && productionArticle.getProductionArticleType().equals("intermediate")){
             log.debug("getProductionArticleConnection: " + productionArticle.getProductionArticleConnection());
             log.debug("getProductionArticleType: " + productionArticle.getProductionArticleType());
@@ -225,7 +225,12 @@ public class ArticleServiceImpl implements ArticleService{
                     if(articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) >= articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + productionArticle.getQuantityForFinishedProduct() - articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName())){
                         article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
                         articleRepository.save(article);
-                        articleMessage = "Article successfully created";
+                        if(request.getHeader("Referer").contains("formEditArticle")){
+                            articleMessage = "Article successfully edited";
+                        }
+                        if(request.getHeader("Referer").contains("formArticle")){
+                            articleMessage = "Article successfully created";
+                        }
                         log.debug("qty needed: " + articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) );
                         log.debug("sum of assigned:" + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()));
                         log.debug("qty in form:" + productionArticle.getQuantityForFinishedProduct());

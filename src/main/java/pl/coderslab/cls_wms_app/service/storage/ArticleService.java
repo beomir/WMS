@@ -5,15 +5,16 @@ import pl.coderslab.cls_wms_app.entity.ProductionArticle;
 import pl.coderslab.cls_wms_app.temporaryObjects.ArticleSearch;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface ArticleService {
 
     void add(Article article);
 
-    void addNew(Article article, ProductionArticle productionArticle);
+    void addNew(Article article, ProductionArticle productionArticle, HttpServletRequest request);
 
-    void edit(Article article, ProductionArticle productionArticle);
+    void edit(Article article, ProductionArticle productionArticle,HttpServletRequest request);
 
     List<Article> getArticle(String username);
 

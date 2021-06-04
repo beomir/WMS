@@ -131,6 +131,17 @@ if(window.location.href.indexOf("formEditArticle") > -1){
         $("#productionArticleDetails").show(400);
         production.value = "true"
     }
+    /////////////// 04.06.2021
+    const storageZoneValue = document.getElementById("storageZone").textContent;
+    console.log(storageZoneValue);
+    if(storageZoneValue != "NotAssigned"){
+        $('#specialStorageZone').prop('checked', true);
+        $("#specialStorageZoneDetails").show(400);
+    }
+    if(storageZoneValue=="NotAssigned"){
+        $('#specialStorageZoneDetail option[value=""]').attr('selected','selected');
+    }
+    //////////////////
 }
 
 /////////// 01.06.2021
@@ -177,3 +188,6 @@ function chooseProductionLocation(){
     document.getElementById("productionLocationHeader").style.display = "none";
     $("#productionLocationHeader").show(400);
 }
+
+
+

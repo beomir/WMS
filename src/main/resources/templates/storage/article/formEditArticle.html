@@ -106,7 +106,7 @@
 					<div><input type="checkbox" id="specialStorageZone"/><label th:text="#{app.doYouWantAddArticleToSpecialStorageZone}" style="letter-spacing: 2px;color: white"></label><img class="makeItBigger" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionArticleInStorageZoneInfo}"/></div><br/><br/>
 					<div id="specialStorageZoneDetails">
 						<label th:text="#{app.storageZone}" style="color: white;font-weight: normal"></label>
-						<select class="select-css" th:field="*{productionArticle.storageZone}">
+						<select class="select-css" th:field="*{productionArticle.storageZone}" id="specialStorageZoneDetail">
 							<option th:each="i : ${storageZones}" th:value="${i.id}" th:text="${i.storageZoneName}">
 							</option>
 							<option th:text="#{app.doNotAssign}" th:value="null"></option>
@@ -123,7 +123,8 @@
 					<td th:text="${i.id}" name="productionLocationId"></td>
 				</tr>
 			</table>
-
+			<span th:if="${productionArticle.storageZone} != null" style="display: none" id="storageZone" th:text="${productionArticle.storageZone.storageZoneName}"></span>
+			<span th:if="${productionArticle.storageZone} == null" style="display: none" id="storageZone" th:text="'NotAssigned'"></span>
 			<section>
 				<br/><button class="button" type="submit" onclick="return checkValidation()">Save</button>
 			</section>

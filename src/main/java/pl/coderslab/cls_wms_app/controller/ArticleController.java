@@ -21,6 +21,7 @@ import pl.coderslab.cls_wms_app.temporaryObjects.ArticleSearch;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -137,8 +138,8 @@ public class ArticleController {
     }
 
     @PostMapping("formArticle")
-    public String articleAdd(Article article,ProductionArticle productionArticle) {
-        articleService.addNew(article,productionArticle);
+    public String articleAdd(Article article, ProductionArticle productionArticle, HttpServletRequest request) {
+        articleService.addNew(article,productionArticle,request);
         log.error("productionArticle value New Article Post: " + productionArticle);
         productionArticleService.addNew(productionArticle,article);
         return "redirect:/article";
@@ -201,8 +202,8 @@ public class ArticleController {
     }
 
     @PostMapping("formEditArticle")
-    public String edit(Article article,ProductionArticle productionArticle,String warehouseName,String productionArticleId) {
-        articleService.edit(article,productionArticle);
+    public String edit(Article article,ProductionArticle productionArticle,String warehouseName,String productionArticleId,HttpServletRequest request) {
+        articleService.edit(article,productionArticle,request);
         log.info("productionArticle value edit Article Post: " + productionArticle);
         log.info("chosen warehouse: " +  warehouseName);
         log.error("productionArticleId: " + productionArticleId);
