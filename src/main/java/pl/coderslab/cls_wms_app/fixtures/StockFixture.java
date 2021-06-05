@@ -43,7 +43,16 @@ public class StockFixture {
             new Stock(null, 202000000000000011L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190001L,"system",null),
             new Stock(null, 202000000000000012L, null,  43L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190001L,"system",null),
             new Stock(null, 202000000000000013L, null,  123L,null,null,"EU2",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190001L,"system",null),
-            new Stock(null, 202000000000000014L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190002L,"system",null)
+            new Stock(null, 202000000000000014L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190002L,"system",null),
+
+            new Stock(null, 202000000000000015L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190002L,"system",null),
+            new Stock(null, 202000000000000016L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190002L,"system",null),
+            new Stock(null, 202000000000000017L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190002L,"system",null),
+            new Stock(null, 202000000000000018L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190002L,"system",null),
+            new Stock(null, 202000000000000019L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190002L,"system",null),
+            new Stock(null, 202000000000000020L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190002L,"system",null),
+            new Stock(null, 202000000000000021L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190002L,"system",null)
+
     );
 
 
@@ -82,6 +91,15 @@ public class StockFixture {
         Stock stock13 = stockList.get(12);
         Stock stock14 = stockList.get(13);
         Stock stock15 = stockList.get(14);
+
+        Stock stock16 = stockList.get(15);
+        Stock stock17 = stockList.get(16);
+        Stock stock18 = stockList.get(17);
+        Stock stock19 = stockList.get(18);
+        Stock stock20 = stockList.get(19);
+        Stock stock21 = stockList.get(20);
+        Stock stock22 = stockList.get(21);
+
 
         stock1.setArticle(articles.get(0));
         stock2.setArticle(articles.get(1));

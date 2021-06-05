@@ -109,35 +109,37 @@ public class ProductionModuleController {
 
     //TODO correct it
     @GetMapping("startProducing")
-    public String startProducing(Model model,@SessionAttribute(required = false) String productionWarehouse) {
-        log.error("Session productionWarehouse: " + productionWarehouse);
-        if(productionWarehouse == null){
-            return "redirect:/startProducingWHS";
+    public String startProducing(Model model,@SessionAttribute(required = false) String chosenWarehouse) {
+        log.error("Session chosenWarehouse: " + chosenWarehouse);
+        if(chosenWarehouse == null){
+            return "redirect:/selectWarehouse";
         }
         else{
-            List<Stock> stockList = stockRepository.getStockForProductionArticleByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()),productionWarehouse);
+            List<Article> articleFinishProductList = articleRepository.finishProductList(companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);
+            List<Stock> stockList = stockRepository.getStockForProductionArticleByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);
             List<Warehouse> warehouseList = warehouseService.getWarehouse();
             Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
             model.addAttribute("warehouseList",warehouseList);
             model.addAttribute("stockList", stockList);
+            model.addAttribute("articleFinishProductList", articleFinishProductList);
             model.addAttribute("company", company);
-            model.addAttribute("productionWarehouse",productionWarehouse);
+            model.addAttribute("productionWarehouse",chosenWarehouse);
             usersService.loggedUserData(model);
 
             return "wmsOperations/startProducing";
         }
     }
 
-    @GetMapping("startProducingWHS")
+    @GetMapping("selectWarehouse")
     public String startProducingWHS(Model model) {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
-        return "wmsOperations/startProducingWHS";
+        return "wmsOperations/selectWarehouse";
     }
 
-    @PostMapping("startProducingWHS")
-    public String startProducingWHSPost(HttpSession session,String productionWarehouse) {
-        session.setAttribute("productionWarehouse", productionWarehouse);
+    @PostMapping("selectWarehouse")
+    public String startProducingWHSPost(HttpSession session,String chosenWarehouse) {
+        session.setAttribute("chosenWarehouse", chosenWarehouse);
         return "redirect:/startProducing";
     }
 

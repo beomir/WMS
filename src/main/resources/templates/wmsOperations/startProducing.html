@@ -35,18 +35,19 @@
 					<div  style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.for} + ' ' + #{app.company} + ' ' + ${company.name}"></div>
 					<br/><br/>
 				</div>
-				<a th:href="@{/production-browser}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.ongoingProductions}"></div></a>
-				<a th:href="@{/article-browser}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.article}"></div></a>
-				</div>
+				<a th:href="@{/production-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.ongoingProductions}"></div></a>
+				<a th:href="@{/article-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right;margin-bottom: 30px" th:text="#{app.articles}"></div></a>
+
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
-						<th th:text="#{app.number}" class="tables">Number</th>
+						<th th:text="#{app.articleNumber}" class="tables"></th>
+						<th th:text="#{app.articleDescription}" class="tables"></th>
 						<th th:text="#{app.quantityForFinishedProduct}" class="tables"></th>
-						<th th:text="#{app.intermediateProduct}" class="tables"></th>
 					</tr>
-				    <tr style="border: solid 1px" th:each="stock: ${stockList}">
-						<td class="tables" th:text="${stock.article.article_number}"></td>
-						<td class="tables" th:text="${stock.article.productionArticle.finishProductPieces}"></td>
+				    <tr style="border: solid 1px" th:each="articleFinishProduct: ${articleFinishProductList}">
+						<td class="tables" th:text="${articleFinishProduct.article_number}"></td>
+						<td class="tables" th:text="${articleFinishProduct.article_desc}"></td>
+						<td class="tables" th:text="${articleFinishProduct.productionArticle.quantityForFinishedProduct}"></td>
 				    </tr>
 				</table>
 

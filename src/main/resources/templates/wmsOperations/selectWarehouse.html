@@ -25,9 +25,9 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form method="post" th:action="@{/startProducing}" style="text-align: center; color:white;">
+		<form method="post" th:action="@{/selectWarehouse}" style="text-align: center; color:white;">
 			<label th:text="#{app.chooseWarehouse}"></label><br/><br/>
-			<select class="select-css" th:name="productionWarehouse">
+			<select class="select-css" th:name="chosenWarehouse">
 				<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.city}">
 				</option>
 			</select>
