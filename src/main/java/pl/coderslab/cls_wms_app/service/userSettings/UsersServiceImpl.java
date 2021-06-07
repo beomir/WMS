@@ -1,6 +1,7 @@
 package pl.coderslab.cls_wms_app.service.userSettings;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
@@ -126,9 +128,19 @@ public class UsersServiceImpl implements UsersService {
         articleServiceImpl.articleMessage = "";
         receptionSearch.message = "";
 
-        String token = FindUsernameByToken(SecurityUtils.username());
+        String userName = "";
+        if(SecurityUtils.username().equals("%")){
+            userName = "admin";
+        }
+        else {
+            userName = SecurityUtils.username();
+        }
+        String token = FindUsernameByToken(userName);
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());
+
+        log.debug("token: " + token);
+
     }
 
     @Override

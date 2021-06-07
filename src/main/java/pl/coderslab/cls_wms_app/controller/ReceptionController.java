@@ -320,6 +320,8 @@ public class ReceptionController {
         model.addAttribute("vendors", vendors);
         List<Status> status = statusRepository.getStatusesByProcess("Reception");
         model.addAttribute("status", status);
+
+        usersService.loggedUserData(model);
         return "wmsOperations/receptions-browser";
     }
 
