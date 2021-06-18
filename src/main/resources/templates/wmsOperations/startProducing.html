@@ -44,10 +44,19 @@
 						<th th:text="#{app.articleDescription}" class="tables"></th>
 						<th th:text="#{app.quantityForFinishedProduct}" class="tables"></th>
 					</tr>
-				    <tr style="border: solid 1px" th:each="articleFinishProduct: ${articleFinishProductList}">
-						<td class="tables" th:text="${articleFinishProduct.article_number}"></td>
-						<td class="tables" th:text="${articleFinishProduct.article_desc}"></td>
-						<td class="tables" th:text="${articleFinishProduct.productionArticle.quantityForFinishedProduct}"></td>
+				    <tr  style="border: solid 1px;:hover {background: yellow}" th:each="article: ${article}">
+						<td th:if="${article.productionArticle != null}" class="tables"  >
+							<div th:text="${article.article_number}" style="background: green;cursor: pointer"></div>
+							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number}" style="background: sandybrown"><span  th:text="${a.article.article_number}" ></span></div>
+						</td>
+						<td class="tables">
+							<div th:text="${article.article_desc}" style="background: green"></div>
+							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number}" style="background: sandybrown"><span  th:text="${a.article.article_desc}" ></span></div>
+						</td>
+						<td class="tables" >
+							<div th:text="${article.productionArticle.quantityForFinishedProduct}" style="background: green"></div>
+							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number}" style="background: sandybrown"><span  th:text="${a.article.intermediateArticle.quantityForFinishedProduct}" ></span></div>
+						</td>
 				    </tr>
 				</table>
 
@@ -57,5 +66,6 @@
 		<div class="w3copyright-agile">
 			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 		</div>
+	</div>
 </body>
 </html>

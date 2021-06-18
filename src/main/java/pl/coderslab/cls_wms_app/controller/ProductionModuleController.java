@@ -115,13 +115,13 @@ public class ProductionModuleController {
             return "redirect:/selectWarehouse";
         }
         else{
-            List<Article> articleFinishProductList = articleRepository.finishProductList(companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);
+            List<Article> articleFinishProductList = articleRepository.articleListByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);
             List<Stock> stockList = stockRepository.getStockForProductionArticleByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);
             List<Warehouse> warehouseList = warehouseService.getWarehouse();
             Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
             model.addAttribute("warehouseList",warehouseList);
             model.addAttribute("stockList", stockList);
-            model.addAttribute("articleFinishProductList", articleFinishProductList);
+            model.addAttribute("article", articleFinishProductList);
             model.addAttribute("company", company);
             model.addAttribute("productionWarehouse",chosenWarehouse);
             usersService.loggedUserData(model);

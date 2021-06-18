@@ -44,4 +44,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query("Select a from Article a where a.production = true and a.active = true and a.company = ?1 and a.productionArticle.warehouse.name = ?2 and a.productionArticle.productionArticleType = 'finish product'")
     List<Article> finishProductList(Company company,String warehouse);
+
+    @Query("Select a from Article a where a.production = true and a.active = true and a.company = ?1 and a.productionArticle.warehouse.name = ?2")
+    List<Article> articleListByCompanyAndWarehouse(Company company,String warehouse);
 }
