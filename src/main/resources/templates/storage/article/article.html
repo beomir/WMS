@@ -44,7 +44,7 @@
 						<tbody>
 						<tr>
 							<td style="border: 2px solid white;min-width: 50%" th:text="#{app.finishProduct}"></td>
-							<td style="border: 2px solid white;background: green;min-width: 50%"></td>
+							<td style="border: 2px solid white;background: green;min-width: 50px"></td>
 						</tr>
 						<tr>
 							<td style="border: 2px solid white;min-width: 50%" th:text="#{app.intermediateProduct}"></td>
@@ -198,10 +198,12 @@
 						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="article: ${article}">
-						<span th:if="${article.productionArticle} == null"><td class="tables" style="padding-bottom: 2px"></span>
+						<span th:if="${article.productionArticle == null && article.intermediateArticle == null}"><td class="tables" style="padding-bottom: 2px"></span>
 						<span th:if="${article.productionArticle} != null">
-						<span th:if="${article.productionArticle.productionArticleType != 'intermediate'}"><td class="tables" th:title="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? #{app.productionArticle} + ': ' + #{app.finishProduct}" th:style="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? 'background: green;padding-bottom: 2px' : 'padding-bottom: 2px'"></span>
-						<span th:if="${article.productionArticle.productionArticleType == 'intermediate'}"><td class="tables" th:title="${article.production == true && article.productionArticle.productionArticleType == 'intermediate'} == TRUE ? #{app.productionArticle} + ': ' + #{app.intermediateProduct} + ', ' + #{app.finishProduct} + ': ' + ${article.productionArticle.productionArticleConnection}" th:style="${article.production == true && article.productionArticle.productionArticleType == 'intermediate'} == TRUE ? 'background: sandybrown;padding-bottom: 2px' : 'padding-bottom: 2px'"></span>
+						<span th:if="${article.productionArticle.productionArticleType == 'finish product'}"><td class="tables" th:title="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? #{app.productionArticle} + ': ' + #{app.finishProduct}" th:style="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? 'background: green;padding-bottom: 2px' : 'padding-bottom: 2px'"></span>
+						</span>
+						<span th:if="${article.intermediateArticle} != null">
+							<span th:if="${article.intermediateArticle.productionArticleType == 'intermediate'}"><td th:each="a,i : *{article.intermediateArticle.productionArticle}"   class="tables" th:title="${article.production == true && article.intermediateArticle.productionArticleType == 'intermediate'} == TRUE ? #{app.productionArticle} + ': ' + #{app.intermediateProduct} + ', ' + #{app.finishProduct} + ': ' +  ${a.article.article_number}" th:style="${article.production == true && article.intermediateArticle.productionArticleType == 'intermediate'} == TRUE ? 'background: sandybrown;padding-bottom: 2px' : 'padding-bottom: 2px'"></span>
 						</span>
 						<ol>
 								<div th:text="${article.article_number}" ></div>
