@@ -29,7 +29,7 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px">
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
-				<div style="text-align: center"><span th:each="companys: ${companys}" class="titleList" th:text="#{app.articlesFC} + ': ' + ${companys.name}"></span><img th:if="${productionModule} == 'off'" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionTurnOff}"/></div><br/>
+				<div style="text-align: center"><span th:each="companies: ${companies}" class="titleList" th:text="#{app.articlesFC} + ': ' + ${companies.name}"></span><img th:if="${productionModule} == 'off'" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionTurnOff}"/></div><br/>
 				<div th:unless="${articleMessage == null}" id="articleMessage" style="color: darkred;font-weight: bold;text-align: center" th:text="${articleMessage}"></div>
 				<a th:href="@{/formArticle}"><div class="btn2" style="float: right;max-width: 20%;" th:text="#{app.addArticle}"></div></a>
 				<a th:href="@{/articleTypes}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.articleTypes}"></div></a>

@@ -133,8 +133,6 @@ public class WorkDetailsController {
         model.addAttribute("workDetailsLocationTo", workDetailsLocationTo);
         model.addAttribute("workDetailsWorkNumber", workDetailsWorkNumber);
 
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companies", companies);
 
         usersService.loggedUserData(model);
 
@@ -152,8 +150,7 @@ public class WorkDetailsController {
         WorkDetails workDetails = workDetailsService.findById(id);
         model.addAttribute(workDetails);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
 
         usersService.loggedUserData(model);
         return "wmsOperations/formEditWork";
@@ -167,8 +164,6 @@ public class WorkDetailsController {
 
     @GetMapping("workDetails-browser")
     public String browser(Model model) {
-        Company companys = companyService.getOneCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         return "wmsOperations/workDetails-browser";

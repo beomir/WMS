@@ -69,7 +69,7 @@ public class ArticleController {
     @GetMapping("article")
     public String list(Model model) {
         List<Article> article = articleService.getArticleByAllCriteria(articleSearch.getArticle_number(),articleSearch.getVolumeBiggerThan(),articleSearch.getVolumeLowerThan(),articleSearch.getWidthBiggerThan(),articleSearch.getWidthLowerThan(),articleSearch.getDepthBiggerThan(),articleSearch.getDepthLowerThan(),articleSearch.getHeightBiggerThan(),articleSearch.getHeightLowerThan(),articleSearch.getWeightBiggerThan(),articleSearch.getWeightLowerThan(),articleSearch.getCreatedBy(),articleSearch.getCreationDateFrom(),articleSearch.getCreationDateTo(),articleSearch.getLastUpdateDateFrom(),articleSearch.getLastUpdateDateTo(),articleSearch.getCompany(),articleSearch.getArticleDescription(),articleSearch.getArticleTypes());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
 
         try{
             Extremely extremely = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
@@ -83,7 +83,7 @@ public class ArticleController {
         }
         model.addAttribute("article", article);
         model.addAttribute("articleMessage", articleServiceImpl.articleMessage);
-        model.addAttribute("companys", companys);
+        model.addAttribute("companies", companies);
         model.addAttribute("articleSearch",articleSearch);
         receptionServiceImpl.insertReceptionFileResult = "";
         locationNameConstruction.message = "";
@@ -105,7 +105,7 @@ public class ArticleController {
 
     @GetMapping("formArticle")
     public String articleForm(Model model){
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+
         List<ArticleTypes> articleTypesList = articleTypesService.getArticleTypes();
         List<StorageZone> storageZoneList = storageZoneRepository.getStorageZones();
         List<LocationRepository.ProductionLocations> productionLocations = locationRepository.getProductionLocations();
@@ -124,7 +124,7 @@ public class ArticleController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("article", new Article());
         model.addAttribute("productionArticle", new ProductionArticle());
-        model.addAttribute("companies", companies);
+
 
         model.addAttribute("articleTypesList", articleTypesList);
         model.addAttribute("storageZones",storageZoneList);
@@ -222,10 +222,10 @@ public class ArticleController {
     @GetMapping("/article-browser")
     public String browser(Model model) {
         model.addAttribute("articleSearching", new ArticleSearch());
-        Company companys = companyService.getOneCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        List<Company> company = companyService.getCompany();
-        model.addAttribute("company", company);
+        Company userCompany = companyService.getOneCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("userCompany", userCompany);
+        List<Company> activeCompany = companyService.getCompany();
+        model.addAttribute("activeCompany", activeCompany);
         List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
         model.addAttribute("articleTypes", articleTypes);
         usersService.loggedUserData(model);

@@ -34,9 +34,8 @@ public class SchedulerController {
     @GetMapping("/user/scheduler")
     public String list(Model model) {
         List<Scheduler> scheduler = schedulerService.getScheduler(SecurityUtils.username());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+
         model.addAttribute("scheduler", scheduler);
-        model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
         return "wmsSettings/scheduler/scheduler";
     }
@@ -50,10 +49,8 @@ public class SchedulerController {
 
     @GetMapping("/user/formScheduler")
     public String schedulerForm(Model model){
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("scheduler", new Scheduler());
-        model.addAttribute("companies", companies);
         model.addAttribute("weekDays", TimeUtils.dayOfWeeks());
         usersService.loggedUserData(model);
         return "wmsSettings/scheduler/formScheduler";
@@ -80,9 +77,8 @@ public class SchedulerController {
     @GetMapping("/user/formEditScheduler/{id}")
     public String updateScheduler(@PathVariable Long id, Model model) {
         Scheduler scheduler = schedulerService.findById(id);
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+
         model.addAttribute(scheduler);
-        model.addAttribute("companies", companies);
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("weekDays", TimeUtils.dayOfWeeks());
         usersService.loggedUserData(model);

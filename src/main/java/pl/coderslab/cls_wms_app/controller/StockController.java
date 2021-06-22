@@ -69,8 +69,7 @@ public class StockController {
         List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("stock", storage);
         model.addAttribute("warehouse", warehouse);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         usersService.loggedUserData(model);
         if(customerUserDetailsService.chosenWarehouse == null){
             return "redirect:/warehouse";
@@ -219,9 +218,9 @@ public class StockController {
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("units", units);
         model.addAttribute("stock", new Stock());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        List<Company> activeCompany = companyService.getCompany();
+        model.addAttribute("activeCompany", activeCompany);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        model.addAttribute("companys", companys);
         model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
         List<Location> locations = locationRepository.locations(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("locations", locations);
@@ -271,9 +270,9 @@ public class StockController {
         List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("units", units);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        List<Company> activeCompany = companyService.getCompany();
+        model.addAttribute("activeCompany", activeCompany);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        model.addAttribute("companys", companys);
         model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
         List<Location> locations = locationRepository.locations(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("locations", locations);

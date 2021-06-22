@@ -38,8 +38,7 @@ public class WarehouseController {
     public String list(Model model) {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         List<Users> users = usersService.getUsers();
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("users", users);
         usersService.loggedUserData(model);
@@ -60,8 +59,7 @@ public class WarehouseController {
     public String warehousesList(Model model) {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         usersService.loggedUserData(model);
         return "wmsValues/warehouse/warehouseList";
     }
@@ -70,8 +68,7 @@ public class WarehouseController {
     public String warehouseDeactivatedList(Model model) {
         List<Warehouse> warehouseDeactivated = warehouseService.getDeactivatedWarehouse();
         model.addAttribute("warehouseDeactivated", warehouseDeactivated);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         usersService.loggedUserData(model);
         return "wmsValues/warehouse/warehouseDeactivatedList";
     }
@@ -81,8 +78,7 @@ public class WarehouseController {
     public String warehouseForm(Model model){
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("warehouse", new Warehouse());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         usersService.loggedUserData(model);
         return "wmsValues/warehouse/formWarehouseCreation";
     }
@@ -110,8 +106,7 @@ public class WarehouseController {
         Warehouse warehouse = warehouseService.findById(id);
         model.addAttribute(warehouse);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         usersService.loggedUserData(model);
         return "wmsValues/warehouse/formEditWarehouse";
     }

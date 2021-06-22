@@ -35,7 +35,9 @@ public class IntermediateArticleFixture {
             new IntermediateArticle(null, null, null,new ArrayList<>(),null,null,null,"intermediate",8L,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),"System"),
             new IntermediateArticle(null, null, null,new ArrayList<>(),null,null,null,"intermediate",4L,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),"System"),
             new IntermediateArticle(null, null, null,new ArrayList<>(),null,null,null,"intermediate",4L,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),"System"),
-            new IntermediateArticle(null, null, null,new ArrayList<>(),null,null,null,"intermediate",1L,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),"System")
+            new IntermediateArticle(null, null, null,new ArrayList<>(),null,null,null,"intermediate",1L,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),"System"),
+            new IntermediateArticle(null, null, null,new ArrayList<>(),null,null,null,"intermediate",1L,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),"System"),
+            new IntermediateArticle(null, null, null,new ArrayList<>(),null,null,null,"intermediate",4L,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),"System")
     );
 
     @Autowired
@@ -69,6 +71,9 @@ public class IntermediateArticleFixture {
         IntermediateArticle intermediateArticle5 = intermediateArticleList.get(4);
         IntermediateArticle intermediateArticle6 = intermediateArticleList.get(5);
 
+        IntermediateArticle intermediateArticle7 = intermediateArticleList.get(6);
+        IntermediateArticle intermediateArticle8 = intermediateArticleList.get(7);
+
 
         intermediateArticle1.setArticle(articleList.get(16));
         intermediateArticle2.setArticle(articleList.get(17));
@@ -77,6 +82,9 @@ public class IntermediateArticleFixture {
         intermediateArticle5.setArticle(articleList.get(20));
         intermediateArticle6.setArticle(articleList.get(21));
 
+        intermediateArticle7.setArticle(articleList.get(23));
+        intermediateArticle8.setArticle(articleList.get(24));
+
         intermediateArticle1.setWarehouse(warehouses.get(0));
         intermediateArticle2.setWarehouse(warehouses.get(0));
         intermediateArticle3.setWarehouse(warehouses.get(0));
@@ -84,12 +92,17 @@ public class IntermediateArticleFixture {
         intermediateArticle5.setWarehouse(warehouses.get(0));
         intermediateArticle6.setWarehouse(warehouses.get(0));
 
+        intermediateArticle7.setWarehouse(warehouses.get(0));
+        intermediateArticle8.setWarehouse(warehouses.get(0));
+
         intermediateArticle1.setStorageZone(storageZoneList.get(9));
         intermediateArticle2.setStorageZone(storageZoneList.get(9));
         intermediateArticle3.setStorageZone(storageZoneList.get(9));
         intermediateArticle4.setStorageZone(storageZoneList.get(9));
         intermediateArticle5.setStorageZone(storageZoneList.get(9));
         intermediateArticle6.setStorageZone(storageZoneList.get(9));
+        intermediateArticle7.setStorageZone(storageZoneList.get(9));
+        intermediateArticle8.setStorageZone(storageZoneList.get(9));
 
         intermediateArticle1.setCompany(companies.get(0));
         intermediateArticle2.setCompany(companies.get(0));
@@ -97,6 +110,8 @@ public class IntermediateArticleFixture {
         intermediateArticle4.setCompany(companies.get(0));
         intermediateArticle5.setCompany(companies.get(0));
         intermediateArticle6.setCompany(companies.get(0));
+        intermediateArticle7.setCompany(companies.get(0));
+        intermediateArticle8.setCompany(companies.get(0));
 
         intermediateArticle1.setLocation(locationList.get(23));
         intermediateArticle2.setLocation(locationList.get(23));
@@ -104,6 +119,8 @@ public class IntermediateArticleFixture {
         intermediateArticle4.setLocation(locationList.get(23));
         intermediateArticle5.setLocation(locationList.get(23));
         intermediateArticle6.setLocation(locationList.get(23));
+        intermediateArticle7.setLocation(locationList.get(23));
+        intermediateArticle8.setLocation(locationList.get(23));
 
 
         intermediateArticle1.getProductionArticle().add(productionArticleList.get(0));
@@ -112,6 +129,8 @@ public class IntermediateArticleFixture {
         intermediateArticle4.getProductionArticle().add(productionArticleList.get(0));
         intermediateArticle5.getProductionArticle().add(productionArticleList.get(0));
         intermediateArticle6.getProductionArticle().add(productionArticleList.get(0));
+        intermediateArticle7.getProductionArticle().add(productionArticleList.get(1));
+        intermediateArticle8.getProductionArticle().add(productionArticleList.get(1));
 
 
         intermediateArticleService.add(intermediateArticle1);
@@ -120,5 +139,7 @@ public class IntermediateArticleFixture {
         intermediateArticleService.add(intermediateArticle4);
         intermediateArticleService.add(intermediateArticle5);
         intermediateArticleService.add(intermediateArticle6);
+        intermediateArticleService.add(intermediateArticle7);
+        intermediateArticleService.add(intermediateArticle8);
     }
 }

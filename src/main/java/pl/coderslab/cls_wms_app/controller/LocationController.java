@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
+import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
@@ -16,6 +17,7 @@ import pl.coderslab.cls_wms_app.repository.StockRepository;
 import pl.coderslab.cls_wms_app.repository.StorageZoneRepository;
 import pl.coderslab.cls_wms_app.service.storage.LocationService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
@@ -37,9 +39,10 @@ public class LocationController {
     private final LocationRepository locationRepository;
     private final StockRepository stockRepository;
     private final ExtremelyRepository extremelyRepository;
+    private CompanyService companyService;
 
     @Autowired
-    public LocationController(LocationService locationService, UsersService usersService, WarehouseService warehouseService, StorageZoneRepository storageZoneRepository, LocationSearch locationSearch, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, LocationRepository locationRepository, StockRepository stockRepository, ExtremelyRepository extremelyRepository) {
+    public LocationController(LocationService locationService, UsersService usersService, WarehouseService warehouseService, StorageZoneRepository storageZoneRepository, LocationSearch locationSearch, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, LocationRepository locationRepository, StockRepository stockRepository, ExtremelyRepository extremelyRepository, CompanyService companyService) {
         this.locationService = locationService;
         this.usersService = usersService;
         this.warehouseService = warehouseService;
@@ -50,6 +53,7 @@ public class LocationController {
         this.locationRepository = locationRepository;
         this.stockRepository = stockRepository;
         this.extremelyRepository = extremelyRepository;
+        this.companyService = companyService;
     }
 
 
@@ -69,6 +73,8 @@ public class LocationController {
         String token = usersService.FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies",companies);
         return "storage/location/locations";
     }
 

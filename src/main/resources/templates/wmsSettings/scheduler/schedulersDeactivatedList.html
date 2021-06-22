@@ -29,7 +29,7 @@
 	<div style="width: 1200px" class="login-form">
 		<div style="background-color: #00BCD4;border-radius: 3px">
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
-				<div th:each="companys: ${companys}" class="titleList" th:text="'Deactivated schedulers for company: ' + ${companys.name}"></div><br/><br/>
+				<div th:each="companies: ${companies}" class="titleList" th:text="'Deactivated schedulers for company: ' + ${companies.name}"></div><br/><br/>
 				</span>
 			<span sec:authorize="hasRole('ROLE_ADMIN')">
 				<div  class="titleList" th:text="#{app.deactivateSchedulers}"></div><br/><br/>

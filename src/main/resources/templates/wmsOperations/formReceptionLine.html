@@ -34,7 +34,7 @@
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
 				<span  >
-					<div  th:each="companys: ${companys}"  class="titleList" th:text=" #{app.createNewReceptionLine} + ' ' + #{app.for} + ' ' + ${receptionHeader} + ', ' + #{app.company} + ' ' + ${companys.name} + ' ' + #{app.inWarehouse} + ' ' + ${warehouse.name} "></div><br/>
+					<div  th:each="companies: ${companies}"  class="titleList" th:text=" #{app.createNewReceptionLine} + ' ' + #{app.for} + ' ' + ${receptionHeader} + ', ' + #{app.company} + ' ' + ${companies.name} + ' ' + #{app.inWarehouse} + ' ' + ${warehouse.name} "></div><br/>
 				</span>
 			</span>
 
@@ -50,7 +50,7 @@
 				</select>
 				<input type="hidden" th:field="*{reception.id}"/>
 				<input type="hidden" th:value="${receptionHeader}" id="receptionNumber" name="receptionNumber"/>
-				<input type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
+				<input type="hidden" th:each="i : ${companies}" th:value="${i.id}" id="company" name="company"/>
 				<input type="hidden" th:value="${warehouse.id}" id="warehouse" name="warehouse"/>
 				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
@@ -58,9 +58,9 @@
 			</section>
 
 			<section sec:authorize="hasRole('ROLE_ADMIN')">
-				<label style="color: white;font-weight: bold">Company</label>
+				<label style="color: white;font-weight: bold" th:text="#{app.company}">Company</label>
 				<select class="select-css" th:field="*{reception.company}">
-					<option th:each="i : ${companys}" th:value="${i.id}" th:text="${i.name}">
+					<option th:each="i : ${activeCompany}" th:value="${i.id}" th:text="${i.name}">
 					</option>
 				</select>
 			</section><br/>

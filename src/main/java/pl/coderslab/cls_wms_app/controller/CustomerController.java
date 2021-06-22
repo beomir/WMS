@@ -34,8 +34,8 @@ public class CustomerController {
     public String list(Model model) {
         List<Customer> customers = customerService.getCustomer(SecurityUtils.username());
         model.addAttribute("customers", customers);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
         return "wmsValues/customer/customer";
     }
@@ -44,8 +44,8 @@ public class CustomerController {
     public String customerDeactivatedList(Model model) {
         List<Customer> customersList = customerService.getDeactivatedCustomer();
         model.addAttribute("customers", customersList);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
         return "wmsValues/customer/customerDeactivatedList";
     }
@@ -57,8 +57,6 @@ public class CustomerController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("customer", new Customer());
         model.addAttribute("companies", companies);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
         return "wmsValues/customer/formCustomer";
     }
@@ -89,8 +87,6 @@ public class CustomerController {
         model.addAttribute(customer);
         model.addAttribute("companies", companies);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
         return "wmsValues/customer/formEditCustomer";
     }

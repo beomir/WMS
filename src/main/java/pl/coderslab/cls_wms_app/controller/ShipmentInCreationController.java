@@ -59,8 +59,7 @@ public class ShipmentInCreationController {
         model.addAttribute("shipments", getShipmentInCreation);
         model.addAttribute("shipMethod", shipMethod);
         model.addAttribute("warehouse", warehouse);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         List<Long> stockDifferences = shipmentInCreationService.stockDifference(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
         model.addAttribute("stockDifferences", stockDifferences);
         List<Long> stockDifferencesQty = shipmentInCreationService.stockDifferenceQty(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
@@ -75,6 +74,7 @@ public class ShipmentInCreationController {
 
         int checkHowManyNotFinishedShipments = shipmentService.checkHowManyNotfinishedShipments(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
         model.addAttribute("cHMNFS", checkHowManyNotFinishedShipments);
+
         usersService.loggedUserData(model);
         if(customerUserDetailsService.chosenWarehouse == null){
             return "redirect:/warehouse";
@@ -110,11 +110,10 @@ public class ShipmentInCreationController {
 
         model.addAttribute("lastShipmentNumber", shipmentInCreationService.lastShipment());
 
-        List<Company> companies = companyService.getCompany();
-        model.addAttribute("companies", companies);
+        List<Company> activeCompany = companyService.getCompany();
+        model.addAttribute("activeCompany", activeCompany);
 
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         usersService.loggedUserData(model);
         if(customerUserDetailsService.chosenWarehouse == null){
             return "redirect:/warehouse";
@@ -150,8 +149,8 @@ public class ShipmentInCreationController {
         List<Warehouse> warehouses = warehouseService.getWarehouse(warehouseId);
         model.addAttribute("warehouses", warehouses);
 
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> activeCompany = companyService.getCompany();
+        model.addAttribute("activeCompany", activeCompany);
 
         usersService.loggedUserData(model);
         return "wmsOperations/editShipment";

@@ -1270,3 +1270,10 @@ input:invalid:focus.check {
     -o-transform:scale(1.4);
     -webkit-transform: scale(1.4);
 }
+
+.unsetColors tr:hover > td{
+    background-color: unset !important;
+    color: unset !important;
+}
+
+

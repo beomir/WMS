@@ -37,8 +37,6 @@ public class UnitController {
     public String list(Model model) {
         List<Unit> units = unitService.getUnit();
         model.addAttribute("units", units);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
         return "wmsValues/unit/unit";
@@ -48,8 +46,6 @@ public class UnitController {
     public String unitDeactivatedList(Model model) {
         List<Unit> unitList = unitService.getDeactivatedUnit();
         model.addAttribute("units", unitList);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
         return "wmsValues/unit/unitDeactivatedList";
@@ -60,8 +56,6 @@ public class UnitController {
     public String unitForm(Model model){
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("unit", new Unit());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
 
         usersService.loggedUserData(model);
         return "wmsValues/unit/formUnitCreation";

@@ -51,7 +51,7 @@ public class ScannerController {
     //warehouse selection
     @GetMapping("{token}")
     public String scannerWarehouse(@PathVariable String token, Model model) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         List<Warehouse> warehouses = warehouseRepository.getWarehouse();
         equipmentMessage = "";
         menuScannerMessage = "";
@@ -61,7 +61,7 @@ public class ScannerController {
         locationToMessage = "";
         hdNumberMessage = "";
         articleMessage = "";
-        model.addAttribute("companys", companys);
+        model.addAttribute("companies", companies);
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("token", token);
         model.addAttribute("message", message);
@@ -84,8 +84,8 @@ public class ScannerController {
     //equipment menu
     @GetMapping("{token}/{warehouse}")
     public String scannerEquipment(@PathVariable String token,@PathVariable String warehouse, Model model) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("message", equipmentMessage);
         model.addAttribute("warehouse", warehouse);
@@ -116,8 +116,8 @@ public class ScannerController {
     //Main Scanner Menu
     @GetMapping("{token}/{warehouse}/{equipment}")
     public String scannerMenu(@PathVariable String token,@PathVariable String equipment,@PathVariable String warehouse, Model model) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("message", menuScannerMessage);
@@ -143,8 +143,8 @@ public class ScannerController {
     //reception branch
     @GetMapping("{token}/{warehouse}/{equipment}/1" )
     public String receptionMenu(@PathVariable String token,@PathVariable String equipment,@PathVariable String warehouse, Model model) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
@@ -171,8 +171,8 @@ public class ScannerController {
     //Manual Selection Work
     @GetMapping("{token}/{warehouse}/{equipment}/1/1")
     public String receptionMenuManualWork(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("message", manualReceptionMessage);
@@ -204,8 +204,8 @@ public class ScannerController {
     //scan locationFrom
     @GetMapping("{token}/{warehouse}/{equipment}/1/1/{receptionNumber}")
     public String receptionMenuManualWorkReceptionNumberFound(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,@SessionAttribute Long receptionNumberSearch ) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
@@ -245,8 +245,8 @@ public class ScannerController {
     //scan HdNumber
     @GetMapping("{token}/{warehouse}/{equipment}/1/1/{receptionNumber}/hdNumber")
     public String receptionMenuManualWorkReceptionNumberFoundHdNumber(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,@SessionAttribute Long receptionNumberSearch ) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
@@ -287,8 +287,8 @@ public class ScannerController {
     //scan Article
     @GetMapping("{token}/{warehouse}/{equipment}/1/1/{receptionNumber}/hdNumber/article")
     public String receptionMenuManualWorkReceptionNumberFoundArticle(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,@SessionAttribute Long receptionNumberSearch ) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
@@ -333,8 +333,8 @@ public class ScannerController {
     //scan destinationLocation
     @GetMapping("{token}/{warehouse}/{equipment}/1/1/{receptionNumber}/hdNumber/article/toLocation")
     public String receptionMenuManualWorkReceptionNumberFoundDestinationLocation(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,@SessionAttribute Long receptionNumberSearch ) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
@@ -385,8 +385,8 @@ public class ScannerController {
     //Automatic Selection Work
     @GetMapping("{token}/{warehouse}/{equipment}/1/2" )
     public String receptionMenuAutomaticWork(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
@@ -403,8 +403,8 @@ public class ScannerController {
     //shipment branch
     @GetMapping("{token}/{warehouse}/{equipment}/3" )
     public String shipmentMenu(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
@@ -421,8 +421,8 @@ public class ScannerController {
     //preview branch
     @GetMapping("{token}/{warehouse}/{equipment}/4" )
     public String previewMenu(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
@@ -441,8 +441,8 @@ public class ScannerController {
     //stock branch
     @GetMapping("{token}/{warehouse}/{equipment}/2" )
     public String stockMenu(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model) {
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);

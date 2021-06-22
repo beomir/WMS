@@ -12,7 +12,7 @@
 
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.hello} + ': ' + ${#request.remoteUser} "></div><br/>
         <div sec:authorize="!hasRole('ROLE_ADMIN')">
-            <div th:each="companys: ${companys}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': ' + ${companys.name}"></div><br/>
+            <div th:each="companies: ${companies}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': ' + ${companies.name}"></div><br/>
         </div>
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span id="loggedUserRole" sec:authentication="principal.authorities"></span></div><br/>
         <a id="checkStock" th:href="@{/warehouse}"><div  class="btn">

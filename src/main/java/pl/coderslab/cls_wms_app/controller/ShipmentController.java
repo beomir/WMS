@@ -52,8 +52,7 @@ public class ShipmentController {
         model.addAttribute("shipments", shipments);
         model.addAttribute("shipMethod", shipMethod);
         model.addAttribute("warehouse", warehouse);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         usersService.loggedUserData(model);
 
 //        Map<String,Integer> surveyMap =  shipmentService.surveyMap(warehouseId,SecurityUtils.username());

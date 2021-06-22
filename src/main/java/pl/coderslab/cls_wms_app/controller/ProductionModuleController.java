@@ -88,8 +88,7 @@ public class ProductionModuleController {
     public String browser(Model model) {
         Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
         model.addAttribute("company", company);
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companies", companies);
+
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         return "wmsOperations/production-browser";

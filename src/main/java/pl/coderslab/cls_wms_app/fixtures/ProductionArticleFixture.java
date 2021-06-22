@@ -27,7 +27,9 @@ public class ProductionArticleFixture {
 
 
     private List<ProductionArticle> productionArticleList = Arrays.asList(
-            new ProductionArticle(null, null, null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),"System",null,null,"finish product","6",35L)
+            new ProductionArticle(null, null, null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),"System",null,null,"finish product","6",35L),
+            new ProductionArticle(null, null, null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),"System",null,null,"finish product","2",5L)
+
     );
 
     @Autowired
@@ -53,25 +55,29 @@ public class ProductionArticleFixture {
         }
 
         ProductionArticle productionArticle1 = productionArticleList.get(0);
+        ProductionArticle productionArticle2 = productionArticleList.get(1);
 
 
         productionArticle1.setArticle(articleList.get(15));
-
+        productionArticle2.setArticle(articleList.get(22));
 
 
         productionArticle1.setWarehouse(warehouses.get(0));
+        productionArticle2.setWarehouse(warehouses.get(0));
 
 
         productionArticle1.setStorageZone(storageZoneList.get(9));
-
+        productionArticle2.setStorageZone(storageZoneList.get(9));
 
         productionArticle1.setCompany(companies.get(0));
-
+        productionArticle2.setCompany(companies.get(0));
 
         productionArticle1.setLocation(locationList.get(23));
+        productionArticle2.setLocation(locationList.get(23));
 
 
         productionArticleService.add(productionArticle1);
+        productionArticleService.add(productionArticle2);
 
 
     }

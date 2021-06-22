@@ -9,7 +9,7 @@
     </div>
     <div  class="navigation navigation--active">
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.hello} + ': ' + ${#request.remoteUser} "></div><br/>
-        <div th:each="companys: ${companys}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': ' + ${companys.name}"></div><br/>
+        <div th:each="companies: ${companies}" style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': ' + ${companies.name}"></div><br/>
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span sec:authentication="principal.authorities"></span></div><br/>
 
 

@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="" />
 
-	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
 	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
@@ -38,24 +38,24 @@
 				<a th:href="@{/production-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.ongoingProductions}"></div></a>
 				<a th:href="@{/article-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right;margin-bottom: 30px" th:text="#{app.articles}"></div></a>
 
-				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
+				<table class="unsetColors" style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
 						<th th:text="#{app.articleNumber}" class="tables"></th>
 						<th th:text="#{app.articleDescription}" class="tables"></th>
 						<th th:text="#{app.quantityForFinishedProduct}" class="tables"></th>
 					</tr>
-				    <tr  style="border: solid 1px;:hover {background: yellow}" th:each="article: ${article}">
+				    <tr style="border: solid 1px;" th:each="article: ${article}">
 						<td th:if="${article.productionArticle != null}" class="tables"  >
-							<div th:text="${article.article_number}" style="background: green;cursor: pointer"></div>
-							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number}" style="background: sandybrown"><span  th:text="${a.article.article_number}" ></span></div>
+							<div  class="finishProduct" th:text="${article.article_number}" th:id="${article.article_number} + 'finishProduct'" style="background: green;cursor: pointer" name="close"></div>
+							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number} + 'intermediate'" style="background: sandybrown;display: none" ><span  th:text="${a.article.article_number}" ></span></div>
 						</td>
 						<td class="tables">
 							<div th:text="${article.article_desc}" style="background: green"></div>
-							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number}" style="background: sandybrown"><span  th:text="${a.article.article_desc}" ></span></div>
+							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number} + 'intermediate'" style="background: sandybrown;display: none" ><span  th:text="${a.article.article_desc}" ></span></div>
 						</td>
 						<td class="tables" >
 							<div th:text="${article.productionArticle.quantityForFinishedProduct}" style="background: green"></div>
-							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number}" style="background: sandybrown"><span  th:text="${a.article.intermediateArticle.quantityForFinishedProduct}" ></span></div>
+							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number} + 'intermediate'" style="background: sandybrown;display: none"><span  th:text="${a.article.intermediateArticle.quantityForFinishedProduct}" ></span></div>
 						</td>
 				    </tr>
 				</table>
@@ -67,5 +67,36 @@
 			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 		</div>
 	</div>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		$( ".finishProduct" ).click(function(ev) {
+			if($("#" + ev.target.textContent + "finishProduct").attr('name') == 'close'){
+				$("." + ev.target.textContent + 'intermediate').show(500)
+				$("#" + ev.target.textContent + 'finishProduct').attr('name', 'open');
+			}
+			else{
+				$("." + ev.target.textContent + 'intermediate').hide(500)
+				$("#" + ev.target.textContent + 'finishProduct').attr('name', 'close');
+			}
+			console.log(ev.target.textContent + ': ' +  $("#" + ev.target.textContent + "finishProduct").attr('name'))
+
+		});
+
+		$('.finishProduct').mouseover(function(e) {
+			let target = $(e.target)
+			let elId = target.attr('id');
+			$("#" + elId).css("background-color", "brown")
+		});
+
+		$('.finishProduct').mouseout(function(e) {
+			let target = $(e.target)
+			let elId = target.attr('id');
+			$("#" + elId).css("background-color", "green")
+		});
+
+
+		/*]]>*/
+	</script>
 </body>
 </html>

@@ -30,7 +30,7 @@
 				<div th:if="${receptionSearch.warehouse} == '%'" class="titleList" th:text="#{app.yourReceptionIn} + ' ' + #{app.allWarehouses}"></div><br/>
 
 				<div sec:authorize="!hasRole('ROLE_ADMIN')">
-				<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} + ' ' + ${companys.name}"></div>
+				<div th:each="companies: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} + ' ' + ${companies.name}"></div>
 				</div>
 				<div style="color: darkred;font-weight: bold" th:text="${fileStatus}"></div>
 				<div th:unless="${receptionSearch.message == null}" id="message" style="color: darkred;font-weight: bold;text-align: center" th:text="${receptionSearch.message}"></div>

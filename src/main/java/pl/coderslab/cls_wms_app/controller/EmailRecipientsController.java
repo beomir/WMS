@@ -35,9 +35,7 @@ public class EmailRecipientsController {
     @GetMapping("emailRecipients")
     public String emailRecipientsList(Model model) {
         List<EmailRecipients> emailRecipients = emailRecipientsService.getEmailRecipientsForCompanyByUsername(SecurityUtils.username());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("emailRecipients", emailRecipients);
-        model.addAttribute("companys", companys);
         usersService.loggedUserData(model);
         return "wmsSettings/emailRecipients/emailRecipients";
     }
@@ -57,11 +55,11 @@ public class EmailRecipientsController {
 
     @GetMapping("/user/formEmailRecipients")
     public String emailRecipientsForm(Model model){
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+
         List<EmailTypes> emailTypes = emailTypesService.getEmailTypes();
         model.addAttribute("emailTypes", emailTypes);
         model.addAttribute("emailRecipients", new EmailRecipients());
-        model.addAttribute("companies", companies);
+
         usersService.loggedUserData(model);
         return "wmsSettings/emailRecipients/formEmailRecipients";
     }
@@ -87,11 +85,11 @@ public class EmailRecipientsController {
     @GetMapping("/user/editEmailRecipients/{token}")
     public String updateEmailRecipients(@PathVariable String token, Model model) {
         EmailRecipients emailRecipients = emailRecipientsService.findByToken(token);
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+
         List<EmailTypes> emailTypes = emailTypesService.getEmailTypes();
         model.addAttribute("emailTypes", emailTypes);
         model.addAttribute(emailRecipients);
-        model.addAttribute("companies", companies);
+
         usersService.loggedUserData(model);
         return "wmsSettings/emailRecipients/editEmailRecipients";
     }

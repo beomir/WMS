@@ -29,7 +29,7 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px">
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
-				<div th:each="companys: ${companys}" class="titleList" th:text="#{app.schedulersFC} + ': ' + ${companys.name}"></div>
+				<div th:each="companies: ${companies}" class="titleList" th:text="#{app.schedulersFC} + ': ' + ${companies.name}"></div>
 				<a th:href="@{/user/formScheduler}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.addScheduler}"></div></a>
 				<br/><br/>
 				</span>

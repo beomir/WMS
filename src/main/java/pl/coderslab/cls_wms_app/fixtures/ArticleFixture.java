@@ -42,7 +42,10 @@ public class ArticleFixture {
             new Article(null, 7122334455747996L, "metal buckles",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",3,3,0.1,0.9,0.10,null,true,null,null),
             new Article(null, 5122334455747896L, "non-slip pads",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",1,10,10,100,0.10,null,true,null,null),
             new Article(null, 9122334455747196L, "wooden table legs 80x15x15cm color light pine",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",80,15,15,18000,2.00,null,true,null,null),
-            new Article(null, 9122334455747296L, "table top 220x120x10cm color light pine",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",220,120,10,264000,8.50,null,true,null,null)
+            new Article(null, 9122334455747296L, "table top 220x120x10cm color light pine",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",220,120,10,264000,8.50,null,true,null,null),
+            new Article(null, 8888121882121821L, "chair",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",150,40,40,240000,3.00,null,true,null,null),
+            new Article(null, 8888121882121823L, "chair-back",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",150,10,10,150000,2.0,null,true,null,null),
+            new Article(null, 8888121882121824L, "chair-legs",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",20,30,30,18000,1.0,null,true,null,null)
 
     );
 
@@ -85,6 +88,10 @@ public class ArticleFixture {
         Article article21 = articleList.get(20);
         Article article22 = articleList.get(21);
 
+        Article article23 = articleList.get(22);
+        Article article24 = articleList.get(23);
+        Article article25 = articleList.get(24);
+
         article1.setArticleTypes(articleTypes.get(2));
         article2.setArticleTypes(articleTypes.get(1));
         article3.setArticleTypes(articleTypes.get(1));
@@ -100,6 +107,7 @@ public class ArticleFixture {
         article13.setArticleTypes(articleTypes.get(6));
         article14.setArticleTypes(articleTypes.get(2));
         article15.setArticleTypes(articleTypes.get(3));
+        article15.setArticleTypes(articleTypes.get(3));
 
         article16.setArticleTypes(articleTypes.get(3));
         article17.setArticleTypes(articleTypes.get(3));
@@ -108,6 +116,10 @@ public class ArticleFixture {
         article20.setArticleTypes(articleTypes.get(4));
         article21.setArticleTypes(articleTypes.get(3));
         article22.setArticleTypes(articleTypes.get(3));
+
+        article23.setArticleTypes(articleTypes.get(3));
+        article24.setArticleTypes(articleTypes.get(3));
+        article25.setArticleTypes(articleTypes.get(3));
 
         article1.setCompany(companies.get(0));
         article2.setCompany(companies.get(1));
@@ -133,6 +145,10 @@ public class ArticleFixture {
         article21.setCompany(companies.get(0));
         article22.setCompany(companies.get(0));
 
+        article23.setCompany(companies.get(0));
+        article24.setCompany(companies.get(0));
+        article25.setCompany(companies.get(0));
+
 
         articleService.add(article1);
         articleService.add(article2);
@@ -157,6 +173,10 @@ public class ArticleFixture {
         articleService.add(article20);
         articleService.add(article21);
         articleService.add(article22);
+
+        articleService.add(article23);
+        articleService.add(article24);
+        articleService.add(article25);
 
     }
 }

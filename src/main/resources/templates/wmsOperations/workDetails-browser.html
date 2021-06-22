@@ -37,7 +37,7 @@
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.company}"></label>
 				<select class="select-css" th:value="${workDetailsCompany}" id="workDetailsCompany" name="workDetailsCompany">
-					<option th:each="i : ${companys}" th:value="${i.name}" th:text="${i.name}">
+					<option th:each="i : ${companies}" th:value="${i.name}" th:text="${i.name}">
 					</option>
 				</select>
 			</section><br/><br/>

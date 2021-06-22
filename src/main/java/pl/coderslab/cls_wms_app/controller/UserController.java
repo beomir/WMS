@@ -46,12 +46,12 @@ public class UserController {
 
     @GetMapping("formUserCreation")
     public String form(Model model) {
-        List<Company> companies = companyService.getCompany();
+        List<Company> activeCompanies = companyService.getCompany();
+        model.addAttribute("activeCompanies", activeCompanies);
         usersService.loggedUserData(model);
         model.addAttribute("users", new Users());
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
 
         List<UsersRoles> usersRolesList = usersRolesService.getUsersRoles();
         model.addAttribute("users_Roles", usersRolesList);
@@ -72,12 +72,10 @@ public class UserController {
 
     @GetMapping("usersList")
     public String usersList(Model model) {
-        List<Company> companies = companyService.getCompany();
+
         List<Users> users = usersService.getUsers();
-        model.addAttribute("companies", companies);
         model.addAttribute("user", users);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         usersService.loggedUserData(model);
         return "userSettings/usersList";
     }
@@ -85,12 +83,10 @@ public class UserController {
 
     @GetMapping("userList")
     public String userList(Model model) {
-        List<Company> companies = companyService.getCompany();
+
         List<Users> users = usersService.getUsers();
-        model.addAttribute("companies", companies);
         model.addAttribute("user", users);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         usersService.loggedUserData(model);
         return "userSettings/userList";
     }
@@ -98,11 +94,9 @@ public class UserController {
     @GetMapping("/formUserEdit/{activateToken}")
     public String updateUser(@PathVariable String activateToken, Model model) {
         Users user = usersService.getUserByActivateToken(activateToken);
-        List<Company> companies = companyService.getCompany();
+        List<Company> activeCompanies = companyService.getCompany();
+        model.addAttribute("activeCompanies", activeCompanies);
         model.addAttribute(user);
-        model.addAttribute("companies", companies);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
 
         List<UsersRoles> usersRolesList = usersRolesService.getUsersRoles();
         model.addAttribute("users_Roles", usersRolesList);
@@ -119,12 +113,9 @@ public class UserController {
 
     @GetMapping("usersDeactivatedList")
     public String usersDeactivatedList(Model model) {
-        List<Company> companies = companyService.getCompany();
         List<Users> users = usersService.getDeactivatedUsers();
-        model.addAttribute("companies", companies);
         model.addAttribute("user", users);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
 
         usersService.loggedUserData(model);
         return "/userSettings/usersDeactivatedList";

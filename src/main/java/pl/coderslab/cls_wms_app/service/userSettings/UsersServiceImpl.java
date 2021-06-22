@@ -10,10 +10,12 @@ import org.springframework.ui.Model;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
+import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.repository.UsersRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleServiceImpl;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionServiceImpl;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.CheckPassword;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
@@ -37,9 +39,10 @@ public class UsersServiceImpl implements UsersService {
     public String oldPass;
     private SendEmailService sendEmailService;
     private ArticleServiceImpl articleServiceImpl;
+    private CompanyService companyService;
 
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ReceptionSearch receptionSearch, SendEmailService sendEmailService, ArticleServiceImpl articleServiceImpl) {
+    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ReceptionSearch receptionSearch, SendEmailService sendEmailService, ArticleServiceImpl articleServiceImpl, CompanyService companyService) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.receptionServiceImpl = receptionServiceImpl;
@@ -48,6 +51,7 @@ public class UsersServiceImpl implements UsersService {
         this.receptionSearch = receptionSearch;
         this.sendEmailService = sendEmailService;
         this.articleServiceImpl = articleServiceImpl;
+        this.companyService = companyService;
     }
 
     @Override
@@ -138,6 +142,9 @@ public class UsersServiceImpl implements UsersService {
         String token = FindUsernameByToken(userName);
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());
+
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
 
         log.debug("token: " + token);
 

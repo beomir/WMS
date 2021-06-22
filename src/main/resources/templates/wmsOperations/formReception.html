@@ -35,8 +35,8 @@
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
 				<span  >
-					<div th:if="${searchingWarehouse} == '%'"  th:each="companys: ${companys}"  class="titleList" th:text=" #{app.createNewReception} + ' ' + #{app.forCompany} + ' ' + ${companys.name} + ' ' + #{app.andChoseWarehouse}"></div><br/>
-					<div th:if="${searchingWarehouse} != '%'"  th:each="companys: ${companys}"  class="titleList" th:text=" #{app.createNewReception} + ' ' + #{app.forCompany} + ' ' + ${companys.name} + ' ' + #{app.inWarehouse} + ' ' + ${searchingWarehouse}"></div><br/>
+					<div th:if="${searchingWarehouse} == '%'"  th:each="companies: ${companies}"  class="titleList" th:text=" #{app.createNewReception} + ' ' + #{app.forCompany} + ' ' + ${companies.name} + ' ' + #{app.andChoseWarehouse}"></div><br/>
+					<div th:if="${searchingWarehouse} != '%'"  th:each="companies: ${companies}"  class="titleList" th:text=" #{app.createNewReception} + ' ' + #{app.forCompany} + ' ' + ${companies.name} + ' ' + #{app.inWarehouse} + ' ' + ${searchingWarehouse}"></div><br/>
 				</span>
 			</span>
 
@@ -47,7 +47,7 @@
 
 			<section>
 				<input type="hidden" th:field="*{reception.id}"/>
-				<input type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
+				<input type="hidden" th:each="i : ${companies}" th:value="${i.id}" id="company" name="company"/>
 				<input th:if="${searchingWarehouse} != '%'" type="hidden" th:value="${warehouse.id}" id="warehouse" name="warehouse"/>
 				<input type="hidden" th:value="false" id="reception.finished" name="reception.finished"/>
 				<input type="hidden" th:value="1" id="status" name="status"/>
@@ -58,9 +58,9 @@
 
 
 			<section sec:authorize="hasRole('ROLE_ADMIN')">
-				<label style="color: white;font-weight: bold">Company</label>
+				<label style="color: white;font-weight: bold" th:text="#{app.company}"></label>
 				<select class="select-css" th:field="*{reception.company}">
-					<option th:each="i : ${companys}" th:value="${i.id}" th:text="${i.name}">
+					<option th:each="i : ${activeCompany}" th:value="${i.id}" th:text="${i.name}">
 					</option>
 				</select>
 			</section>

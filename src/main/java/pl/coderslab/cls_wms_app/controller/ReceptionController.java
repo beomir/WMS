@@ -78,8 +78,8 @@ public class ReceptionController {
         model.addAttribute("fileStatus", receptionServiceImpl.insertReceptionFileResult);
         model.addAttribute("receptionSearch", receptionSearch);
 
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
 
         String token = usersService.FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
@@ -99,8 +99,7 @@ public class ReceptionController {
         model.addAttribute("reception", reception);
         model.addAttribute("receptionHeader", receptionNumber);
         model.addAttribute("statusHeader", receptionRepository.getStatusByReceptionNumber(receptionNumber));
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         String token = usersService.FindUsernameByToken(SecurityUtils.username());
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());
@@ -162,8 +161,8 @@ public class ReceptionController {
         model.addAttribute("units", units);
         model.addAttribute("pallets", pallets);
         model.addAttribute("searchingWarehouse", searchingWarehouse);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> activeCompany = companyService.getCompany();
+        model.addAttribute("activeCompany", activeCompany);
         log.error("searchingWarehouse: " + searchingWarehouse);
         usersService.loggedUserData(model);
         if(customerUserDetailsService.chosenWarehouse == null){
@@ -235,8 +234,8 @@ public class ReceptionController {
         model.addAttribute("warehouse", warehouse);
         model.addAttribute("units", units);
         model.addAttribute("pallets", pallets);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> activeCompany = companyService.getCompany();
+        model.addAttribute("activeCompany", activeCompany);
         model.addAttribute("localDateTime", LocalDateTime.now());
         usersService.loggedUserData(model);
         return "wmsOperations/editReception";
@@ -262,8 +261,8 @@ public class ReceptionController {
         model.addAttribute("warehouse", warehouse);
         model.addAttribute("units", units);
         model.addAttribute("pallets", pallets);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> activeCompany = companyService.getCompany();
+        model.addAttribute("activeCompany", activeCompany);
         model.addAttribute("localDateTime", LocalDateTime.now());
         usersService.loggedUserData(model);
         return "wmsOperations/editReceptionLine";
@@ -287,8 +286,8 @@ public class ReceptionController {
         model.addAttribute("warehouse", warehouse);
         model.addAttribute("units", units);
         model.addAttribute("receptionHeader", receptionNumber);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> activeCompany = companyService.getCompany();
+        model.addAttribute("activeCompany", activeCompany);
         log.error("WarehouseName: " + warehouse.getName());
         usersService.loggedUserData(model);
         return "wmsOperations/formReceptionLine";
@@ -312,8 +311,6 @@ public class ReceptionController {
     @GetMapping("receptions-browser")
     public String browser(Model model) {
         model.addAttribute("receptionSearching", new ReceptionSearch());
-        Company companys = companyService.getOneCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         List<Vendor> vendors = vendorService.getVendor(SecurityUtils.username());

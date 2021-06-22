@@ -34,8 +34,8 @@ public class CompanyController {
     public String companyList(Model model) {
         List<Company> company = companyService.getCompanyWithoutAll();
         model.addAttribute("companies", company);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
         return "wmsValues/company/company";
     }
@@ -44,8 +44,8 @@ public class CompanyController {
     public String companyDeactivatedList(Model model) {
         List<Company> company = companyService.getDeactivatedCompany();
         model.addAttribute("company", company);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
         return "wmsValues/company/companyDeactivatedList";
     }
@@ -55,8 +55,8 @@ public class CompanyController {
     public String companyForm(Model model){
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("company", new Company());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
         return "wmsValues/company/formCompany";
     }
@@ -83,8 +83,8 @@ public class CompanyController {
     public String updateCompany(@PathVariable Long id, Model model) {
         Company company = companyService.findById(id);
         model.addAttribute(company);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
         return "wmsValues/company/formEditCompany";
     }

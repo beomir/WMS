@@ -35,8 +35,8 @@ public class VendorController {
     public String list(Model model) {
         List<Vendor> vendor = vendorService.getVendor(SecurityUtils.username());
         model.addAttribute("vendor", vendor);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         usersService.loggedUserData(model);
         return "wmsValues/vendor/vendor";
     }

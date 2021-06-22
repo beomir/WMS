@@ -42,8 +42,7 @@ public class ExtremelyController {
         model.addAttribute("extremely", extremely);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companies", companies);
+
 
         usersService.loggedUserData(model);
         return "wmsSettings/extremely/extremely";
@@ -53,8 +52,7 @@ public class ExtremelyController {
     @GetMapping("formExtremelyCreation")
     public String extremelyForm(Model model){
         model.addAttribute("extremelys", new Extremely());
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companies", companies);
+
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
 
@@ -80,8 +78,7 @@ public class ExtremelyController {
     @GetMapping("/formEditExtremely/{id}")
     public String updateExtremely(@PathVariable Long id, Model model) {
         model.addAttribute("extremelys", extremelyService.findById(id));
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companies", companies);
+
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
 

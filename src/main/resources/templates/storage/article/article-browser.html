@@ -111,12 +111,12 @@
 				</tbody>
 			</table>
 			<section sec:authorize="!hasRole('ROLE_ADMIN')">
-				<input type="hidden" th:value="${companys.name}" name="company"/>
+				<input type="hidden" th:value="${userCompany.name}" name="company"/>
 			</section>
 			<section sec:authorize="hasRole('ROLE_ADMIN')">
 				<label th:text="#{app.company} + ': '" style="color: white;font-weight: bold">Company</label>
 				<select class="select-css" th:field="*{company}">
-					<option th:each="i : ${company}" th:value="${i.name}" th:text="${i.name}">
+					<option th:each="i : ${activeCompany}" th:value="${i.name}" th:text="${i.name}">
 					<option th:value="'%'">All</option>
 					</option>
 				</select>
