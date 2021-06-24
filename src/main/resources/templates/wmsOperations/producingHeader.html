@@ -28,42 +28,44 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
-				<div th:if="${productionWarehouse != '%' && productionWarehouse != null}" class="titleList" th:text="#{app.startProducing} + ' ' + #{app.in} +  ' ' +  ${productionWarehouse}"></div>
-				<div th:if="${productionWarehouse} == '%'" class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +   #{app.allWarehouses}"></div>
-				<div th:if="${productionWarehouse} == null" class="titleList" th:text="#{app.production} + ' ' + #{app.for} +  ' ' +  #{app.allWarehouses}"></div>
+				<div th:if="${chosenWarehouse != '%' && chosenWarehouse != null}" class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +  ${chosenWarehouse}"></div>
+				<div th:if="${chosenWarehouse} == '%'" class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +   #{app.allWarehouses}"></div>
+				<div th:if="${chosenWarehouse} == null" class="titleList" th:text="#{app.production} + ' ' + #{app.for} +  ' ' +  #{app.allWarehouses}"></div>
 				<div sec:authorize="!hasRole('ROLE_ADMIN')">
-					<div  style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.for} + ' ' + #{app.company} + ' ' + ${company.name}"></div>
-					<br/><br/>
+					<div  style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ' ' + ${article.company.name}"></div>
 				</div>
+				<div class="titleList"><span style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.for} + ' ' + #{app.article} + ': '"></span><br/><span style="color: #2309ca;font-style: italic;font-size: 20px" th:text="${article.article_desc} +  ' ' +  ${article.article_number}"></span></div>
 				<a th:href="@{/production-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.ongoingProductions}"></div></a>
+				<a th:href="@{/startProducing}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.startProducing}"></div></a>
 				<a th:href="@{/article-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right;margin-bottom: 30px" th:text="#{app.articles}"></div></a>
-
+				<br/><br/><br/><br/><br/><br/><br/><br/>
+			<section>
+				<div class="login-form">
+				<form method="post" th:action="@{/production/producingHeader}">
+					<input type="hidden" th:field="*{production.id}"/>
+					<input type="hidden" name="articleId" th:value="${article.id}"/>
+					<label  style="color: white;font-weight: bold" th:text="#{app.howManyFinishProduct} + ': ' + ${article.article_number}  + ' ' + #{app.doYouWantProduce}"></label>
+					<input id="piecesToProduct" type="number" th:field="*{production.finishProductPieces}"/>
+					<button class="button2" type="submit" onclick="return checkAllValidations()" ><span th:text="#{app.produce} + ' '"></span><img th:src="@{/images/20x20gear.gif}"/> </button>
+				</form>
+				</div>
+			</section><br/>
 				<table class="unsetColors" style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
 						<th th:text="#{app.articleNumber}" class="tables"></th>
 						<th th:text="#{app.articleDescription}" class="tables"></th>
-						<th th:text="#{app.quantityForFinishedProduct}" class="tables"></th>
-
-						<th th:text="#{app.startProducing}" class="tables"></th>
+						<th th:text="#{app.quantityForOneFinishedProduct}" class="tables"></th>
+						<th th:text="#{app.onStock}" class="tables"></th>
+						<th th:text="#{app.productionRequest}" class="tables"></th>
 					</tr>
-				    <tr style="border: solid 1px;" th:each="article: ${article}">
-						<td th:if="${article.productionArticle != null}" class="tables">
-							<div  class="finishProduct"  th:id="${article.article_number} + 'finishProduct'" style="background: green;cursor: pointer" name="close"><span th:name="${article.article_number} + 'finishProduct'" th:text="${article.article_number}"></span><img th:name="${article.article_number} + 'finishProduct'" th:src="@{/images/arrowsdown20x20.png}" class="right"/></div>
-							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number} + 'intermediate'" style="background: sandybrown;display: none" ><span  th:text="${a.article.article_number}"></span></div>
-						</td>
-						<td class="tables">
-							<div th:text="${article.article_desc}" style="background: green"></div>
-							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number} + 'intermediate'" style="background: sandybrown;display: none" ><span  th:text="${a.article.article_desc}"></span></div>
-						</td>
-						<td class="tables" >
-							<div th:text="${article.productionArticle.quantityForFinishedProduct}" style="background: green"></div>
-							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number} + 'intermediate'" style="background: sandybrown;display: none"><span  th:text="${a.article.intermediateArticle.quantityForFinishedProduct}"></span></div>
-						</td>
-
-						<td>
-							<a th:href="@{/producingHeader/{id}(id=${article.id})}"><div style="text-align: center"><img  th:src="@{/images/producing20x20.png}" /></div></a>
-						</td>
-				    </tr>
+					<tr th:each="productionArticle : ${productionArticleOnStocks}">
+						<td th:style="${productionArticle.changeBy.equals('intermediate')} == TRUE ? 'background: sandybrown;' : 'background: green'" class="tables" th:text="${productionArticle.article_number}"></td>
+						<td th:style="${productionArticle.changeBy.equals('intermediate')} == TRUE ? 'background: sandybrown;' : 'background: green'" class="tables" th:text="${productionArticle.article_desc}"></td>
+						<td th:style="${productionArticle.changeBy.equals('intermediate')} == TRUE ? 'background: sandybrown;' : 'background: green'" class="tables" th:text="${productionArticle.depth}" name="neededToProduceOne"></td>
+						<td th:style="${productionArticle.changeBy.equals('intermediate')} == TRUE ? 'background: sandybrown;' : 'background: green'" class="tables" th:text="${productionArticle.volume}" name="onStock"></td>
+						<td th:if="${productionArticle.changeBy.equals('intermediate')}" class="tables" name="intermediate"></td>
+						<td th:if="${!productionArticle.changeBy.equals('intermediate')}" class="tables" name="finishProduct"></td>
+					</tr>
 				</table>
 
 			</div><br/><br/><br/>
@@ -74,6 +76,6 @@
 		</div>
 	</div>
 	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
-	<script type="text/javascript" th:src="@{/js/startProducing.js}"></script>
+	<script type="text/javascript" th:src="@{/js/producingHeader.js}"></script>
 </body>
 </html>

@@ -62,8 +62,15 @@ public class ProductionModuleController {
 
     @GetMapping("producingHeader/{id}")
     public String producingHeader(@PathVariable Long id, Model model,@SessionAttribute(required = false) String chosenWarehouse) {
-        List<ArticleRepository.ProductionArticleOnStock> productionArticleOnStocks = articleRepository.articlesNeededForProductionOnStock(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),chosenWarehouse,id);
 
+        Article article = articleRepository.articleForProduction(id,companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);
+        model.addAttribute("article",article);
+        List<ArticleRepository.ProductionArticleOnStock> productionArticleOnStocks = articleRepository.articlesNeededForProductionOnStock(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),chosenWarehouse,id);
+        model.addAttribute("productionArticleOnStocks",productionArticleOnStocks);
+        Production production = new Production();
+        model.addAttribute("production",production);
+
+        model.addAttribute("chosenWarehouse",chosenWarehouse);
         usersService.loggedUserData(model);
         return "wmsOperations/producingHeader";
     }
@@ -105,6 +112,8 @@ public class ProductionModuleController {
 
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
+
+        usersService.loggedUserData(model);
         return "wmsOperations/production-browser";
     }
 
@@ -145,6 +154,7 @@ public class ProductionModuleController {
     public String startProducingWHS(Model model) {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
+        usersService.loggedUserData(model);
         return "wmsOperations/selectWarehouse";
     }
 

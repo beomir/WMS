@@ -84,7 +84,7 @@
 						</select><br/><br/>
 						<label th:text="#{app.productionArticleConnection}" style="color: white;font-weight: normal"></label>
 						<input class="check" id="productionArticleConnection" th:field="*{productionArticle.productionArticleConnection}" type="text"/>
-						<label th:text="#{app.quantityForFinishedProduct}" style="color: white;font-weight: normal"></label>
+						<label th:text="#{app.quantityForOneFinishedProduct}" style="color: white;font-weight: normal"></label>
 						<input class="check" id="quantityForFinishedProduct" th:field="*{productionArticle.quantityForFinishedProduct}" pattern="^[0-9]*$" type="text" required/>
 						<div id="productionLocation" style="background: #0066d4;border-radius:10px;padding: 5px">
 						<div th:text="#{app.locationToPutAsideAnIntermediateArticleForTheProductionOfTheFinalProduct}" style="color: white;font-weight: bold"></div><br/>

@@ -273,6 +273,34 @@ h1 {
     -ms-transition: 0.5s all;
 }
 
+.button2 {
+    font-size: 1em;
+    color: #fff;
+    background: #00BCD4;
+    border: 1px solid #00BCD4;
+    outline: none;
+    cursor: pointer;
+    padding: .7em 1em;
+    margin-top: 2em;
+    -webkit-appearance: none;
+    width: 98%;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+}
+
+.button2:hover {
+    background: transparent;
+    color: #00BCD4;
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+}
+
 .tables {
     border: solid 1px;
     padding-left: 2px;
@@ -649,33 +677,7 @@ input.checkbox:checked:after {
         letter-spacing: 0.5px;
     }
 
-    .button {
-        font-size: 1em;
-        color: #fff;
-        background: #00BCD4;
-        border: 1px solid #00BCD4;
-        outline: none;
-        cursor: pointer;
-        padding: .7em 1em;
-        margin-top: 2em;
-        -webkit-appearance: none;
-        width: 100%;
-        -webkit-border-radius: 2px;
-        -moz-border-radius: 2px;
-        -ms-border-radius: 2px;
-        -o-border-radius: 2px;
-        border-radius: 2px;
-    }
 
-    .button:hover {
-        background: transparent;
-        color: #00BCD4;
-        transition: 0.5s all;
-        -webkit-transition: 0.5s all;
-        -moz-transition: 0.5s all;
-        -o-transition: 0.5s all;
-        -ms-transition: 0.5s all;
-    }
 }
 
 ol
