@@ -39,7 +39,7 @@ public class LocationFixture {
             new Location(null, "FLP00101011","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5072000,2140.0),
             new Location(null, "FLP00101012","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,3792000,540.0),
             new Location(null, "FLP00101013","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5760000,2800.0),
-            new Location(null, "FLP00101014","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",true,true,200,240,120,5760000,3000.00,5760000,3000),
+            new Location(null, "FLP00101014","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",true,true,200,240,120,5760000,3000.00,3634891,2939.1),
             new Location(null, "FLP00101015","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5760000,3000),
             new Location(null, "DOORREC01","Receiving door location", "RDL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000,3000),
             new Location(null, "PALLETJACK001","Equipment location", "EQL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,200,80,120,1920000,1000,1920000,1000),

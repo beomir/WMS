@@ -43,6 +43,7 @@
 						<th th:text="#{app.articleNumber}" class="tables"></th>
 						<th th:text="#{app.articleDescription}" class="tables"></th>
 						<th th:text="#{app.quantityForFinishedProduct}" class="tables"></th>
+
 						<th th:text="#{app.startProducing}" class="tables"></th>
 					</tr>
 				    <tr style="border: solid 1px;" th:each="article: ${article}">
@@ -58,6 +59,7 @@
 							<div th:text="${article.productionArticle.quantityForFinishedProduct}" style="background: green"></div>
 							<div th:each="a,i : *{article.productionArticle.intermediateArticle}" th:class="${article.article_number} + 'intermediate'" style="background: sandybrown;display: none"><span  th:text="${a.article.intermediateArticle.quantityForFinishedProduct}"></span></div>
 						</td>
+
 						<td>
 							<a th:href="@{/producingHeader/{id}(id=${article.id})}"><div style="text-align: center"><img  th:src="@{/images/producing20x20.png}" /></div></a>
 						</td>

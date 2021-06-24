@@ -60,6 +60,20 @@ public class ProductionModuleController {
         return "wmsOperations/production";
     }
 
+    @GetMapping("producingHeader/{id}")
+    public String producingHeader(@PathVariable Long id, Model model,@SessionAttribute(required = false) String chosenWarehouse) {
+        List<ArticleRepository.ProductionArticleOnStock> productionArticleOnStocks = articleRepository.articlesNeededForProductionOnStock(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),chosenWarehouse,id);
+
+        usersService.loggedUserData(model);
+        return "wmsOperations/producingHeader";
+    }
+
+    @PostMapping("producingHeader")
+    public String producingHeaderPost(Production production) {
+        //workDetailsService.add(workDetails);
+        return "redirect:/production";
+    }
+
     @GetMapping("/deleteProduction/{id}")
     public String removeProduction(@PathVariable Long id) {
 //        workDetailsService.delete(id);
@@ -115,11 +129,9 @@ public class ProductionModuleController {
         }
         else{
             List<Article> articleFinishProductList = articleRepository.articleListByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);
-            List<Stock> stockList = stockRepository.getStockForProductionArticleByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);
             List<Warehouse> warehouseList = warehouseService.getWarehouse();
             Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
             model.addAttribute("warehouseList",warehouseList);
-            model.addAttribute("stockList", stockList);
             model.addAttribute("article", articleFinishProductList);
             model.addAttribute("company", company);
             model.addAttribute("productionWarehouse",chosenWarehouse);
