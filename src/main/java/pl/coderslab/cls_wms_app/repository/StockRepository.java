@@ -35,7 +35,6 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("Select s from Stock s where s.location.locationName = ?1 ")
     Stock getStockByLocationName(String locationName);
 
-
     @Query("Select s from Stock s where s.shipmentNumber = ?1")
     List<Stock> getStockListByShipmentNumber(Long shipmentNumber);
 
@@ -48,6 +47,13 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("Select s from Stock s where s.receptionNumber = ?1")
     List<Stock> getStockListByReceptionNumber(Long receptionNumber);
 
-    @Query("Select s from Stock s where s.article.production = true and s.article.active = true and s.company = ?1 and s.warehouse.name = ?2 and s.article.productionArticle.productionArticleType = 'finish product'")
-    List<Stock> getStockForProductionArticleByCompanyAndWarehouse(Company company, String warehouse);
+    @Query(value = "select hd_number, pieces_qty, location_name changeBy, s.created from storage s inner join location l on s.location_id = l.id inner join article a on s.article_id = a.id where article_number = ?1 order by 4 limit 1 ",nativeQuery = true)
+    StockForProduction stockForProduction(Long article_number);
+
+    public static interface StockForProduction {
+        Long getHd_number();
+        Long getPieces_qty();
+        String getChangeBy();
+        String getCreated();
+    }
 }

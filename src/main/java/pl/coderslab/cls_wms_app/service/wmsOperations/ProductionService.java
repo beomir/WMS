@@ -18,4 +18,5 @@ public interface ProductionService {
 
     List<Production> getProductionByCriteria(String companyName,String warehouseName,String finishProductNumber,String intermediateArticleNumber,String created, String lastUpdate, String status);
 
+    void createProduction(Production production, String articleId, String chosenWarehouse);
 }

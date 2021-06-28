@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.ArticleRepository;
+import pl.coderslab.cls_wms_app.repository.ExtremelyRepository;
 import pl.coderslab.cls_wms_app.repository.ProductionRepository;
 import pl.coderslab.cls_wms_app.repository.StockRepository;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
+import pl.coderslab.cls_wms_app.service.wmsOperations.ProductionService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
@@ -32,29 +34,40 @@ public class ProductionModuleController {
     private final UsersService usersService;
     private final ArticleRepository articleRepository;
     private final StockRepository stockRepository;
-
+    private final ProductionService productionService;
+    private final ExtremelyRepository extremelyRepository;
 
     @Autowired
-    public ProductionModuleController(ProductionRepository productionRepository, WarehouseService warehouseService, CompanyService companyService, UsersService usersService, ArticleRepository articleRepository, StockRepository stockRepository) {
+    public ProductionModuleController(ProductionRepository productionRepository, WarehouseService warehouseService, CompanyService companyService, UsersService usersService, ArticleRepository articleRepository, StockRepository stockRepository, ProductionService productionService, ExtremelyRepository extremelyRepository) {
         this.productionRepository = productionRepository;
         this.warehouseService = warehouseService;
         this.companyService = companyService;
         this.usersService = usersService;
         this.articleRepository = articleRepository;
         this.stockRepository = stockRepository;
+        this.productionService = productionService;
+        this.extremelyRepository = extremelyRepository;
     }
 
     @GetMapping("production")
     public String list(Model model,
-                       @SessionAttribute(required = false) String productionWarehouse, @SessionAttribute(required = false) String productionCompany,
+                       @SessionAttribute(required = false) String chosenWarehouse, @SessionAttribute(required = false) String productionCompany,
                        @SessionAttribute(required = false) String productionFinishProductNumber, @SessionAttribute(required = false) String productionIntermediateArticleNumber,
                        @SessionAttribute(required = false) String productionCreated, @SessionAttribute(required = false) String productionStatus,
                        @SessionAttribute(required = false) String productionLastUpdate) {
-        List<Production> productionList = productionRepository.getProductionByCriteria(productionCompany,productionWarehouse,productionFinishProductNumber,productionIntermediateArticleNumber,productionCreated,productionLastUpdate,productionStatus);
+        List<Production> productionList = productionRepository.getProductionByCriteria(productionCompany,chosenWarehouse,productionFinishProductNumber,productionIntermediateArticleNumber,productionCreated,productionLastUpdate,productionStatus);
         Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
         model.addAttribute("company",company);
         model.addAttribute("productionList", productionList);
-        model.addAttribute("productionWarehouse", productionWarehouse);
+        model.addAttribute("productionWarehouse", chosenWarehouse);
+
+        log.error("productionCompany: " + productionCompany);
+        log.error("chosenWarehouse: " + chosenWarehouse);
+        log.error("productionFinishProductNumber: " + productionFinishProductNumber);
+        log.error("productionIntermediateArticleNumber: " + productionIntermediateArticleNumber);
+        log.error("productionCreated: " + productionCreated);
+        log.error("productionLastUpdate: " + productionLastUpdate);
+        log.error("productionStatus: " + productionStatus);
         usersService.loggedUserData(model);
 
         return "wmsOperations/production";
@@ -62,6 +75,9 @@ public class ProductionModuleController {
 
     @GetMapping("producingHeader/{id}")
     public String producingHeader(@PathVariable Long id, Model model,@SessionAttribute(required = false) String chosenWarehouse) {
+
+        String productionAfterCreationValue = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_after_creation").getExtremelyValue();
+        model.addAttribute("productionAfterCreationValue",productionAfterCreationValue);
 
         Article article = articleRepository.articleForProduction(id,companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);
         model.addAttribute("article",article);
@@ -75,9 +91,10 @@ public class ProductionModuleController {
         return "wmsOperations/producingHeader";
     }
 
-    @PostMapping("producingHeader")
-    public String producingHeaderPost(Production production) {
-        //workDetailsService.add(workDetails);
+    @PostMapping("production/producingHeader")
+    public String producingHeaderPost(Production production, String articleId,@SessionAttribute(required = false) String chosenWarehouse) {
+
+        productionService.createProduction(production,articleId,chosenWarehouse);
         return "redirect:/production";
     }
 
@@ -118,8 +135,31 @@ public class ProductionModuleController {
     }
 
     @PostMapping("production-browser")
-    public String findProduction(HttpSession session, String productionWarehouse, String productionCompany, String productionFinishProductNumber, String productionIntermediateArticleNumber, String productionCreated, String productionStatus, String productionLastUpdate) {
-        session.setAttribute("productionWarehouse", productionWarehouse);
+    public String findProduction(HttpSession session, String chosenWarehouse, String productionCompany, String productionFinishProductNumber, String productionIntermediateArticleNumber, String productionCreated, String productionStatus, String productionLastUpdate) {
+        if(chosenWarehouse == null || chosenWarehouse.equals("")){
+            chosenWarehouse = "%";
+        }
+
+        if(productionCompany == null || productionCompany.equals("")){
+            productionCompany = "%";
+        }
+
+        if(productionFinishProductNumber == null || productionFinishProductNumber.equals("")){
+            productionFinishProductNumber = "%";
+        }
+        if(productionIntermediateArticleNumber == null || productionIntermediateArticleNumber.equals("")){
+            productionIntermediateArticleNumber = "%";
+        }
+        if(productionCreated ==null || productionCreated.equals("")){
+            productionCreated = "%";
+        }
+        if(productionStatus ==null || productionStatus.equals("")){
+            productionStatus = "%";
+        }
+        if(productionLastUpdate ==null || productionLastUpdate.equals("")){
+            productionLastUpdate = "%";
+        }
+        session.setAttribute("chosenWarehouse", chosenWarehouse);
         session.setAttribute("productionCompany", productionCompany);
         session.setAttribute("productionFinishProductNumber", productionFinishProductNumber);
         session.setAttribute("productionIntermediateArticleNumber", productionIntermediateArticleNumber);

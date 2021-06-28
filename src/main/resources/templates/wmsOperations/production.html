@@ -78,7 +78,7 @@
 					</tr>
 				    <tr style="border: solid 1px" th:each="productionList: ${productionList}">
 						<td class="tables" style="padding-bottom: 2px">
-							<ol><div th:text="${productionList.id}"></div>
+							<ol><div th:text="${productionList.productionNumber}"></div>
 								<li>
 									<ul>
 										<li th:if="${productionList.status == 'close'}"><a th:href="@{/formEditProduction/{id}(id=${productionList.id})}" th:text="#{app.edit}">Edit</a></li>

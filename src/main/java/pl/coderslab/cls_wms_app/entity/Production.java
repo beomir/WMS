@@ -17,6 +17,7 @@ public class Production {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long productionNumber;
 
     private Long finishProductNumber;
     private Long finishProductPieces;
@@ -36,8 +37,9 @@ public class Production {
     private String changeBy;
     private String status;
 
-    public Production(Long id, Long finishProductNumber, Long finishProductPieces, Long intermediateArticleNumber, Long intermediateArticlePieces, Company company, Warehouse warehouse, String created, String last_update, String changeBy, String status) {
+    public Production(Long id,Long productionNumber, Long finishProductNumber, Long finishProductPieces, Long intermediateArticleNumber, Long intermediateArticlePieces, Company company, Warehouse warehouse, String created, String last_update, String changeBy, String status) {
         this.id = id;
+        this.productionNumber = productionNumber;
         this.finishProductNumber = finishProductNumber;
         this.finishProductPieces = finishProductPieces;
         this.intermediateArticleNumber = intermediateArticleNumber;

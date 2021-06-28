@@ -1,3 +1,5 @@
+let allowToProduction = 2;
+
 $( "#piecesToProduct" ).keyup(function() {
    let piecesToProduct = $("#piecesToProduct").val();
    let neededToProduceOne = $('td[name="neededToProduceOne"]');
@@ -13,9 +15,11 @@ $( "#piecesToProduct" ).keyup(function() {
                if (k == j+1) {
                   if(onStock[k].textContent < neededToProduceOne[i].textContent * piecesToProduct){
                      $(neededToProduceAll[j]).css("background-color", "red")
+                     allowToProduction = 1;
                   }
                   else{
                      $(neededToProduceAll[j]).css("background-color", "transparent")
+                     allowToProduction = 0;
                   }
                }
             }
@@ -23,3 +27,23 @@ $( "#piecesToProduct" ).keyup(function() {
       }
    }
 });
+
+function checkValidation() {
+   console.log(allowToProduction)
+
+   if(allowToProduction==1){
+      alert("Not enough goods for production")
+      returnToPreviousPage()
+      return false;
+   }
+   if(allowToProduction==2){
+      alert("No data entered about amount of good to produce")
+      returnToPreviousPage()
+      return false;
+   }
+}
+
+
+function returnToPreviousPage() {
+   window.history.forward(-1)
+}

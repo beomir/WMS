@@ -27,10 +27,17 @@
 	<div id="content" class="mainw3-agileinfo">
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
+				<span th:if="${productionAfterCreationValue} == '1'">
+					<div th:if="${chosenWarehouse != '%' && chosenWarehouse != null}" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +  ${chosenWarehouse}"></span><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation1}"/></div>
+					<div th:if="${chosenWarehouse} == '%'" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +   #{app.allWarehouses}"></span><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation1}"/></div>
+					<div th:if="${chosenWarehouse} == null" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.for} +  ' ' +  #{app.allWarehouses}"> </span><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation1}"/></div>
+				</span>
+				<span th:if="${productionAfterCreationValue} == '2'">
+					<div th:if="${chosenWarehouse != '%' && chosenWarehouse != null}" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +  ${chosenWarehouse}"></span><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation2}"/></div>
+					<div th:if="${chosenWarehouse} == '%'" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +   #{app.allWarehouses}"></span><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation2}"/></div>
+					<div th:if="${chosenWarehouse} == null" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.for} +  ' ' +  #{app.allWarehouses}"> </span><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation2}"/></div>
+				</span>
 
-				<div th:if="${chosenWarehouse != '%' && chosenWarehouse != null}" class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +  ${chosenWarehouse}"></div>
-				<div th:if="${chosenWarehouse} == '%'" class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +   #{app.allWarehouses}"></div>
-				<div th:if="${chosenWarehouse} == null" class="titleList" th:text="#{app.production} + ' ' + #{app.for} +  ' ' +  #{app.allWarehouses}"></div>
 				<div sec:authorize="!hasRole('ROLE_ADMIN')">
 					<div  style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ' ' + ${article.company.name}"></div>
 				</div>
@@ -46,7 +53,7 @@
 					<input type="hidden" name="articleId" th:value="${article.id}"/>
 					<label  style="color: white;font-weight: bold" th:text="#{app.howManyFinishProduct} + ': ' + ${article.article_number}  + ' ' + #{app.doYouWantProduce}"></label>
 					<input id="piecesToProduct" type="number" th:field="*{production.finishProductPieces}"/>
-					<button class="button2" type="submit" onclick="return checkAllValidations()" ><span th:text="#{app.produce} + ' '"></span><img th:src="@{/images/20x20gear.gif}"/> </button>
+					<button class="button2" type="submit" onclick="return checkValidation()" ><span th:text="#{app.produce} + ' '"></span><img th:src="@{/images/20x20gear.gif}"/> </button>
 				</form>
 				</div>
 			</section><br/>
