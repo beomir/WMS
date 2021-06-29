@@ -49,28 +49,134 @@ public class ProductionModuleController {
         this.extremelyRepository = extremelyRepository;
     }
 
+    @GetMapping("production-browser")
+    public String browser(Model model) {
+        Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("company", company);
+
+        List<Warehouse> warehouses = warehouseService.getWarehouse();
+        model.addAttribute("warehouses", warehouses);
+
+        usersService.loggedUserData(model);
+        return "wmsOperations/production-browser";
+    }
+
+    @PostMapping("production-browser")
+    public String findProduction(HttpSession session, String chosenWarehouse, String productionCompany, String productionFinishProductNumber, String productionIntermediateArticleNumber, String productionCreated, String productionStatus, String productionLastUpdate) {
+
+        session.setAttribute("chosenWarehouse", chosenWarehouse);
+        session.setAttribute("productionCompany", productionCompany);
+        session.setAttribute("productionFinishProductNumber", productionFinishProductNumber);
+        session.setAttribute("productionIntermediateArticleNumber", productionIntermediateArticleNumber);
+        session.setAttribute("productionCreated", productionCreated);
+        session.setAttribute("productionStatus", productionStatus);
+        session.setAttribute("productionLastUpdate", productionLastUpdate);
+        return "redirect:/production";
+    }
+
     @GetMapping("production")
     public String list(Model model,
                        @SessionAttribute(required = false) String chosenWarehouse, @SessionAttribute(required = false) String productionCompany,
                        @SessionAttribute(required = false) String productionFinishProductNumber, @SessionAttribute(required = false) String productionIntermediateArticleNumber,
                        @SessionAttribute(required = false) String productionCreated, @SessionAttribute(required = false) String productionStatus,
                        @SessionAttribute(required = false) String productionLastUpdate) {
-        List<Production> productionList = productionRepository.getProductionByCriteria(productionCompany,chosenWarehouse,productionFinishProductNumber,productionIntermediateArticleNumber,productionCreated,productionLastUpdate,productionStatus);
+        if(chosenWarehouse == null || chosenWarehouse.equals("")){
+            chosenWarehouse = "%";
+        }
+
+        if(productionCompany == null || productionCompany.equals("")){
+            productionCompany = "%";
+        }
+
+        if(productionFinishProductNumber == null || productionFinishProductNumber.equals("")){
+            productionFinishProductNumber = "%";
+        }
+        if(productionIntermediateArticleNumber == null || productionIntermediateArticleNumber.equals("")){
+            productionIntermediateArticleNumber = "%";
+        }
+        if(productionCreated ==null || productionCreated.equals("")){
+            productionCreated = "%";
+        }
+        if(productionStatus ==null || productionStatus.equals("")){
+            productionStatus = "%";
+        }
+        if(productionLastUpdate ==null || productionLastUpdate.equals("")){
+            productionLastUpdate = "%";
+        }
+
+        List<ProductionRepository.ProductionHeader> productionList = productionRepository.getProductionHeaderByCriteria(productionCompany,chosenWarehouse,productionFinishProductNumber,productionIntermediateArticleNumber,productionCreated,productionLastUpdate,productionStatus);
         Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
         model.addAttribute("company",company);
         model.addAttribute("productionList", productionList);
         model.addAttribute("productionWarehouse", chosenWarehouse);
 
-        log.error("productionCompany: " + productionCompany);
-        log.error("chosenWarehouse: " + chosenWarehouse);
-        log.error("productionFinishProductNumber: " + productionFinishProductNumber);
-        log.error("productionIntermediateArticleNumber: " + productionIntermediateArticleNumber);
-        log.error("productionCreated: " + productionCreated);
-        log.error("productionLastUpdate: " + productionLastUpdate);
-        log.error("productionStatus: " + productionStatus);
+        model.addAttribute("productionCompany", productionCompany);
+        model.addAttribute("productionFinishProductNumber", productionFinishProductNumber);
+        model.addAttribute("productionIntermediateArticleNumber", productionIntermediateArticleNumber);
+        model.addAttribute("productionCreated", productionCreated);
+        model.addAttribute("productionStatus", productionStatus);
+        model.addAttribute("productionLastUpdate", productionLastUpdate);
+
+        log.debug("productionCompany: " + productionCompany);
+        log.debug("chosenWarehouse: " + chosenWarehouse);
+        log.debug("productionFinishProductNumber: " + productionFinishProductNumber);
+        log.debug("productionIntermediateArticleNumber: " + productionIntermediateArticleNumber);
+        log.debug("productionCreated: " + productionCreated);
+        log.debug("productionLastUpdate: " + productionLastUpdate);
+        log.debug("productionStatus: " + productionStatus);
         usersService.loggedUserData(model);
 
         return "wmsOperations/production";
+    }
+
+    @GetMapping("productionDetails/{productionNumber}")
+    public String productionDetails(Model model,@PathVariable Long productionNumber) {
+        Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("company",company);
+
+        ProductionRepository.ProductionHeaderTitleInfo productionHeaderTitleInfo = productionRepository.getProductionHeaderTitleInfo(productionNumber);
+        model.addAttribute("productionHeaderTitleInfo",productionHeaderTitleInfo);
+
+        List<Production> productionList = productionRepository.getProductionListByNumber(productionNumber);
+        model.addAttribute("productionList", productionList);
+
+        usersService.loggedUserData(model);
+
+        return "wmsOperations/productionDetails";
+    }
+
+    @GetMapping("startProducing")
+    public String startProducing(Model model,@SessionAttribute(required = false) String chosenWarehouse) {
+        log.error("Session chosenWarehouse: " + chosenWarehouse);
+        if(chosenWarehouse == null){
+            return "redirect:/selectWarehouse";
+        }
+        else{
+            List<Article> articleFinishProductList = articleRepository.articleListByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);
+            List<Warehouse> warehouseList = warehouseService.getWarehouse();
+            Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
+            model.addAttribute("warehouseList",warehouseList);
+            model.addAttribute("article", articleFinishProductList);
+            model.addAttribute("company", company);
+            model.addAttribute("productionWarehouse",chosenWarehouse);
+            usersService.loggedUserData(model);
+
+            return "wmsOperations/startProducing";
+        }
+    }
+
+    @GetMapping("selectWarehouse")
+    public String startProducingWHS(Model model) {
+        List<Warehouse> warehouses = warehouseService.getWarehouse();
+        model.addAttribute("warehouses", warehouses);
+        usersService.loggedUserData(model);
+        return "wmsOperations/selectWarehouse";
+    }
+
+    @PostMapping("selectWarehouse")
+    public String startProducingWHSPost(HttpSession session,String chosenWarehouse) {
+        session.setAttribute("chosenWarehouse", chosenWarehouse);
+        return "redirect:/startProducing";
     }
 
     @GetMapping("producingHeader/{id}")
@@ -122,87 +228,9 @@ public class ProductionModuleController {
         return "redirect:/production";
     }
 
-    @GetMapping("production-browser")
-    public String browser(Model model) {
-        Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("company", company);
 
-        List<Warehouse> warehouses = warehouseService.getWarehouse();
-        model.addAttribute("warehouses", warehouses);
 
-        usersService.loggedUserData(model);
-        return "wmsOperations/production-browser";
-    }
 
-    @PostMapping("production-browser")
-    public String findProduction(HttpSession session, String chosenWarehouse, String productionCompany, String productionFinishProductNumber, String productionIntermediateArticleNumber, String productionCreated, String productionStatus, String productionLastUpdate) {
-        if(chosenWarehouse == null || chosenWarehouse.equals("")){
-            chosenWarehouse = "%";
-        }
-
-        if(productionCompany == null || productionCompany.equals("")){
-            productionCompany = "%";
-        }
-
-        if(productionFinishProductNumber == null || productionFinishProductNumber.equals("")){
-            productionFinishProductNumber = "%";
-        }
-        if(productionIntermediateArticleNumber == null || productionIntermediateArticleNumber.equals("")){
-            productionIntermediateArticleNumber = "%";
-        }
-        if(productionCreated ==null || productionCreated.equals("")){
-            productionCreated = "%";
-        }
-        if(productionStatus ==null || productionStatus.equals("")){
-            productionStatus = "%";
-        }
-        if(productionLastUpdate ==null || productionLastUpdate.equals("")){
-            productionLastUpdate = "%";
-        }
-        session.setAttribute("chosenWarehouse", chosenWarehouse);
-        session.setAttribute("productionCompany", productionCompany);
-        session.setAttribute("productionFinishProductNumber", productionFinishProductNumber);
-        session.setAttribute("productionIntermediateArticleNumber", productionIntermediateArticleNumber);
-        session.setAttribute("productionCreated", productionCreated);
-        session.setAttribute("productionStatus", productionStatus);
-        session.setAttribute("productionLastUpdate", productionLastUpdate);
-        return "redirect:/production";
-    }
-
-    //TODO correct it
-    @GetMapping("startProducing")
-    public String startProducing(Model model,@SessionAttribute(required = false) String chosenWarehouse) {
-        log.error("Session chosenWarehouse: " + chosenWarehouse);
-        if(chosenWarehouse == null){
-            return "redirect:/selectWarehouse";
-        }
-        else{
-            List<Article> articleFinishProductList = articleRepository.articleListByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);
-            List<Warehouse> warehouseList = warehouseService.getWarehouse();
-            Company company = companyService.getOneCompanyByUsername(SecurityUtils.username());
-            model.addAttribute("warehouseList",warehouseList);
-            model.addAttribute("article", articleFinishProductList);
-            model.addAttribute("company", company);
-            model.addAttribute("productionWarehouse",chosenWarehouse);
-            usersService.loggedUserData(model);
-
-            return "wmsOperations/startProducing";
-        }
-    }
-
-    @GetMapping("selectWarehouse")
-    public String startProducingWHS(Model model) {
-        List<Warehouse> warehouses = warehouseService.getWarehouse();
-        model.addAttribute("warehouses", warehouses);
-        usersService.loggedUserData(model);
-        return "wmsOperations/selectWarehouse";
-    }
-
-    @PostMapping("selectWarehouse")
-    public String startProducingWHSPost(HttpSession session,String chosenWarehouse) {
-        session.setAttribute("chosenWarehouse", chosenWarehouse);
-        return "redirect:/startProducing";
-    }
 
 
 }

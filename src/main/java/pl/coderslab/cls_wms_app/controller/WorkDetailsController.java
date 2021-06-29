@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
+import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
@@ -108,7 +109,7 @@ public class WorkDetailsController {
             log.debug("workDetailsLocationTo: " + workDetailsLocationTo);
             log.debug("workDetailsWorkNumber: " + workDetailsWorkNumber);
 
-            List<WorkDetails> workDetails = workDetailsService.getWorkDetailsByCriteria(workDetailsWarehouse, workDetailsCompany, workDetailsArticle, workDetailsType, workDetailsHandle, workDetailsHandleDevice, workDetailsStatus, workDetailsLocationFrom, workDetailsLocationTo, workDetailsWorkNumber);
+            List<WorkDetailsRepository.WorkHeaderList> workDetails = workDetailsService.workHeaderList(workDetailsWarehouse, workDetailsCompany, workDetailsArticle, workDetailsType, workDetailsHandle, workDetailsHandleDevice, workDetailsStatus, workDetailsLocationFrom, workDetailsLocationTo, workDetailsWorkNumber);
             model.addAttribute("workDetails", workDetails);
 
             if (workDetailsWarehouse.equals("%")) {
@@ -137,6 +138,12 @@ public class WorkDetailsController {
         usersService.loggedUserData(model);
 
         return "wmsOperations/workDetails";
+    }
+
+    @GetMapping("/workNumberDetails/{id}")
+    public String workNumberDetails(@PathVariable Long id) {
+        //TODO content;
+        return "redirect:/workNumberDetails";
     }
 
     @GetMapping("/deleteWork/{id}")

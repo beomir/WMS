@@ -68,8 +68,7 @@
 					<tr style="border: solid 1px">
 						<th th:text="#{app.number}" class="tables">Number</th>
 						<th th:text="#{app.finishProduct}" class="tables"></th>
-						<th th:text="#{app.quantityForOneFinishedProduct}" class="tables"></th>
-						<th th:text="#{app.intermediateProduct}" class="tables"></th>
+						<th th:text="#{app.quantityOfIntermediates}" class="tables"></th>
 						<th th:text="#{app.piecesQty}" class="tables"></th>
 						<th th:text="#{app.warehouseName}" class="tables"></th>
 						<th th:text="#{app.status}" class="tables"></th>
@@ -81,20 +80,18 @@
 							<ol><div th:text="${productionList.productionNumber}"></div>
 								<li>
 									<ul>
-										<li th:if="${productionList.status == 'close'}"><a th:href="@{/formEditProduction/{id}(id=${productionList.id})}" th:text="#{app.edit}">Edit</a></li>
-										<li th:if="${productionList.status == 'close'}"><a th:href="@{/deleteProduction/{id}(id=${productionList.id})}" th:text="#{app.delete}">Delete</a></li>
+										<li th:if="${productionList.status != 'close'}"><a th:href="@{/productionDetails/{productionNumber}(productionNumber=${productionList.productionNumber})}" th:text="#{app.details}">Details</a></li>
+										<li th:if="${productionList.status != 'close'}"><a th:href="@{/deleteProduction/{productionNumber}(productionNumber=${productionList.productionNumber})}" th:text="#{app.delete}">Delete</a></li>
 									</ul>
 								</li>
 							</ol>
 						</td>
 						<td class="tables" th:text="${productionList.finishProductNumber}"></td>
+						<td class="tables" th:text="${productionList.intermediateArticlePieces}"></td>
 						<td class="tables" th:text="${productionList.finishProductPieces}"></td>
-				        <td class="tables" th:text="${productionList.intermediateArticleNumber}"></td>
-				        <td class="tables" th:text="${productionList.intermediateArticlePieces}"></td>
-				        <td class="tables" th:text="${productionList.warehouse.name}"></td>
+				        <td class="tables" th:text="${productionList.changeBy}"></td>
 				        <td class="tables" th:text="${productionList.status}"></td>
-						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${productionList.company.name}"></td>
-						<td th:title="#{app.chandedBy} + ': ' + ${productionList.changeBy} + ', ' + #{app.created} + ': ' + ${#strings.replace(#strings.substring(productionList.created,0,19),'T',' ')}" class="tables" th:text="${#strings.replace(#strings.substring(productionList.last_update,0,19),'T',' ')}"></td>
+						<td class="tables" th:text="${#strings.replace(#strings.substring(productionList.last_update,0,19),'T',' ')}"></td>
 				    </tr>
 				</table>
 

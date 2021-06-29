@@ -117,10 +117,10 @@ public class ProductionServiceImpl implements ProductionService{
             workProductionStatus = true;
         }
         // check if productionNumber exists
-        if(productionRepository.getProductionByNumber(newProductionNumber) != null){
+        if(productionRepository.getProductionNumberByProductionNumber(newProductionNumber) != null){
             production.setProductionNumber(productionRepository.lastProductionNumberForToday(newProductionNumber) + 1L);
         }
-        if (productionRepository.getProductionByNumber(newProductionNumber) == null){
+        if (productionRepository.getProductionNumberByProductionNumber(newProductionNumber) == null){
             production.setProductionNumber(newProductionNumber);
         }
 
@@ -181,8 +181,8 @@ public class ProductionServiceImpl implements ProductionService{
 
     public Production productionSetters(Production production, String chosenWarehouse, String articleId){
         production.setFinishProductNumber(articleRepository.getOne(Long.parseLong(articleId)).getArticle_number());
-        production.setCreated((SecurityUtils.usernameForActivations()));
-        production.setChangeBy((SecurityUtils.usernameForActivations()));
+        production.setCreated(TimeUtils.timeNowLong());
+        production.setChangeBy(SecurityUtils.usernameForActivations());
         production.setLast_update(TimeUtils.timeNowLong());
         production.setCompany(companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()));
         production.setWarehouse(warehouseService.getWarehouseByName(chosenWarehouse));

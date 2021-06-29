@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>WMS CLS app</title>
+	<meta charset="ISO-8859-1" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+	<div class="main-agileits">
+		<div th:include="fragments/header :: header"></div>
+	</div>
+	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+		<div th:include="fragments/stockNavigation :: stockNavigation"></div>
+	</div>
+
+	<div id="content" class="mainw3-agileinfo">
+		<div style="width: 1200px" class="login-form">
+			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
+
+				<div class="titleList"><span class="titleList" th:text="#{app.productionDetails} + ': '"></span><span class="titleList" style="color: darkblue;font-style: italic" th:text=" ${productionHeaderTitleInfo.productionNumber}"></span></div> <br/><br/>
+				<div><span style="color: white;text-align: left;font-size: 20px;font-weight: bold;" th:text="#{app.finishProduct} + ': '"></span>	 <span style="color: darkblue;font-size: 20px;font-weight: bold;font-style: italic;" th:text= "${productionHeaderTitleInfo.finishProductNumber}"></span>  <a th:href="@{/production-browser}"><div class="btn2" style="float: right;max-width: 20%;clear: right" th:text="#{app.searchProdaction}"></div></a></div>
+				<div><span style="color: white;text-align: left;font-size: 20px;font-weight: bold;" th:text="#{app.quantityToProduce} + ': '"></span><span style="color: darkblue;font-size: 20px;font-weight: bold;font-style: italic;" th:text="${productionHeaderTitleInfo.finishProductPieces}"></span> 	<a th:href="@{/startProducing}">	<div class="btn2" style="float: right;max-width: 20%;clear: right" th:text="#{app.startProducing}"></div></a></div>
+				<div><span style="color: white;text-align: left;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': '"></span>			 <span style="color: darkblue;font-size: 20px;font-weight: bold;font-style: italic;" th:text="${company.name}"></span>			<a th:href="@{/production}">		<div class="btn2" style="float: right;max-width: 20%;clear: right" th:text="#{app.ongoingProductions}"></div></a></div>
+				<div><span style="color: white;text-align: left;font-size: 20px;font-weight: bold;" th:text="#{app.warehouse} + ': '"></span>			 <span style="color: darkblue;font-size: 20px;font-weight: bold;font-style: italic;" th:text="${productionHeaderTitleInfo.changeBy}"></span></div>
+				<br/><br/><br><br><br>
+				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
+					<tr style="border: solid 1px">
+						<th th:text="#{app.number}" class="widerTables">Number</th>
+						<th th:text="#{app.finishProduct}" class="widerTables"></th>
+						<th th:text="#{app.intermediateProduct}" class="widerTables"></th>
+						<th th:text="#{app.piecesQty}" class="widerTables"></th>
+						<th th:text="#{app.warehouseName}" class="widerTables"></th>
+						<th th:text="#{app.status}" class="widerTables"></th>
+						<th th:text="#{app.lastUpdate}" class="widerTables">Last update</th>
+						<th th:text="#{app.chandedBy}" class="widerTables"></th>
+						<th th:text="#{app.created}" class="widerTables"></th>
+					</tr>
+				    <tr style="border: solid 1px" th:each="productionList: ${productionList}">
+						<td class="widerTables" th:text="${productionList.productionNumber}" ></td>
+						<td class="widerTables" th:text="${productionList.finishProductNumber}"></td>
+				        <td class="widerTables" th:text="${productionList.intermediateArticleNumber}"></td>
+				        <td class="widerTables" th:text="${productionList.intermediateArticlePieces}"></td>
+				        <td class="widerTables" th:text="${productionList.warehouse.name}"></td>
+				        <td class="widerTables" th:text="${productionList.status}"></td>
+						<td class="widerTables" th:text="${#strings.replace(#strings.substring(productionList.last_update,0,19),'T',' ')}"></td>
+				        <td class="widerTables" th:text="${productionList.changeBy}"></td>
+						<td class="widerTables" th:text="${#strings.replace(#strings.substring(productionList.created,0,19),'T',' ')}"></td>
+				    </tr>
+				</table>
+
+			</div><br/><br/><br/>
+			<div th:include="fragments/footer :: footer"></div>
+		</div>
+		<div class="w3copyright-agile">
+			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+		</div>
+	</div>
+</body>
+</html>

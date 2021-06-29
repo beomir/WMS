@@ -1,6 +1,7 @@
 package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
+import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
 
 import java.util.List;
 
@@ -27,5 +28,7 @@ public interface WorkDetailsService {
     void workFinished(WorkDetails workDetails);
 
     List<WorkDetails> getWorkDetailsByCriteria(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType,String workDetailsHandle,String workDetailsHandleDevice,String workDetailsStatus,String workDetailsLocationFrom,String workDetailsLocationTo,String workDetailsWorkNumber);
+
+    List<WorkDetailsRepository.WorkHeaderList> workHeaderList(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType, String workDetailsHandle, String workDetailsHandleDevice, String workDetailsStatus, String workDetailsLocationFrom, String workDetailsLocationTo, String workDetailsWorkNumber);
 
 }

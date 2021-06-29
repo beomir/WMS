@@ -144,13 +144,17 @@ public class ReceptionController {
 
 
     @GetMapping("formReception")
-    public String receptionForm(Model model, @SessionAttribute String searchingWarehouse){
+    public String receptionForm(Model model, @SessionAttribute(required = false) String searchingWarehouse,@SessionAttribute(required = false) String chosenWarehouse){
+        String warehouseName = searchingWarehouse;
+        if(searchingWarehouse==null){
+            warehouseName = chosenWarehouse;
+        }
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         List<Integer> pallets = receptionService.pallets();
         List<Unit> units = unitService.getUnit();
         List<Vendor> vendors = vendorService.getVendor(SecurityUtils.username());
         List<Warehouse> warehouses = warehouseService.getWarehouse();
-        Warehouse warehouse = warehouseService.getWarehouseByName(searchingWarehouse);
+        Warehouse warehouse = warehouseService.getWarehouseByName(warehouseName);
         model.addAttribute("lastReceptionNumber", receptionService.lastReception());
         model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
         model.addAttribute("reception", new Reception());
@@ -160,12 +164,12 @@ public class ReceptionController {
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("units", units);
         model.addAttribute("pallets", pallets);
-        model.addAttribute("searchingWarehouse", searchingWarehouse);
+        model.addAttribute("searchingWarehouse", warehouseName);
         List<Company> activeCompany = companyService.getCompany();
         model.addAttribute("activeCompany", activeCompany);
-        log.error("searchingWarehouse: " + searchingWarehouse);
+        log.error("searchingWarehouse: " + warehouseName);
         usersService.loggedUserData(model);
-        if(customerUserDetailsService.chosenWarehouse == null){
+        if(warehouseName == null){
             return "redirect:/warehouse";
         }
         else{

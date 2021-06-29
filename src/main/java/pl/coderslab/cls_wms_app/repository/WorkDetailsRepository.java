@@ -55,4 +55,17 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
         String getArticle();
         String getStatus();
     }
+
+    @Query(value="select work_number workNumber, work_description workDescription,work_type workType,handle,sum(pieces_qty) piecesQty,status, w.name changeBy from work_details wd join warehouse w on wd.warehouse_id = w.id join location lFrom on wd.from_location_id = lFrom.id join location lTo on wd.to_location_id = lTo.id join company c on wd.company_id = c.id join article a on a.id = wd.article_id where w.name like ?1 and c.name like ?2 and CONCAT(a.article_number,'') like ?3 and wd.work_type like ?4 and wd.handle like ?5 and CONCAT(wd.hd_Number,'') like ?6 and wd.status = ?7 and lFrom.location_Name like ?8 and lTo.location_Name like ?9 and CONCAT(wd.work_Number,'') like ?10 group by work_number, work_description,work_type,handle,status",nativeQuery = true)
+    List<WorkHeaderList> workHeaderList(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType,String workDetailsHandle,String workDetailsHandleDevice,String workDetailsStatus,String workDetailsLocationFrom,String workDetailsLocationTo,String workDetailsWorkNumber);
+
+    public static interface WorkHeaderList{
+        Long getWorkNumber();
+        String getWorkDescription();
+        String getWorkType();
+        Long getHandle();
+        Long getPiecesQty();
+        String getStatus();
+        String getChangeBy();
+    }
 }

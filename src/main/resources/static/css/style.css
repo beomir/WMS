@@ -306,6 +306,12 @@ h1 {
     padding-left: 2px;
 }
 
+.widerTables {
+    border: solid 1px;
+    padding-left: 4px;
+    right: 4px;
+}
+
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
     color: #999;
 }
@@ -1278,4 +1284,11 @@ input:invalid:focus.check {
     color: unset !important;
 }
 
-
+.makeItBigger--active{
+    -o-transition: all 1s;
+    -moz-transition: all 1s;
+    -webkit-transition: all 1s;
+    -moz-transform: scale(1.4);
+    -o-transform:scale(1.4);
+    -webkit-transform: scale(1.4);
+}
