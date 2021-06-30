@@ -4,6 +4,7 @@ package pl.coderslab.cls_wms_app.service.wmsOperations;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.coderslab.cls_wms_app.entity.Reception;
 import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.Transaction;
@@ -11,6 +12,7 @@ import pl.coderslab.cls_wms_app.entity.WorkDetails;
 import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
@@ -136,12 +138,12 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(workDetails.getHdNumber(),workDetails.getArticle().getArticle_number(),scannerChosenEquipment,workDetails.getWarehouse().getName(),workDetails.getCompany().getName());
         stock.setLocation(locationRepository.findLocationByLocationName(workDetails.getToLocation().getLocationName(),workDetails.getWarehouse().getName()));
         stockService.add(stock);
-        workDetails.setStatus(true);
+        workDetails.setStatus("close");
         workDetailsRepository.save(workDetails);
     }
 
     @Override
-    public void workFinished(WorkDetails workDetails){
+    public void workFinished(WorkDetails workDetails, HttpSession session){
         //TODO add operations which will change location free volume and free weight & transaction
         List<Stock> stock = stockRepository.getStockListByReceptionNumber(Long.parseLong(workDetails.getHandle()));
         for (Stock value:stock) {
@@ -154,7 +156,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
             receptionRepository.save(value);
         }
         workDetailsRepository.save(workDetails);
-        receptionService.finishReception(Long.parseLong(workDetails.getHandle()));
+        receptionService.finishReception(Long.parseLong(workDetails.getHandle()),session);
     }
 
     @Override
@@ -186,17 +188,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         if(workDetailsWorkNumber == null || workDetailsWorkNumber.equals("")){
             workDetailsWorkNumber = "%";
         }
-        log.error("workDetailsStatus: " + workDetailsStatus);
-        if(workDetailsStatus.equals("%")){
-            log.error("getWorkDetailsByCriteria");
             return workDetailsRepository.getWorkDetailsByCriteria(workDetailsWarehouse,workDetailsCompany,workDetailsArticle,workDetailsType,workDetailsHandle,workDetailsHandleDevice,workDetailsStatus,workDetailsLocationFrom,workDetailsLocationTo,workDetailsWorkNumber);
-        }
-        else{
-            log.error("getWorkDetailsByCriteriaAndDefinedStatus");
-            boolean workDetailsStatusBoolean = Boolean.parseBoolean(workDetailsStatus);
-            return workDetailsRepository.getWorkDetailsByCriteriaAndDefinedStatus(workDetailsWarehouse,workDetailsCompany,workDetailsArticle,workDetailsType,workDetailsHandle,workDetailsHandleDevice,workDetailsStatusBoolean,workDetailsLocationFrom,workDetailsLocationTo,workDetailsWorkNumber);
-        }
-
     }
 
     @Override

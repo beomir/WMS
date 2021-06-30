@@ -15,6 +15,7 @@ import pl.coderslab.cls_wms_app.temporaryObjects.CheckPassword;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -92,14 +93,14 @@ public class StartController {
     }
 
     @GetMapping("/users/data-changed")
-    public String data_changed(Model model){
-        usersService.loggedUserData(model);
+    public String data_changed(Model model,HttpSession session){
+        usersService.loggedUserData(model,session);
         return "/userSettings/data-changed";
     }
 
     @GetMapping("/blog/resetPassword")
-    public String resetPassword(Model model) {
-        usersService.loggedUserData(model);
+    public String resetPassword(Model model, HttpSession session) {
+        usersService.loggedUserData(model,session);
         return "userSettings/resetPassword";
     }
 

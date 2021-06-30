@@ -26,14 +26,14 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
-				<div th:if="${receptionSearch.warehouse} != '%'" class="titleList" th:text="#{app.yourReceptionIn} + ' ' + ${receptionSearch.warehouse}"></div><br/>
-				<div th:if="${receptionSearch.warehouse} == '%'" class="titleList" th:text="#{app.yourReceptionIn} + ' ' + #{app.allWarehouses}"></div><br/>
-
+				<div th:if="${warehouseName} != '%'" class="titleList" th:text="#{app.yourReceptionIn} + ' ' + ${warehouseName}"></div>
+				<div th:if="${warehouseName} == '%'" class="titleList" th:text="#{app.yourReceptionIn} + ' ' + #{app.allWarehouses}"></div>
 				<div sec:authorize="!hasRole('ROLE_ADMIN')">
 				<div th:each="companies: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} + ' ' + ${companies.name}"></div>
 				</div>
+				<br/>
 				<div style="color: darkred;font-weight: bold" th:text="${fileStatus}"></div>
-				<div th:unless="${receptionSearch.message == null}" id="message" style="color: darkred;font-weight: bold;text-align: center" th:text="${receptionSearch.message}"></div>
+				<div th:unless="${receptionMessage == null}" id="message" style="color: darkred;font-weight: bold;text-align: center" th:text="${receptionMessage}"></div>
 				<a th:href="@{/workDetails}" target="_blank"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.works}"></div></a>
 				<a th:href="@{/reception/receptions-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.findReception}"></div></a>
 				<div>
@@ -41,33 +41,33 @@
 					<table class="criteria">
 						<tr>
 							<th style="color:blue;font-weight: bold" th:text="#{app.vendorsName} + ': '"></th>
-							<th style="color:blue;font-style:italic" th:text="${receptionSearch.vendor}"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionVendor}"></th>
 							<th style="color:blue;font-weight: bold" th:text="#{app.status} + ': '"></th>
-							<th style="color:blue;font-style:italic" th:text="${receptionSearch.status}"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionStatus}"></th>
 						</tr>
 						<tr>
 							<th style="color:blue;font-weight: bold" th:text="#{app.location} + ': '"></th>
-							<th style="color:blue;font-style:italic" th:text="${receptionSearch.location}"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionLocation}"></th>
 							<th style="color:blue;font-weight: bold" th:text="#{app.receptionNumber} + ': '"></th>
-							<th style="color:blue;font-style:italic" th:text="${receptionSearch.receptionNumber}"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionReceptionNumber}"></th>
 						</tr>
 						<tr>
 							<th style="color:blue;font-weight: bold" th:text="#{app.warehouseName} + ': '"></th>
-							<th style="color:blue;font-style:italic" th:text="${receptionSearch.warehouse}"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionWarehouse}"></th>
 							<th style="color:blue;font-weight: bold" th:text="#{app.company} + ': '"></th>
-							<th style="color:blue;font-style:italic" th:text="${receptionSearch.company}"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionCompany}"></th>
 						</tr>
 						<tr>
 							<th style="color:blue;font-weight: bold" th:text="#{app.handleDevice} + ': '"></th>
-							<th style="color:blue;font-style:italic" th:text="${receptionSearch.hdNumber}"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionHdNumber}"></th>
 							<th style="color:blue;font-weight: bold" th:text="#{app.createdBy} + ': '"></th>
-							<th style="color:blue;font-style:italic" th:text="${receptionSearch.createdBy}"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionCreatedBy}"></th>
 						</tr>
 						<tr>
 							<th style="color:blue;font-weight: bold" th:text="#{app.receptionCreated} + ' ' + #{app.from} + ': '"></th>
-							<th style="color:blue;font-style:italic" th:text="${receptionSearch.createdFrom}"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionCreatedFrom}"></th>
 							<th style="color:blue;font-weight: bold" th:text="#{app.receptionCreated} + ' ' + #{app.to} + ': '"></th>
-							<th style="color:blue;font-style:italic" th:text="${receptionSearch.createdTo}"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionCreatedTo}"></th>
 						</tr>
 					</table>
 				</div>

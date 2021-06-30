@@ -22,6 +22,7 @@ import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -104,7 +105,7 @@ public class ArticleController {
 
 
     @GetMapping("formArticle")
-    public String articleForm(Model model){
+    public String articleForm(Model model, HttpSession session){
 
         List<ArticleTypes> articleTypesList = articleTypesService.getArticleTypes();
         List<StorageZone> storageZoneList = storageZoneRepository.getStorageZones();
@@ -132,7 +133,7 @@ public class ArticleController {
         model.addAttribute("warehouses",warehouseList);
 
 
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
 
         return "storage/article/formArticle";
     }
@@ -158,7 +159,7 @@ public class ArticleController {
     }
 
     @GetMapping("/formEditArticle/{id}")
-    public String updateArticle(@PathVariable Long id, Model model) {
+    public String updateArticle(@PathVariable Long id, Model model,HttpSession session) {
         Article article = articleService.findById(id);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         List<ArticleTypes> articleTypesList = articleTypesService.getArticleTypes();
@@ -196,7 +197,7 @@ public class ArticleController {
         model.addAttribute("productionLocations",productionLocations);
         model.addAttribute("warehouses",warehouseList);
 
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
 
         return "storage/article/formEditArticle";
     }
@@ -212,15 +213,15 @@ public class ArticleController {
     }
 
     @GetMapping("articleTypes")
-    public String listOfArticleTypes(Model model) {
+    public String listOfArticleTypes(Model model,HttpSession session) {
         List<ArticleTypes> articleTypes = articleTypesService.getArticleTypes();
         model.addAttribute("articleTypes", articleTypes);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "storage/article/articleTypes";
     }
 
     @GetMapping("/article-browser")
-    public String browser(Model model) {
+    public String browser(Model model,HttpSession session) {
         model.addAttribute("articleSearching", new ArticleSearch());
         Company userCompany = companyService.getOneCompanyByUsername(SecurityUtils.username());
         model.addAttribute("userCompany", userCompany);
@@ -228,7 +229,7 @@ public class ArticleController {
         model.addAttribute("activeCompany", activeCompany);
         List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
         model.addAttribute("articleTypes", articleTypes);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "storage/article/article-browser";
     }
 

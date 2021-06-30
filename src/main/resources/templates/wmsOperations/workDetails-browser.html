@@ -61,8 +61,8 @@
 			<section>
 				<label style="color: white;font-weight: bold" th:text="#{app.status}"></label>
 				<select class="select-css" th:value="${workDetailsStatus}" id="workDetailsStatus" name="workDetailsStatus">
-					<option th:value="false" th:text="#{app.open}"></option>
-					<option th:value="true" th:text="#{app.close}"></option>
+					<option th:value="'open'" th:text="#{app.open}"></option>
+					<option th:value="'close'" th:text="#{app.close}"></option>
 					<option th:value="'%'" th:text="#{app.all}"></option>
 				</select>
 			</section><br/>

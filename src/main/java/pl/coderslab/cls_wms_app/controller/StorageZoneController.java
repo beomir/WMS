@@ -12,6 +12,7 @@ import pl.coderslab.cls_wms_app.service.storage.StorageZoneService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,10 +32,10 @@ public class StorageZoneController {
 
 
     @GetMapping("storageZones")
-    public String storageZonesList(Model model) {
+    public String storageZonesList(Model model, HttpSession session) {
         List<StorageZone> storageZones = storageZoneService.getStorageZones();
         model.addAttribute("storageZones", storageZones);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "storage/storageZones/storageZones";
     }
 
@@ -47,12 +48,12 @@ public class StorageZoneController {
 
 
     @GetMapping("formStorageZones")
-    public String storageZoneForm(Model model){
+    public String storageZoneForm(Model model, HttpSession session){
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("storageZones", new StorageZone());
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "storage/storageZones/formStorageZones";
     }
 
@@ -75,13 +76,13 @@ public class StorageZoneController {
     }
 
     @GetMapping("/formEditStorageZones/{id}")
-    public String updateStorageZone(@PathVariable Long id, Model model) {
+    public String updateStorageZone(@PathVariable Long id, Model model,HttpSession session) {
         StorageZone storageZone = storageZoneService.findById(id);
         model.addAttribute(storageZone);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "storage/storageZones/formEditStorageZones";
     }
 

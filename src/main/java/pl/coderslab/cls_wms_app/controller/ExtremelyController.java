@@ -16,6 +16,7 @@ import pl.coderslab.cls_wms_app.service.wmsSettings.ExtremelyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -37,26 +38,26 @@ public class ExtremelyController {
     }
 
     @GetMapping("extremely")
-    public String list(Model model) {
+    public String list(Model model, HttpSession session) {
         List<Extremely> extremely = extremelyService.getExtremely();
         model.addAttribute("extremely", extremely);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
 
 
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsSettings/extremely/extremely";
     }
 
 
     @GetMapping("formExtremelyCreation")
-    public String extremelyForm(Model model){
+    public String extremelyForm(Model model, HttpSession session){
         model.addAttribute("extremelys", new Extremely());
 
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
 
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsSettings/extremely/formExtremelyCreation";
     }
 
@@ -76,13 +77,13 @@ public class ExtremelyController {
 
 
     @GetMapping("/formEditExtremely/{id}")
-    public String updateExtremely(@PathVariable Long id, Model model) {
+    public String updateExtremely(@PathVariable Long id, Model model, HttpSession session) {
         model.addAttribute("extremelys", extremelyService.findById(id));
 
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
 
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsSettings/extremely/formEditExtremely";
     }
 

@@ -23,7 +23,7 @@ public class WorkDetails {
     private String handle;
     private Long hdNumber;
     private Long piecesQty;
-    private boolean status;
+    private String status;
 
     @NotNull
     @ManyToOne

@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
@@ -19,8 +20,9 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.CheckPassword;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
-import pl.coderslab.cls_wms_app.temporaryObjects.ReceptionSearch;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -34,7 +36,6 @@ public class UsersServiceImpl implements UsersService {
     private final ReceptionServiceImpl receptionServiceImpl;
     private final LocationNameConstruction locationNameConstruction;
     private final AddLocationToStorageZone addLocationToStorageZone;
-    private final ReceptionSearch receptionSearch;
     public String alertMessage = "";
     public String oldPass;
     private SendEmailService sendEmailService;
@@ -42,13 +43,12 @@ public class UsersServiceImpl implements UsersService {
     private CompanyService companyService;
 
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ReceptionSearch receptionSearch, SendEmailService sendEmailService, ArticleServiceImpl articleServiceImpl, CompanyService companyService) {
+    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone,  SendEmailService sendEmailService, ArticleServiceImpl articleServiceImpl, CompanyService companyService) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.receptionServiceImpl = receptionServiceImpl;
         this.locationNameConstruction = locationNameConstruction;
         this.addLocationToStorageZone = addLocationToStorageZone;
-        this.receptionSearch = receptionSearch;
         this.sendEmailService = sendEmailService;
         this.articleServiceImpl = articleServiceImpl;
         this.companyService = companyService;
@@ -124,13 +124,13 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public void loggedUserData(Model model) {
+    public void loggedUserData(Model model,HttpSession session) {
         receptionServiceImpl.insertReceptionFileResult = "";
         locationNameConstruction.message = "";
         addLocationToStorageZone.message = "";
         alertMessage = "";
         articleServiceImpl.articleMessage = "";
-        receptionSearch.message = "";
+        session.setAttribute("receptionMessage","");
 
         String userName = "";
         if(SecurityUtils.username().equals("%")){
@@ -148,6 +148,24 @@ public class UsersServiceImpl implements UsersService {
 
         log.debug("token: " + token);
 
+    }
+
+    @Override
+    public String warehouseSelection(HttpSession session, @SessionAttribute(required = false) String chosenWarehouse, HttpServletRequest request) {
+        if(chosenWarehouse == null){
+            if(request.getRequestURL().toString().contains("localhost:8080")){
+                session.setAttribute("goingToURL",request.getRequestURL().toString().substring(request.getRequestURL().toString().lastIndexOf("localhost:8080") + 14));
+                log.error("localHost: " + session.getAttribute("goingToURL").toString());
+            }
+            else{
+                session.setAttribute("goingToURL",request.getRequestURL().toString().substring(request.getRequestURL().toString().lastIndexOf("https://cls-wms.herokuapp.com") + 28));
+                log.error("Heroku: " +session.getAttribute("goingToURL").toString());
+            }
+            return "noDataAboutSelectedWarehouse";
+        }
+        else{
+            return "warehouseSelected";
+        }
     }
 
     @Override

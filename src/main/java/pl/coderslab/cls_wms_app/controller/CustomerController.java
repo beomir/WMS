@@ -13,6 +13,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CustomerService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,33 +32,33 @@ public class CustomerController {
     }
 
     @GetMapping("/shipment/customer")
-    public String list(Model model) {
+    public String list(Model model, HttpSession session) {
         List<Customer> customers = customerService.getCustomer(SecurityUtils.username());
         model.addAttribute("customers", customers);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsValues/customer/customer";
     }
 
     @GetMapping("/config/customerDeactivatedList")
-    public String customerDeactivatedList(Model model) {
+    public String customerDeactivatedList(Model model,HttpSession session) {
         List<Customer> customersList = customerService.getDeactivatedCustomer();
         model.addAttribute("customers", customersList);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsValues/customer/customerDeactivatedList";
     }
 
 
     @GetMapping("/shipment/formCustomer")
-    public String customerForm(Model model){
+    public String customerForm(Model model,HttpSession session){
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("customer", new Customer());
         model.addAttribute("companies", companies);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsValues/customer/formCustomer";
     }
 
@@ -81,13 +82,13 @@ public class CustomerController {
 
 
     @GetMapping("/shipment/formEditCustomer/{id}")
-    public String updateCustomer(@PathVariable Long id, Model model) {
+    public String updateCustomer(@PathVariable Long id, Model model,HttpSession session) {
         Customer customer = customerService.findById(id);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute(customer);
         model.addAttribute("companies", companies);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsValues/customer/formEditCustomer";
     }
 

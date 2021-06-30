@@ -358,7 +358,7 @@ public class ScannerController {
                                                                          String token,@RequestParam String expectedDestinationLocation, @RequestParam String enteredDestinationLocation,
                                                                          HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
                                                                          @SessionAttribute int workReceptionScannerChoice,@SessionAttribute Long receptionNumberSearch,
-                                                                         @SessionAttribute String enteredHdNumber, @SessionAttribute Long enteredArticle) {
+                                                                         @SessionAttribute String enteredHdNumber, @SessionAttribute Long enteredArticle,@SessionAttribute(required = false) String receptionMessage) {
         log.error("Destination location found by query: " + expectedDestinationLocation);
         log.error("Destination location enter by user: " + enteredDestinationLocation);
         String nextPath = "toLocation";
@@ -369,7 +369,7 @@ public class ScannerController {
             WorkDetails workDetails = workDetailsRepository.workLineFinish(Long.parseLong(enteredHdNumber),scannerChosenWarehouse,receptionNumberSearch.toString(),enteredArticle);
             workDetailsService.workLineFinish(workDetails,scannerChosenEquipment);
             if(workDetailsRepository.checkIfWorksExistsForHandle(receptionNumberSearch.toString(),scannerChosenWarehouse) == 0 ){
-                workDetailsService.workFinished(workDetails);
+                workDetailsService.workFinished(workDetails,session);
                 receptionMenuMessage = "Work: " + workDetails.getWorkNumber() + " for reception: " + workDetails.getHandle() + " finished. Goods are available on stock. Mail to customer sent";
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + '1';
             }

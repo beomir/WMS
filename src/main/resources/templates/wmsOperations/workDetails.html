@@ -59,8 +59,8 @@
 						</tr>
 						<tr>
 							<th style="color:blue;font-weight: bold" th:text="#{app.status} + ': '"></th>
-							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus} == 'false'" th:text="#{app.open}"></th>
-							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus} == 'true'" th:text="#{app.close}"></th>
+							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus} == 'open'" th:text="#{app.open}"></th>
+							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus} == 'close'" th:text="#{app.close}"></th>
 							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus} == '%'" th:text="#{app.all}"></th>
 							<th style="color:blue;font-weight: bold" th:text="#{app.from} + ' ' + #{app.location} + ': '">></th>
 							<th style="color:blue;font-style:italic" th:text="${workDetailsLocationFrom}"></th>
@@ -82,14 +82,15 @@
 						<th th:text="#{app.piecesQty}" class="tables">Pieces Qty</th>
 						<th th:text="#{app.warehouseName}" class="tables">Warehouse</th>
 						<th th:text="#{app.status}" class="tables">Status</th>
+						<th th:text="#{app.amountOfWorks}" class="tables"></th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="workDetails: ${workDetails}">
 						<td class="tables" style="padding-bottom: 2px">
 							<ol><div th:text="${workDetails.workNumber}"></div>
 								<li>
 									<ul>
-										<li th:if="${workDetails.status == 'false'}"><a th:href="@{/workDetails/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.details}"></a></li>
-										<li th:if="${workDetails.status == 'false'}"><a th:href="@{/deleteWork/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.delete}"></a></li>
+										<li th:if="${workDetails.status == 'open'}"><a th:href="@{/workNumberDetails/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.details}"></a></li>
+										<li th:if="${workDetails.status == 'open'}"><a th:href="@{/deleteWork/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.delete}"></a></li>
 									</ul>
 								</li>
 							</ol>
@@ -99,8 +100,9 @@
 				        <td class="tables" th:text="${workDetails.handle}"></td>
 				        <td class="tables" th:text="${workDetails.piecesQty}"></td>
 				        <td class="tables" th:text="${workDetails.changeBy}"></td>
-				        <td th:if="${workDetails.status == 'false'}" class="tables" th:text="#{app.open}"></td>
-				        <td th:if="${workDetails.status == 'true'}" class="tables" th:text="#{app.close}"></td>
+				        <td th:if="${workDetails.status == 'open'}" class="tables" th:text="#{app.open}"></td>
+				        <td th:if="${workDetails.status == 'close'}" class="tables" th:text="#{app.close}"></td>
+						<td class="tables" th:text="${workDetails.hdNumber}"></td>
 						</tr>
 				</table>
 

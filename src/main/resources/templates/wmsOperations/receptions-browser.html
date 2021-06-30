@@ -28,11 +28,11 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form th:object="${receptionSearching}" method="post" th:action="@{/reception/receptions-browser}">
+		<form  method="post" th:action="@{/reception/receptions-browser}">
 			<div th:text="#{app.findReception}" class="titleList"></div><br/>
 			<section>
 				<label th:text="#{app.warehouseName}" style="color: white;font-weight: bold">Warehouse</label>
-				<select class="select-css" th:field="*{warehouse}">
+				<select class="select-css" name="receptionWarehouse">
 					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}">
 					<option th:value="'%'">All</option>
 					</option>
@@ -40,14 +40,14 @@
 			</section><br/><br/>
 			<section>
 				<label th:text="#{app.company}" style="color: white;font-weight: bold" ></label>
-				<select class="select-css" th:field="*{company}">
+				<select class="select-css" name="receptionCompany">
 					<option th:each="i : ${companies}" th:value="${i.name}" th:text="${i.name}">
 					</option>
 				</select>
 			</section><br/><br/>
 			<section>
 				<label th:text="#{app.vendorsName}" style="color: white;font-weight: bold"></label>
-				<select class="select-css" th:field="*{vendor}">
+				<select class="select-css" name="receptionVendor">
 					<option th:each="i : ${vendors}" th:value="${i.name}" th:text="${i.name}">
 					<option th:value="'%'">All</option>
 					</option>
@@ -55,7 +55,7 @@
 			</section><br/><br/>
 			<section>
 				<label th:text="#{app.status}" style="color: white;font-weight: bold"></label>
-				<select class="select-css" th:field="*{status}">
+				<select class="select-css" name="receptionStatus">
 					<option selected th:value="'%'">All</option>
 					<option th:each="i : ${status}" th:value="${i.status}" th:text="${i.status}">
 					</option>
@@ -63,28 +63,28 @@
 			</section><br/><br/>
 			<section>
 				<label th:text="#{app.location}" style="color: white;font-weight: bold">Location</label>
-				<input type="text" th:field="*{location}"/>
+				<input type="text" name="receptionLocation"/>
 			</section>
 			<section>
 				<label th:text="#{app.receptionNumber}" style="color: white;font-weight: bold">reception number</label>
-				<input type="text" th:field="*{receptionNumber}"/>
+				<input type="text" name="receptionNumber"/>
 			</section>
 			<section>
 				<label th:text="#{app.handleDevice}" style="color: white;font-weight: bold"></label>
-				<input type="text" th:field="*{hdNumber}"/>
+				<input type="text" name="receptionHdNumber"/>
 			</section>
 			<section>
 				<label th:text="#{app.createdBy}" style="color: white;font-weight: bold"></label>
-				<input type="text" th:field="*{createdBy}"/>
+				<input type="text" name="receptionCreatedBy"/>
 			</section>
 			<section>
 				<label th:text="#{app.receptionCreated} + ' ' + #{app.from}" style="color: white;font-weight: bold"></label>
-				<input type="date" th:field="*{createdFrom}"/>
+				<input type="date" name="receptionCreatedFrom"/>
 			</section>
 
 			<section>
 				<label th:text="#{app.receptionCreated} + ' ' + #{app.to}" style="color: white;font-weight: bold"></label>
-				<input type="date" th:field="*{createdTo}"/>
+				<input type="date" name="receptionCreatedTo"/>
 			</section>
 
 			<section>

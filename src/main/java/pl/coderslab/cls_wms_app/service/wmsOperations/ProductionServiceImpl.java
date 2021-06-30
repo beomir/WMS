@@ -144,6 +144,36 @@ public class ProductionServiceImpl implements ProductionService{
 
     }
 
+    @Override
+    public List<ProductionRepository.ProductionHeader> getProductionHeaderByCriteria(String productionCompany, String chosenWarehouse, String productionFinishProductNumber, String productionIntermediateArticleNumber, String productionCreated, String productionLastUpdate, String productionStatus) {
+
+        if(chosenWarehouse == null || chosenWarehouse.equals("")){
+            chosenWarehouse = "%";
+        }
+
+        if(productionCompany == null || productionCompany.equals("")){
+            productionCompany = "%";
+        }
+
+        if(productionFinishProductNumber == null || productionFinishProductNumber.equals("")){
+            productionFinishProductNumber = "%";
+        }
+        if(productionIntermediateArticleNumber == null || productionIntermediateArticleNumber.equals("")){
+            productionIntermediateArticleNumber = "%";
+        }
+        if(productionCreated ==null || productionCreated.equals("")){
+            productionCreated = "%";
+        }
+        if(productionStatus ==null || productionStatus.equals("")){
+            productionStatus = "%";
+        }
+        if(productionLastUpdate ==null || productionLastUpdate.equals("")){
+            productionLastUpdate = "%";
+        }
+
+        return productionRepository.getProductionHeaderByCriteria(productionCompany,chosenWarehouse,productionFinishProductNumber,productionIntermediateArticleNumber,productionCreated,productionLastUpdate,productionStatus);
+    }
+
     public void saveProductionInLoop(Production production, IntermediateArticle ia){
         Production productionInLoop = new Production();
         productionInLoop.setIntermediateArticleNumber(ia.getArticle().getArticle_number());
@@ -169,7 +199,7 @@ public class ProductionServiceImpl implements ProductionService{
         work.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         work.setWarehouse(ia.getWarehouse());
         work.setHdNumber(stockRepository.stockForProduction(ia.getArticle().getArticle_number()).getHd_number());
-        work.setStatus(false);
+        work.setStatus("open");
         work.setFromLocation(locationRepository.findLocationByLocationName(stockRepository.stockForProduction(ia.getArticle().getArticle_number()).getChangeBy(),production.getWarehouse().getName()));
         work.setToLocation(locationRepository.findLocationByLocationName(ia.getLocation().getLocationName(),production.getWarehouse().getName()));
         work.setHandle(production.getProductionNumber().toString());

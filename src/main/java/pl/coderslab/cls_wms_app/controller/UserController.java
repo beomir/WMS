@@ -19,6 +19,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersRolesService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -45,10 +46,10 @@ public class UserController {
     }
 
     @GetMapping("formUserCreation")
-    public String form(Model model) {
+    public String form(Model model, HttpSession session) {
         List<Company> activeCompanies = companyService.getCompany();
         model.addAttribute("activeCompanies", activeCompanies);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         model.addAttribute("users", new Users());
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
@@ -71,28 +72,28 @@ public class UserController {
     }
 
     @GetMapping("usersList")
-    public String usersList(Model model) {
+    public String usersList(Model model,HttpSession session) {
 
         List<Users> users = usersService.getUsers();
         model.addAttribute("user", users);
 
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "userSettings/usersList";
     }
 
 
     @GetMapping("userList")
-    public String userList(Model model) {
+    public String userList(Model model,HttpSession session) {
 
         List<Users> users = usersService.getUsers();
         model.addAttribute("user", users);
 
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "userSettings/userList";
     }
 
     @GetMapping("/formUserEdit/{activateToken}")
-    public String updateUser(@PathVariable String activateToken, Model model) {
+    public String updateUser(@PathVariable String activateToken, Model model,HttpSession session) {
         Users user = usersService.getUserByActivateToken(activateToken);
         List<Company> activeCompanies = companyService.getCompany();
         model.addAttribute("activeCompanies", activeCompanies);
@@ -100,7 +101,7 @@ public class UserController {
 
         List<UsersRoles> usersRolesList = usersRolesService.getUsersRoles();
         model.addAttribute("users_Roles", usersRolesList);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "userSettings/formUserEdit";
     }
 
@@ -112,12 +113,12 @@ public class UserController {
 
 
     @GetMapping("usersDeactivatedList")
-    public String usersDeactivatedList(Model model) {
+    public String usersDeactivatedList(Model model,HttpSession session) {
         List<Users> users = usersService.getDeactivatedUsers();
         model.addAttribute("user", users);
 
 
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "/userSettings/usersDeactivatedList";
     }
 

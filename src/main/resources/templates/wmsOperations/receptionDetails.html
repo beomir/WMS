@@ -27,6 +27,7 @@
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
 				<div class="titleList" th:text="#{app.receptionNumber} + ' ' + ${receptionHeader}"></div><br/>
+				<div th:unless="${receptionMessage == null}" id="message" style="color: darkred;font-weight: bold;text-align: center" th:text="${receptionMessage}"></div>
 				<a th:href="@{/reception/reception}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.checkReceptions}"></div></a>
 				<a th:href="@{/reception/receptions-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.findReception}"></div></a>
 				<a  th:href="@{reception/formReception}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.CreateReception}"></div></a>

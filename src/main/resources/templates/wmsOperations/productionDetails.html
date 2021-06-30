@@ -42,8 +42,8 @@
 						<th th:text="#{app.piecesQty}" class="widerTables"></th>
 						<th th:text="#{app.warehouseName}" class="widerTables"></th>
 						<th th:text="#{app.status}" class="widerTables"></th>
-						<th th:text="#{app.lastUpdate}" class="widerTables">Last update</th>
 						<th th:text="#{app.chandedBy}" class="widerTables"></th>
+						<th th:text="#{app.lastUpdate}" class="widerTables">Last update</th>
 						<th th:text="#{app.created}" class="widerTables"></th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="productionList: ${productionList}">
@@ -53,8 +53,8 @@
 				        <td class="widerTables" th:text="${productionList.intermediateArticlePieces}"></td>
 				        <td class="widerTables" th:text="${productionList.warehouse.name}"></td>
 				        <td class="widerTables" th:text="${productionList.status}"></td>
+						<td class="widerTables" th:text="${productionList.changeBy}"></td>
 						<td class="widerTables" th:text="${#strings.replace(#strings.substring(productionList.last_update,0,19),'T',' ')}"></td>
-				        <td class="widerTables" th:text="${productionList.changeBy}"></td>
 						<td class="widerTables" th:text="${#strings.replace(#strings.substring(productionList.created,0,19),'T',' ')}"></td>
 				    </tr>
 				</table>

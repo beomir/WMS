@@ -15,6 +15,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 import pl.coderslab.cls_wms_app.temporaryObjects.TransactionSearch;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Slf4j
@@ -38,24 +39,24 @@ public class TransactionController {
     }
 
     @GetMapping("/user/transactions")
-    public String list(Model model) {
+    public String list(Model model, HttpSession session) {
         List<Transaction> transaction = transactionService.getTransactionsByAllCriteria(transactionSearch.getTransactionUser(),transactionSearch.getTransactionType(),transactionSearch.getTransactionGroup(),transactionSearch.getTransactionDateFrom(),transactionSearch.getTransactionDateTo(),transactionSearch.getWarehouse(),transactionSearch.getCompany());
         log.debug(transactionSearch.getTransactionUser() + " " + transactionSearch.getTransactionType() + " " + transactionSearch.getTransactionGroup() + " " + transactionSearch.getTransactionDateFrom() + " " + transactionSearch.getTransactionDateTo() + " " + transactionSearch.getWarehouse() + " " + transactionSearch.getCompany());
         model.addAttribute("transaction", transaction);
         model.addAttribute("transactionSearch",transactionSearch);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model, session);
         return "wmsSettings/transactions/transactions";
     }
 
     @GetMapping("/user/transactions-browser")
-    public String browser(Model model) {
+    public String browser(Model model,HttpSession session) {
         model.addAttribute("transactionSearching", new TransactionSearch());
 
         List<Company> activeCompany = companyService.getCompany();
         model.addAttribute("activeCompany", activeCompany);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsSettings/transactions/transactions-browser";
     }
 
