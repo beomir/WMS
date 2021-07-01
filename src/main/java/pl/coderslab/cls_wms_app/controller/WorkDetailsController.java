@@ -66,7 +66,6 @@ public class WorkDetailsController {
                 workDetailsLocationFrom = "";
                 workDetailsLocationTo = "";
                 workDetailsWorkNumber = "";
-                log.error("1");
             }
 
             if (!searchingWarehouse.equals("%")) {
@@ -84,7 +83,6 @@ public class WorkDetailsController {
                 workDetailsLocationFrom = "";
                 workDetailsLocationTo = "";
                 workDetailsWorkNumber = "";
-                log.error("2");
             }
             if (searchingWarehouse.equals("%")) {
                 List<WorkDetails> workDetails = workDetailsService.getWorkDetails();
@@ -99,7 +97,6 @@ public class WorkDetailsController {
                 workDetailsLocationFrom = "";
                 workDetailsLocationTo = "";
                 workDetailsWorkNumber = "";
-                log.error("3");
             }
         }
         if (request.getHeader("Referer").contains("workDetails-browser")) {
@@ -114,7 +111,6 @@ public class WorkDetailsController {
             log.debug("workDetailsLocationTo: " + workDetailsLocationTo);
             log.debug("workDetailsWorkNumber: " + workDetailsWorkNumber);
 
-            log.error("4");
             List<WorkDetailsRepository.WorkHeaderList> workDetails = workDetailsService.workHeaderList(workDetailsWarehouse, workDetailsCompany, workDetailsArticle, workDetailsType, workDetailsHandle, workDetailsHandleDevice, workDetailsStatus, workDetailsLocationFrom, workDetailsLocationTo, workDetailsWorkNumber);
             model.addAttribute("workDetails", workDetails);
 
@@ -143,7 +139,6 @@ public class WorkDetailsController {
             workDetailsWorkNumber = "";
             List<WorkDetailsRepository.WorkHeaderList> workDetails = workDetailsService.workHeaderList(workDetailsWarehouse, workDetailsCompany, workDetailsArticle, workDetailsType, workDetailsHandle, workDetailsHandleDevice, workDetailsStatus, workDetailsLocationFrom, workDetailsLocationTo, workDetailsWorkNumber);
             model.addAttribute("workDetails", workDetails);
-            log.error("5");
         }
 
 
@@ -177,13 +172,13 @@ public class WorkDetailsController {
     }
 
     @GetMapping("/workNumberDetails/{workNumber}")
-    public String workNumberDetails(@PathVariable Long workNumber, Model model) {
+    public String workNumberDetails(@PathVariable Long workNumber, Model model,HttpSession session) {
         List<WorkDetails> workDetailsList = workDetailsRepository.getWorkDetailsByWorkNumber(workNumber);
         model.addAttribute("workDetailsList",workDetailsList);
 
         WorkDetailsRepository.WorkNumberDetailsInfo workNumberDetailsInfo = workDetailsRepository.workNumberDetailsInfo(workNumber);
         model.addAttribute("workNumberDetailsInfo",workNumberDetailsInfo);
-
+        usersService.loggedUserData(model,session);
         return "wmsOperations/workNumberDetails";
     }
 

@@ -309,7 +309,7 @@ h1 {
 .widerTables {
     border: solid 1px;
     padding-left: 4px;
-    right: 4px;
+    padding-right: 4px;
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */

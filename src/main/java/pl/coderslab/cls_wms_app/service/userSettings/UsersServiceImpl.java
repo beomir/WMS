@@ -130,6 +130,7 @@ public class UsersServiceImpl implements UsersService {
         addLocationToStorageZone.message = "";
         alertMessage = "";
         articleServiceImpl.articleMessage = "";
+        session.setAttribute("productionMessage","");
         session.setAttribute("receptionMessage","");
 
         String userName = "";

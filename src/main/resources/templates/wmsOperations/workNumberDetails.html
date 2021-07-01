@@ -37,14 +37,14 @@
 					<tr style="border: solid 1px">
 						<th th:text="#{app.number}" class="tables">Number</th>
 						<th th:text="#{app.description}" class="tables">Description</th>
-						<th th:text="#{app.handle}" class="tables">Type</th>
 						<th th:text="#{app.piecesQty}" class="tables">Pieces Qty</th>
 						<th th:text="#{app.handleDevice}" class="tables"></th>
 						<th th:text="#{app.articleNumber}" class="tables"></th>
+						<th th:text="#{app.from} + ' ' + #{app.location}" class="tables"></th>
+						<th th:text="#{app.to} + ' ' + #{app.location}" class="tables"></th>
+						<th th:text="#{app.articleNumber}" class="tables"></th>
 						<th th:text="#{app.status}" class="tables">Status</th>
 						<th th:text="#{app.chandedBy}" class="tables"></th>
-						<th th:text="#{app.lastUpdate}" class="tables"></th>
-						<th th:text="#{app.created}" class="tables"></th>
 
 					</tr>
 				    <tr style="border: solid 1px" th:each="workDetails: ${workDetailsList}">
@@ -59,15 +59,15 @@
 							</ol>
 						</td>
 						<td class="tables" th:text="${workDetails.workDescription}"></td>
-				        <td class="tables" th:text="${workDetails.handle}"></td>
 				        <td class="tables" th:text="${workDetails.piecesQty}"></td>
 				        <td class="tables" th:text="${workDetails.hdNumber}"></td>
 				        <td class="tables" th:text="${workDetails.article.article_number}"></td>
+				        <td class="tables" th:text="${workDetails.fromLocation.locationName}"></td>
+				        <td class="tables" th:text="${workDetails.toLocation.locationName}"></td>
+				        <td class="tables" th:text="${workDetails.article.article_number}"></td>
 						<td th:if="${workDetails.status == 'open'}" class="tables" th:text="#{app.open}"></td>
 						<td th:if="${workDetails.status == 'close'}" class="tables" th:text="#{app.close}"></td>
-				        <td class="tables" th:text="${workDetails.changeBy}"></td>
-						<td class="widerTables" th:text="${#strings.replace(#strings.substring(workDetails.last_update,0,19),'T',' ')}"></td>
-						<td class="widerTables" th:text="${#strings.replace(#strings.substring(workDetails.created,0,19),'T',' ')}"></td>
+				        <td class="tables" ><span th:text="${workDetails.changeBy}"></span><img id="informationIcon" class="makeItBigger" th:src="@{/images/32px-Information_icon.png}" th:title="#{app.lastUpdate} + ': ' + ${#strings.replace(#strings.substring(workDetails.last_update,0,19),'T',' ')} + ' ' + #{app.created} + ': ' + ${#strings.replace(#strings.substring(workDetails.created,0,19),'T',' ')} + ' ' + #{app.handle} + ' ' + ${workDetails.handle}"></td>
 						</tr>
 				</table>
 

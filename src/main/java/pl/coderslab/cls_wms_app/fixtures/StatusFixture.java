@@ -28,7 +28,9 @@ public class StatusFixture {
             new Status(null, "creation_pending", "Shipment during creation","Shipment", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
             new Status(null, "picking_pending", "Shipment picking","Shipment", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
             new Status(null, "put_away_pending", "Shipment putaway","Shipment", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new Status(null, "closed", "Shipment closed","Shipment", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
+            new Status(null, "closed", "Shipment closed","Shipment", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "production_picking_pending", "Production picking","Production", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new Status(null, "production_put_away_pending", "Putaway pending after Produced","Production", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
 
     );
 

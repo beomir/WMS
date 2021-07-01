@@ -2,7 +2,6 @@ package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
@@ -12,7 +11,7 @@ import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
-import java.time.LocalDate;
+import javax.servlet.http.HttpSession;
 import java.time.format.DateTimeFormatter;
 
 
@@ -30,9 +29,10 @@ public class ProductionServiceImpl implements ProductionService{
     private final WorkDetailsRepository workDetailsRepository;
     private final LocationRepository locationRepository;
     private final StockRepository stockRepository;
+    private final StatusRepository statusRepository;
 
     @Autowired
-    public ProductionServiceImpl(ProductionRepository productionRepository, ExtremelyRepository extremelyRepository, CompanyService companyService, WarehouseService warehouseService, ArticleRepository articleRepository, WorkDetailsRepository workDetailsRepository, LocationRepository locationRepository, StockRepository stockRepository) {
+    public ProductionServiceImpl(ProductionRepository productionRepository, ExtremelyRepository extremelyRepository, CompanyService companyService, WarehouseService warehouseService, ArticleRepository articleRepository, WorkDetailsRepository workDetailsRepository, LocationRepository locationRepository, StockRepository stockRepository, StatusRepository statusRepository) {
         this.productionRepository = productionRepository;
         this.extremelyRepository = extremelyRepository;
         this.companyService = companyService;
@@ -41,6 +41,7 @@ public class ProductionServiceImpl implements ProductionService{
         this.workDetailsRepository = workDetailsRepository;
         this.locationRepository = locationRepository;
         this.stockRepository = stockRepository;
+        this.statusRepository = statusRepository;
     }
 
     @Override
@@ -103,7 +104,8 @@ public class ProductionServiceImpl implements ProductionService{
     }
 
     @Override
-    public void createProduction(Production production, String articleId, String chosenWarehouse) {
+    public void createProduction(Production production, String articleId, String chosenWarehouse, HttpSession session) {
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         Long newProductionNumber =  Long.parseLong(LocalDateTime.now().format(formatter) + "001");
         productionSetters(production, chosenWarehouse,articleId);
@@ -111,10 +113,12 @@ public class ProductionServiceImpl implements ProductionService{
         // check extremely information
         if(extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),"Production_after_creation").getExtremelyValue().equals("2")){
             production.setStatus("Created");
+            session.setAttribute("productionMessage","Production for finish product: " + articleRepository.getOne(Long.parseLong(articleId)).getArticle_number() + " was successfully created. Extremely flag set on 2, so works were not created");
         }
         if(extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),"Production_after_creation").getExtremelyValue().equals("1")){
             production.setStatus("Work pending");
             workProductionStatus = true;
+            session.setAttribute("productionMessage","Production and works for finish product: " + articleRepository.getOne(Long.parseLong(articleId)).getArticle_number() + " was successfully created.");
         }
         // check if productionNumber exists
         if(productionRepository.getProductionNumberByProductionNumber(newProductionNumber) != null){
@@ -130,14 +134,26 @@ public class ProductionServiceImpl implements ProductionService{
             if(workProductionStatus){
                 // Work & production creation
                 for (IntermediateArticle ia : intermediateArticleList){
-                    saveProductionInLoop(production, ia);
-                    workCreationInLoop(production,ia);
+                    log.error("Qty on stock: " + stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getPieces_qty());
+                    log.error("Qty from form: " + ia.getQuantityForFinishedProduct());
+                    if(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getPieces_qty() - ia.getQuantityForFinishedProduct() >= 0) {
+                        Stock stock = stockRepository.getStockById(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getId());
+                        saveProductionInLoop(production, ia);
+                        workCreationInLoop(production, ia,stock);
+                        changesOnStock(stock,ia);
+                    }
                 }
             }
              else{
                 // only production creation
                 for (IntermediateArticle ia : intermediateArticleList){
-                    saveProductionInLoop(production, ia);
+                    log.error("Qty on stock: " + stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(), ia.getWarehouse().getName(), ia.getArticle().getArticle_number()).getPieces_qty());
+                    log.error("Qty from form: " + ia.getQuantityForFinishedProduct());
+                    if(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getPieces_qty() - ia.getQuantityForFinishedProduct() >= 0) {
+                        Stock stock = stockRepository.getStockById(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getId());
+                        saveProductionInLoop(production, ia);
+                        changesOnStock(stock,ia);
+                    }
                 }
             }
         }
@@ -189,7 +205,7 @@ public class ProductionServiceImpl implements ProductionService{
         productionInLoop.setLast_update(production.getLast_update());
         productionRepository.save(productionInLoop);
     }
-    public void workCreationInLoop(Production production, IntermediateArticle ia){
+    public void workCreationInLoop(Production production, IntermediateArticle ia,Stock stock){
         WorkDetails work = new WorkDetails();
         work.setPiecesQty(ia.getQuantityForFinishedProduct());
         work.setArticle(ia.getArticle());
@@ -198,9 +214,9 @@ public class ProductionServiceImpl implements ProductionService{
         work.setChangeBy(SecurityUtils.usernameForActivations());
         work.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         work.setWarehouse(ia.getWarehouse());
-        work.setHdNumber(stockRepository.stockForProduction(ia.getArticle().getArticle_number()).getHd_number());
+        work.setHdNumber(stock.getHd_number());
         work.setStatus("open");
-        work.setFromLocation(locationRepository.findLocationByLocationName(stockRepository.stockForProduction(ia.getArticle().getArticle_number()).getChangeBy(),production.getWarehouse().getName()));
+        work.setFromLocation(stock.getLocation());
         work.setToLocation(locationRepository.findLocationByLocationName(ia.getLocation().getLocationName(),production.getWarehouse().getName()));
         work.setHandle(production.getProductionNumber().toString());
         work.setWorkDescription("Production picking");
@@ -217,5 +233,35 @@ public class ProductionServiceImpl implements ProductionService{
         production.setCompany(companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()));
         production.setWarehouse(warehouseService.getWarehouseByName(chosenWarehouse));
         return production;
+    }
+
+    public void changesOnStock(Stock stock, IntermediateArticle ia){
+        Stock stockForProduction = new Stock();
+        stockForProduction.setStatus(statusRepository.getStatusByStatusName("production_picking_pending","Production"));
+        stockForProduction.setLocation(stock.getLocation());
+        stockForProduction.setChangeBy(SecurityUtils.usernameForActivations());
+        stockForProduction.setUnit(stock.getUnit());
+        stockForProduction.setHd_number(stock.getHd_number() + 7000000000000L);
+        stockForProduction.setCreated(TimeUtils.timeNowLong());
+        stockForProduction.setArticle(stock.getArticle());
+        stockForProduction.setCompany(stock.getCompany());
+        stockForProduction.setWarehouse(stock.getWarehouse());
+        stockForProduction.setPieces_qty(ia.getQuantityForFinishedProduct());
+        stockForProduction.setReceptionNumber(stock.getReceptionNumber());
+        stockForProduction.setComment("Original HD number: " + stock.getHd_number());
+        stockForProduction.setShipmentNumber(stock.getShipmentNumber());
+        stockForProduction.setLast_update(TimeUtils.timeNowLong());
+        stockForProduction.setQuality(stock.getQuality());
+
+        stock.setPieces_qty(stock.getPieces_qty() - ia.getQuantityForFinishedProduct());
+        stock.setLast_update(TimeUtils.timeNowLong());
+        stock.setChangeBy(SecurityUtils.usernameForActivations());
+        stockRepository.save(stock);
+        stockRepository.save(stockForProduction);
+        //TODO to think about this functionality linked with deleting zeros
+        if(stock.getPieces_qty() == 0){
+            log.error("stock: " + stock.getId() + " " + stock.getHd_number() + " " + stock.getArticle().getArticle_number() + " " + " deleted");
+            stockRepository.delete(stock);
+        }
     }
 }

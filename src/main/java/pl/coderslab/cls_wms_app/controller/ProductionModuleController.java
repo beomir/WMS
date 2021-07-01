@@ -23,6 +23,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -80,7 +81,8 @@ public class ProductionModuleController {
                        @SessionAttribute(required = false) String chosenWarehouse, @SessionAttribute(required = false) String productionCompany,
                        @SessionAttribute(required = false) String productionFinishProductNumber, @SessionAttribute(required = false) String productionIntermediateArticleNumber,
                        @SessionAttribute(required = false) String productionCreated, @SessionAttribute(required = false) String productionStatus,
-                       @SessionAttribute(required = false) String productionLastUpdate,HttpSession session) {
+                       @SessionAttribute(required = false) String productionLastUpdate,@SessionAttribute(required = false) String productionMessage,
+                       HttpSession session) {
 
 
         List<ProductionRepository.ProductionHeader> productionList = productionService.getProductionHeaderByCriteria(productionCompany,chosenWarehouse,productionFinishProductNumber,productionIntermediateArticleNumber,productionCreated,productionLastUpdate,productionStatus);
@@ -96,6 +98,8 @@ public class ProductionModuleController {
         model.addAttribute("productionStatus", productionStatus);
         model.addAttribute("productionLastUpdate", productionLastUpdate);
 
+        model.addAttribute("productionMessage", productionMessage);
+
         log.info("productionCompany: " + productionCompany);
         log.info("chosenWarehouse: " + chosenWarehouse);
         log.info("productionFinishProductNumber: " + productionFinishProductNumber);
@@ -103,7 +107,22 @@ public class ProductionModuleController {
         log.info("productionCreated: " + productionCreated);
         log.info("productionLastUpdate: " + productionLastUpdate);
         log.info("productionStatus: " + productionStatus);
-        usersService.loggedUserData(model, session);
+        log.info("productionMessage: " + productionMessage);
+
+        session.setAttribute("productionMessage","");
+        String userName = "";
+        if(SecurityUtils.username().equals("%")){
+            userName = "admin";
+        }
+        else {
+            userName = SecurityUtils.username();
+        }
+        String token = usersService.FindUsernameByToken(userName);
+        model.addAttribute("token", token);
+        model.addAttribute("localDateTime", LocalDateTime.now());
+
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
 
         return "wmsOperations/production";
     }
@@ -179,9 +198,10 @@ public class ProductionModuleController {
     }
 
     @PostMapping("production/producingHeader")
-    public String producingHeaderPost(Production production, String articleId,@SessionAttribute(required = false) String chosenWarehouse) {
+    public String producingHeaderPost(Production production, String articleId,@SessionAttribute(required = false) String chosenWarehouse,HttpSession session) {
 
-        productionService.createProduction(production,articleId,chosenWarehouse);
+        productionService.createProduction(production,articleId,chosenWarehouse,session);
+
         return "redirect:/production";
     }
 
