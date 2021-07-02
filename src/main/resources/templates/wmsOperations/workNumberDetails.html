@@ -52,8 +52,8 @@
 							<ol><div th:text="${workDetails.workNumber}"></div>
 								<li>
 									<ul>
-										<li th:if="${workDetails.status == false}"><a th:href="@{/workDetails/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.edit}"></a></li>
-										<li th:if="${workDetails.status == false}"><a th:href="@{/deleteWork/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.delete}"></a></li>
+										<li th:if="${workDetails.status == 'open'}"><a th:href="@{/workDetails/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.edit}"></a></li>
+										<li th:if="${workDetails.status == 'open'}"><a th:href="@{/deleteWork/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.delete}"></a></li>
 									</ul>
 								</li>
 							</ol>
@@ -67,6 +67,7 @@
 				        <td class="tables" th:text="${workDetails.article.article_number}"></td>
 						<td th:if="${workDetails.status == 'open'}" class="tables" th:text="#{app.open}"></td>
 						<td th:if="${workDetails.status == 'close'}" class="tables" th:text="#{app.close}"></td>
+						<td th:if="${workDetails.status != 'close' && workDetails.status != 'open'}" class="tables" th:text="${workDetails.status}"></td>
 				        <td class="tables" ><span th:text="${workDetails.changeBy}"></span><img id="informationIcon" class="makeItBigger" th:src="@{/images/32px-Information_icon.png}" th:title="#{app.lastUpdate} + ': ' + ${#strings.replace(#strings.substring(workDetails.last_update,0,19),'T',' ')} + ' ' + #{app.created} + ': ' + ${#strings.replace(#strings.substring(workDetails.created,0,19),'T',' ')} + ' ' + #{app.handle} + ' ' + ${workDetails.handle}"></td>
 						</tr>
 				</table>

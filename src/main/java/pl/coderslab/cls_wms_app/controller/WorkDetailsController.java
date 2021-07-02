@@ -42,62 +42,19 @@ public class WorkDetailsController {
     }
 
     @GetMapping("workDetails")
-    public String list(Model model, HttpSession session, @SessionAttribute(required = false) String searchingWarehouse, HttpServletRequest request,
+    public String list(Model model, HttpSession session, HttpServletRequest request,
                        @SessionAttribute(required = false) String workDetailsWarehouse, @SessionAttribute(required = false) String workDetailsCompany,
                        @SessionAttribute(required = false) String workDetailsArticle, @SessionAttribute(required = false) String workDetailsType,
                        @SessionAttribute(required = false) String workDetailsHandle, @SessionAttribute(required = false) String workDetailsHandleDevice,
                        @SessionAttribute(required = false) String workDetailsStatus, @SessionAttribute(required = false) String workDetailsLocationFrom,
-                       @SessionAttribute(required = false) String workDetailsLocationTo, @SessionAttribute(required = false) String workDetailsWorkNumber) {
+                       @SessionAttribute(required = false) String workDetailsLocationTo, @SessionAttribute(required = false) String workDetailsWorkNumber,
+                       @SessionAttribute(required = false) String chosenWarehouse) {
         log.error("incoming URL: " + request.getHeader("Referer"));
 
         if (request.getHeader("Referer").contains("reception")) {
-            model.addAttribute("searchingWarehouse", searchingWarehouse);
-
-            if (session.getAttribute("searchingWarehouse") == null || session.getAttribute("searchingWarehouse").equals("")) {
-                searchingWarehouse = "%";
-                //TODO extract it to external method
-                workDetailsWarehouse = searchingWarehouse;
-                workDetailsStatus = "false";
-                workDetailsCompany = companyService.getOneCompanyByUsername(SecurityUtils.username()).getName();
-                workDetailsArticle = "";
-                workDetailsType = "";
-                workDetailsHandle = "";
-                workDetailsHandleDevice = "";
-                workDetailsLocationFrom = "";
-                workDetailsLocationTo = "";
-                workDetailsWorkNumber = "";
-            }
-
-            if (!searchingWarehouse.equals("%")) {
-                Warehouse warehouse = warehouseService.getWarehouseByName(searchingWarehouse);
-                model.addAttribute("warehouse", warehouse);
-                List<WorkDetails> workDetails = workDetailsService.getWorkDetailsPerWarehouse(warehouse.getId());
-                model.addAttribute("workDetails", workDetails);
-                workDetailsWarehouse = searchingWarehouse;
-                workDetailsStatus = "false";
-                workDetailsCompany = companyService.getOneCompanyByUsername(SecurityUtils.username()).getName();
-                workDetailsArticle = "";
-                workDetailsType = "";
-                workDetailsHandle = "";
-                workDetailsHandleDevice = "";
-                workDetailsLocationFrom = "";
-                workDetailsLocationTo = "";
-                workDetailsWorkNumber = "";
-            }
-            if (searchingWarehouse.equals("%")) {
-                List<WorkDetails> workDetails = workDetailsService.getWorkDetails();
-                model.addAttribute("workDetails", workDetails);
-                workDetailsWarehouse = searchingWarehouse;
-                workDetailsStatus = "false";
-                workDetailsCompany = companyService.getOneCompanyByUsername(SecurityUtils.username()).getName();
-                workDetailsArticle = "";
-                workDetailsType = "";
-                workDetailsHandle = "";
-                workDetailsHandleDevice = "";
-                workDetailsLocationFrom = "";
-                workDetailsLocationTo = "";
-                workDetailsWorkNumber = "";
-            }
+            model.addAttribute("searchingWarehouse", chosenWarehouse);
+            List<WorkDetailsRepository.WorkHeaderList> workDetails = workDetailsService.workHeaderList(chosenWarehouse, "%", "%", "%", "%", "%", "%", "%", "%", "%");
+            model.addAttribute("workDetails", workDetails);
         }
         if (request.getHeader("Referer").contains("workDetails-browser")) {
             log.debug("workDetailsWarehouse: " + workDetailsWarehouse);
@@ -115,28 +72,17 @@ public class WorkDetailsController {
             model.addAttribute("workDetails", workDetails);
 
             if (workDetailsWarehouse.equals("%")) {
-                searchingWarehouse = "%";
-                model.addAttribute("searchingWarehouse", searchingWarehouse);
+                model.addAttribute("searchingWarehouse", workDetailsWarehouse);
             }
             if (!workDetailsWarehouse.equals("%")) {
-                searchingWarehouse = workDetailsWarehouse;
-                Warehouse warehouse = warehouseService.getWarehouseByName(searchingWarehouse);
+                Warehouse warehouse = warehouseService.getWarehouseByName(workDetailsWarehouse);
                 model.addAttribute("warehouse", warehouse);
-                model.addAttribute("searchingWarehouse", searchingWarehouse);
+                model.addAttribute("searchingWarehouse", workDetailsWarehouse);
             }
         }
         if (!request.getHeader("Referer").contains("workDetails-browser") && !request.getHeader("Referer").contains("reception")) {
-            searchingWarehouse = "%";
-            workDetailsWarehouse = searchingWarehouse;
-            workDetailsStatus = "false";
+            workDetailsWarehouse = chosenWarehouse;
             workDetailsCompany = companyService.getOneCompanyByUsername(SecurityUtils.username()).getName();
-            workDetailsArticle = "";
-            workDetailsType = "";
-            workDetailsHandle = "";
-            workDetailsHandleDevice = "";
-            workDetailsLocationFrom = "";
-            workDetailsLocationTo = "";
-            workDetailsWorkNumber = "";
             List<WorkDetailsRepository.WorkHeaderList> workDetails = workDetailsService.workHeaderList(workDetailsWarehouse, workDetailsCompany, workDetailsArticle, workDetailsType, workDetailsHandle, workDetailsHandleDevice, workDetailsStatus, workDetailsLocationFrom, workDetailsLocationTo, workDetailsWorkNumber);
             model.addAttribute("workDetails", workDetails);
         }

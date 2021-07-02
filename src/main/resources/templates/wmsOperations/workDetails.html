@@ -28,7 +28,7 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
-				<div th:if="${searchingWarehouse != '%' && searchingWarehouse != null}" class="titleList" th:text="#{app.workDetails} + ' ' + #{app.for} +  ' ' +  ${warehouse.name}"></div>
+				<div th:if="${searchingWarehouse != '%' && searchingWarehouse != null}" class="titleList" th:text="#{app.workDetails} + ' ' + #{app.for} +  ' ' +  ${searchingWarehouse}"></div>
 				<div th:if="${searchingWarehouse} == '%'" class="titleList" th:text="#{app.workDetails} + ' ' + #{app.in} +  ' ' +   #{app.allWarehouses}"></div>
 				<div th:if="${searchingWarehouse} == null" class="titleList" th:text="#{app.workDetails} + ' ' + #{app.for} +  ' ' +  ${workDetailsWarehouse}"></div>
 				<div sec:authorize="!hasRole('ROLE_ADMIN')">
@@ -62,6 +62,7 @@
 							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus} == 'open'" th:text="#{app.open}"></th>
 							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus} == 'close'" th:text="#{app.close}"></th>
 							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus} == '%'" th:text="#{app.all}"></th>
+							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus != '%' && workDetailsStatus != 'open' && workDetailsStatus != 'close'} " th:text="${workDetailsStatus}"></th>
 							<th style="color:blue;font-weight: bold" th:text="#{app.from} + ' ' + #{app.location} + ': '">></th>
 							<th style="color:blue;font-style:italic" th:text="${workDetailsLocationFrom}"></th>
 						</tr>
@@ -89,8 +90,8 @@
 							<ol><div th:text="${workDetails.workNumber}"></div>
 								<li>
 									<ul>
-										<li th:if="${workDetails.status == 'open'}"><a th:href="@{/workNumberDetails/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.details}"></a></li>
-										<li th:if="${workDetails.status == 'open'}"><a th:href="@{/deleteWork/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.delete}"></a></li>
+										<li><a th:href="@{/workNumberDetails/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.details}"></a></li>
+										<li th:if="${workDetails.status != 'close'}"><a th:href="@{/deleteWork/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.delete}"></a></li>
 									</ul>
 								</li>
 							</ol>
@@ -102,6 +103,8 @@
 				        <td class="tables" th:text="${workDetails.changeBy}"></td>
 				        <td th:if="${workDetails.status == 'open'}" class="tables" th:text="#{app.open}"></td>
 				        <td th:if="${workDetails.status == 'close'}" class="tables" th:text="#{app.close}"></td>
+				        <td th:if="${workDetails.status == '%'}" class="tables" th:text="#{app.various}"></td>
+				        <td th:if="${workDetails.status != 'close' && workDetails.status != 'open'}" && workDetails.status != '%' class="tables" th:text="${workDetails.status}"></td>
 						<td class="tables" th:text="${workDetails.hdNumber}"></td>
 						</tr>
 				</table>
