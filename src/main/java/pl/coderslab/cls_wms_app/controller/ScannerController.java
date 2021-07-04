@@ -468,23 +468,7 @@ public class ScannerController {
         return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerPreview;
     }
 
-    //Production branch
-    @GetMapping("{token}/{warehouse}/{equipment}/5" )
-    public String productionMenu(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model) {
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companies", companies);
-        model.addAttribute("token", token);
-        model.addAttribute("equipment", equipment);
-        model.addAttribute("warehouse", warehouse);
-        return "wmsOperations/scanner/scannerProduction";
-    }
-    @PostMapping("scannerProduction")
-    public String productionMenuPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerPreview,
-                                HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment) {
-        log.debug("Shipment Step scanner.scannerMenu: " +  scannerPreview);
-        session.setAttribute("workReceptionScannerChoice", scannerPreview);
-        return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerPreview;
-    }
+
 
 
 

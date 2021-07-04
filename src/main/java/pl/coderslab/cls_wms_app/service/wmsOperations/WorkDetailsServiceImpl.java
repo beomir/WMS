@@ -127,6 +127,12 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
 
     @Override
     public void pickUpGoods(String fromLocation, String enteredArticle, String enteredHdNumber, String equipment, String warehouse, String company) {
+        log.error("fromLocation: " + fromLocation);
+        log.error("enteredArticle: " + enteredArticle);
+        log.error("enteredHdNumber: " + enteredHdNumber);
+        log.error("equipment: " + equipment);
+        log.error("warehouse: " + warehouse);
+        log.error("company: " + company);
         Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(Long.parseLong(enteredHdNumber),Long.parseLong(enteredArticle),fromLocation,warehouse,company);
         stock.setLocation(locationRepository.findLocationByLocationName(equipment,warehouse));
         stockService.add(stock);
@@ -135,6 +141,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     @Override
     public void workLineFinish(WorkDetails workDetails,String scannerChosenEquipment){
         //TODO add operations which will change location free volume and free weight & transaction
+
         Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(workDetails.getHdNumber(),workDetails.getArticle().getArticle_number(),scannerChosenEquipment,workDetails.getWarehouse().getName(),workDetails.getCompany().getName());
         stock.setLocation(locationRepository.findLocationByLocationName(workDetails.getToLocation().getLocationName(),workDetails.getWarehouse().getName()));
         stockService.add(stock);
@@ -145,15 +152,26 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     @Override
     public void workFinished(WorkDetails workDetails, HttpSession session){
         //TODO add operations which will change location free volume and free weight & transaction
-        List<Stock> stock = stockRepository.getStockListByReceptionNumber(Long.parseLong(workDetails.getHandle()));
+        List<Stock> stock = stockRepository.getStockListByWorkNumber(Long.parseLong(workDetails.getHandle()));
+
         for (Stock value:stock) {
-            value.setStatus(statusRepository.getStatusByStatusName("on_hand","Stock"));
+            log.error("value.getArticle().isProduction(): " + value.getArticle().isProduction());
+            if(value.getArticle().isProduction() == false){
+                value.setStatus(statusRepository.getStatusByStatusName("on_hand","Stock"));
+            }
+            else{
+                log.error("status: " + statusRepository.getStatusByStatusName("on_production","Production"));
+                value.setStatus(statusRepository.getStatusByStatusName("on_production","Production"));
+            }
             stockRepository.save(value);
         }
-        List<Reception> reception = receptionRepository.getReceptionByReceptionNumber(Long.parseLong(workDetails.getHandle()));
-        for (Reception value: reception) {
-            value.setStatus(statusRepository.getStatusByStatusName("closed","Reception"));
-            receptionRepository.save(value);
+        log.error("workDetailsRepository.workTypeByWorkNumber(workDetails.getWorkNumber()): " + workDetailsRepository.workTypeByWorkNumber(workDetails.getWorkNumber()));
+        if(workDetailsRepository.workTypeByWorkNumber(workDetails.getWorkNumber()) == "Reception"){
+            List<Reception> reception = receptionRepository.getReceptionByReceptionNumber(Long.parseLong(workDetails.getHandle()));
+            for (Reception value: reception) {
+                value.setStatus(statusRepository.getStatusByStatusName("closed","Reception"));
+                receptionRepository.save(value);
+            }
         }
         workDetailsRepository.save(workDetails);
         receptionService.finishReception(Long.parseLong(workDetails.getHandle()),session);

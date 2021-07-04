@@ -139,8 +139,8 @@ public class ProductionServiceImpl implements ProductionService{
                     if(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getPieces_qty() - ia.getQuantityForFinishedProduct() >= 0) {
                         Stock stock = stockRepository.getStockById(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getId());
                         saveProductionInLoop(production, ia);
-                        workCreationInLoop(production, ia,stock);
                         changesOnStock(stock,ia);
+                        workCreationInLoop(production, ia,stock);
                     }
                 }
             }
@@ -214,7 +214,7 @@ public class ProductionServiceImpl implements ProductionService{
         work.setChangeBy(SecurityUtils.usernameForActivations());
         work.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         work.setWarehouse(ia.getWarehouse());
-        work.setHdNumber(stock.getHd_number());
+        work.setHdNumber(stock.getHd_number() + 7000000000000L);
         work.setStatus("open");
         work.setFromLocation(stock.getLocation());
         work.setToLocation(locationRepository.findLocationByLocationName(ia.getLocation().getLocationName(),production.getWarehouse().getName()));

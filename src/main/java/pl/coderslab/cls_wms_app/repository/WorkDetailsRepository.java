@@ -82,4 +82,9 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
         Long getPiecesQty();
     }
 
+    @Query(value = "select distinct a2.article_number from work_details wd inner join intermediate_article ia on wd.article_id = ia.article_id inner join intermediate_article_production_article iapa on ia.id = iapa.intermediate_article_id inner join production_article pa on iapa.production_article_id = pa.id join article a2 on a2.id = pa.article_id join warehouse w on w.id = wd.warehouse_id where work_number = ?1 and w.name = ?2",nativeQuery = true)
+    Long finishProductNumber(String handle, String warehouseName);
+
+    @Query(value = "select work_type from work_details where work_number = ?1 order by 1 limit 1",nativeQuery = true)
+    String workTypeByWorkNumber(Long workNumber);
 }
