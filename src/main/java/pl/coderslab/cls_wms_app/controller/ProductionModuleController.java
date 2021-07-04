@@ -13,7 +13,6 @@ import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.ArticleRepository;
 import pl.coderslab.cls_wms_app.repository.ExtremelyRepository;
 import pl.coderslab.cls_wms_app.repository.ProductionRepository;
-import pl.coderslab.cls_wms_app.repository.StockRepository;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
 import pl.coderslab.cls_wms_app.service.wmsOperations.ProductionService;
@@ -35,18 +34,16 @@ public class ProductionModuleController {
     private final CompanyService companyService;
     private final UsersService usersService;
     private final ArticleRepository articleRepository;
-    private final StockRepository stockRepository;
     private final ProductionService productionService;
     private final ExtremelyRepository extremelyRepository;
 
     @Autowired
-    public ProductionModuleController(ProductionRepository productionRepository, WarehouseService warehouseService, CompanyService companyService, UsersService usersService, ArticleRepository articleRepository, StockRepository stockRepository, ProductionService productionService, ExtremelyRepository extremelyRepository) {
+    public ProductionModuleController(ProductionRepository productionRepository, WarehouseService warehouseService, CompanyService companyService, UsersService usersService, ArticleRepository articleRepository,  ProductionService productionService, ExtremelyRepository extremelyRepository) {
         this.productionRepository = productionRepository;
         this.warehouseService = warehouseService;
         this.companyService = companyService;
         this.usersService = usersService;
         this.articleRepository = articleRepository;
-        this.stockRepository = stockRepository;
         this.productionService = productionService;
         this.extremelyRepository = extremelyRepository;
     }

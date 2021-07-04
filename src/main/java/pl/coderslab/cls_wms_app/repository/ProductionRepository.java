@@ -34,7 +34,7 @@ public interface ProductionRepository extends JpaRepository<Production, Long> {
     Long lastProductionNumberForToday(Long productionNumber);
 
 
-    @Query(value = "Select distinct production_number productionNumber,finish_product_number finishProductNumber,finish_product_pieces finishProductPieces, sum(intermediate_article_pieces) intermediateArticlePieces,w.name changeBy,p.status,p.last_update from production p inner join company c on p.company_id = c.id inner join warehouse w on p.warehouse_id = w.id where c.name like ?1 and w.name like ?2 and CONCAT(p.finish_product_number,'') like ?3 and CONCAT(p.intermediate_article_number,'') like ?4 and p.created like ?5 and p.last_update like ?6 and p.status like ?7 group by production_number,finish_product_number,w.name,p.status,p.last_update",nativeQuery = true)
+    @Query(value = "Select distinct production_number productionNumber,finish_product_number finishProductNumber,finish_product_pieces finishProductPieces, sum(if(p.status = 'close',0,intermediate_article_pieces)) intermediateArticlePieces,w.name changeBy,if(count(distinct p.status) > 1,'%',p.status) status,max(p.last_update) last_update from production p inner join company c on p.company_id = c.id inner join warehouse w on p.warehouse_id = w.id where c.name like ?1 and w.name like ?2 and CONCAT(p.finish_product_number,'') like ?3 and CONCAT(p.intermediate_article_number,'') like ?4 and p.created like ?5 and p.last_update like ?6 and p.status like ?7 group by production_number,finish_product_number,w.name",nativeQuery = true)
     List<ProductionHeader> getProductionHeaderByCriteria(String companyName,String warehouseName,String finishProductNumber,String intermediateArticleNumber,String created, String lastUpdate, String status);
 
     public static interface ProductionHeader{
@@ -54,5 +54,13 @@ public interface ProductionRepository extends JpaRepository<Production, Long> {
         Long getFinishProductNumber();
         Long getFinishProductPieces();
         String getChangeBy();
+    }
+
+    @Query(value = "select finish_product_number finishProductNumber, finish_product_pieces finishProductPieces from production where production_number = ?1 limit 1 ",nativeQuery = true)
+    FinishProductSmallDataByProductionNumber getFinishProductSmallDataByProductionNumber(Long productionNumber);
+
+    public static interface FinishProductSmallDataByProductionNumber{
+        Long getFinishProductNumber();
+        Long getFinishProductPieces();
     }
 }

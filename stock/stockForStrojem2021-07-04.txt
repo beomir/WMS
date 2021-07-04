@@ -7,5 +7,7 @@ ArticleNumber:7122334455747996,ArticleDescription:metal buckles,HandleDeviceNumb
 ArticleNumber:5122334455747896,ArticleDescription:non-slip pads,HandleDeviceNumber:202000000000000018,PiecesQuantity10,Unit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:system
 ArticleNumber:9122334455747196,ArticleDescription:wooden table legs 80x15x15cm color light pine,HandleDeviceNumber:202000000000000019,PiecesQuantity10,Unit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:system
 ArticleNumber:9122334455747296,ArticleDescription:table top 220x120x10cm color light pine,HandleDeviceNumber:202000000000000020,PiecesQuantity1,Unit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:system
-ArticleNumber:8888121882121823,ArticleDescription:chair-back,HandleDeviceNumber:202000000000000021,PiecesQuantity10,Unit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:system
-ArticleNumber:8888121882121824,ArticleDescription:chair-legs,HandleDeviceNumber:202000000000000022,PiecesQuantity10,Unit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:system
+ArticleNumber:8888121882121823,ArticleDescription:chair-back,HandleDeviceNumber:202000000000000021,PiecesQuantity9,Unit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:MagdaM
+ArticleNumber:8888121882121824,ArticleDescription:chair-legs,HandleDeviceNumber:202000000000000022,PiecesQuantity6,Unit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:MagdaM
+ArticleNumber:8888121882121823,ArticleDescription:chair-back,HandleDeviceNumber:202007000000000021,PiecesQuantity1,Unit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:MagdaM
+ArticleNumber:8888121882121824,ArticleDescription:chair-legs,HandleDeviceNumber:202007000000000022,PiecesQuantity4,Unit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:MagdaM

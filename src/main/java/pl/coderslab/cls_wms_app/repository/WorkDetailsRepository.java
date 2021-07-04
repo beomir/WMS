@@ -20,7 +20,7 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
     List<WorkDetails> getWorkDetailsPerWarehouse(Long warehouseId);
 
     @Query("Select w from WorkDetails w where  w.handle = ?1 and w.warehouse.name = ?2 and w.status = 'open'")
-    List<WorkDetails> getWorkListByWarehouseAndHandle(String warehouseName, String handle);
+    List<WorkDetails> getWorkListByWarehouseAndHandle(String handle,String warehouseName);
 
     @Query("Select w from WorkDetails w where w.handle = ?1")
     List<WorkDetails> getWorkDetailsByHandle(String handle);
@@ -30,6 +30,12 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
 
     @Query(value="Select count(*) from work_details w inner join warehouse w2 on w.warehouse_id = w2.id where w.handle = ?1 and w2.name = ?2 and w.status = ?3",nativeQuery = true)
     int checkIfWorksExistsForHandleWithStatusUser(String handle,String warehouseName,String status);
+
+    @Query(value="Select count(*) from work_details w inner join warehouse w2 on w.warehouse_id = w2.id where w.work_number = ?1 and w2.name = ?2 and w.status = 'open' and w.work_description = ?3",nativeQuery = true)
+    int checkIfWorksExistsForHandleProduction(String handle,String warehouseName,String work_description);
+
+    @Query(value="Select count(*) from work_details w inner join warehouse w2 on w.warehouse_id = w2.id where w.work_number = ?1 and w2.name = ?2 and w.status = ?3 and w.work_description = ?4",nativeQuery = true)
+    int checkIfWorksExistsForHandleWithStatusUserProduction(String handle,String warehouseName,String status,String work_description);
 
     @Query(value="Select count(*) from work_details w where w.handle = ?1 and w.status = 'open'",nativeQuery = true)
     int checkIfWorksExistsOnlyByHandle(String handle);
@@ -44,6 +50,20 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
     WorkToDoFound workToDoFound(String handle,String warehouseName, String status);
 
     public static interface WorkToDoFound {
+        Long getId();
+        String getHandle();
+        String getHdNumber();
+        String getFromLocation();
+        String getToLocation();
+        String getPiecesQty();
+        String getArticle();
+        String getStatus();
+    }
+
+    @Query(value="select w.id,w.handle, hd_number hdNumber, lFrom.location_name fromLocation,lTo.location_name toLocation,pieces_qty piecesQty,a.article_number article,w.status from work_details w inner join location lFrom on w.from_location_id = lFrom.id inner join location lTo on w.to_location_id = lTo.id inner join warehouse w2 on w.warehouse_id = w2.id inner join article a on w.article_id = a.id where w.work_number = ?1 and status = ?3 and w2.name = ?2 order by article_number limit 1",nativeQuery = true)
+    WorkToDoFoundProduction workToDoFoundProduction(String handle,String warehouseName, String status);
+
+    public static interface WorkToDoFoundProduction {
         Long getId();
         String getHandle();
         String getHdNumber();
@@ -87,4 +107,7 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
 
     @Query(value = "select work_type from work_details where work_number = ?1 order by 1 limit 1",nativeQuery = true)
     String workTypeByWorkNumber(Long workNumber);
+
+    @Query("Select w from WorkDetails w where  w.workNumber = ?1 and w.warehouse.name = ?2 and w.status = 'open'")
+    List<WorkDetails> getWorkListByWarehouseAndWorkNumber(Long workNumber,String warehouseName);
 }

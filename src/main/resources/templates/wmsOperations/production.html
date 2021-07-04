@@ -91,7 +91,8 @@
 						<td class="tables" th:text="${productionList.intermediateArticlePieces}"></td>
 						<td class="tables" th:text="${productionList.finishProductPieces}"></td>
 				        <td class="tables" th:text="${productionList.changeBy}"></td>
-				        <td class="tables" th:text="${productionList.status}"></td>
+				        <td th:if="${productionList.status == '%'}" class="tables" th:text="#{app.various}"></td>
+				        <td th:if="${productionList.status != '%'}" class="tables" th:text="${productionList.status}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(productionList.last_update,0,19),'T',' ')}"></td>
 				    </tr>
 				</table>

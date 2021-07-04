@@ -4,15 +4,14 @@ package pl.coderslab.cls_wms_app.service.wmsOperations;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import pl.coderslab.cls_wms_app.entity.Reception;
-import pl.coderslab.cls_wms_app.entity.Stock;
-import pl.coderslab.cls_wms_app.entity.Transaction;
-import pl.coderslab.cls_wms_app.entity.WorkDetails;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
+import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -26,9 +25,11 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     private final StatusRepository statusRepository;
     private final ReceptionRepository receptionRepository;
     private final ReceptionService receptionService;
+    private final ArticleRepository articleRepository;
+    private final ProductionRepository productionRepository;
 
     @Autowired
-    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository, ReceptionService receptionService) {
+    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository, ReceptionService receptionService, ArticleRepository articleRepository, ProductionRepository productionRepository) {
         this.workDetailsRepository = workDetailsRepository;
         this.transactionRepository = transactionRepository;
         this.stockRepository = stockRepository;
@@ -37,6 +38,8 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         this.statusRepository = statusRepository;
         this.receptionRepository = receptionRepository;
         this.receptionService = receptionService;
+        this.articleRepository = articleRepository;
+        this.productionRepository = productionRepository;
     }
 
     @Override
@@ -155,12 +158,11 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         List<Stock> stock = stockRepository.getStockListByWorkNumber(Long.parseLong(workDetails.getHandle()));
 
         for (Stock value:stock) {
-            log.error("value.getArticle().isProduction(): " + value.getArticle().isProduction());
             if(value.getArticle().isProduction() == false){
                 value.setStatus(statusRepository.getStatusByStatusName("on_hand","Stock"));
             }
             else{
-                log.error("status: " + statusRepository.getStatusByStatusName("on_production","Production"));
+                log.error("status after finish works: " + statusRepository.getStatusByStatusName("on_production","Production"));
                 value.setStatus(statusRepository.getStatusByStatusName("on_production","Production"));
             }
             stockRepository.save(value);
@@ -175,6 +177,58 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         }
         workDetailsRepository.save(workDetails);
         receptionService.finishReception(Long.parseLong(workDetails.getHandle()),session);
+        if(workDetails.getWorkType().equals("Production")){
+            WorkDetails productionWork = new WorkDetails();
+            productionWork.setWorkType("Production");
+            int workNumberForNewProductionWork = 100;
+            while(workDetailsRepository.checkIfWorksExistsOnlyByHandle(workDetails.getHandle() + workNumberForNewProductionWork) != 0){
+                workNumberForNewProductionWork++;
+                log.debug("workNumberForNewProductionWork: " + workNumberForNewProductionWork);
+                log.debug("workDetails.getHandle(): " + workDetails.getHandle());
+                log.debug("workDetails.getHandle() + workNumberForNewProductionWork: " + workDetails.getHandle() + workNumberForNewProductionWork);
+                log.debug("query result: " + workDetailsRepository.checkIfWorksExistsOnlyByHandle(workDetails.getHandle() + workNumberForNewProductionWork));
+            }
+            productionWork.setWorkNumber(workDetails.getWorkNumber() + workNumberForNewProductionWork);
+            productionWork.setWorkDescription("Producing finish product from collected intermediate articles");
+            productionWork.setStatus("open");
+            productionWork.setWarehouse(workDetails.getWarehouse());
+            productionWork.setHandle(workDetails.getWorkNumber().toString());
+            productionWork.setToLocation(workDetails.getToLocation());
+            productionWork.setFromLocation(workDetails.getToLocation());
+            productionWork.setChangeBy(SecurityUtils.usernameForActivations());
+            productionWork.setCompany(workDetails.getCompany());
+            productionWork.setArticle(articleRepository.findArticleByArticle_number(productionRepository.getFinishProductSmallDataByProductionNumber(Long.parseLong(workDetails.getHandle())).getFinishProductNumber()));
+            productionWork.setPiecesQty(productionRepository.getFinishProductSmallDataByProductionNumber(Long.parseLong(workDetails.getHandle())).getFinishProductPieces());
+            productionWork.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            productionWork.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            int hdNumberCounter = 1;
+            while(stockRepository.checkIfHdNumberExistsOnStock(workDetails.getHdNumber() + hdNumberCounter) != 0){
+                hdNumberCounter++;
+            }
+            productionWork.setHdNumber(workDetails.getHdNumber() + hdNumberCounter);
+            workDetailsRepository.save(workDetails);
+            workDetailsRepository.save(productionWork);
+            session.setAttribute("productionScannerMessage","Work: " + workDetails.getWorkNumber() + " finished. Goods are available to produce on location: " + workDetails.getToLocation().getLocationName() + " by producing work: " +  productionWork.getWorkNumber());
+            List<Production> productionList = productionRepository.getProductionListByNumber(workDetails.getWorkNumber());
+            Long sumOfIntermediateArticlePieces = 0L;
+            for (Production singleProduction:productionList) {
+                singleProduction.setStatus("Close");
+                sumOfIntermediateArticlePieces = sumOfIntermediateArticlePieces + singleProduction.getIntermediateArticlePieces();
+            }
+            Production produceFinalProduct = new Production();
+            produceFinalProduct.setStatus("Produce");
+            produceFinalProduct.setFinishProductNumber(productionWork.getArticle().getArticle_number());
+            produceFinalProduct.setFinishProductPieces(productionWork.getPiecesQty());
+            produceFinalProduct.setProductionNumber(workDetails.getWorkNumber());
+            produceFinalProduct.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            produceFinalProduct.setChangeBy(SecurityUtils.usernameForActivations());
+            produceFinalProduct.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            produceFinalProduct.setWarehouse(workDetails.getWarehouse());
+            produceFinalProduct.setCompany(workDetails.getCompany());
+            produceFinalProduct.setIntermediateArticlePieces(sumOfIntermediateArticlePieces);
+            produceFinalProduct.setIntermediateArticleNumber(1L);
+            productionRepository.save(produceFinalProduct);
+        }
     }
 
     @Override
@@ -241,5 +295,10 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         log.error("workDetailsStatus: " + workDetailsStatus);
         return workDetailsRepository.workHeaderList(workDetailsWarehouse,workDetailsCompany,workDetailsArticle,workDetailsType,workDetailsHandle,workDetailsHandleDevice,workDetailsStatus,workDetailsLocationFrom,workDetailsLocationTo,workDetailsWorkNumber);
 
+    }
+
+    @Override
+    public void createPutAwayWork(Long productionNumberSearch) {
+        //TODO do logic for putaway work -- at first for production putaway.
     }
 }

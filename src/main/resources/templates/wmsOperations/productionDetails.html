@@ -49,7 +49,8 @@
 				    <tr style="border: solid 1px" th:each="productionList: ${productionList}">
 						<td class="widerTables" th:text="${productionList.productionNumber}" ></td>
 						<td class="widerTables" th:text="${productionList.finishProductNumber}"></td>
-				        <td class="widerTables" th:text="${productionList.intermediateArticleNumber}"></td>
+				        <td th:if="${productionList.intermediateArticleNumber} != 1" class="widerTables" th:text="${productionList.intermediateArticleNumber}"></td>
+				        <td th:if="${productionList.intermediateArticleNumber} == 1" class="widerTables" th:text="'Producing'"></td>
 				        <td class="widerTables" th:text="${productionList.intermediateArticlePieces}"></td>
 				        <td class="widerTables" th:text="${productionList.warehouse.name}"></td>
 				        <td class="widerTables" th:text="${productionList.status}"></td>

@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
-import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
 import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
@@ -21,7 +20,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/scanner")
 @Slf4j
-public class ScannerProductionController {
+public class ScannerProductionPickingController {
 
     private final WorkDetailsService workDetailsService;
     private final WarehouseRepository warehouseRepository;
@@ -31,14 +30,13 @@ public class ScannerProductionController {
 
 
     @Autowired
-    public ScannerProductionController(WorkDetailsService workDetailsService, WarehouseRepository warehouseRepository, CompanyService companyService, LocationRepository locationRepository, WorkDetailsRepository workDetailsRepository) {
+    public ScannerProductionPickingController(WorkDetailsService workDetailsService, WarehouseRepository warehouseRepository, CompanyService companyService, LocationRepository locationRepository, WorkDetailsRepository workDetailsRepository) {
         this.workDetailsService = workDetailsService;
         this.warehouseRepository = warehouseRepository;
         this.companyService = companyService;
         this.locationRepository = locationRepository;
         this.workDetailsRepository = workDetailsRepository;
     }
-
 
     //Production branch
     @GetMapping("{token}/{warehouse}/{equipment}/5" )
@@ -55,7 +53,7 @@ public class ScannerProductionController {
         return "wmsOperations/scanner/production/scannerProduction";
     }
     @PostMapping("scannerProduction")
-    public String productionMenuPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerProduction,
+    public String pickingMenuPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam int scannerProduction,
                                 HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment) {
         log.error("Production Step scanner.scannerMenu: " +  scannerProduction);
         session.setAttribute("workProductionScannerChoice", scannerProduction);
@@ -63,9 +61,9 @@ public class ScannerProductionController {
     }
 
 
-    //Manual Selection Work
+    //Manual Selection Picking Work
     @GetMapping("{token}/{warehouse}/{equipment}/5/1")
-    public String productionMenuManualWork(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,
+    public String pickingMenuManualWork(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,
                                           @SessionAttribute(required = false) String manualProductionScannerMessage) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
@@ -73,13 +71,13 @@ public class ScannerProductionController {
         model.addAttribute("equipment", equipment);
         model.addAttribute("message", manualProductionScannerMessage);
         model.addAttribute("warehouse", warehouse);
-        return "wmsOperations/scanner/production/scannerProductionManualWork";
+        return "wmsOperations/scanner/production/picking/scannerProductionManualWork";
     }
     @PostMapping("scannerProductionManualWork")
-    public String productionMenuManualWorkPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam Long productionNumber,
+    public String pickingMenuManualWorkPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam Long productionNumber,
                                               HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
                                               @SessionAttribute int workProductionScannerChoice) {
-        if(workDetailsRepository.checkIfWorksExistsForHandle(productionNumber.toString(),scannerChosenWarehouse)>0){
+        if(workDetailsRepository.checkIfWorksExistsForHandleProduction(productionNumber.toString(),scannerChosenWarehouse,"Production picking")>0){
             session.setAttribute("productionNumberSearch", productionNumber);
             List<WorkDetails> works = workDetailsRepository.getWorkListByWarehouseAndHandle(productionNumber.toString(),scannerChosenWarehouse);
             for(WorkDetails singularWork : works){
@@ -89,7 +87,7 @@ public class ScannerProductionController {
             }
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumber;
         }
-        else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUser(productionNumber.toString(),scannerChosenWarehouse,SecurityUtils.username()) > 0){
+        else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(productionNumber.toString(),scannerChosenWarehouse,SecurityUtils.username(),"Production picking") > 0){
             session.setAttribute("productionNumberSearch", productionNumber);
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumber;
         }
@@ -102,7 +100,7 @@ public class ScannerProductionController {
 
     //scan locationFrom
     @GetMapping("{token}/{warehouse}/{equipment}/5/1/{productionNumber}")
-    public String productionMenuManualWorkProductionNumberFound(@PathVariable String warehouse,@PathVariable String token,
+    public String pickingMenuManualWorkProductionNumberFound(@PathVariable String warehouse,@PathVariable String token,
                                                                 @PathVariable String equipment, Model model,@SessionAttribute Long productionNumberSearch,
                                                                 @SessionAttribute(required = false) String productionScannerLocationFromMessage) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -115,11 +113,11 @@ public class ScannerProductionController {
         model.addAttribute("finishProductNumber",workDetailsRepository.finishProductNumber(productionNumberSearch.toString(),warehouse));
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(productionNumberSearch.toString(),warehouse,SecurityUtils.username());
         model.addAttribute("workToDoFound",workToDoFound);
-        return "wmsOperations/scanner/production/scannerProductionWorkFoundOriginLocation";
+        return "wmsOperations/scanner/production/picking/scannerProductionWorkFoundOriginLocation";
     }
 
     @PostMapping("productionMenuManualWorkProductionNumberFound")
-    public String productionMenuManualWorkReceptionNumberFoundPost(@SessionAttribute String scannerChosenWarehouse,String token,@RequestParam String productionScannerFromLocation,
+    public String pickingMenuManualWorkReceptionNumberFoundPost(@SessionAttribute String scannerChosenWarehouse,String token,@RequestParam String productionScannerFromLocation,
                                                                   @RequestParam String originLocation, HttpSession session,@SessionAttribute int scannerMenuChoice,
                                                                   @SessionAttribute String scannerChosenEquipment, @SessionAttribute int workProductionScannerChoice,
                                                                   @SessionAttribute Long productionNumberSearch) {
@@ -138,7 +136,7 @@ public class ScannerProductionController {
 
     //scan HdNumber
     @GetMapping("{token}/{warehouse}/{equipment}/5/1/{productionNumber}/hdNumber")
-    public String productionMenuManualWorkProductionNumberFoundHdNumber(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,@SessionAttribute Long productionNumberSearch,@SessionAttribute(required = false) String productionScannerHdNumberMessage ) {
+    public String pickingMenuManualWorkProductionNumberFoundHdNumber(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,@SessionAttribute Long productionNumberSearch,@SessionAttribute(required = false) String productionScannerHdNumberMessage ) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
@@ -150,11 +148,11 @@ public class ScannerProductionController {
         model.addAttribute("finishProductNumber",workDetailsRepository.finishProductNumber(productionNumberSearch.toString(),warehouse));
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(productionNumberSearch.toString(),warehouse,SecurityUtils.username());
         model.addAttribute("workToDoFound",workToDoFound);
-        return "wmsOperations/scanner/production/scannerProductionWorkFoundHdNumber";
+        return "wmsOperations/scanner/production/picking/scannerProductionWorkFoundHdNumber";
     }
 
     @PostMapping("productionMenuManualWorkProductionNumberFoundHdNumber")
-    public String productionMenuManualWorkProductionNumberFoundHdNumberPost(@SessionAttribute String scannerChosenWarehouse,
+    public String pickingMenuManualWorkProductionNumberFoundHdNumberPost(@SessionAttribute String scannerChosenWarehouse,
                                                                           String token,@RequestParam String productionScannerExpectedHdNumber, @RequestParam String productionScannerEnteredHdNumber,
                                                                           HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
                                                                           @SessionAttribute int workProductionScannerChoice,@SessionAttribute Long productionNumberSearch) {
@@ -174,7 +172,7 @@ public class ScannerProductionController {
 
     //scan Article
     @GetMapping("{token}/{warehouse}/{equipment}/5/1/{productionNumber}/hdNumber/article")
-    public String productionMenuManualWorkProductionNumberFoundArticle(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment,
+    public String pickingMenuManualWorkProductionNumberFoundArticle(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment,
                                                                        Model model,@SessionAttribute Long productionNumberSearch,
                                                                        @SessionAttribute(required = false) String productionScannerArticleMessage ) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -189,11 +187,11 @@ public class ScannerProductionController {
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(productionNumberSearch.toString(),warehouse,SecurityUtils.username());
         model.addAttribute("workToDoFound",workToDoFound);
 
-        return "wmsOperations/scanner/production/scannerProductionWorkFoundArticle";
+        return "wmsOperations/scanner/production/picking/scannerProductionWorkFoundArticle";
     }
 
     @PostMapping("productionMenuManualWorkProductionNumberFoundArticle")
-    public String productionMenuManualWorkProductionNumberFoundArticlePost(@SessionAttribute String scannerChosenWarehouse,
+    public String pickingMenuManualWorkProductionNumberFoundArticlePost(@SessionAttribute String scannerChosenWarehouse,
                                                                          String token,@RequestParam String productionScannerExpectedArticle, @RequestParam String productionScannerEnteredArticle,
                                                                          HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
                                                                          @SessionAttribute int workProductionScannerChoice,@SessionAttribute Long productionNumberSearch,
@@ -217,7 +215,7 @@ public class ScannerProductionController {
 
     //scan destinationLocation
     @GetMapping("{token}/{warehouse}/{equipment}/5/1/{productionNumber}/hdNumber/article/toLocation")
-    public String productionMenuManualWorkProductionNumberFoundDestinationLocation(@PathVariable String warehouse,
+    public String pickingMenuManualWorkProductionNumberFoundDestinationLocation(@PathVariable String warehouse,
                                                                                  @PathVariable String token,
                                                                                  @PathVariable String equipment, Model model,
                                                                                  @SessionAttribute Long productionNumberSearch,
@@ -233,11 +231,11 @@ public class ScannerProductionController {
 
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(productionNumberSearch.toString(),warehouse,SecurityUtils.username());
         model.addAttribute("workToDoFound",workToDoFound);
-        return "wmsOperations/scanner/production/scannerProductionWorkFoundDestinationLocation";
+        return "wmsOperations/scanner/production/picking/scannerProductionWorkFoundDestinationLocation";
     }
 
     @PostMapping("productionMenuManualWorkProductionNumberFoundDestinationLocation")
-    public String productionMenuManualWorkProductionNumberFoundDestinationLocationPost(@SessionAttribute String scannerChosenWarehouse,
+    public String pickingMenuManualWorkProductionNumberFoundDestinationLocationPost(@SessionAttribute String scannerChosenWarehouse,
                                                                                      String token,@RequestParam String productionScannerExpectedDestinationLocation, @RequestParam String productionScannerEnteredDestinationLocation,
                                                                                      HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
                                                                                      @SessionAttribute int workProductionScannerChoice,@SessionAttribute Long productionNumberSearch,
@@ -251,12 +249,11 @@ public class ScannerProductionController {
             session.setAttribute("enteredDestinationLocation", productionScannerEnteredDestinationLocation);
             WorkDetails workDetails = workDetailsRepository.workLineFinish(Long.parseLong(productionScannerEnteredHdNumber),scannerChosenWarehouse,productionNumberSearch.toString(),productionScannerEnteredArticle);
             workDetailsService.workLineFinish(workDetails,scannerChosenEquipment);
-            if(workDetailsRepository.checkIfWorksExistsForHandleWithStatusUser(productionNumberSearch.toString(),scannerChosenWarehouse,SecurityUtils.username()) == 0 ){
+            if(workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(productionNumberSearch.toString(),scannerChosenWarehouse,SecurityUtils.username(),"Production picking") == 0 ){
                 workDetailsService.workFinished(workDetails,session);
-                session.setAttribute("productionScannerMenuMessage","Work: " + workDetails.getWorkNumber() + " for reception: " + workDetails.getHandle() + " finished. Goods are available on stock. Mail to customer sent");
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + '5';
             }
-            session.setAttribute("productionScannerLocationFromMessage","Work for: " + workDetails.getHdNumber() + " finished, start next one from your reception");
+            session.setAttribute("productionScannerLocationFromMessage","Work for: " + workDetails.getHdNumber() + " finished, start next one from your production");
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumberSearch;
 
         }

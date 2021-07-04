@@ -116,7 +116,7 @@ public class ProductionServiceImpl implements ProductionService{
             session.setAttribute("productionMessage","Production for finish product: " + articleRepository.getOne(Long.parseLong(articleId)).getArticle_number() + " was successfully created. Extremely flag set on 2, so works were not created");
         }
         if(extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),"Production_after_creation").getExtremelyValue().equals("1")){
-            production.setStatus("Work pending");
+            production.setStatus("Picking pending");
             workProductionStatus = true;
             session.setAttribute("productionMessage","Production and works for finish product: " + articleRepository.getOne(Long.parseLong(articleId)).getArticle_number() + " was successfully created.");
         }

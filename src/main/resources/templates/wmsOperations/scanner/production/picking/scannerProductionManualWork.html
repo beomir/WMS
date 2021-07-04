@@ -24,23 +24,20 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form method="post" th:action="@{/scanner/productionMenuManualWorkProductionNumberFoundHdNumber}">
+		<form method="post" th:action="@{/scanner/scannerProductionManualWork}">
 			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
-			<div class="underTitle" th:text="#{app.production}"></div><br/>
 			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
+			<div class="underTitle" th:text="#{app.production} + ' ' + #{app.picking}"></div><br/>
 			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
 			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
-			<div style="text-align: center;color: white;font-weight: bold" th:text="#{app.pickingForFinishProduct} + ': ' + ${finishProductNumber}"></div><br/>
-			<div class="formDescription" th:text="#{app.goodsTransferedFrom} + ' ' + ${workToDoFound.fromLocation}"></div>
+			<div class="formDescription" th:text="#{app.choosePickingWorkManuallyEnterProduction}"></div><br/><br/>
+			<label  th:text="#{app.productionNumber}" style="margin-left: 15%;color: white;font-weight: bold"></label>
+			<br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[0-9].{7,}" min="8" max="8" type="text" name="productionNumber"/>
 			<br/><br/>
-
-			<label  th:text="#{app.scan} + ' ' + #{app.handleDevice} + ' (' + ${workToDoFound.hdNumber} + ')'" style="margin-left: 15%;color: white;font-weight: bold"></label>
-			<br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[0-9].{17,}" min="9" max="18" type="text" name="productionScannerEnteredHdNumber"/>
-			<br/><br/>
-			<input type="hidden" th:value="${token}" name="token"/>
-			<input type="hidden" th:value="${workToDoFound.hdNumber}" name="productionScannerExpectedHdNumber">
+			<input  type="hidden" th:value="${token}" name="token"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
-				<button type="submit" class="circleBig" style="font-size:12px" th:text="#{app.confirm}"></button>
+				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/5'}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
+				<button type="submit" class="circleBig" style="font-size:12px" th:text="#{app.search}"></button>
 			</section>
 		</form>
 

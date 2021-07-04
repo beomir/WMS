@@ -64,4 +64,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
         Long getDepth();
         String getChangeBy();
     }
+
+
 }

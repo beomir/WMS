@@ -24,20 +24,22 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form method="post" th:action="@{/scanner/scannerProductionManualWork}">
+		<form method="post" th:action="@{/scanner/productionMenuManualWorkProductionNumberFound}">
 			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
+			<div class="underTitle" th:text="#{app.production} + ' ' + #{app.picking}"></div><br/>
 			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
-			<div class="underTitle" th:text="#{app.production}">reception</div><br/>
 			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
 			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
-			<div class="formDescription" th:text="#{app.chooseWorkManuallyEnterProduction}"></div><br/><br/>
-			<label  th:text="#{app.productionNumber}" style="margin-left: 15%;color: white;font-weight: bold"></label>
-			<br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[0-9].{7,}" min="8" max="8" type="text" name="productionNumber"/>
+			<div style="text-align: center;color: white;font-weight: bold" th:text="#{app.pickingForFinishProduct} + ': ' + ${finishProductNumber}"></div><br/>
+			<div class="formDescription" th:text="#{app.workForProductionNumber} + ': ' + ${productionNumber} + ' ' + #{app.found} "></div><br/><br/>
+
+			<label  th:text="#{app.scanOriginLocation} + ' (' + ${workToDoFound.fromLocation} + ')'" style="margin-left: 15%;color: white;font-weight: bold"></label>
+			<br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[a-zA-Z0-9].{8,}" min="9" max="9" type="text" name="originLocation"/>
 			<br/><br/>
-			<input  type="hidden" th:value="${token}" name="token"/>
+			<input type="hidden" th:value="${token}" name="token"/>
+			<input type="hidden" th:value="${workToDoFound.fromLocation}" name="productionScannerFromLocation">
 			<section style="display: flex; align-items: center;justify-content: center;">
-				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/5'}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
-				<button type="submit" class="circleBig" style="font-size:12px" th:text="#{app.search}"></button>
+				<button type="submit" class="circleBig" style="font-size:12px" th:text="#{app.confirm}"></button>
 			</section>
 		</form>
 

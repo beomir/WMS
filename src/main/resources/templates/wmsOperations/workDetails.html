@@ -104,7 +104,7 @@
 				        <td th:if="${workDetails.status == 'open'}" class="tables" th:text="#{app.open}"></td>
 				        <td th:if="${workDetails.status == 'close'}" class="tables" th:text="#{app.close}"></td>
 				        <td th:if="${workDetails.status == '%'}" class="tables" th:text="#{app.various}"></td>
-				        <td th:if="${workDetails.status != 'close' && workDetails.status != 'open'}" && workDetails.status != '%' class="tables" th:text="${workDetails.status}"></td>
+				        <td th:if="${workDetails.status != 'close' && workDetails.status != 'open' && workDetails.status != '%'}" class="tables" th:text="${workDetails.status}"></td>
 						<td class="tables" th:text="${workDetails.hdNumber}"></td>
 						</tr>
 				</table>
