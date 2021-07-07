@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
+import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
 import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
-import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -42,11 +42,12 @@ public class StockServiceImpl implements StockService {
     private final CompanyRepository companyRepository;
     public String locationName;
     private final IssueLogService issueLogService;
+    private final WorkDetailsRepository workDetailsRepository;
 
     public List<Stock> storage = new ArrayList<>();
 
     @Autowired
-    public StockServiceImpl(StockRepository stockRepository, LocationRepository locationRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, StatusRepository statusRepository, UnitRepository unitRepository, ArticleRepository articleRepository, TransactionService transactionService, WarehouseRepository warehouseRepository, CompanyRepository companyRepository, IssueLogService issueLogService) {
+    public StockServiceImpl(StockRepository stockRepository, LocationRepository locationRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, StatusRepository statusRepository, UnitRepository unitRepository, ArticleRepository articleRepository, TransactionService transactionService, WarehouseRepository warehouseRepository, CompanyRepository companyRepository, IssueLogService issueLogService, WorkDetailsRepository workDetailsRepository) {
         this.stockRepository = stockRepository;
         this.locationRepository = locationRepository;
         this.sendEmailService = sendEmailService;
@@ -59,6 +60,7 @@ public class StockServiceImpl implements StockService {
         this.warehouseRepository = warehouseRepository;
         this.companyRepository = companyRepository;
         this.issueLogService = issueLogService;
+        this.workDetailsRepository = workDetailsRepository;
     }
 
     @Override
@@ -478,6 +480,7 @@ public class StockServiceImpl implements StockService {
     }
 
 
+
     void partialTransfer(Stock stock, String locationNames, ChosenStockPositional chosenStockPositional, Stock stockInDestinationLocation, Transaction transaction) {
         if (stockInDestinationLocation.getHd_number().equals(stock.getHd_number()) && stockInDestinationLocation.getArticle().getArticle_number() == stock.getArticle().getArticle_number()) {
             stockInDestinationLocation.setPieces_qty(stockInDestinationLocation.getPieces_qty() + stock.getPieces_qty());
@@ -633,6 +636,30 @@ public class StockServiceImpl implements StockService {
             transaction.setTransactionType("319");
             transactionService.add(transaction);
         }
+    }
+
+
+    @Override
+    public void produceGoods(Long productionNumberToConfirm) throws CloneNotSupportedException {
+        Stock finishProduct = new Stock();
+
+        List<Stock> stockList = stockRepository.getStockByWorkHandleAndWorkDescription(workDetailsRepository.workDetailHandle(productionNumberToConfirm,"Producing finish product from collected intermediate articles"),"Production picking");
+        log.debug("productionNumberToConfirm: " + productionNumberToConfirm);
+        for (Stock intermediateGoods: stockList) {
+            finishProduct = (Stock) intermediateGoods.clone();
+            stockRepository.delete(intermediateGoods);
+        }
+
+        WorkDetails workForFinishProduct = workDetailsRepository.getOneWorkDetailsByWorkNumber(productionNumberToConfirm);
+        finishProduct.setStatus(statusRepository.getStatusByStatusName("production_put_away_pending","Production"));
+        finishProduct.setArticle(workForFinishProduct.getArticle());
+        finishProduct.setHd_number(workForFinishProduct.getHdNumber());
+        finishProduct.setPieces_qty(workForFinishProduct.getPiecesQty());
+        finishProduct.setCreated(TimeUtils.timeNowLong());
+        finishProduct.setLast_update(TimeUtils.timeNowLong());
+        finishProduct.setChangeBy(SecurityUtils.usernameForActivations());
+        finishProduct.setComment("");
+        stockRepository.save(finishProduct);
     }
 }
 

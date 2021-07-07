@@ -32,7 +32,7 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
     int checkIfWorksExistsForHandleWithStatusUser(String handle,String warehouseName,String status);
 
     @Query(value="Select count(*) from work_details w inner join warehouse w2 on w.warehouse_id = w2.id where w.work_number = ?1 and w2.name = ?2 and w.status = 'open' and w.work_description = ?3",nativeQuery = true)
-    int checkIfWorksExistsForHandleProduction(String handle,String warehouseName,String work_description);
+    int checkIfWorksExistsForHandleProduction(Long workNumber,String warehouseName,String work_description);
 
     @Query(value="Select count(*) from work_details w inner join warehouse w2 on w.warehouse_id = w2.id where w.work_number = ?1 and w2.name = ?2 and w.status = ?3 and w.work_description = ?4",nativeQuery = true)
     int checkIfWorksExistsForHandleWithStatusUserProduction(String handle,String warehouseName,String status,String work_description);
@@ -91,6 +91,9 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
     @Query("Select wd from WorkDetails wd where wd.workNumber = ?1")
     List<WorkDetails> getWorkDetailsByWorkNumber(Long workNumber);
 
+    @Query("Select wd from WorkDetails wd where wd.workNumber = ?1")
+    WorkDetails getOneWorkDetailsByWorkNumber(Long workNumber);
+
     @Query(value = "Select wd.work_number workNumber,w.name status,c.name changeBy,wd.work_type workType, count(*) piecesQty from  work_details wd inner join warehouse w on wd.warehouse_id = w.id inner join company c on wd.company_id = c.id where wd.work_number = ?1 group by wd.work_number,w.name,c.name,wd.work_type order by 1 limit 1",nativeQuery = true)
     WorkNumberDetailsInfo workNumberDetailsInfo(Long workNumber);
 
@@ -110,4 +113,7 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
 
     @Query("Select w from WorkDetails w where  w.workNumber = ?1 and w.warehouse.name = ?2 and w.status = 'open'")
     List<WorkDetails> getWorkListByWarehouseAndWorkNumber(Long workNumber,String warehouseName);
+
+    @Query(value="select handle from work_details where work_number = ?1 and work_description = ?2 order by 1 limit 1",nativeQuery = true)
+    String workDetailHandle(Long workNumber,String workDescription);
 }

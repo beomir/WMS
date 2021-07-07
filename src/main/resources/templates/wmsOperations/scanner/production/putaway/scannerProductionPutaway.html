@@ -24,16 +24,21 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form method="post" th:action="@{/scanner/scannerProduceManualWork}">
+		<form method="post" th:action="@{/scanner/scannerProductionPutaway}">
 			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
 			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
-			<div th:if="${messagePutaway} != null" style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${messagePutaway}"></div>
-			<div class="underTitle" th:text="#{app.production} + ' ' + #{app.produce}"></div><br/>
+			<div class="underTitle" th:text="#{app.production} + ' ' + #{app.putaway}"></div><br/>
 			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
 			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
-			<div class="formDescription" th:text="#{app.choosePickingWorkManuallyEnterProduction}"></div><br/><br/>
+			<div class="formDescription" >
+				<span th:text="#{app.click} + ' '"></span>
+				<button name="automaticallyFinder" type="submit"  th:value="'automatically'" class="circle" th:text="#{app.here}"></button>
+				<span th:text="' ' + #{app.toFindPutawayWork}"></span>
+			</div>
+			<br/><div th:text="#{app.or}" class="formDescription"></div><br/>
+			<div class="formDescription" th:text="#{app.choosePutawayWorkManuallyEnterProduction}"></div><br/><br/>
 			<label  th:text="#{app.productionNumber}" style="margin-left: 15%;color: white;font-weight: bold"></label>
-			<br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[0-9].{7,}" min="8" max="8" type="text" name="productionNumber"/>
+			<br/><input style="max-width:30%;margin-left: 15%" class="check" pattern="[0-9].{7,}" min="8" max="8" type="text" name="productionNumber"/>
 			<br/><br/>
 			<input  type="hidden" th:value="${token}" name="token"/>
 			<section style="display: flex; align-items: center;justify-content: center;">

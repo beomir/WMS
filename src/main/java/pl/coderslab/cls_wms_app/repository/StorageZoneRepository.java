@@ -21,7 +21,7 @@ public interface StorageZoneRepository extends JpaRepository<StorageZone, Long> 
     @Query("Select s from StorageZone s")
     List<StorageZone> getStorageZones();
 
-    @Query("Select s from StorageZone s where s.storageZoneName = ?1")
-    StorageZone findStorageZoneByStorageZoneName(String storageZoneName);
+    @Query("Select s from StorageZone s where s.storageZoneName = ?1 and s.warehouse.name = ?2")
+    StorageZone findStorageZoneByStorageZoneName(String storageZoneName,String warehouseName);
 
 }

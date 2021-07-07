@@ -32,5 +32,9 @@ public interface WorkDetailsService {
 
     List<WorkDetailsRepository.WorkHeaderList> workHeaderList(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType, String workDetailsHandle, String workDetailsHandleDevice, String workDetailsStatus, String workDetailsLocationFrom, String workDetailsLocationTo, String workDetailsWorkNumber);
 
-    void createPutAwayWork(Long productionNumberSearch);
+    void createPutAwayWork(Long productionNumberToConfirm, HttpSession session) throws CloneNotSupportedException;
+
+    void closeWorkDetail(Long workNumber,String warehouseName);
+
+    void changeStatusAfterStartWork(Long workNumber,String warehouseName);
 }

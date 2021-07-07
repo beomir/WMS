@@ -44,5 +44,7 @@ public interface StockService {
     void remove(Long id);
 
     void transfer(Stock stock, String locationName, ChosenStockPositional chosenStockPositional);
+
+    void produceGoods(Long productionNumberToConfirm) throws CloneNotSupportedException;
 }
 

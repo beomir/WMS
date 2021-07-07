@@ -2,11 +2,13 @@ package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.*;
+import pl.coderslab.cls_wms_app.service.storage.LocationService;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
 
 import javax.servlet.http.HttpSession;
@@ -27,9 +29,10 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     private final ReceptionService receptionService;
     private final ArticleRepository articleRepository;
     private final ProductionRepository productionRepository;
+    private final LocationService locationService;
 
     @Autowired
-    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository, ReceptionService receptionService, ArticleRepository articleRepository, ProductionRepository productionRepository) {
+    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository, ReceptionService receptionService, ArticleRepository articleRepository, ProductionRepository productionRepository, LocationService locationService) {
         this.workDetailsRepository = workDetailsRepository;
         this.transactionRepository = transactionRepository;
         this.stockRepository = stockRepository;
@@ -40,6 +43,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         this.receptionService = receptionService;
         this.articleRepository = articleRepository;
         this.productionRepository = productionRepository;
+        this.locationService = locationService;
     }
 
     @Override
@@ -292,13 +296,67 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         if(workDetailsWorkNumber == null || workDetailsWorkNumber.equals("")){
             workDetailsWorkNumber = "%";
         }
-        log.error("workDetailsStatus: " + workDetailsStatus);
+        log.debug("workDetailsStatus: " + workDetailsStatus);
         return workDetailsRepository.workHeaderList(workDetailsWarehouse,workDetailsCompany,workDetailsArticle,workDetailsType,workDetailsHandle,workDetailsHandleDevice,workDetailsStatus,workDetailsLocationFrom,workDetailsLocationTo,workDetailsWorkNumber);
 
     }
 
     @Override
-    public void createPutAwayWork(Long productionNumberSearch) {
-        //TODO do logic for putaway work -- at first for production putaway.
+    public void createPutAwayWork(Long productionNumberToConfirm, HttpSession session) throws CloneNotSupportedException {
+        log.debug("productionNumberToConfirm: " + productionNumberToConfirm);
+        List<WorkDetails> workDetailsToConfirm = workDetailsRepository.getWorkDetailsByWorkNumber(productionNumberToConfirm);
+        for (WorkDetails singularWorkToConfirm: workDetailsToConfirm) {
+            log.error("id singularWorkToConfirm: " + singularWorkToConfirm.getId());
+            WorkDetails putAwayAfterProduction = (WorkDetails) singularWorkToConfirm.clone();
+            putAwayAfterProduction.setId(null);
+            int workNumberCounter = 1;
+            Long finalWorkNumber = Long.parseLong(singularWorkToConfirm.getWorkNumber() + StringUtils.leftPad(String.valueOf(workNumberCounter),2, "0"));
+            log.debug("finalWorkNumber before loop: " + finalWorkNumber);
+            log.debug("checkIfWorksExistsForHandleProduction: " + workDetailsRepository.checkIfWorksExistsForHandleProduction(finalWorkNumber,singularWorkToConfirm.getWarehouse().getName(),singularWorkToConfirm.getWorkDescription()));
+            while(workDetailsRepository.checkIfWorksExistsForHandleProduction(finalWorkNumber,singularWorkToConfirm.getWarehouse().getName(),singularWorkToConfirm.getWorkDescription())!=0){
+                workNumberCounter++;
+                finalWorkNumber = Long.parseLong(singularWorkToConfirm.getWorkNumber() + StringUtils.leftPad(String.valueOf(workNumberCounter),2, "0"));
+                log.debug("finalWorkNumber inside loop: " + finalWorkNumber);
+            }
+            log.debug("finalWorkNumber after loop: " + finalWorkNumber);
+            putAwayAfterProduction.setWorkNumber(finalWorkNumber);
+            log.debug("findAvailableLocationAfterProducing: " + locationService.findAvailableLocationAfterProducing(putAwayAfterProduction.getArticle(),putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone(),putAwayAfterProduction.getWarehouse().getName()));
+          if(locationService.findAvailableLocationAfterProducing(putAwayAfterProduction.getArticle(),putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone(),putAwayAfterProduction.getWarehouse().getName())==null){
+              session.setAttribute("manualProduceScannerMessage","Available location to putaway in storage zone: " + putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone().getStorageZoneName() + " not found ");
+              session.setAttribute("putawayLocationAfterProducing","notfound");
+              log.error("locationTo null");
+          }
+            else{
+              Location locationTo = locationService.findAvailableLocationAfterProducing(putAwayAfterProduction.getArticle(),putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone(),putAwayAfterProduction.getWarehouse().getName());
+              putAwayAfterProduction.setToLocation(locationTo);
+              putAwayAfterProduction.setStatus("Production putaway");
+              workDetailsRepository.save(putAwayAfterProduction);
+              session.setAttribute("manualProduceScannerMessage","Putaway work: " + putAwayAfterProduction.getWorkNumber() + " successfully created");
+              session.setAttribute("putawayLocationAfterProducing","found");
+              log.debug("locationTo not null");
+          }
+        }
     }
+
+    @Override
+    public void closeWorkDetail(Long workNumber,String warehouseName){
+        log.error("workNumber: " + workNumber);
+        List<WorkDetails> works = workDetailsRepository.getWorkListByWarehouseAndWorkNumber(workNumber,warehouseName);
+        for(WorkDetails singularWork : works){
+            singularWork.setStatus("close");
+            workDetailsRepository.save(singularWork);
+            log.error("Production: " + singularWork.getId() + " " + singularWork.getWorkNumber());
+        }
+    }
+
+    @Override
+    public void changeStatusAfterStartWork(Long workNumber,String warehouseName){
+        List<WorkDetails> works = workDetailsRepository.getWorkListByWarehouseAndWorkNumber(workNumber,warehouseName);
+        for(WorkDetails singularWork : works){
+            singularWork.setStatus(SecurityUtils.username());
+            workDetailsRepository.save(singularWork);
+            log.error("Production: " + singularWork.getId() + " " + singularWork.getWorkNumber());
+        }
+    }
+
 }

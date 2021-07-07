@@ -6,9 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
-import pl.coderslab.cls_wms_app.entity.IssueLog;
-import pl.coderslab.cls_wms_app.entity.Location;
-import pl.coderslab.cls_wms_app.entity.Transaction;
+import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
@@ -16,6 +14,7 @@ import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationSearch;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -393,6 +392,19 @@ public class LocationServiceImpl implements LocationService {
         }
     }
 
+    @Override
+    public Location findAvailableLocationAfterProducing(Article article, StorageZone storageZone, String warehouseName) {
+        if(locationRepository.getAvailableLocationForStorageZone(article.getArticleTypes().getMixed(),article.getWeight(),article.getVolume(),warehouseName,storageZone.getStorageZoneName()) == null){
+            return null;
+        }
+        else{
+            LocationRepository.AvailableLocationsForStorageZone availableLocationForStorageZone = locationRepository.getAvailableLocationForStorageZone(article.getArticleTypes().getMixed(),article.getWeight(),article.getVolume(),warehouseName,storageZone.getStorageZoneName());
+            Location location = locationRepository.findLocationByLocationName(availableLocationForStorageZone.getLocation(),warehouseName);
+            return location;
+        }
+
+    }
+
     private void addLocationsToStorageZoneIssueLogCreation(String requestedLocationToAdd, AddLocationToStorageZone aLTSZ) {
 
         if (locationRepository.findLocationByLocationName(requestedLocationToAdd,aLTSZ.warehouse) == null) {
@@ -422,7 +434,7 @@ public class LocationServiceImpl implements LocationService {
             Location location = locationRepository.findLocationByLocationName(requestedLocationToAdd,aLTSZ.warehouse);
             Transaction transaction = new Transaction();
             transaction.setAdditionalInformation("Location: " + requestedLocationToAdd + " have changed Storage Zone from: " + location.getStorageZone().getStorageZoneName() + ", to: " + aLTSZ.getStorageZone());
-            location.setStorageZone(storageZoneRepository.findStorageZoneByStorageZoneName(aLTSZ.getStorageZone()));
+            location.setStorageZone(storageZoneRepository.findStorageZoneByStorageZoneName(aLTSZ.getStorageZone(),aLTSZ.warehouse));
             location.setLast_update(LocalDateTime.now().toString());
             transaction.setHdNumber(0L);
             transaction.setArticle(0L);

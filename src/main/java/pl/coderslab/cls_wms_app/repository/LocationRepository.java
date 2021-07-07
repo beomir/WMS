@@ -47,6 +47,13 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
         String getLocation();
     }
 
+    @Query(value = "Select location_name location from location l left outer join  storage_zone sz on l.storage_zone_id = sz.id join warehouse w on l.warehouse_id = w.id where l.free_space = l.volume and l.free_weight = l.max_weight and l.location_type <> 'RDL' and l.location_type <> 'SDL' and w.name = ?4 and sz.storage_zone_name = ?5 union Select location_name location from location l join storage s on l.id = s.location_id join storage_zone sz on l.storage_zone_id = sz.id join article a on s.article_id = a.id  join article_types t on a.article_types_id = t.id   join warehouse w on s.warehouse_id = w.id where t.mixed like ?1 and l.free_weight > ?2 and l.free_space > ?3 and w.name = ?4 and sz.storage_zone_name = ?5 and l.multi_item = true and l.location_type <> 'RDL' and l.location_type <> 'SDL'  order by 1 limit 1",nativeQuery = true)
+    AvailableLocationsForStorageZone getAvailableLocationForStorageZone(String articleType, double articleWeight, double articleVolume, String warehouseName,String storageZoneName );
+
+    public static interface AvailableLocationsForStorageZone {
+        String getLocation();
+    }
+
     @Query(value = "Select location_name location, w.name warehouse, l.id id from location l join warehouse w on l.warehouse_id = w.id where l.location_type = 'PPL'",nativeQuery = true)
     List<ProductionLocations> getProductionLocations();
 

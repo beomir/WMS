@@ -47,7 +47,8 @@ public class LocationFixture {
             new Location(null, "PRODUCTION001","Production put off location", "PPL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000,3000),
             new Location(null, "PRODUCTION001","Production put off location", "PPL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000,3000),
             new Location(null, "PRODUCTION002","Production put off location", "PPL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000,3000),
-            new Location(null, "PRODUCTION003","Production put off location", "PPL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000,3000)
+            new Location(null, "PRODUCTION003","Production put off location", "PPL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",true,true,300,500,1000,150000000,3000.00,150000000,3000),
+            new Location(null, "FLP00101016","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,5760000,3000)
 
     );
 
@@ -94,6 +95,8 @@ public class LocationFixture {
         Location location25 = locationList.get(24);
         Location location26 = locationList.get(25);
 
+        Location location27 = locationList.get(26);
+
         location1.setWarehouse(warehouseList.get(0));
         location2.setWarehouse(warehouseList.get(0));
         location3.setWarehouse(warehouseList.get(0));
@@ -120,6 +123,7 @@ public class LocationFixture {
         location24.setWarehouse(warehouseList.get(1));
         location25.setWarehouse(warehouseList.get(0));
         location26.setWarehouse(warehouseList.get(0));
+        location27.setWarehouse(warehouseList.get(0));
 
         location1.setStorageZone(storageZoneList.get(0));
         location2.setStorageZone(storageZoneList.get(1));
@@ -147,9 +151,10 @@ public class LocationFixture {
         location24.setStorageZone(storageZoneList.get(8));
         location25.setStorageZone(storageZoneList.get(8));
         location26.setStorageZone(storageZoneList.get(8));
+        location27.setStorageZone(storageZoneList.get(9));
 
 
-        int locationsFromFixtures = 26;
+        int locationsFromFixtures = 27;
         for (int i = 0; i < locationsFromFixtures; i++) {
             locationService.add(locationList.get(i));
         }

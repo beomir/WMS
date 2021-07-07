@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 
 @Table(name="storage")
-public class Stock {
+public class Stock implements Cloneable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -93,5 +93,10 @@ public class Stock {
                 ", changeBy='" + changeBy + '\'' +
                 ", unit=" + unit +
                 '}';
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

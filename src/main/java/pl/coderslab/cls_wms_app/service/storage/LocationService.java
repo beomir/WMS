@@ -1,11 +1,14 @@
 package pl.coderslab.cls_wms_app.service.storage;
 
 
+import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Location;
+import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationSearch;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public interface LocationService {
@@ -39,5 +42,7 @@ public interface LocationService {
     LocationNameConstruction lCN(Location location);
 
     void addLocationsToStorageZone(AddLocationToStorageZone aLTSZ);
+
+    Location findAvailableLocationAfterProducing(Article article, StorageZone storageZone, String warehouseName);
 
 }

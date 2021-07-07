@@ -12,15 +12,15 @@ for(let i = 0; i < statusTD.length; i++){
             $(stockTR[i]).css("background-color", "blue")
         }
     }
+    else if($(statusTD[i]).children().last().attr("title").includes("putaway")){
+        $(statusTD[i]).children().last().attr("src","/images/putaway30x30.png")
+    }
     else if($(statusTD[i]).children().last().attr("title").includes("production")){
         $(stockTR[i]).css("background-color", "blue")
         $(statusTD[i]).children().last().attr("src","/images/30x30gear.gif")
     }
     else if($(statusTD[i]).children().last().attr("title").includes("reception")){
         $(statusTD[i]).children().last().attr("src","/images/on_reception30x30.png")
-    }
-    else if($(statusTD[i]).children().last().attr("title").includes("putaway")){
-        $(statusTD[i]).children().last().attr("src","/images/putaway30x30.png")
     }
 
 
