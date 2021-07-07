@@ -25,8 +25,8 @@
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 				<div th:each="warehouse: ${warehouse}" class="titleList" th:text="#{app.stockIn} +' ' + ${warehouse.city}"></div><br/>
 
-				<div th:unless="${#request.remoteUser.contains('admin')}">
-					<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} +': ' + ${companys.name}"></div><br/><br/>
+				<div sec:authorize="!hasRole('ROLE_ADMIN')">
+					<div th:each="companies: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} +': ' + ${companies.name}"></div><br/><br/>
 				</div>
 
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
@@ -40,12 +40,12 @@
 						<th th:text="#{app.status}" style="font-weight: bold" class="tables">Status</th>
 						<th th:text="#{app.freeSpaceInLocation}" style="font-weight: bold" class="tables">Free space in Location</th>
 						<th th:text="#{app.freeWeightInLocation}" style="font-weight: bold" class="tables">Free Weight in Location</th>
-						<th th:if="${#request.remoteUser.contains('admin')}" th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
+						<th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
 						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
 						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
-				    <tr th:each="storage: ${stock}" th:style="${storage.status.status == 'to_send'} == TRUE ? 'background: blue;border: solid 1px;' :'border: solid 1px;'" th:styleappend="${storage.status.status == 'on_reception'} == TRUE ? 'background: green;border: solid 1px;' :'border: solid 1px' ">
-						<td class="tables" th:text="${storage.location.locationName}"></td>
+				    <tr name="stockTR" th:each="storage: ${stock}" th:style="${storage.status.status == 'to_send'} == TRUE ? 'background: blue;border: solid 1px;' :'border: solid 1px;'" th:styleappend="${storage.status.status == 'on_reception'} == TRUE ? 'background: green;border: solid 1px;' :'border: solid 1px' " >
+						<td th:if="${storage.pieces_qty} > 0" class="tables" th:text="${storage.location.locationName}"></td>
 						<td th:title="${storage.comment != null} == TRUE ? ${storage.comment}" th:style="${storage.comment != null && storage.comment != ''} == TRUE ? 'background: gray;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" style="padding-bottom: 2px">
 							<ol><div th:text="${storage.hd_number}"></div>
 								<li>
@@ -65,10 +65,12 @@
 				        <td class="tables" th:text="${storage.unit.name}"></td>
 				        <td class="tables" th:text="${storage.pieces_qty}"></td>
 				        <td class="tables" th:text="${storage.quality}"></td>
-				        <td class="tables" th:text="${storage.status.status}"></td>
+				        <td name="statusTD" class="tables" style="text-align: center;vertical-align: middle">
+							<img class="makeItBigger" th:title="${storage.status.status}"/>
+						</td>
 				        <td class="tables" th:text="${storage.location.freeSpace}"></td>
 				        <td class="tables" th:text="${storage.location.freeWeight}"></td>
-						<td th:if="${#request.remoteUser.contains('admin')}" class="tables" th:text="${storage.company.name}"></td>
+						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${storage.company.name}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(storage.last_update,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${storage.changeBy}"></td>
 					</tr>
@@ -85,5 +87,8 @@
 			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 		</div>
 	</div>
+	<script type="text/javascript" th:src="@{/js/stock.js}"></script>
+
 </body>
+
 </html>

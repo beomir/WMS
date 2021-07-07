@@ -20,6 +20,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -45,16 +46,15 @@ public class ShipmentController {
     }
 
     @GetMapping("/shipment")
-    public String list(Model model) {
+    public String list(Model model, HttpSession session) {
         List<Shipment> shipments = shipmentService.getShipment(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
         List<ShipMethod> shipMethod = shipMethodService.getShipMethod();
         List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse );
         model.addAttribute("shipments", shipments);
         model.addAttribute("shipMethod", shipMethod);
         model.addAttribute("warehouse", warehouse);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+
+        usersService.loggedUserData(model,session);
 
 //        Map<String,Integer> surveyMap =  shipmentService.surveyMap(warehouseId,SecurityUtils.username());
 //        model.addAttribute("surveyMap",surveyMap);

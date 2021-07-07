@@ -14,6 +14,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.SchedulerService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,12 +33,11 @@ public class SchedulerController {
     }
 
     @GetMapping("/user/scheduler")
-    public String list(Model model) {
+    public String list(Model model, HttpSession session) {
         List<Scheduler> scheduler = schedulerService.getScheduler(SecurityUtils.username());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
+
         model.addAttribute("scheduler", scheduler);
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsSettings/scheduler/scheduler";
     }
 
@@ -49,13 +49,11 @@ public class SchedulerController {
     }
 
     @GetMapping("/user/formScheduler")
-    public String schedulerForm(Model model){
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+    public String schedulerForm(Model model,HttpSession session){
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("scheduler", new Scheduler());
-        model.addAttribute("companies", companies);
         model.addAttribute("weekDays", TimeUtils.dayOfWeeks());
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsSettings/scheduler/formScheduler";
     }
 
@@ -78,14 +76,13 @@ public class SchedulerController {
     }
 
     @GetMapping("/user/formEditScheduler/{id}")
-    public String updateScheduler(@PathVariable Long id, Model model) {
+    public String updateScheduler(@PathVariable Long id, Model model,HttpSession session) {
         Scheduler scheduler = schedulerService.findById(id);
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+
         model.addAttribute(scheduler);
-        model.addAttribute("companies", companies);
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("weekDays", TimeUtils.dayOfWeeks());
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsSettings/scheduler/formEditScheduler";
     }
 

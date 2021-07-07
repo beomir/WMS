@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.coderslab.cls_wms_app.entity.Article;
+import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 
@@ -34,11 +35,40 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("Select s from Stock s where s.location.locationName = ?1 ")
     Stock getStockByLocationName(String locationName);
 
-
     @Query("Select s from Stock s where s.shipmentNumber = ?1")
     List<Stock> getStockListByShipmentNumber(Long shipmentNumber);
 
     @Query("Select s from Stock s where s.hd_number = ?1")
     Stock getStockByHdNumber(Long hdNumber);
 
+    @Query("Select s from Stock s where s.hd_number = ?1 and s.article.article_number =?2 and s.location.locationName = ?3 and s.warehouse.name = ?4 and s.company.name = ?5")
+    Stock getStockByHdNumberArticleNumberLocation(Long hdNumber, Long articleNumber, String locationName,String warehouseName, String companyName);
+
+    @Query("Select s from Stock s where s.receptionNumber = ?1")
+    List<Stock> getStockListByReceptionNumber(Long receptionNumber);
+
+    @Query("Select s from Stock s join WorkDetails wd on s.article = wd.article and s.hd_number = wd.hdNumber where wd.workNumber = ?1")
+    List<Stock> getStockListByWorkNumber(Long workNumber);
+
+    @Query(value = "select hd_number, pieces_qty, location_name changeBy, s.created from storage s inner join location l on s.location_id = l.id inner join warehouse w on s.warehouse_id = w.id inner join article a on s.article_id = a.id company c on s.company_id = c.id where c.name = ?1 and w.name = ?2 article_number = ?3 order by s.created limit 1 ",nativeQuery = true)
+    StockForProduction stockForProduction(String company,String warehouse,Long articleNumber);
+
+    public static interface StockForProduction {
+        Long getHd_number();
+        Long getPieces_qty();
+        String getChangeBy();
+        String getCreated();
+    }
+
+    @Query(value = "Select s.id,a.article_number receptionNumber,l.location_name quality,c.name changeBy,w.name comment,s.pieces_qty pieces_qty from storage s inner join warehouse w on s.warehouse_id = w.id inner join location l on s.location_id = l.id inner join company c on s.company_id = c.id inner join article a on s.article_id = a.id where c.name = ?1 and w.name = ?2 and a.article_number = ?3 order by s.created limit 1",nativeQuery = true)
+    SmallStockDataLimitedToOne smallStockDataLimitedToOne(String company,String warehouse,Long articleNumber);
+
+    public static interface SmallStockDataLimitedToOne{
+        Long getId();
+        Long getReceptionNumber();
+        String getQuality();
+        String getChangeBy();
+        String getComment();
+        Long getPieces_qty();
+    }
 }

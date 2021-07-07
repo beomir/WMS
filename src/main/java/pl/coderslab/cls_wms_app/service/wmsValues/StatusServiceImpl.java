@@ -27,4 +27,9 @@ public class StatusServiceImpl implements StatusService{
         return statusRepository.getStatus();
     }
 
+    @Override
+    public  List<Status> getStockStatuses(){
+        return statusRepository.getStockStatuses();
+    }
+
 }

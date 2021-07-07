@@ -1,10 +1,13 @@
 package pl.coderslab.cls_wms_app.service.userSettings;
 
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.temporaryObjects.CheckPassword;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public interface UsersService {
@@ -30,7 +33,9 @@ public interface UsersService {
 
     void activate(String activateToken);
 
-    void loggedUserData(Model model);
+    void loggedUserData(Model model,HttpSession session);
+
+    String warehouseSelection(HttpSession session,  @SessionAttribute(required = false) String chosenWarehouse, HttpServletRequest request);
 
     String FindUsernameByToken(String username);
 

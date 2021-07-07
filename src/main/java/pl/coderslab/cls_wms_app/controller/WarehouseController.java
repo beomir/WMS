@@ -5,12 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.cls_wms_app.app.SecurityUtils;
-import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
+import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
-import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
@@ -23,26 +21,25 @@ public class WarehouseController {
 
     private final WarehouseService warehouseService;
     private final UsersService usersService;
-    private final CompanyService companyService;
     private final CustomerUserDetailsService customerUserDetailsService;
+    private final WarehouseRepository warehouseRepository;
 
     @Autowired
-    public WarehouseController(WarehouseService warehouseService, UsersService usersService, CompanyService companyService, CustomerUserDetailsService customerUserDetailsService) {
+    public WarehouseController(WarehouseService warehouseService, UsersService usersService, CustomerUserDetailsService customerUserDetailsService, WarehouseRepository warehouseRepository) {
         this.warehouseService = warehouseService;
         this.usersService = usersService;
-        this.companyService = companyService;
         this.customerUserDetailsService = customerUserDetailsService;
+        this.warehouseRepository = warehouseRepository;
     }
 
     @GetMapping("/warehouse")
-    public String list(Model model) {
+    public String list(Model model,HttpSession session) {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         List<Users> users = usersService.getUsers();
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
+
         model.addAttribute("warehouses", warehouses);
         model.addAttribute("users", users);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsValues/warehouse/warehouse";
     }
 
@@ -50,6 +47,7 @@ public class WarehouseController {
     @PostMapping("/stock")
     public String get(@RequestParam Long id, HttpSession session) {
         session.setAttribute("warehouseId", id);
+        session.setAttribute("chosenWarehouse",warehouseRepository.getOneWarehouse(id).getName());
         //saved session value to variable
         customerUserDetailsService.chosenWarehouse = id;
         return "redirect:/stock";
@@ -57,33 +55,30 @@ public class WarehouseController {
 
 
     @GetMapping("/config/warehouseList")
-    public String warehousesList(Model model) {
+    public String warehousesList(Model model,HttpSession session) {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+
+        usersService.loggedUserData(model,session);
         return "wmsValues/warehouse/warehouseList";
     }
 
     @GetMapping("/config/warehouseDeactivatedList")
-    public String warehouseDeactivatedList(Model model) {
+    public String warehouseDeactivatedList(Model model,HttpSession session) {
         List<Warehouse> warehouseDeactivated = warehouseService.getDeactivatedWarehouse();
         model.addAttribute("warehouseDeactivated", warehouseDeactivated);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+
+        usersService.loggedUserData(model,session);
         return "wmsValues/warehouse/warehouseDeactivatedList";
     }
 
 
     @GetMapping("/config/formWarehouseCreation")
-    public String warehouseForm(Model model){
+    public String warehouseForm(Model model,HttpSession session){
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("warehouse", new Warehouse());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+
+        usersService.loggedUserData(model,session);
         return "wmsValues/warehouse/formWarehouseCreation";
     }
 
@@ -106,13 +101,12 @@ public class WarehouseController {
     }
 
     @GetMapping("/config/formEditWarehouse/{id}")
-    public String updateWarehouse(@PathVariable Long id, Model model) {
+    public String updateWarehouse(@PathVariable Long id, Model model, HttpSession session) {
         Warehouse warehouse = warehouseService.findById(id);
         model.addAttribute(warehouse);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+
+        usersService.loggedUserData(model,session);
         return "wmsValues/warehouse/formEditWarehouse";
     }
 

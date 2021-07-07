@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<span th:fragment="locationTypeNav">
+    <label th:text="#{app.locationType}" style="color: white;font-weight: bold">Location type</label>
+				<select id="selectId" class="select-css" th:field="*{location.locationType}">
+					<option th:text="#{app.receptionDoor}" th:value="RDL">Reception Door</option>
+					<option th:text="#{app.stockPickingFloor}" th:value="PFL">Stock Picking Floor</option>
+					<option th:text="#{app.stockPickingRacks}" th:value="PRL">Stock Picking Racks</option>
+					<option th:text="#{app.stockReserveRacks}" th:value="RRL">Stock Reserve Racks</option>
+					<option th:text="#{app.shipDoor}" th:value="SDL">Ship Door</option>
+					<option th:text="#{app.equipment}" th:value="EQL">Equipment</option>
+					<option th:text="#{app.production}" th:value="PPL">Production</option>
+				</select> <br/>
+</span>
+</body>
+</html>

@@ -2,7 +2,6 @@ package pl.coderslab.cls_wms_app.entity;
 
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,9 +46,6 @@ public class Reception {
     @ManyToOne
     private Warehouse warehouse;
 
-    private boolean creation_closed;
-
-    private boolean finished;
 
     private String created;
 
@@ -60,7 +56,11 @@ public class Reception {
     @ManyToOne
     private Status status;
 
-    public Reception(Long id, Article article, Company company,  Long pieces_qty, Unit unit, Long hd_number, String quality, Vendor vendor, Warehouse warehouse, boolean creation_closed, Long receptionNumber ,boolean finished, Status status,String created,String last_update, String changeBy) {
+    @NotNull
+    @ManyToOne
+    private Location location;
+
+    public Reception(Long id, Article article, Company company,  Long pieces_qty, Unit unit, Long hd_number, String quality, Vendor vendor, Warehouse warehouse, Long receptionNumber , Status status,String created,String last_update, String changeBy,Location location) {
         this.id = id;
         this.article = article;
         this.company = company;
@@ -71,12 +71,11 @@ public class Reception {
         this.quality = quality;
         this.vendor = vendor;
         this.warehouse = warehouse;
-        this.creation_closed = creation_closed;
         this.receptionNumber = receptionNumber;
-        this.finished = finished;
         this.status = status;
         this.created = created;
         this.last_update = last_update;
         this.changeBy = changeBy;
+        this.location = location;
     }
 }

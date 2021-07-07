@@ -20,4 +20,7 @@ public interface ExtremelyRepository extends JpaRepository<Extremely, Long> {
 
     @Query("Select e from Extremely  e where e.warehouse.name = ?1 and e.extremelyName = ?2")
     Extremely checkLocationScopeMax( String warehouse,String extremelyName);
+
+    @Query("Select e from Extremely  e where e.company.name = ?1 and e.extremelyName = ?2")
+    Extremely checkProductionModuleStatus( String company,String extremelyName);
 }

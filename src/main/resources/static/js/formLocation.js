@@ -53,89 +53,18 @@ floorSecondSep.addEventListener("keyup", function () {
     floorLocationSimulation.innerHTML = document.getElementById("floorFirstSep").value + document.getElementById("floorSecondSep").value
 });
 
+//equipment
+let equipmentFirstSep = document.getElementById("equipmentFirstSep")
+let equipmentSecondSep = document.getElementById("equipmentSecondSep")
 
-//switching location type
-let rackLocation = document.getElementById("rackLocation")
-let doorLocation = document.getElementById("doorLocation")
-let floorLocation = document.getElementById("floorLocation")
-let hdControl = document.getElementById("hdControling")
-let multiItem = document.getElementById("multiItem")
-let select = document.getElementById('selectId')
-rackLocation.classList.add("d-none")
-floorLocation.classList.add("d-none")
-hdControl.classList.add("d-none")
-multiItem.classList.add("d-none")
+let equipmentSimulation = document.getElementById("equipmentSimulation")
 
-
-select.addEventListener("change", function () {
-    if(document.getElementById('selectId').value == "SDL" || document.getElementById('selectId').value == "RDL") {
-        $("#doorLocation").show(500);
-        $("#rackLocation").hide(500);
-        $("#floorLocation").hide(500);
-        $("#hdControling").hide(500);
-        $("#multiItem").hide(500);
-
-        $("#rackSecondSep").removeAttr('required').val("")
-        $("#rackFirstSep").removeAttr('required').val("")
-        $("#rackThirdSep").removeAttr('required').val("")
-        $("#rackFourthSep").removeAttr('required').val("")
-        rackLocationSimulation.innerHTML = "";
-
-        $("#floorSecondSep").removeAttr('required').val("")
-        $("#floorFirstSep").removeAttr('required').val("")
-        floorLocationSimulation.innerHTML = "";
-
-        doorFirstSep.setAttribute("required", "");
-        doorSecondSep.setAttribute("required", "");
-        doorThirdSep.setAttribute("required", "");
-
-
-
-    } else if(document.getElementById('selectId').value == "PRL" || document.getElementById('selectId').value == "RRL"){
-        $("#rackLocation").show(500);
-        $("#doorLocation").hide(500);
-        $("#floorLocation").hide(500);
-
-        $("#hdControling").show(500);
-        $("#multiItem").show(500);
-
-        rackSecondSep.setAttribute("required", "");
-        rackFirstSep.setAttribute("required", "");
-        rackThirdSep.setAttribute("required", "");
-        rackFourthSep.setAttribute("required", "");
-
-        $("#floorSecondSep").removeAttr('required').val("")
-        $("#floorFirstSep").removeAttr('required').val("")
-        floorLocationSimulation.innerHTML = "";
-
-        $("#doorFirstSep").removeAttr('required').val("")
-        $("#doorSecondSep").removeAttr('required').val("")
-        $("#doorThirdSep").removeAttr('required').val("")
-        doorLocationSimulation.innerHTML = "";
-    }
-    else{
-        $("#floorLocation").show(500);
-        $("#rackLocation").hide(500);
-        $("#doorLocation").hide(500);
-        $("#hdControling").show(500);
-        $("#multiItem").show(500);
-
-        $("#doorFirstSep").removeAttr('required').val("")
-        $("#doorSecondSep").removeAttr('required').val("")
-        $("#doorThirdSep").removeAttr('required').val("")
-        doorLocationSimulation.innerHTML = "";
-
-        $("#rackSecondSep").removeAttr('required').val("")
-        $("#rackFirstSep").removeAttr('required').val("")
-        $("#rackThirdSep").removeAttr('required').val("")
-        $("#rackFourthSep").removeAttr('required').val("")
-        rackLocationSimulation.innerHTML = "";
-
-        floorFirstSep.setAttribute("required", "");
-        floorSecondSep.setAttribute("required", "");
-    }
-})
-
+equipmentFirstSep.addEventListener("keyup", function () {
+    equipmentSimulation.innerHTML = document.getElementById("equipmentFirstSep").value + document.getElementById("equipmentSecondSep").value
+});
+equipmentSecondSep.addEventListener("keyup", function () {
+    equipmentSimulation.innerHTML = document.getElementById("equipmentFirstSep").value + document.getElementById("equipmentSecondSep").value
+});
 
 $('#width,#height,#depth').on('keyup', function (){
     let volume = document.getElementById('volume');

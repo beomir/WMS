@@ -23,6 +23,10 @@ public class AddLocationToStorageZone {
     public String secondSepFloor;
     public String secondSepFloorTo;
 
+    public String firstSepEquipment;
+    public String secondSepEquipment;
+    public String secondSepEquipmentTo;
+
     public String firstSepDoor;
     public String secondSepDoor;
     public String thirdSepDoor;

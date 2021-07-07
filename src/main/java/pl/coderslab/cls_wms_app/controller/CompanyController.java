@@ -12,6 +12,7 @@ import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,33 +32,33 @@ public class CompanyController {
     }
 
     @GetMapping("company")
-    public String companyList(Model model) {
+    public String companyList(Model model, HttpSession session) {
         List<Company> company = companyService.getCompanyWithoutAll();
         model.addAttribute("companies", company);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
+        usersService.loggedUserData(model,session);
         return "wmsValues/company/company";
     }
 
     @GetMapping("companyDeactivatedList")
-    public String companyDeactivatedList(Model model) {
+    public String companyDeactivatedList(Model model,HttpSession session) {
         List<Company> company = companyService.getDeactivatedCompany();
         model.addAttribute("company", company);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
+        usersService.loggedUserData(model,session);
         return "wmsValues/company/companyDeactivatedList";
     }
 
 
     @GetMapping("formCompany")
-    public String companyForm(Model model){
+    public String companyForm(Model model,HttpSession session){
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("company", new Company());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
+        usersService.loggedUserData(model,session);
         return "wmsValues/company/formCompany";
     }
 
@@ -80,12 +81,12 @@ public class CompanyController {
     }
 
     @GetMapping("/formEditCompany/{id}")
-    public String updateCompany(@PathVariable Long id, Model model) {
+    public String updateCompany(@PathVariable Long id, Model model,HttpSession session) {
         Company company = companyService.findById(id);
         model.addAttribute(company);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
+        usersService.loggedUserData(model,session);
         return "wmsValues/company/formEditCompany";
     }
 

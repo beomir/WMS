@@ -38,7 +38,7 @@
 
 				<div th:each="warehouse: ${warehouse}" class="titleList" th:text="'Your Shipment in ' + ${warehouse.city}"></div><br/>
 				<div sec:authorize="!hasRole('ROLE_ADMIN')">
-					<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companys.name}"></div>
+					<div th:each="companies: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companies.name}"></div>
 					<a th:href="@{/shipment/formShipment}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.declareShipment}"></div></a>
 					<br/><br/>
 				</div><br/><br/>

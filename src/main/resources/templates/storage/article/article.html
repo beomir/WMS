@@ -29,11 +29,30 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px">
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
-				<div th:each="companys: ${companys}" class="titleList" th:text="#{app.articlesFC} + ': ' + ${companys.name}"></div>
+				<div style="text-align: center"><span th:each="companies: ${companies}" class="titleList" th:text="#{app.articlesFC} + ': ' + ${companies.name}"></span><img th:if="${productionModule} == 'off'" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionTurnOff}"/></div><br/>
 				<div th:unless="${articleMessage == null}" id="articleMessage" style="color: darkred;font-weight: bold;text-align: center" th:text="${articleMessage}"></div>
 				<a th:href="@{/formArticle}"><div class="btn2" style="float: right;max-width: 20%;" th:text="#{app.addArticle}"></div></a>
 				<a th:href="@{/articleTypes}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.articleTypes}"></div></a>
 				<a th:href="@{/article-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.changeCriteria}"></div></a>
+				<div style="margin-top:150px;float: right;min-width: 23%;clear:right;display: block">
+					<table>
+						<thead>
+						<tr>
+							<th colspan="2" style="font-size: 22px;font-weight: bold" th:text="#{app.legend} + ' ' + #{app.articleToProduction}"></th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td style="border: 2px solid white;min-width: 50%" th:text="#{app.finishProduct}"></td>
+							<td style="border: 2px solid white;background: green;min-width: 50px"></td>
+						</tr>
+						<tr>
+							<td style="border: 2px solid white;min-width: 50%" th:text="#{app.intermediateProduct}"></td>
+							<td style="border: 2px solid white;background: sandybrown;min-width: 50%"></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
 				<div>
 						<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
 						<table class="criteria">
@@ -176,13 +195,18 @@
 						<th  th:text="#{app.weight} + '[kg]'" style="font-weight: bold" class="tables">Weight</th>
 						<th th:text="#{app.company}" style="font-weight: bold" class="tables">Company</th>
 						<th th:text="#{app.type}" style="font-weight: bold" class="tables">Type</th>
-						<th th:text="#{app.created}" style="font-weight: bold" class="tables">Created</th>
-						<th th:text="#{app.lastUpdate}" style="font-weight: bold" class="tables">Last update</th>
 						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="article: ${article}">
-						<td class="tables" style="padding-bottom: 2px">
-							<ol><div th:text="${article.article_number}"></div>
+						<span th:if="${article.productionArticle == null && article.intermediateArticle == null}"><td class="tables" style="padding-bottom: 2px"></span>
+						<span th:if="${article.productionArticle} != null">
+						<span th:if="${article.productionArticle.productionArticleType == 'finish product'}"><td class="tables" th:title="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? #{app.productionArticle} + ': ' + #{app.finishProduct}" th:style="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? 'background: green;padding-bottom: 2px' : 'padding-bottom: 2px'"></span>
+						</span>
+						<span th:if="${article.intermediateArticle} != null">
+							<span th:if="${article.intermediateArticle.productionArticleType == 'intermediate'}"><td th:each="a,i : *{article.intermediateArticle.productionArticle}"   class="tables" th:title="${article.production == true && article.intermediateArticle.productionArticleType == 'intermediate'} == TRUE ? #{app.productionArticle} + ': ' + #{app.intermediateProduct} + ', ' + #{app.finishProduct} + ': ' +  ${a.article.article_number}" th:style="${article.production == true && article.intermediateArticle.productionArticleType == 'intermediate'} == TRUE ? 'background: sandybrown;padding-bottom: 2px' : 'padding-bottom: 2px'"></span>
+						</span>
+						<ol>
+								<div th:text="${article.article_number}" ></div>
 								<li>
 									<ul>
 										<li><a th:text="#{app.deactivate}" th:href="@{/deleteArticle/{id}(id=${article.id})}">DEACTIVATE</a></li>
@@ -199,9 +223,7 @@
 						<td class="tables" th:text="${article.weight}"></td>
 						<td class="tables" th:text="${article.company.name}"></td>
 						<td class="tables" th:text="${article.articleTypes.articleClass}"></td>
-						<td class="tables" th:text="${#strings.replace(#strings.substring(article.created,0,19),'T',' ')}"></td>
-						<td class="tables" th:text="${#strings.replace(#strings.substring(article.last_update,0,19),'T',' ')}"></td>
-						<td class="tables" th:text="${article.changeBy}"></td>
+						<td class="tables" th:text="${article.changeBy}" th:title="#{app.lastUpdate} + ': ' + ${#strings.replace(#strings.substring(article.last_update,0,19),'T',' ')} + ' ' + #{app.created} + ': ' + ${#strings.replace(#strings.substring(article.created,0,19),'T',' ')}"></td>
 				    </tr>
 				</table>
 

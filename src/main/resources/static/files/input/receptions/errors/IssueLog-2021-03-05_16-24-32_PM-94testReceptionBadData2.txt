@@ -1,0 +1,15 @@
+
+ Line: 1 Reception number: 20200001 already exists in WMS 2021-03-05T16:24:32.772679400
+ Line: 1 HD number: 202000000000000006 already exists on stock 2021-03-05T16:24:32.778669600
+ Line: 1 Lack information about Company: in file or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber, PiecesQuantity, VendorName, Unit )  2021-03-05T16:24:32.785679
+ Line: 1 Lack information about FromWarehouse: in file or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber, PiecesQuantity, VendorName, Unit, Company )2021-03-05T16:24:32.785679
+ Line: 1 Lack information about Quality in file or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber, PiecesQuantity, VendorName, Unit, Company, FromWarehouse )2021-03-05T16:24:32.786679200
+ Line: 1 Reception number: 20200001 already exists in WMS 2021-03-05T16:24:32.772679400
+ Line: 1 HD number: 202000000000000006 already exists on stock 2021-03-05T16:24:32.778669600
+ Line: 1 Lack information about Company: in file or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber, PiecesQuantity, VendorName, Unit )  2021-03-05T16:24:32.785679
+ Line: 1 Lack information about FromWarehouse: in file or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber, PiecesQuantity, VendorName, Unit, Company )2021-03-05T16:24:32.785679
+ Line: 1 Lack information about Quality in file or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber, PiecesQuantity, VendorName, Unit, Company, FromWarehouse )2021-03-05T16:24:32.786679200
+ Line: 2 Reception number: 20200001 already exists in WMS 2021-03-05T16:24:32.807678100
+ Line: 2 Lack information about Company: in file or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber, PiecesQuantity, VendorName, Unit )  2021-03-05T16:24:32.813678500
+ Line: 2 Lack information about FromWarehouse: in file or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber, PiecesQuantity, VendorName, Unit, Company )2021-03-05T16:24:32.813678500
+ Line: 2 Lack information about Quality in file or is not in proper place of file structure ( after Reception_Number, ArticleNumber, HandleDeviceNumber, PiecesQuantity, VendorName, Unit, Company, FromWarehouse )2021-03-05T16:24:32.813678500

@@ -16,6 +16,10 @@ public interface WarehouseService {
 
     Warehouse getOneWarehouse(Long id);
 
+    Warehouse getWarehouseByName(String warehouseName);
+
+    Warehouse getWarehouseByReceptionNumber(Long receptionNumber);
+
     Warehouse findById(Long id);
 
     Warehouse get(Long id);

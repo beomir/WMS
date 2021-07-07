@@ -1,5 +1,6 @@
 package pl.coderslab.cls_wms_app.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -14,8 +15,10 @@ import pl.coderslab.cls_wms_app.temporaryObjects.CheckPassword;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
+@Slf4j
 @Controller
 @RequestMapping("")
 public class StartController {
@@ -73,12 +76,12 @@ public class StartController {
     public String userPanel(@PathVariable String token, Model model) {
 
         Users users = usersService.getUserByActivateToken(token);
-        System.out.println(users.getPassword());
+        log.debug(users.getPassword());
         model.addAttribute(users);
         CheckPassword checkPass = new CheckPassword();
         model.addAttribute("checkPassword", checkPass);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        System.out.println(usersServiceImpl.alertMessage);
+        log.debug(usersServiceImpl.alertMessage);
         model.addAttribute("alertMessage", usersServiceImpl.alertMessage);
         usersServiceImpl.oldPass = users.getPassword();
         return "userSettings/myProfile";
@@ -90,14 +93,14 @@ public class StartController {
     }
 
     @GetMapping("/users/data-changed")
-    public String data_changed(Model model){
-        usersService.loggedUserData(model);
+    public String data_changed(Model model,HttpSession session){
+        usersService.loggedUserData(model,session);
         return "/userSettings/data-changed";
     }
 
     @GetMapping("/blog/resetPassword")
-    public String resetPassword(Model model) {
-        usersService.loggedUserData(model);
+    public String resetPassword(Model model, HttpSession session) {
+        usersService.loggedUserData(model,session);
         return "userSettings/resetPassword";
     }
 

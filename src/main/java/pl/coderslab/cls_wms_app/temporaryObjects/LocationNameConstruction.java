@@ -28,6 +28,11 @@ public class LocationNameConstruction {
     public String thirdSepDoor;
     public String thirdSepDoorTo;
 
+    public String firstSepEquipment;
+    public String secondSepEquipment;
+    public String secondSepEquipmentTo;
+
+
     public String message ="";
 
 

@@ -10,4 +10,6 @@ public interface StatusService {
 
     List<Status> getStatus();
 
+    List<Status> getStockStatuses();
+
 }

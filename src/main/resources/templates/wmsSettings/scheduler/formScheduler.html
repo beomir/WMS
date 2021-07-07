@@ -71,7 +71,7 @@
 
 			</section><br/>
 			<section>
-				<label style="color: white;font-weight: bold">Company</label>
+				<label style="color: white;font-weight: bold" th:text="#{app.company}">Company</label>
 				<select class="select-css" th:field="*{company}">
 					<option th:each="i : ${companies}" th:value="${i.id}" th:text="${i.name}">
 					</option>

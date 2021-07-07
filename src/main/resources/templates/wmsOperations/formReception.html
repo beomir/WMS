@@ -23,86 +23,46 @@
 	<div th:include="fragments/stockNavigation :: stockNavigation"></div>
 </div>
 
+<span th:include="fragments/receptionMenu :: receptionMenu"></span>
+
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form  method="post" th:action="@{/reception/formReception}">
 
 			<span sec:authorize="hasRole('ROLE_ADMIN')">
-			<div th:if="${qtyOfOpenedReceptions > 0}" class="titleList">Add to opened Reception</div><br/><br/>
-			<div th:if="${qtyOfOpenedReceptions == 0}" class="titleList">Create a new Reception</div><br/><br/>
+			<div class="titleList" th:text="#{app.createNewReception}">Create a new Reception</div><br/><br/>
 			</span>
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
-				<span th:if="${qtyOfOpenedReceptions > 0}" >
-					<div th:each="companys: ${companys}"  class="titleList" th:text="'Add to opened Reception for company: ' + ${companys.name}"></div><br/>
-				</span>
-
-				<span  th:if="${qtyOfOpenedReceptions == 0}">
-					<div  th:each="companys: ${companys}"  class="titleList" th:text="'Create a new Reception for company: ' + ${companys.name}"></div><br/>
+				<span  >
+					<div th:if="${searchingWarehouse} == '%'"  th:each="companies: ${companies}"  class="titleList" th:text=" #{app.createNewReception} + ' ' + #{app.forCompany} + ' ' + ${companies.name} + ' ' + #{app.andChoseWarehouse}"></div><br/>
+					<div th:if="${searchingWarehouse} != '%'"  th:each="companies: ${companies}"  class="titleList" th:text=" #{app.createNewReception} + ' ' + #{app.forCompany} + ' ' + ${companies.name} + ' ' + #{app.inWarehouse} + ' ' + ${searchingWarehouse}"></div><br/>
 				</span>
 			</span>
 
-				<section  th:if="${qtyOfOpenedReceptions > 0}">
-				<label style="color: white;font-weight: bold">Fullfill opened Reception</label>
-					<select class="select-css" th:field="*{reception.receptionNumber}">
-						<option th:each="i : ${openedReception}" th:value="${i.receptionNumber}" th:text="${i.receptionNumber}">
-						</option>
-					</select><br/>
-			</section>
-
-			<section  th:if="${qtyOfOpenedReceptions == 0}" >
-				<label style="color: white;font-weight: bold">New Reception</label>
-				<input type="text" th:value="${lastReceptionNumber}" id="receptionNumber" name="receptionNumber" readonly/>
+			<section>
+				<label style="color: white;font-weight: bold" th:text="#{app.newReceptionNumber}">New Reception</label>
+				<input class="check" type="text" th:value="${lastReceptionNumber}" id="receptionNumber" name="receptionNumber" pattern="[0-9].{0,}" readonly/>
 			</section>
 
 			<section>
-				<label style="color: white;font-weight: bold">Article</label>
-				<select class="select-css" th:field="*{reception.article}">
-					<option th:each="i : ${articles}" th:value="${i.id}" th:text="${i.article_number}">
-					</option>
-				</select>
 				<input type="hidden" th:field="*{reception.id}"/>
-				<input type="hidden" th:each="i : ${companys}" th:value="${i.id}" id="company" name="company"/>
-				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
+				<input type="hidden" th:each="i : ${companies}" th:value="${i.id}" id="company" name="company"/>
+				<input th:if="${searchingWarehouse} != '%'" type="hidden" th:value="${warehouse.id}" id="warehouse" name="warehouse"/>
 				<input type="hidden" th:value="false" id="reception.finished" name="reception.finished"/>
 				<input type="hidden" th:value="1" id="status" name="status"/>
 				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
 				<input type="hidden" th:value="${localDateTime}" id="last_update" name="last_update"/>
 				<input type="hidden" th:value="${#request.remoteUser}" id="changeBy" name="changeBy"/>
-			</section><br/>
+			</section>
+
 
 			<section sec:authorize="hasRole('ROLE_ADMIN')">
-				<label style="color: white;font-weight: bold">Company</label>
+				<label style="color: white;font-weight: bold" th:text="#{app.company}"></label>
 				<select class="select-css" th:field="*{reception.company}">
-					<option th:each="i : ${companys}" th:value="${i.id}" th:text="${i.name}">
+					<option th:each="i : ${activeCompany}" th:value="${i.id}" th:text="${i.name}">
 					</option>
 				</select>
-			</section><br/>
-
-			<section>
-				<label style="color: white;font-weight: bold">Quality</label>
-				<select class="select-css" th:field="*{reception.quality}">
-					<option th:value="EU1">Europen Union first grade</option>
-					<option th:value="EU2">Europen Union second grade</option>
-					<option th:value="BW1">Bonded Warehouse first grade</option>
-					<option th:value="BW2">Bonded Warehouse second grade</option>
-				</select>
-			</section><br/>
-
-			<section>
-				<label style="color: white;font-weight: bold">Unit</label>
-				<select class="select-css" th:field="*{reception.unit}" >
-					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.name}">
-				</select><br/>
-			</section>
-			<section>
-				<label style="color: white;font-weight: bold">How many pieces on handle devices?</label>
-				<input type="number" th:field="*{reception.pieces_qty}" required="required" min="1" max="6666666"/>
-			</section>
-
-			<section>
-				<label style="color: white;font-weight: bold">Handle Device</label>
-				<input type="number" th:value="${nextPalletNbr}" id="hd_number" name="hd_number" readonly/>
 			</section>
 
 			<section>
@@ -113,10 +73,13 @@
 				</select>
 			</section><br/>
 
-			<section style="float: right">
-				<label style="color: white;font-weight: bold">Close Creation?</label>
-				<input type="checkbox" th:field="*{reception.creation_closed}" th:value="true"/>
-			</section><br/><br/>
+			<section th:if="${searchingWarehouse} == '%'">
+				<label style="color: white;font-weight: bold" th:text="#{app.warehouseName}"></label>
+				<select class="select-css" th:field="*{reception.warehouse}">
+					<option th:each="i : ${warehouses}" th:value="${i.id}" th:text="${i.name}">
+					</option>
+				</select>
+			</section><br/>
 
 			<section>
 				<br/><button class="button" type="submit">Save</button>

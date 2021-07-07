@@ -20,9 +20,18 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
     @Query("Select distinct w from Warehouse w where w.id =?1 order by w.name")
     List<Warehouse> getWarehouse(Long id);
 
+    @Query("Select distinct w from Warehouse w where w.name =?1 order by w.name")
+    List<Warehouse> getListWarehousesByName(String warehouseName);
+
     @Query("Select distinct w from Warehouse w where w.id =?1 order by w.name")
     Warehouse getOneWarehouse(Long id);
 
     @Query("Select w from Warehouse w where w.name = ?1")
     Warehouse getWarehouseByName(String warehouseName);
+
+    @Query(value = "Select count(name) from warehouse where name = ?1",nativeQuery = true)
+    int checkWarehouse(String warehouseName);
+
+    @Query("Select distinct w from Warehouse w join w.receptionList rec where rec.receptionNumber = ?1")
+    Warehouse getWarehouseByReceptionNumber(Long receptionNumber);
 }
