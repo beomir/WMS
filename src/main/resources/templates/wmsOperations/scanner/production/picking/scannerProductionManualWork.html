@@ -30,9 +30,23 @@
 			<div class="underTitle" th:text="#{app.production} + ' ' + #{app.picking}"></div><br/>
 			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
 			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
-			<div class="formDescription" th:text="#{app.choosePickingWorkManuallyEnterProduction}"></div><br/><br/>
+			<div class="formDescription" >
+				<span th:text="#{app.click} + ' '"></span>
+				<button name="automaticallyFinderPicking" type="submit"  th:value="'automatically'" class="circle" th:text="#{app.here}"></button>
+				<span th:text="' ' + #{app.toFindPickingWork}"></span>
+			</div>
+			<div class="formDescription" style="text-align: right"><span th:text="#{app.workQueueList} + ': '"></span><div id="check" style="float: right;font-size:12px" class="circle" th:text="#{app.check}"></div>
+				<div name="hide" id="workQueueList" style="display: none"><table  style="margin-left:55%">
+					<tr th:each="work : ${workDetailsQueue}">
+						<td style="font-size:14px;color: deepskyblue" th:text="${work.workNumber}"></td>
+					</tr>
+				</table>
+				</div>
+			</div>
+			<br/><div th:text="#{app.or}" class="formDescription"></div><br/>
+			<div class="formDescription" th:text="#{app.enterProductionNumberManually}"></div><br/><br/>
 			<label  th:text="#{app.productionNumber}" style="margin-left: 15%;color: white;font-weight: bold"></label>
-			<br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[0-9].{7,}" min="8" max="8" type="text" name="productionNumber"/>
+			<br/><input style="max-width:30%;margin-left: 15%" class="check" pattern="[0-9].{7,}" min="8" max="8" type="text" name="productionNumber"/>
 			<br/><br/>
 			<input  type="hidden" th:value="${token}" name="token"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
@@ -47,6 +61,6 @@
 		<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 	</div>
 </div>
-<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+<script type="text/javascript" th:src="@{/js/workQueueList.js}"></script>
 </body>
 </html>

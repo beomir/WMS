@@ -38,7 +38,7 @@ public class ScannerProductionProduceController {
     }
 
     //Manual Selection Produce Work
-    @GetMapping("{token}/{warehouse}/{equipment}/5/3")
+    @GetMapping("{token}/{warehouse}/{equipment}/5/2")
     public String produceMenuManualWork(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,
                                           @SessionAttribute(required = false) String manualProduceScannerMessage) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -70,7 +70,7 @@ public class ScannerProductionProduceController {
 
 
     //confirm production
-    @GetMapping("{token}/{warehouse}/{equipment}/5/3/{productionNumber}")
+    @GetMapping("{token}/{warehouse}/{equipment}/5/2/{productionNumber}")
     public String produceMenuManualWorkProductionNumberFound(@PathVariable String warehouse,@PathVariable String token,
                                                                 @PathVariable String equipment, Model model,@SessionAttribute Long productionNumberSearch,
                                                                 @SessionAttribute(required = false) String manualProduceConfirmationScannerMessage,@SessionAttribute(required = false) String manualProduceScannerMessage) {
@@ -82,7 +82,7 @@ public class ScannerProductionProduceController {
         model.addAttribute("productionNumber", productionNumberSearch);
         model.addAttribute("message", manualProduceConfirmationScannerMessage);
         model.addAttribute("finishProductNumber",workDetailsRepository.finishProductNumber(productionNumberSearch.toString(),warehouse));
-        WorkDetailsRepository.WorkToDoFoundProduction workToDoFoundProduction = workDetailsRepository.workToDoFoundProduction(productionNumberSearch.toString(),warehouse,SecurityUtils.username());
+        WorkDetailsRepository.WorkToDoFoundProduction workToDoFoundProduction = workDetailsRepository.workToDoFoundProduction(productionNumberSearch,warehouse,SecurityUtils.username());
         model.addAttribute("workToDoFound",workToDoFoundProduction);
         model.addAttribute("messagePutaway", manualProduceScannerMessage);
 

@@ -32,11 +32,11 @@
 			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
 			<div class="formDescription" >
 				<span th:text="#{app.click} + ' '"></span>
-				<button name="automaticallyFinder" type="submit"  th:value="'automatically'" class="circle" th:text="#{app.here}"></button>
+				<button name="automaticallyFinderPutaway" type="submit"  th:value="'automatically'" class="circle" th:text="#{app.here}"></button>
 				<span th:text="' ' + #{app.toFindPutawayWork}"></span>
 			</div>
 			<br/><div th:text="#{app.or}" class="formDescription"></div><br/>
-			<div class="formDescription" th:text="#{app.choosePutawayWorkManuallyEnterProduction}"></div><br/><br/>
+			<div class="formDescription" th:text="#{app.enterProductionNumberManually}"></div><br/><br/>
 			<label  th:text="#{app.productionNumber}" style="margin-left: 15%;color: white;font-weight: bold"></label>
 			<br/><input style="max-width:30%;margin-left: 15%" class="check" pattern="[0-9].{7,}" min="8" max="8" type="text" name="productionNumber"/>
 			<br/><br/>

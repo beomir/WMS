@@ -151,6 +151,9 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
 
         Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(workDetails.getHdNumber(),workDetails.getArticle().getArticle_number(),scannerChosenEquipment,workDetails.getWarehouse().getName(),workDetails.getCompany().getName());
         stock.setLocation(locationRepository.findLocationByLocationName(workDetails.getToLocation().getLocationName(),workDetails.getWarehouse().getName()));
+        if(workDetails.getWorkDescription().equals("Putaway after producing")){
+            stock.setStatus(statusRepository.getStatusByStatusName("on_hand","Stock"));
+        }
         stockService.add(stock);
         workDetails.setStatus("close");
         workDetailsRepository.save(workDetails);
@@ -172,16 +175,16 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
             stockRepository.save(value);
         }
         log.error("workDetailsRepository.workTypeByWorkNumber(workDetails.getWorkNumber()): " + workDetailsRepository.workTypeByWorkNumber(workDetails.getWorkNumber()));
-        if(workDetailsRepository.workTypeByWorkNumber(workDetails.getWorkNumber()) == "Reception"){
+        if(workDetailsRepository.workTypeByWorkNumber(workDetails.getWorkNumber()).equals("Reception")){
             List<Reception> reception = receptionRepository.getReceptionByReceptionNumber(Long.parseLong(workDetails.getHandle()));
             for (Reception value: reception) {
                 value.setStatus(statusRepository.getStatusByStatusName("closed","Reception"));
                 receptionRepository.save(value);
+                receptionService.finishReception(Long.parseLong(workDetails.getHandle()),session);
             }
         }
         workDetailsRepository.save(workDetails);
-        receptionService.finishReception(Long.parseLong(workDetails.getHandle()),session);
-        if(workDetails.getWorkType().equals("Production")){
+        if(workDetails.getWorkType().equals("Production") && workDetails.getWorkDescription().equals("Production picking")){
             WorkDetails productionWork = new WorkDetails();
             productionWork.setWorkType("Production");
             int workNumberForNewProductionWork = 100;
@@ -329,7 +332,8 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
             else{
               Location locationTo = locationService.findAvailableLocationAfterProducing(putAwayAfterProduction.getArticle(),putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone(),putAwayAfterProduction.getWarehouse().getName());
               putAwayAfterProduction.setToLocation(locationTo);
-              putAwayAfterProduction.setStatus("Production putaway");
+              putAwayAfterProduction.setStatus("open");
+              putAwayAfterProduction.setWorkDescription("Putaway after producing");
               workDetailsRepository.save(putAwayAfterProduction);
               session.setAttribute("manualProduceScannerMessage","Putaway work: " + putAwayAfterProduction.getWorkNumber() + " successfully created");
               session.setAttribute("putawayLocationAfterProducing","found");
@@ -340,22 +344,23 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
 
     @Override
     public void closeWorkDetail(Long workNumber,String warehouseName){
-        log.error("workNumber: " + workNumber);
-        List<WorkDetails> works = workDetailsRepository.getWorkListByWarehouseAndWorkNumber(workNumber,warehouseName);
+        log.error("closeWorkDetail workNumber: " + workNumber);
+        List<WorkDetails> works = workDetailsRepository.getWorkListByWarehouseAndWorkNumber(workNumber,warehouseName,SecurityUtils.username());
+        log.error("closeWorkDetail works: " + works);
         for(WorkDetails singularWork : works){
             singularWork.setStatus("close");
             workDetailsRepository.save(singularWork);
-            log.error("Production: " + singularWork.getId() + " " + singularWork.getWorkNumber());
+            log.error("closeWorkDetail: " + singularWork.getId() + " " + singularWork.getWorkNumber() + ' ' + singularWork.getStatus());
         }
     }
 
     @Override
     public void changeStatusAfterStartWork(Long workNumber,String warehouseName){
-        List<WorkDetails> works = workDetailsRepository.getWorkListByWarehouseAndWorkNumber(workNumber,warehouseName);
+        List<WorkDetails> works = workDetailsRepository.getWorkListByWarehouseAndWorkNumber(workNumber,warehouseName,"open");
         for(WorkDetails singularWork : works){
             singularWork.setStatus(SecurityUtils.username());
             workDetailsRepository.save(singularWork);
-            log.error("Production: " + singularWork.getId() + " " + singularWork.getWorkNumber());
+            log.error("changeStatusAfterStartWork: " + singularWork.getId() + " " + singularWork.getWorkNumber());
         }
     }
 

@@ -43,7 +43,7 @@
 			<input  type="hidden" th:value="${token}" name="token"/>
 			<input  type="hidden" th:value="${productionNumber}" name="productionNumberToConfirm"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
-				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/5' + productionNumber}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
+				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/5/2'}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
 				<button type="submit" class="circleBig" style="font-size:12px" th:value="true" name="produceConfirmation" th:text="#{app.confirm}"></button>
 			</section>
 		</form>

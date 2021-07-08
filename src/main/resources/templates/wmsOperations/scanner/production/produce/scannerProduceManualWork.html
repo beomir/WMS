@@ -31,7 +31,13 @@
 			<div class="underTitle" th:text="#{app.production} + ' ' + #{app.produce}"></div><br/>
 			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
 			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
-			<div class="formDescription" th:text="#{app.choosePickingWorkManuallyEnterProduction}"></div><br/><br/>
+			<div class="formDescription" >
+				<span th:text="#{app.click} + ' '"></span>
+				<button name="automaticallyFinderProducing" type="submit"  th:value="'automatically'" class="circle" th:text="#{app.here}"></button>
+				<span th:text="' ' + #{app.toFindProduceWork}"></span>
+			</div>
+			<br/><div th:text="#{app.or}" class="formDescription"></div><br/>
+			<div class="formDescription" th:text="#{app.enterProductionNumberManually}"></div><br/><br/>
 			<label  th:text="#{app.productionNumber}" style="margin-left: 15%;color: white;font-weight: bold"></label>
 			<br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[0-9].{7,}" min="8" max="8" type="text" name="productionNumber"/>
 			<br/><br/>
