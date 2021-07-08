@@ -325,7 +325,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
             putAwayAfterProduction.setWorkNumber(finalWorkNumber);
             log.debug("findAvailableLocationAfterProducing: " + locationService.findAvailableLocationAfterProducing(putAwayAfterProduction.getArticle(),putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone(),putAwayAfterProduction.getWarehouse().getName()));
           if(locationService.findAvailableLocationAfterProducing(putAwayAfterProduction.getArticle(),putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone(),putAwayAfterProduction.getWarehouse().getName())==null){
-              session.setAttribute("manualProduceScannerMessage","Available location to putaway in storage zone: " + putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone().getStorageZoneName() + " not found ");
+              session.setAttribute("produceScannerMessage","Available location to putaway in storage zone: " + putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone().getStorageZoneName() + " not found ");
               session.setAttribute("putawayLocationAfterProducing","notfound");
               log.error("locationTo null");
           }
@@ -335,7 +335,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
               putAwayAfterProduction.setStatus("open");
               putAwayAfterProduction.setWorkDescription("Putaway after producing");
               workDetailsRepository.save(putAwayAfterProduction);
-              session.setAttribute("manualProduceScannerMessage","Putaway work: " + putAwayAfterProduction.getWorkNumber() + " successfully created");
+              session.setAttribute("produceScannerMessage","Putaway work: " + putAwayAfterProduction.getWorkNumber() + " successfully created");
               session.setAttribute("putawayLocationAfterProducing","found");
               log.debug("locationTo not null");
           }

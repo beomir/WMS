@@ -87,7 +87,6 @@ public class WorkDetailsController {
             model.addAttribute("workDetails", workDetails);
         }
 
-
         model.addAttribute("workDetailsWarehouse", workDetailsWarehouse);
         model.addAttribute("workDetailsCompany", workDetailsCompany);
         model.addAttribute("workDetailsArticle", workDetailsArticle);
@@ -98,19 +97,6 @@ public class WorkDetailsController {
         model.addAttribute("workDetailsLocationFrom", workDetailsLocationFrom);
         model.addAttribute("workDetailsLocationTo", workDetailsLocationTo);
         model.addAttribute("workDetailsWorkNumber", workDetailsWorkNumber);
-
-//        log.error("workDetailsWarehouse: " + workDetailsWarehouse);
-//        log.error("workDetailsCompany: " + workDetailsCompany);
-//        log.error("workDetailsArticle: " + workDetailsArticle);
-//        log.error("workDetailsType: " + workDetailsType);
-//        log.error("workDetailsHandle: " + workDetailsHandle);
-//        log.error("workDetailsHandleDevice: " + workDetailsHandleDevice);
-//        log.error("workDetailsStatus: " + workDetailsStatus);
-//        log.error("workDetailsLocationFrom: " + workDetailsLocationFrom);
-//        log.error("workDetailsLocationTo: " + workDetailsLocationTo);
-//        log.error("workDetailsWorkNumber: " + workDetailsWorkNumber);
-
-
 
         usersService.loggedUserData(model,session);
 

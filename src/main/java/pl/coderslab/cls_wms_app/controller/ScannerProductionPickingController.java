@@ -14,6 +14,7 @@ import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -40,15 +41,26 @@ public class ScannerProductionPickingController {
 
     //Production branch
     @GetMapping("{token}/{warehouse}/{equipment}/5")
-    public String productionMenu(@PathVariable String warehouse, @PathVariable String token, @PathVariable String equipment, Model model,
-                                 @SessionAttribute(required = false) String productionScannerMessage) {
+    public String productionMenu(@PathVariable String warehouse, @PathVariable String token, @PathVariable String equipment, Model model, HttpServletRequest request,
+                                 @SessionAttribute(required = false) String productionScannerMessage,
+                                 @SessionAttribute(required = false) String scannerProductionPutawayMessage,
+                                 @SessionAttribute(required = false) String produceScannerMessage) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
 
-        model.addAttribute("message", productionScannerMessage);
+        if(request.getHeader("Referer").contains("/5/1")){
+            model.addAttribute("message", productionScannerMessage);
+        }
+        if(request.getHeader("Referer").contains("/5/3")){
+            model.addAttribute("message", scannerProductionPutawayMessage);
+        }
+        if(request.getHeader("Referer").contains("/5/2")){
+            model.addAttribute("message", produceScannerMessage);
+        }
+
 
         return "wmsOperations/scanner/production/scannerProduction";
     }
@@ -62,7 +74,7 @@ public class ScannerProductionPickingController {
     }
 
 
-    //Manual Selection Picking Work
+    //Selection Picking Work
     @GetMapping("{token}/{warehouse}/{equipment}/5/1")
     public String pickingMenuManualWork(@PathVariable String warehouse, @PathVariable String token, @PathVariable String equipment, Model model,
                                         @SessionAttribute(required = false) String manualProductionScannerMessage) {
@@ -73,7 +85,7 @@ public class ScannerProductionPickingController {
         model.addAttribute("message", manualProductionScannerMessage);
         model.addAttribute("warehouse", warehouse);
 
-        List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", "%", "%", "%", "%", "Production picking");
+        List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", "close", "%", "%", "%", "Production picking");
         model.addAttribute("workDetailsQueue", workDetailsQueue);
         return "wmsOperations/scanner/production/picking/scannerProductionManualWork";
     }
@@ -81,14 +93,14 @@ public class ScannerProductionPickingController {
     @PostMapping("scannerProductionManualWork")
     public String pickingMenuManualWorkPost(@SessionAttribute String scannerChosenWarehouse, String token, Long productionNumber,
                                             HttpSession session, @SessionAttribute int scannerMenuChoice, @SessionAttribute String scannerChosenEquipment,
-                                            @SessionAttribute int workProductionScannerChoice, String automaticallyFinderPicking) {
-        log.error("automaticallyFinderPicking value: " + automaticallyFinderPicking);
-        if (automaticallyFinderPicking == null && productionNumber == null) {
+                                            @SessionAttribute int workProductionScannerChoice, String automaticallyFinder) {
+        log.error("automaticallyFinder value: " + automaticallyFinder);
+        if (automaticallyFinder == null && productionNumber == null) {
             session.setAttribute("manualProductionScannerMessage", "Please enter production number manually or push button check to find work automatically by system ");
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
         }
             else {
-            if(automaticallyFinderPicking.equals("automatically")){
+            if(automaticallyFinder.equals("automatically")){
                 if(workDetailsRepository.workNumberByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse) == null){
                     session.setAttribute("manualProductionScannerMessage", "No works found");
                     return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
@@ -131,6 +143,7 @@ public class ScannerProductionPickingController {
         model.addAttribute("productionNumber", productionNumberSearch);
         model.addAttribute("message", productionScannerLocationFromMessage);
         model.addAttribute("finishProductNumber", workDetailsRepository.finishProductNumber(productionNumberSearch.toString(), warehouse));
+
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(productionNumberSearch.toString(), warehouse, SecurityUtils.username());
         model.addAttribute("workToDoFound", workToDoFound);
         return "wmsOperations/scanner/production/picking/scannerProductionWorkFoundOriginLocation";

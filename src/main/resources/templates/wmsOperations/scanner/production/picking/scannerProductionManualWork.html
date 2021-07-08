@@ -30,20 +30,10 @@
 			<div class="underTitle" th:text="#{app.production} + ' ' + #{app.picking}"></div><br/>
 			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
 			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
-			<div class="formDescription" >
-				<span th:text="#{app.click} + ' '"></span>
-				<button name="automaticallyFinderPicking" type="submit"  th:value="'automatically'" class="circle" th:text="#{app.here}"></button>
-				<span th:text="' ' + #{app.toFindPickingWork}"></span>
-			</div>
-			<div class="formDescription" style="text-align: right"><span th:text="#{app.workQueueList} + ': '"></span><div id="check" style="float: right;font-size:12px" class="circle" th:text="#{app.check}"></div>
-				<div name="hide" id="workQueueList" style="display: none"><table  style="margin-left:55%">
-					<tr th:each="work : ${workDetailsQueue}">
-						<td style="font-size:14px;color: deepskyblue" th:text="${work.workNumber}"></td>
-					</tr>
-				</table>
-				</div>
-			</div>
-			<br/><div th:text="#{app.or}" class="formDescription"></div><br/>
+
+			<div th:include="fragments/automaticallySearchingWork :: automaticallySearchingWork"></div>
+
+			<br/><br/><div th:text="#{app.or}" class="formDescription"></div><br/>
 			<div class="formDescription" th:text="#{app.enterProductionNumberManually}"></div><br/><br/>
 			<label  th:text="#{app.productionNumber}" style="margin-left: 15%;color: white;font-weight: bold"></label>
 			<br/><input style="max-width:30%;margin-left: 15%" class="check" pattern="[0-9].{7,}" min="8" max="8" type="text" name="productionNumber"/>

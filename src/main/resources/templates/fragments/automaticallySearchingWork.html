@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+<div th:fragment="automaticallySearchingWork">
+    <div class="formDescription" >
+        <span th:text="#{app.click} + ' '"></span>
+        <button name="automaticallyFinder" type="submit"  th:value="'automatically'" class="circle" th:text="#{app.here}"></button>
+        <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/1')}" th:text="' ' + #{app.toFindPickingWork}"></span>
+        <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/2')}" th:text="' ' + #{app.toFindProduceWork}"></span>
+        <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/3')}" th:text="' ' + #{app.toFindPutawayWork}"></span>
+    </div>
+    <div class="formDescription" style="text-align: right"><span th:text="#{app.workQueueList} + ': '"></span><div id="check" style="float: right;font-size:12px" class="circle" th:text="#{app.check}"></div>
+        <div name="hide" id="workQueueList" style="display: none"><table  style="margin-left:55%">
+            <tr th:each="work : ${workDetailsQueue}">
+                <td style="font-size:14px;color: deepskyblue" th:text="${work.workNumber}"></td>
+            </tr>
+        </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

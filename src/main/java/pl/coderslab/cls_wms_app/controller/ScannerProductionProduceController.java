@@ -37,35 +37,58 @@ public class ScannerProductionProduceController {
         this.workDetailsRepository = workDetailsRepository;
     }
 
-    //Manual Selection Produce Work
+    //Selection Produce Work
     @GetMapping("{token}/{warehouse}/{equipment}/5/2")
     public String produceMenuManualWork(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,
-                                          @SessionAttribute(required = false) String manualProduceScannerMessage) {
+                                          @SessionAttribute(required = false) String produceScannerMessage) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
-        model.addAttribute("message", manualProduceScannerMessage);
+        model.addAttribute("message", produceScannerMessage);
         model.addAttribute("warehouse", warehouse);
+
+        List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", "close", "%", "%", "%", "Producing finish product from collected intermediate articles");
+        model.addAttribute("workDetailsQueue", workDetailsQueue);
+
         return "wmsOperations/scanner/production/produce/scannerProduceManualWork";
     }
     @PostMapping("scannerProduceManualWork")
-    public String produceMenuManualWorkPost(@SessionAttribute String scannerChosenWarehouse,String token, @RequestParam Long productionNumber,
+    public String produceMenuManualWorkPost(@SessionAttribute String scannerChosenWarehouse,String token, Long productionNumber,
                                               HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
-                                              @SessionAttribute int workProductionScannerChoice) {
-        if(workDetailsRepository.checkIfWorksExistsForHandleProduction(productionNumber,scannerChosenWarehouse,"Producing finish product from collected intermediate articles")>0){
-            session.setAttribute("productionNumberSearch", productionNumber);
-            workDetailsService.changeStatusAfterStartWork(productionNumber,scannerChosenWarehouse);
-            return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumber;
-        }
-        else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(productionNumber.toString(),scannerChosenWarehouse,SecurityUtils.username(),"Producing finish product from collected intermediate articles") > 0){
-            session.setAttribute("productionNumberSearch", productionNumber);
-            return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumber;
-        }
-        else{
-            session.setAttribute("manualProduceScannerMessage","To production number: " + productionNumber + " are not assigned any works to do");
+                                              @SessionAttribute int workProductionScannerChoice, String automaticallyFinder) {
+        log.error("automaticallyFinder value: " + automaticallyFinder);
+        if (automaticallyFinder == null && productionNumber == null) {
+            session.setAttribute("produceScannerMessage", "Please enter production number manually or push button check to find work automatically by system ");
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
         }
+        else{
+
+            if(automaticallyFinder.equals("automatically")){
+                if(workDetailsRepository.workNumberByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse) == null){
+                    session.setAttribute("produceScannerMessage", "No works found");
+                    return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
+                }
+                else{
+                    productionNumber = workDetailsRepository.workNumberByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse);
+                }
+            }
+
+            if(workDetailsRepository.checkIfWorksExistsForHandleProduction(productionNumber,scannerChosenWarehouse,"Producing finish product from collected intermediate articles")>0){
+                session.setAttribute("productionNumberSearch", productionNumber);
+                workDetailsService.changeStatusAfterStartWork(productionNumber,scannerChosenWarehouse);
+                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumber;
+            }
+            else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(productionNumber.toString(),scannerChosenWarehouse,SecurityUtils.username(),"Producing finish product from collected intermediate articles") > 0){
+                session.setAttribute("productionNumberSearch", productionNumber);
+                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumber;
+            }
+            else{
+                session.setAttribute("produceScannerMessage","To production number: " + productionNumber + " are not assigned any works to do");
+                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
+            }
+        }
+
     }
 
 
@@ -73,7 +96,7 @@ public class ScannerProductionProduceController {
     @GetMapping("{token}/{warehouse}/{equipment}/5/2/{productionNumber}")
     public String produceMenuManualWorkProductionNumberFound(@PathVariable String warehouse,@PathVariable String token,
                                                                 @PathVariable String equipment, Model model,@SessionAttribute Long productionNumberSearch,
-                                                                @SessionAttribute(required = false) String manualProduceConfirmationScannerMessage,@SessionAttribute(required = false) String manualProduceScannerMessage) {
+                                                                @SessionAttribute(required = false) String manualProduceConfirmationScannerMessage,@SessionAttribute(required = false) String produceScannerMessage) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
@@ -84,7 +107,7 @@ public class ScannerProductionProduceController {
         model.addAttribute("finishProductNumber",workDetailsRepository.finishProductNumber(productionNumberSearch.toString(),warehouse));
         WorkDetailsRepository.WorkToDoFoundProduction workToDoFoundProduction = workDetailsRepository.workToDoFoundProduction(productionNumberSearch,warehouse,SecurityUtils.username());
         model.addAttribute("workToDoFound",workToDoFoundProduction);
-        model.addAttribute("messagePutaway", manualProduceScannerMessage);
+        model.addAttribute("messagePutaway", produceScannerMessage);
 
         List<WorkDetails> workDetailsList = workDetailsRepository.getWorkDetailsByWorkNumber(Long.parseLong(workToDoFoundProduction.getHandle()));
         model.addAttribute("workDetailsList",workDetailsList);
@@ -101,7 +124,7 @@ public class ScannerProductionProduceController {
             if(session.getAttribute("putawayLocationAfterProducing").equals("found")) {
                 workDetailsService.closeWorkDetail(productionNumberToConfirm,scannerChosenWarehouse);
                 stockService.produceGoods(productionNumberToConfirm);
-                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
+                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice;
             }
             else{
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumberSearch ;
