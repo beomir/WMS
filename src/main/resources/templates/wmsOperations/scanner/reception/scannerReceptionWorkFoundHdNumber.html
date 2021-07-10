@@ -25,11 +25,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form method="post" th:action="@{/scanner/receptionMenuManualWorkReceptionNumberFoundHdNumber}">
-			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
-			<div class="underTitle" th:text="#{app.reception}">reception</div><br/>
-			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
-			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
-			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
+			<div th:include="fragments/scannerPutawayReception :: scannerPutawayReception"></div>
 			<div class="formDescription" th:text="#{app.goodsTransferedFrom} + ' ' + ${workToDoFound.fromLocation}"></div><br/><br/>
 			<label  th:text="#{app.scan} + ' ' + #{app.handleDevice} + ' (' + ${workToDoFound.hdNumber} + ')'" style="margin-left: 15%;color: white;font-weight: bold"></label>
 			<br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[0-9].{17,}" min="9" max="18" type="text" name="enteredHdNumber"/>
