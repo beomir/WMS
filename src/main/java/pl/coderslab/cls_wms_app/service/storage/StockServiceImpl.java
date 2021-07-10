@@ -658,7 +658,6 @@ public class StockServiceImpl implements StockService {
         finishProduct.setCreated(TimeUtils.timeNowLong());
         finishProduct.setLast_update(TimeUtils.timeNowLong());
         finishProduct.setChangeBy(SecurityUtils.usernameForActivations());
-        finishProduct.setComment("");
         stockRepository.save(finishProduct);
     }
 }

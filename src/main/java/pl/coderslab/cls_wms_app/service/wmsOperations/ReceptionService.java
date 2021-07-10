@@ -15,14 +15,11 @@ public interface ReceptionService {
 
     void edit(Reception reception,HttpSession session);
 
-
     Reception findById(Long id);
 
     void finishReception(Long receptionNmbr,HttpSession session) ;
 
     Long lastReception();
-
-    Long nextPalletNbr();
 
     List<Reception> openedReceptions(Long id, String username);
 

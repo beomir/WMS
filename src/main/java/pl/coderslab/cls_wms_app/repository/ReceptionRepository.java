@@ -23,7 +23,7 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
     int qtyOfOpenedReceptions(Long id, String username);
 
 
-    @Query(value = "Select a.hd_number + 1 from ( Select hd_number from receptions union select hd_number from storage where hd_number < 202000001800000000) a order by 1 desc LIMIT 1;",nativeQuery = true)
+    @Query(value = "Select if(substr(a.hd_number + 1,1,4) != YEAR(CURDATE()),Concat(YEAR(CURDATE()), '00000000000001'),a.hd_number) from ( Select hd_number from receptions union select hd_number from storage union select hd_number from work_details ) a order by 1 desc LIMIT 1;",nativeQuery = true)
     Long nextPalletNbr();
 
     @Query(value="Select distinct c.name from receptions r inner join company c on r.company_id = c.id where r.reception_number = ?1",nativeQuery = true)
@@ -72,5 +72,6 @@ public interface ReceptionRepository extends JpaRepository<Reception, Long> {
          Long getHd_number();
          String getWarehouse();
     }
+
 
 }

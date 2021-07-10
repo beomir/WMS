@@ -22,7 +22,7 @@ public interface WorkDetailsService {
 
     void edit(WorkDetails workDetails);
 
-    void pickUpGoods(String fromLocation,String enteredArticle, String enteredHdNumber , String equipment,String warehouse, String company);
+    void pickUpGoods(String fromLocation,String enteredArticle, String enteredHdNumber , String equipment,String warehouse, String company,String workHandle);
 
     void workLineFinish(WorkDetails workDetails,String scannerChosenEquipment);
 

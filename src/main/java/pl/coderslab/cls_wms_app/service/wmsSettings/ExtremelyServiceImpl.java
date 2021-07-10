@@ -1,24 +1,33 @@
 package pl.coderslab.cls_wms_app.service.wmsSettings;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.entity.Extremely;
 import pl.coderslab.cls_wms_app.entity.Transaction;
-import pl.coderslab.cls_wms_app.repository.ExtremelyRepository;
-import pl.coderslab.cls_wms_app.repository.TransactionRepository;
+import pl.coderslab.cls_wms_app.repository.*;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ExtremelyServiceImpl implements ExtremelyService{
     private final ExtremelyRepository extremelyRepository;
     private final TransactionRepository transactionRepository;
+    private final StockRepository stockRepository;
+    private final ReceptionRepository receptionRepository;
+    private final WorkDetailsRepository workDetailsRepository;
+    private final ShipmentInCreationRepository shipmentInCreationRepository;
 
     @Autowired
-    public ExtremelyServiceImpl(ExtremelyRepository extremelyRepository, TransactionRepository transactionRepository) {
+    public ExtremelyServiceImpl(ExtremelyRepository extremelyRepository, TransactionRepository transactionRepository, StockRepository stockRepository, ReceptionRepository receptionRepository, WorkDetailsRepository workDetailsRepository, ShipmentInCreationRepository shipmentInCreationRepository) {
         this.extremelyRepository = extremelyRepository;
         this.transactionRepository = transactionRepository;
+        this.stockRepository = stockRepository;
+        this.receptionRepository = receptionRepository;
+        this.workDetailsRepository = workDetailsRepository;
+        this.shipmentInCreationRepository = shipmentInCreationRepository;
     }
 
     @Override
@@ -100,6 +109,16 @@ public class ExtremelyServiceImpl implements ExtremelyService{
         transaction.setCustomer("");
         transactionRepository.save(transaction);
         extremelyRepository.save(extremely);
+    }
+
+    @Override
+    public Long nextPalletNbr() {
+        return extremelyRepository.nextPalletNbr();
+    }
+
+    @Override
+    public Long nextWorkNumber() {
+        return extremelyRepository.nextWorkNumber();
     }
 
 

@@ -10,6 +10,7 @@ import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.storage.LocationService;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
+import pl.coderslab.cls_wms_app.service.wmsSettings.ExtremelyService;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
@@ -30,9 +31,10 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     private final ArticleRepository articleRepository;
     private final ProductionRepository productionRepository;
     private final LocationService locationService;
+    private final ExtremelyService extremelyService;
 
     @Autowired
-    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository, ReceptionService receptionService, ArticleRepository articleRepository, ProductionRepository productionRepository, LocationService locationService) {
+    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository, ReceptionService receptionService, ArticleRepository articleRepository, ProductionRepository productionRepository, LocationService locationService, ExtremelyService extremelyService) {
         this.workDetailsRepository = workDetailsRepository;
         this.transactionRepository = transactionRepository;
         this.stockRepository = stockRepository;
@@ -44,6 +46,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         this.articleRepository = articleRepository;
         this.productionRepository = productionRepository;
         this.locationService = locationService;
+        this.extremelyService = extremelyService;
     }
 
     @Override
@@ -133,14 +136,15 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     }
 
     @Override
-    public void pickUpGoods(String fromLocation, String enteredArticle, String enteredHdNumber, String equipment, String warehouse, String company) {
+    public void pickUpGoods(String fromLocation, String enteredArticle, String enteredHdNumber, String equipment, String warehouse, String company, String workHandle) {
         log.error("fromLocation: " + fromLocation);
         log.error("enteredArticle: " + enteredArticle);
         log.error("enteredHdNumber: " + enteredHdNumber);
         log.error("equipment: " + equipment);
         log.error("warehouse: " + warehouse);
         log.error("company: " + company);
-        Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(Long.parseLong(enteredHdNumber),Long.parseLong(enteredArticle),fromLocation,warehouse,company);
+        log.error("workHandle: " + workHandle);
+        Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(Long.parseLong(enteredHdNumber),Long.parseLong(enteredArticle),fromLocation,warehouse,company,workHandle);
         stock.setLocation(locationRepository.findLocationByLocationName(equipment,warehouse));
         stockService.add(stock);
     }
@@ -148,8 +152,15 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     @Override
     public void workLineFinish(WorkDetails workDetails,String scannerChosenEquipment){
         //TODO add operations which will change location free volume and free weight & transaction
+        log.error("workDetails.getHdNumber(): " + workDetails.getHdNumber());
+        log.error("workDetails.getArticle().getArticle_number(): " + workDetails.getArticle().getArticle_number());
+        log.error("scannerChosenEquipment: " + scannerChosenEquipment);
+        log.error("workDetails.getWarehouse().getName(): " + workDetails.getWarehouse().getName());
+        log.error("workDetails.getCompany().getName(): " + workDetails.getCompany().getName());
+        log.error("workDetails.getHandle(): " + workDetails.getHandle());
+        log.error("stock: " + stockRepository.getStockByHdNumberArticleNumberLocation(workDetails.getHdNumber(),workDetails.getArticle().getArticle_number(),scannerChosenEquipment,workDetails.getWarehouse().getName(),workDetails.getCompany().getName(),workDetails.getHandle()));
 
-        Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(workDetails.getHdNumber(),workDetails.getArticle().getArticle_number(),scannerChosenEquipment,workDetails.getWarehouse().getName(),workDetails.getCompany().getName());
+        Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(workDetails.getHdNumber(),workDetails.getArticle().getArticle_number(),scannerChosenEquipment,workDetails.getWarehouse().getName(),workDetails.getCompany().getName(),workDetails.getHandle());
         stock.setLocation(locationRepository.findLocationByLocationName(workDetails.getToLocation().getLocationName(),workDetails.getWarehouse().getName()));
         if(workDetails.getWorkDescription().equals("Putaway after producing")){
             stock.setStatus(statusRepository.getStatusByStatusName("on_hand","Stock"));
@@ -162,10 +173,9 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     @Override
     public void workFinished(WorkDetails workDetails, HttpSession session){
         //TODO add operations which will change location free volume and free weight & transaction
-        List<Stock> stock = stockRepository.getStockListByWorkNumber(Long.parseLong(workDetails.getHandle()));
-
+        List<Stock> stock = stockRepository.getStockByWorkHandleAndWorkDescription(workDetails.getHandle(),"Reception Put Away");
         for (Stock value:stock) {
-            if(value.getArticle().isProduction() == false){
+            if(!workDetails.getWorkDescription().contains("production") || !workDetails.getWorkDescription().contains("Production")){
                 value.setStatus(statusRepository.getStatusByStatusName("on_hand","Stock"));
             }
             else{
@@ -187,15 +197,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         if(workDetails.getWorkType().equals("Production") && workDetails.getWorkDescription().equals("Production picking")){
             WorkDetails productionWork = new WorkDetails();
             productionWork.setWorkType("Production");
-            int workNumberForNewProductionWork = 100;
-            while(workDetailsRepository.checkIfWorksExistsOnlyByHandle(workDetails.getHandle() + workNumberForNewProductionWork) != 0){
-                workNumberForNewProductionWork++;
-                log.debug("workNumberForNewProductionWork: " + workNumberForNewProductionWork);
-                log.debug("workDetails.getHandle(): " + workDetails.getHandle());
-                log.debug("workDetails.getHandle() + workNumberForNewProductionWork: " + workDetails.getHandle() + workNumberForNewProductionWork);
-                log.debug("query result: " + workDetailsRepository.checkIfWorksExistsOnlyByHandle(workDetails.getHandle() + workNumberForNewProductionWork));
-            }
-            productionWork.setWorkNumber(workDetails.getWorkNumber() + workNumberForNewProductionWork);
+            productionWork.setWorkNumber(extremelyService.nextWorkNumber());
             productionWork.setWorkDescription("Producing finish product from collected intermediate articles");
             productionWork.setStatus("open");
             productionWork.setWarehouse(workDetails.getWarehouse());
@@ -208,11 +210,10 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
             productionWork.setPiecesQty(productionRepository.getFinishProductSmallDataByProductionNumber(Long.parseLong(workDetails.getHandle())).getFinishProductPieces());
             productionWork.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
             productionWork.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-            int hdNumberCounter = 1;
-            while(stockRepository.checkIfHdNumberExistsOnStock(workDetails.getHdNumber() + hdNumberCounter) != 0){
-                hdNumberCounter++;
-            }
-            productionWork.setHdNumber(workDetails.getHdNumber() + hdNumberCounter);
+
+            log.error("hdNumber: " + extremelyService.nextPalletNbr());
+
+            productionWork.setHdNumber(extremelyService.nextPalletNbr());
             workDetailsRepository.save(workDetails);
             workDetailsRepository.save(productionWork);
             session.setAttribute("productionScannerMessage","Work: " + workDetails.getWorkNumber() + " finished. Goods are available to produce on location: " + workDetails.getToLocation().getLocationName() + " by producing work: " +  productionWork.getWorkNumber());
@@ -316,13 +317,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
             Long finalWorkNumber = Long.parseLong(singularWorkToConfirm.getWorkNumber() + StringUtils.leftPad(String.valueOf(workNumberCounter),2, "0"));
             log.debug("finalWorkNumber before loop: " + finalWorkNumber);
             log.debug("checkIfWorksExistsForHandleProduction: " + workDetailsRepository.checkIfWorksExistsForHandleProduction(finalWorkNumber,singularWorkToConfirm.getWarehouse().getName(),singularWorkToConfirm.getWorkDescription()));
-            while(workDetailsRepository.checkIfWorksExistsForHandleProduction(finalWorkNumber,singularWorkToConfirm.getWarehouse().getName(),singularWorkToConfirm.getWorkDescription())!=0){
-                workNumberCounter++;
-                finalWorkNumber = Long.parseLong(singularWorkToConfirm.getWorkNumber() + StringUtils.leftPad(String.valueOf(workNumberCounter),2, "0"));
-                log.debug("finalWorkNumber inside loop: " + finalWorkNumber);
-            }
-            log.debug("finalWorkNumber after loop: " + finalWorkNumber);
-            putAwayAfterProduction.setWorkNumber(finalWorkNumber);
+            putAwayAfterProduction.setWorkNumber(extremelyService.nextWorkNumber());
             log.debug("findAvailableLocationAfterProducing: " + locationService.findAvailableLocationAfterProducing(putAwayAfterProduction.getArticle(),putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone(),putAwayAfterProduction.getWarehouse().getName()));
           if(locationService.findAvailableLocationAfterProducing(putAwayAfterProduction.getArticle(),putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone(),putAwayAfterProduction.getWarehouse().getName())==null){
               session.setAttribute("produceScannerMessage","Available location to putaway in storage zone: " + putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone().getStorageZoneName() + " not found ");

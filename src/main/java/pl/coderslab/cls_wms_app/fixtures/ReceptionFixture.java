@@ -11,7 +11,6 @@ import pl.coderslab.cls_wms_app.service.wmsValues.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 @Component
 //@Profile("local")
@@ -50,7 +49,7 @@ public class ReceptionFixture {
     );
 
     @Autowired
-    public ReceptionFixture(ReceptionService receptionService, ArticleService articleService, VendorService vendorService, CompanyService companyService, WarehouseService warehouseService, UnitService unitService, StatusService statusService) {
+    public ReceptionFixture(ReceptionService receptionService, ArticleService articleService, VendorService vendorService, CompanyService companyService, WarehouseService warehouseService, UnitService unitService, StatusService statusService, LocationService locationService) {
         this.receptionService = receptionService;
         this.articleService = articleService;
         this.vendorService = vendorService;
@@ -58,6 +57,7 @@ public class ReceptionFixture {
         this.warehouseService = warehouseService;
         this.unitService = unitService;
         this.statusService = statusService;
+        this.locationService = locationService;
     }
 
     public void loadIntoDB() {
@@ -67,10 +67,16 @@ public class ReceptionFixture {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         List<Unit> unit = unitService.getUnit();
         List<Status> status = statusService.getStatus();
+        List<Location> locationList = locationService.getLocations();
 
         for (Reception reception : receptionList) {
             reception.setUnit(unit.get(0));
             receptionService.add(reception);
+        }
+
+        for (int i = 4; i < receptionList.size();i++) {
+            receptionList.get(i).setLocation(locationList.get(4));
+            receptionService.add(receptionList.get(i));
         }
 
         Reception reception1 = receptionList.get(0);

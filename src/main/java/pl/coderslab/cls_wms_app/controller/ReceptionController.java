@@ -15,6 +15,7 @@ import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionServiceImpl;
+import pl.coderslab.cls_wms_app.service.wmsSettings.ExtremelyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
 import pl.coderslab.cls_wms_app.service.wmsValues.VendorService;
@@ -47,11 +48,12 @@ public class ReceptionController {
     private final LocationRepository locationRepository;
     private final StatusRepository statusRepository;
     private final WarehouseRepository warehouseRepository;
+    private final ExtremelyService extremelyService;
     private CustomerUserDetailsService customerUserDetailsService;
 
 
     @Autowired
-    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository, LocationRepository locationRepository, StatusRepository statusRepository, WarehouseRepository warehouseRepository, CustomerUserDetailsService customerUserDetailsService) {
+    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository, LocationRepository locationRepository, StatusRepository statusRepository, WarehouseRepository warehouseRepository, ExtremelyService extremelyService, CustomerUserDetailsService customerUserDetailsService) {
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.articleService = articleService;
@@ -64,6 +66,7 @@ public class ReceptionController {
         this.locationRepository = locationRepository;
         this.statusRepository = statusRepository;
         this.warehouseRepository = warehouseRepository;
+        this.extremelyService = extremelyService;
         this.customerUserDetailsService = customerUserDetailsService;
 
     }
@@ -229,7 +232,7 @@ public class ReceptionController {
             List<Warehouse> warehouses = warehouseService.getWarehouse();
             Warehouse warehouse = warehouseService.getWarehouseByName(warehouseName);
             model.addAttribute("lastReceptionNumber", receptionService.lastReception());
-            model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
+            model.addAttribute("nextPalletNbr", extremelyService.nextPalletNbr());
             model.addAttribute("reception", new Reception());
             model.addAttribute("articles", articles);
             model.addAttribute("vendors", vendors);

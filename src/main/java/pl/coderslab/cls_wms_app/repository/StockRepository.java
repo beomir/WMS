@@ -41,8 +41,8 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("Select s from Stock s where s.hd_number = ?1")
     Stock getStockByHdNumber(Long hdNumber);
 
-    @Query("Select s from Stock s where s.hd_number = ?1 and s.article.article_number =?2 and s.location.locationName = ?3 and s.warehouse.name = ?4 and s.company.name = ?5")
-    Stock getStockByHdNumberArticleNumberLocation(Long hdNumber, Long articleNumber, String locationName,String warehouseName, String companyName);
+    @Query("Select s from Stock s where s.hd_number = ?1 and s.article.article_number =?2 and s.location.locationName = ?3 and s.warehouse.name = ?4 and s.company.name = ?5 and s.handle = ?6")
+    Stock getStockByHdNumberArticleNumberLocation(Long hdNumber, Long articleNumber, String locationName,String warehouseName, String companyName, String handle);
 
     @Query("Select s from Stock s where s.receptionNumber = ?1")
     List<Stock> getStockListByReceptionNumber(Long receptionNumber);
@@ -50,8 +50,12 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("Select s from Stock s join WorkDetails wd on s.article = wd.article and s.hd_number = wd.hdNumber where wd.workNumber = ?1")
     List<Stock> getStockListByWorkNumber(Long workNumber);
 
-    @Query("Select s from Stock s join WorkDetails wd on s.hd_number = wd.hdNumber and s.article = wd.article where wd.handle = ?1 and wd.workDescription = ?2")
+
+    @Query("Select s from Stock s join WorkDetails wd on s.hd_number = wd.hdNumber and s.article = wd.article where s.handle = ?1 and wd.workDescription = ?2")
     List<Stock> getStockByWorkHandleAndWorkDescription(String handle, String workDescription);
+
+    @Query("Select s from Stock s join WorkDetails wd on s.hd_number = wd.hdNumber and s.article = wd.article where s.handle = ?1")
+    List<Stock> getStockByStockHandle(String handle);
 
     @Query(value = "select hd_number, pieces_qty, location_name changeBy, s.created from storage s inner join location l on s.location_id = l.id inner join warehouse w on s.warehouse_id = w.id inner join article a on s.article_id = a.id company c on s.company_id = c.id where c.name = ?1 and w.name = ?2 article_number = ?3 order by s.created limit 1 ",nativeQuery = true)
     StockForProduction stockForProduction(String company,String warehouse,Long articleNumber);

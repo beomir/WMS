@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.ArticleTypesRepository;
+import pl.coderslab.cls_wms_app.repository.ExtremelyRepository;
 import pl.coderslab.cls_wms_app.repository.LocationRepository;
-import pl.coderslab.cls_wms_app.repository.StockRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
 import pl.coderslab.cls_wms_app.service.storage.StockServiceImpl;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
+import pl.coderslab.cls_wms_app.service.wmsSettings.ExtremelyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.StatusService;
 import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
@@ -41,13 +42,12 @@ public class StockController {
     private final UnitService unitService;
     private CustomerUserDetailsService customerUserDetailsService;
     private final LocationRepository locationRepository;
-    private final StockRepository stockRepository;
     private final ArticleTypesRepository articleTypesRepository;
-    private final ChosenStockPositional chosenStockPositional;
+    private final ExtremelyService extremelyService;
 
 
     @Autowired
-    public StockController(StockService stockService, StockServiceImpl stockServiceImpl, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, StockRepository stockRepository, ArticleTypesRepository articleTypesRepository, ChosenStockPositional chosenStockPositional) {
+    public StockController(StockService stockService, StockServiceImpl stockServiceImpl, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, ArticleTypesRepository articleTypesRepository, ExtremelyService extremelyService) {
         this.stockService = stockService;
         this.stockServiceImpl = stockServiceImpl;
         this.usersService = usersService;
@@ -59,9 +59,8 @@ public class StockController {
         this.unitService = unitService;
         this.customerUserDetailsService = customerUserDetailsService;
         this.locationRepository = locationRepository;
-        this.chosenStockPositional = chosenStockPositional;
-        this.stockRepository = stockRepository;
         this.articleTypesRepository = articleTypesRepository;
+        this.extremelyService = extremelyService;
     }
 
     @GetMapping("/stock")
@@ -222,7 +221,7 @@ public class StockController {
         List<Company> activeCompany = companyService.getCompany();
         model.addAttribute("activeCompany", activeCompany);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
+        model.addAttribute("nextPalletNbr", extremelyService.nextPalletNbr());
         List<Location> locations = locationRepository.locations(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("locations", locations);
         List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
@@ -274,7 +273,7 @@ public class StockController {
         List<Company> activeCompany = companyService.getCompany();
         model.addAttribute("activeCompany", activeCompany);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
+        model.addAttribute("nextPalletNbr", extremelyService.nextPalletNbr());
         List<Location> locations = locationRepository.locations(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("locations", locations);
         List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();

@@ -48,9 +48,10 @@ public class ReceptionServiceImpl implements ReceptionService {
     public String insertReceptionFileResult;
     private final CustomerUserDetailsService customerUserDetailsService;
     private final IssueLogRepository issueLogRepository;
+    private final ExtremelyRepository extremelyRepository;
 
     @Autowired
-    public ReceptionServiceImpl(ReceptionRepository receptionRepository, EmailRecipientsRepository emailRecipientsRepository, SendEmailService sendEmailService, SchedulerRepository schedulerRepository, ArticleRepository articleRepository, VendorRepository vendorRepository, UnitRepository unitRepository, CompanyRepository companyRepository, WarehouseRepository warehouseRepository, WorkDetailsRepository workDetailsRepository, LocationRepository locationRepository, StatusRepository statusRepository, StockRepository stockRepository, TransactionService transactionService, IssueLogService issueLogService, CustomerUserDetailsService customerUserDetailsService, IssueLogRepository issueLogRepository) {
+    public ReceptionServiceImpl(ReceptionRepository receptionRepository, EmailRecipientsRepository emailRecipientsRepository, SendEmailService sendEmailService, SchedulerRepository schedulerRepository, ArticleRepository articleRepository, VendorRepository vendorRepository, UnitRepository unitRepository, CompanyRepository companyRepository, WarehouseRepository warehouseRepository, WorkDetailsRepository workDetailsRepository, LocationRepository locationRepository, StatusRepository statusRepository, StockRepository stockRepository, TransactionService transactionService, IssueLogService issueLogService, CustomerUserDetailsService customerUserDetailsService, IssueLogRepository issueLogRepository, ExtremelyRepository extremelyRepository) {
         this.receptionRepository = receptionRepository;
         this.emailRecipientsRepository = emailRecipientsRepository;
         this.sendEmailService = sendEmailService;
@@ -68,6 +69,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         this.issueLogService = issueLogService;
         this.customerUserDetailsService = customerUserDetailsService;
         this.issueLogRepository = issueLogRepository;
+        this.extremelyRepository = extremelyRepository;
     }
 
 
@@ -107,7 +109,8 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     public void addNewReceptionLine(Reception reception,HttpSession session) {
         reception.setStatus(statusRepository.getStatusByStatusName("creation_pending","Reception"));
-        reception.setHd_number(nextPalletNbr());
+
+        reception.setHd_number(extremelyRepository.nextPalletNbr());
         receptionRepository.save(reception);
         Transaction transactionAdded = new Transaction();
         transactionAdded.setTransactionDescription("Reception Line created manually");
@@ -190,6 +193,8 @@ public class ReceptionServiceImpl implements ReceptionService {
             stock.setStatus(statusRepository.getStatusByStatusName("on_reception","StockReception"));
             stock.setWarehouse(singularReception.getWarehouse());
             stock.setReceptionNumber(singularReception.getReceptionNumber());
+            stock.setHandle(singularReception.getReceptionNumber().toString());
+            stock.setComment("Reception: " + singularReception.getReceptionNumber());
             stock.setPieces_qty(singularReception.getPieces_qty());
             stock.setCompany(singularReception.getCompany());
             stock.setArticle(singularReception.getArticle());
@@ -229,7 +234,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         }
 
         if(reception.getHd_number() == null){
-            reception.setHd_number(nextPalletNbr());
+            reception.setHd_number(extremelyRepository.nextPalletNbr());
         }
 
         saveTransactionModel(reception, transaction);
@@ -364,10 +369,6 @@ public class ReceptionServiceImpl implements ReceptionService {
         return receptionRepository.lastReception();
     }
 
-    @Override
-    public Long nextPalletNbr() {
-        return receptionRepository.nextPalletNbr();
-    }
 
 
     @Override
@@ -544,7 +545,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                     //HD_number
                     if (value.contains(("HandleDeviceNumber:")) && round == 3) {
                         String handleDeviceNbr = value.substring(value.lastIndexOf("HandleDeviceNumber:") + 19);
-                        if (stockRepository.checkIfHdNumberExistsOnStock(Long.parseLong(handleDeviceNbr)) < 1 && receptionRepository.checkIfHdNumberExistsOnReception(Long.parseLong(handleDeviceNbr))<1) {
+                        if (stockRepository.checkIfHdNumberExistsOnStock(Long.parseLong(handleDeviceNbr)) < 1 && receptionRepository.checkIfHdNumberExistsOnReception(Long.parseLong(handleDeviceNbr))<1 && workDetailsRepository.checkIfHdNumberExistsInWorkDetails(Long.parseLong(handleDeviceNbr)) < 1) {
                             reception.setHd_number(Long.parseLong(handleDeviceNbr));
                             log.debug("HD number: " + handleDeviceNbr + " not exists already in WMS and is ready to be add");
                         } else {

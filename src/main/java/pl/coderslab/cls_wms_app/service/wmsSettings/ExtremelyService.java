@@ -18,7 +18,10 @@ public interface ExtremelyService {
 
     void delete(Long id);
 
-
     void edit(Extremely extremely);
+
+    Long nextPalletNbr();
+
+    Long nextWorkNumber();
 
 }

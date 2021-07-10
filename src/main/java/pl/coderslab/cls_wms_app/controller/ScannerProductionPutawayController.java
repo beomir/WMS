@@ -46,7 +46,7 @@ public class ScannerProductionPutawayController {
         model.addAttribute("message", scannerProductionPutawayMessage);
         model.addAttribute("warehouse", warehouse);
 
-        List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", "close", "%", "%", "%", "Putaway after producing");
+        List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", SecurityUtils.username(), "%", "%", "%", "Putaway after producing");
         model.addAttribute("workDetailsQueue", workDetailsQueue);
 
         return "wmsOperations/scanner/production/putaway/scannerProductionPutaway";
@@ -63,12 +63,13 @@ public class ScannerProductionPutawayController {
         }
         else {
             if(automaticallyFinder.equals("automatically")){
-                if(workDetailsRepository.workNumberByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse) == null){
+                log.error("WorkNumberByCompanyAndWarehouse: " + workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Putaway after producing",SecurityUtils.username()));
+                if(workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Putaway after producing",SecurityUtils.username()) == null){
                     session.setAttribute("manualProductionScannerMessage", "No works found");
                     return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
                 }
                 else{
-                    productionNumber = workDetailsRepository.workNumberByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse);
+                    productionNumber = workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Putaway after producing",SecurityUtils.username());
                 }
             }
 
@@ -196,7 +197,7 @@ public class ScannerProductionPutawayController {
         String prevprevious = "hdNumber";
         if(productionScannerExpectedArticle.equals(productionScannerEnteredArticle)){
             session.setAttribute("productionScannerEnteredArticle", productionScannerEnteredArticle);
-            workDetailsService.pickUpGoods(productionScannerFromLocation,productionScannerEnteredArticle,productionScannerEnteredHdNumber,scannerChosenEquipment,scannerChosenWarehouse,companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName());
+            workDetailsService.pickUpGoods(productionScannerFromLocation,productionScannerEnteredArticle,productionScannerEnteredHdNumber,scannerChosenEquipment,scannerChosenWarehouse,companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),workDetailsRepository.workDetailHandle(productionNumberSearch,"%"));
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumberSearch + '/' + prevprevious + '/' +  previous + '/' + nextPath ;
 
         }

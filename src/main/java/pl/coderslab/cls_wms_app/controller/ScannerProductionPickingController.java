@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
-import pl.coderslab.cls_wms_app.repository.LocationRepository;
-import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
@@ -24,24 +22,24 @@ import java.util.List;
 public class ScannerProductionPickingController {
 
     private final WorkDetailsService workDetailsService;
-    private final WarehouseRepository warehouseRepository;
     private final CompanyService companyService;
-    private final LocationRepository locationRepository;
     private final WorkDetailsRepository workDetailsRepository;
 
 
     @Autowired
-    public ScannerProductionPickingController(WorkDetailsService workDetailsService, WarehouseRepository warehouseRepository, CompanyService companyService, LocationRepository locationRepository, WorkDetailsRepository workDetailsRepository) {
+    public ScannerProductionPickingController(WorkDetailsService workDetailsService, CompanyService companyService,  WorkDetailsRepository workDetailsRepository) {
         this.workDetailsService = workDetailsService;
-        this.warehouseRepository = warehouseRepository;
         this.companyService = companyService;
-        this.locationRepository = locationRepository;
         this.workDetailsRepository = workDetailsRepository;
     }
 
     //Production branch
     @GetMapping("{token}/{warehouse}/{equipment}/5")
-    public String productionMenu(@PathVariable String warehouse, @PathVariable String token, @PathVariable String equipment, Model model, HttpServletRequest request,
+    public String productionMenu(@PathVariable String warehouse,
+                                 @PathVariable String token,
+                                 @PathVariable String equipment,
+                                 Model model,
+                                 HttpServletRequest request,
                                  @SessionAttribute(required = false) String productionScannerMessage,
                                  @SessionAttribute(required = false) String scannerProductionPutawayMessage,
                                  @SessionAttribute(required = false) String produceScannerMessage) {
@@ -85,7 +83,7 @@ public class ScannerProductionPickingController {
         model.addAttribute("message", manualProductionScannerMessage);
         model.addAttribute("warehouse", warehouse);
 
-        List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", "close", "%", "%", "%", "Production picking");
+        List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", SecurityUtils.username(), "%", "%", "%", "Production picking");
         model.addAttribute("workDetailsQueue", workDetailsQueue);
         return "wmsOperations/scanner/production/picking/scannerProductionManualWork";
     }
@@ -101,12 +99,13 @@ public class ScannerProductionPickingController {
         }
             else {
             if(automaticallyFinder.equals("automatically")){
-                if(workDetailsRepository.workNumberByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse) == null){
+                log.error("workNumberBrCompanyAndWarehouse: " + workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Production picking",SecurityUtils.username()));
+                if(workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Production picking",SecurityUtils.username()) == null){
                     session.setAttribute("manualProductionScannerMessage", "No works found");
                     return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
                 }
                 else{
-                    productionNumber = workDetailsRepository.workNumberByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse);
+                    productionNumber = workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Production picking",SecurityUtils.username());
                 }
             }
 
@@ -234,7 +233,7 @@ public class ScannerProductionPickingController {
         String prevprevious = "hdNumber";
         if (productionScannerExpectedArticle.equals(productionScannerEnteredArticle)) {
             session.setAttribute("productionScannerEnteredArticle", productionScannerEnteredArticle);
-            workDetailsService.pickUpGoods(productionScannerFromLocation, productionScannerEnteredArticle, productionScannerEnteredHdNumber, scannerChosenEquipment, scannerChosenWarehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName());
+            workDetailsService.pickUpGoods(productionScannerFromLocation, productionScannerEnteredArticle, productionScannerEnteredHdNumber, scannerChosenEquipment, scannerChosenWarehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),productionNumberSearch.toString());
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumberSearch + '/' + prevprevious + '/' + previous + '/' + nextPath;
 
         } else {

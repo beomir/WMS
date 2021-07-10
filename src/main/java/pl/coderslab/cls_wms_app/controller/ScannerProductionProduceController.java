@@ -48,7 +48,7 @@ public class ScannerProductionProduceController {
         model.addAttribute("message", produceScannerMessage);
         model.addAttribute("warehouse", warehouse);
 
-        List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", "close", "%", "%", "%", "Producing finish product from collected intermediate articles");
+        List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", SecurityUtils.username(), "%", "%", "%", "Producing finish product from collected intermediate articles");
         model.addAttribute("workDetailsQueue", workDetailsQueue);
 
         return "wmsOperations/scanner/production/produce/scannerProduceManualWork";
@@ -65,12 +65,13 @@ public class ScannerProductionProduceController {
         else{
 
             if(automaticallyFinder.equals("automatically")){
-                if(workDetailsRepository.workNumberByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse) == null){
+                log.error("workNumberBrCompanyAndWarehouse: " + workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Producing finish product from collected intermediate articles",SecurityUtils.username()));
+                if(workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Producing finish product from collected intermediate articles",SecurityUtils.username()) == null){
                     session.setAttribute("produceScannerMessage", "No works found");
                     return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
                 }
                 else{
-                    productionNumber = workDetailsRepository.workNumberByCompanyAndWarehouse(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse);
+                    productionNumber = workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Producing finish product from collected intermediate articles",SecurityUtils.username());
                 }
             }
 

@@ -6,9 +6,9 @@
     <div class="formDescription" >
         <span th:text="#{app.click} + ' '"></span>
         <button name="automaticallyFinder" type="submit"  th:value="'automatically'" class="circle" th:text="#{app.here}"></button>
-        <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/1')}" th:text="' ' + #{app.toFindPickingWork}"></span>
+        <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/1') }  " th:text="' ' + #{app.toFindPickingWork}"></span>
         <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/2')}" th:text="' ' + #{app.toFindProduceWork}"></span>
-        <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/3')}" th:text="' ' + #{app.toFindPutawayWork}"></span>
+        <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/3') || #strings.contains(#httpServletRequest.requestURI, '/1/1')}" th:text="' ' + #{app.toFindPutawayWork}"></span>
     </div>
     <div class="formDescription" style="text-align: right"><span th:text="#{app.workQueueList} + ': '"></span><div id="check" style="float: right;font-size:12px" class="circle" th:text="#{app.check}"></div>
         <div name="hide" id="workQueueList" style="display: none"><table  style="margin-left:55%">

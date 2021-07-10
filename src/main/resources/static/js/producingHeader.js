@@ -56,6 +56,7 @@ function returnToPreviousPage() {
 }
 
 function iconFlashing(){
+   console.log("iconflashing works")
    const informationIcon = document.querySelector('.makeItBigger');
    let iconFlashingInterval = setInterval(function(){ informationIcon.classList.toggle('makeItBigger--active'); }, 1000);
 

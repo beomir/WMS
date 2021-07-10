@@ -122,12 +122,12 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
     List<WorkDetails> getWorkListByWarehouseAndWorkNumber(Long workNumber,String warehouseName, String status);
 
 
-    @Query(value="select handle from work_details where work_number = ?1 and work_description = ?2 order by 1 limit 1",nativeQuery = true)
+    @Query(value="select handle from work_details where work_number = ?1 and work_description like ?2 order by 1 limit 1",nativeQuery = true)
     String workDetailHandle(Long workNumber,String workDescription);
 
 
 
-    @Query(value="select distinct work_number workNumber, work_description workDescription,work_type workType,handle,sum(pieces_qty) piecesQty,if(count(distinct status)>1,'%',status) status, w.name changeBy, count(work_number) hdNumber from work_details wd join warehouse w on wd.warehouse_id = w.id join location lFrom on wd.from_location_id = lFrom.id join location lTo on wd.to_location_id = lTo.id join company c on wd.company_id = c.id join article a on a.id = wd.article_id where w.name like ?1 and c.name like ?2 and CONCAT(a.article_number,'') like ?3 and wd.work_type like ?4 and wd.handle like ?5 and CONCAT(wd.hd_Number,'') like ?6 and wd.status != ?7 and lFrom.location_Name like ?8 and lTo.location_Name like ?9 and CONCAT(wd.work_Number,'') like ?10 and wd.work_description like ?11 group by work_number, work_description,work_type,handle order by 1 limit 5",nativeQuery = true)
+    @Query(value="select distinct work_number workNumber, work_description workDescription,work_type workType,handle,sum(pieces_qty) piecesQty,if(count(distinct status)>1,'%',status) status, w.name changeBy, count(work_number) hdNumber from work_details wd join warehouse w on wd.warehouse_id = w.id join location lFrom on wd.from_location_id = lFrom.id join location lTo on wd.to_location_id = lTo.id join company c on wd.company_id = c.id join article a on a.id = wd.article_id where w.name like ?1 and c.name like ?2 and CONCAT(a.article_number,'') like ?3 and wd.work_type like ?4 and wd.handle like ?5 and CONCAT(wd.hd_Number,'') like ?6 and (wd.status = ?7 || wd.status = 'open') and lFrom.location_Name like ?8 and lTo.location_Name like ?9 and CONCAT(wd.work_Number,'') like ?10 and wd.work_description like ?11 group by work_number, work_description,work_type,handle order by 1 limit 5",nativeQuery = true)
     List<WorkHeaderListProduction> workHeaderListProduction(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType,String workDetailsHandle,String workDetailsHandleDevice,String workDetailsStatus,String workDetailsLocationFrom,String workDetailsLocationTo,String workDetailsWorkNumber,String workDescription);
 
     public static interface WorkHeaderListProduction{
@@ -141,6 +141,12 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
         Long getHdNumber();
     }
 
-    @Query(value="select work_number from work_details wd inner join warehouse w on w.id = wd.warehouse_id inner join company c on c.id = wd.company_id where c.name = ?1 and w.name = ?2 and wd.status = 'open' order by 1 limit 1",nativeQuery = true)
-    Long workNumberByCompanyAndWarehouse(String companyName,String warehouseName);
+    @Query(value="select work_number from work_details wd inner join warehouse w on w.id = wd.warehouse_id inner join company c on c.id = wd.company_id where c.name = ?1 and w.name = ?2 and (wd.status = 'open' || wd.status = ?4 ) and wd.work_description = ?3 order by 1 limit 1",nativeQuery = true)
+    Long workNumberByCompanyWarehouseWorkDescriptionStatusUser(String companyName,String warehouseName, String workDescription,String statusUser);
+
+    @Query(value="select handle from work_details wd inner join warehouse w on w.id = wd.warehouse_id inner join company c on c.id = wd.company_id where c.name = ?1 and w.name = ?2 and (wd.status = 'open' || wd.status = ?4 ) and wd.work_description = ?3 order by 1 limit 1",nativeQuery = true)
+    Long handleByCompanyWarehouseWorkDescriptionStatusUser(String companyName,String warehouseName, String workDescription,String statusUser);
+
+    @Query(value="Select count(*) from work_details where hd_number = ?1",nativeQuery = true)
+    int checkIfHdNumberExistsInWorkDetails(Long hd_number);
 }
