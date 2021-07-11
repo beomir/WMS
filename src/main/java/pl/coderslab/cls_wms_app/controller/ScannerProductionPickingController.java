@@ -85,7 +85,7 @@ public class ScannerProductionPickingController {
 
         List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", SecurityUtils.username(), "%", "%", "%", "Production picking");
         model.addAttribute("workDetailsQueue", workDetailsQueue);
-        return "wmsOperations/scanner/production/picking/scannerProductionManualWork";
+        return "wmsOperations/scanner/production/picking/scannerProductionPicking";
     }
 
     @PostMapping("scannerProductionManualWork")
@@ -145,7 +145,7 @@ public class ScannerProductionPickingController {
 
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(productionNumberSearch.toString(), warehouse, SecurityUtils.username());
         model.addAttribute("workToDoFound", workToDoFound);
-        return "wmsOperations/scanner/production/picking/scannerProductionWorkFoundOriginLocation";
+        return "wmsOperations/scanner/production/picking/scannerProductionPickingFoundOriginLocation";
     }
 
     @PostMapping("productionMenuManualWorkProductionNumberFound")
@@ -179,7 +179,7 @@ public class ScannerProductionPickingController {
         model.addAttribute("finishProductNumber", workDetailsRepository.finishProductNumber(productionNumberSearch.toString(), warehouse));
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(productionNumberSearch.toString(), warehouse, SecurityUtils.username());
         model.addAttribute("workToDoFound", workToDoFound);
-        return "wmsOperations/scanner/production/picking/scannerProductionWorkFoundHdNumber";
+        return "wmsOperations/scanner/production/picking/scannerProductionPickingFoundHdNumber";
     }
 
     @PostMapping("productionMenuManualWorkProductionNumberFoundHdNumber")
@@ -217,7 +217,7 @@ public class ScannerProductionPickingController {
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(productionNumberSearch.toString(), warehouse, SecurityUtils.username());
         model.addAttribute("workToDoFound", workToDoFound);
 
-        return "wmsOperations/scanner/production/picking/scannerProductionWorkFoundArticle";
+        return "wmsOperations/scanner/production/picking/scannerProductionPickingFoundArticle";
     }
 
     @PostMapping("productionMenuManualWorkProductionNumberFoundArticle")
@@ -260,7 +260,7 @@ public class ScannerProductionPickingController {
 
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(productionNumberSearch.toString(), warehouse, SecurityUtils.username());
         model.addAttribute("workToDoFound", workToDoFound);
-        return "wmsOperations/scanner/production/picking/scannerProductionWorkFoundDestinationLocation";
+        return "wmsOperations/scanner/production/picking/scannerProductionPickingFoundDestinationLocation";
     }
 
     @PostMapping("productionMenuManualWorkProductionNumberFoundDestinationLocation")

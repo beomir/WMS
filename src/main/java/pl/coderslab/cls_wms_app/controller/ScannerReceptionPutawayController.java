@@ -162,17 +162,18 @@ public class ScannerReceptionPutawayController {
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
+
         model.addAttribute("warehouse", warehouse);
         model.addAttribute("receptionNumber", receptionNumberSearch);
         model.addAttribute("message", locationFromMessage);
-
         session.setAttribute("message","");
         session.setAttribute("equipmentMessage","");
-        session.setAttribute("menuScannerMessage","");
 
+        session.setAttribute("menuScannerMessage","");
         session.setAttribute("receptionMenuMessage","");
         session.setAttribute("manualReceptionMessage","");
         session.setAttribute("locationToMessage","");
+
         session.setAttribute("hdNumberMessage","");
         session.setAttribute("articleMessage","");
 

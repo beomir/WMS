@@ -25,7 +25,11 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form method="post" th:action="@{/scanner/scannerProductionManualWork}">
-			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
+			<section style="margin-left: 34%;position: absolute">
+				<span><img style="height: 50px;width:50px" class="makeItBigger" th:src="@{/images/picking.png}"/></span>
+			</section>
+			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div>
+			<br/>
 			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
 			<div class="underTitle" th:text="#{app.production} + ' ' + #{app.picking}"></div><br/>
 			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>

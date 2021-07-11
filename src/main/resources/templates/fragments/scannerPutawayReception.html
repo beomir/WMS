@@ -3,6 +3,9 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <body>
 <div th:fragment="scannerPutawayReception">
+    <section style="margin-left: 34%;position: absolute">
+        <span><img style="height: 50px;width:50px" class="makeItBigger" th:title="#{app.putaway} + ' ' + #{app.article} + ': ' + ${workToDoFound.article}" th:src="@{/images/on_reception.png}"/></span>
+    </section>
     <div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
 <div class="underTitle" th:text="#{app.reception}">reception</div><br/>
 <div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>

@@ -25,12 +25,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form method="post" th:action="@{/scanner/produceMenuManualWorkProductionNumberFound}">
-			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
-			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
-			<div th:if="${messagePutaway} != null" style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${messagePutaway}"></div>
-			<div class="underTitle" th:text="#{app.production} + ' ' + #{app.produce}"></div><br/>
-			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
-			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
+			<div th:include="fragments/scannerProduceProduction :: scannerProduceProduction"></div><br/>
 			<div class="formDescription" th:text="#{app.doYouConfirmTheProduction} + ' ' + ${workToDoFound.piecesQty} + ' ' + #{app.piecesOf} +  ' ' + ${workToDoFound.article} + ' ' + #{app.fromTheIntermediateArticlesBelow}"></div><br/><br/>
 			<br/><br/>
 			<table style="color: white;text-align: left;width:100%">
