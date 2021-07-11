@@ -25,8 +25,8 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form method="post" th:action="@{/scanner/receptionMenuManualWorkReceptionNumberFoundArticle}">
-			<div th:include="fragments/scannerPutawayReception :: scannerPutawayReception"></div><br/>
-			<div class="formDescription" th:text="#{app.pickedHdNumber} + ': ' + ${workToDoFound.hdNumber}"></div><br/><br/>
+			<div th:include="fragments/scannerPutawayReception :: scannerPutawayReception"></div>
+			<div class="formDescription" th:text="#{app.pickedHdNumber} + ': ' + ${workToDoFound.hdNumber}"></div><br/>
 			<label  th:text="#{app.scan} + ' ' + #{app.articleNumber} +  ' (' + ${workToDoFound.article} + ')'" style="margin-left: 15%;color: white;font-weight: bold"></label>
 			<br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[0-9].{15,}" min="9" max="16" type="text" name="enteredArticle"/>
 			<label style="margin-left: 15%;color: white;font-weight: bold" th:text="#{app.withQty} + ': ' + ${workToDoFound.piecesQty}"></label>
