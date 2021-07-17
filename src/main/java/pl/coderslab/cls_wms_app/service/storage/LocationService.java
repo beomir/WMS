@@ -21,8 +21,6 @@ public interface LocationService {
 
     void createLocationPack(Location location, LocationNameConstruction locationNameConstruction);
 
-    List<Location> getLocationByWarehouseName(String warehouseName);
-
     List<Location> getLocations(); //for fixtures
 
     List<Location> getDeactivatedLocations();
@@ -45,4 +43,7 @@ public interface LocationService {
 
     Location findAvailableLocationAfterProducing(Article article, StorageZone storageZone, String warehouseName);
 
+    Boolean reduceTheAvailableContentOfTheLocation(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName);
+
+    void restoreTheAvailableLocationCapacity(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName);
 }

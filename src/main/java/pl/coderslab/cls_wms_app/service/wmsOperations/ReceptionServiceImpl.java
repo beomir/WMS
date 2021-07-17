@@ -10,6 +10,7 @@ import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import pl.coderslab.cls_wms_app.repository.*;
+import pl.coderslab.cls_wms_app.service.storage.LocationService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
@@ -49,9 +50,10 @@ public class ReceptionServiceImpl implements ReceptionService {
     private final CustomerUserDetailsService customerUserDetailsService;
     private final IssueLogRepository issueLogRepository;
     private final ExtremelyRepository extremelyRepository;
+    private final LocationService locationService;
 
     @Autowired
-    public ReceptionServiceImpl(ReceptionRepository receptionRepository, EmailRecipientsRepository emailRecipientsRepository, SendEmailService sendEmailService, SchedulerRepository schedulerRepository, ArticleRepository articleRepository, VendorRepository vendorRepository, UnitRepository unitRepository, CompanyRepository companyRepository, WarehouseRepository warehouseRepository, WorkDetailsRepository workDetailsRepository, LocationRepository locationRepository, StatusRepository statusRepository, StockRepository stockRepository, TransactionService transactionService, IssueLogService issueLogService, CustomerUserDetailsService customerUserDetailsService, IssueLogRepository issueLogRepository, ExtremelyRepository extremelyRepository) {
+    public ReceptionServiceImpl(ReceptionRepository receptionRepository, EmailRecipientsRepository emailRecipientsRepository, SendEmailService sendEmailService, SchedulerRepository schedulerRepository, ArticleRepository articleRepository, VendorRepository vendorRepository, UnitRepository unitRepository, CompanyRepository companyRepository, WarehouseRepository warehouseRepository, WorkDetailsRepository workDetailsRepository, LocationRepository locationRepository, StatusRepository statusRepository, StockRepository stockRepository, TransactionService transactionService, IssueLogService issueLogService, CustomerUserDetailsService customerUserDetailsService, IssueLogRepository issueLogRepository, ExtremelyRepository extremelyRepository, LocationService locationService) {
         this.receptionRepository = receptionRepository;
         this.emailRecipientsRepository = emailRecipientsRepository;
         this.sendEmailService = sendEmailService;
@@ -70,6 +72,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         this.customerUserDetailsService = customerUserDetailsService;
         this.issueLogRepository = issueLogRepository;
         this.extremelyRepository = extremelyRepository;
+        this.locationService = locationService;
     }
 
 
@@ -128,25 +131,39 @@ public class ReceptionServiceImpl implements ReceptionService {
     public void assignDoorLocationToReception(Long receptionNumber, Long doorLocation,  HttpSession session) {
         log.debug("receptionNumber: " + receptionNumber);
         log.debug("doorLocation: " + doorLocation);
+        boolean enoughCapacity = false;
         List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
         Location location = locationRepository.getOne(doorLocation);
         Transaction transaction = new Transaction();
-        transaction.setTransactionDescription("Reception assigned to reception dock door");
+
         for (Reception singularReception: receptions) {
-            singularReception.setStatus(statusRepository.getStatusByStatusName("unloading_pending","Reception"));
-            singularReception.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-            singularReception.setLocation(location);
-            receptionRepository.save(singularReception);
-            transaction.setAdditionalInformation("Assign reception: " + receptionNumber + " to dock door: " + location.getLocationName());
-            transaction.setReceptionStatus(singularReception.getStatus().getStatus());
-            saveTransactionModel(singularReception, transaction);
+            if(locationService.reduceTheAvailableContentOfTheLocation(location.getLocationName(),singularReception.getArticle().getArticle_number(),singularReception.getPieces_qty(),singularReception.getWarehouse().getName(),singularReception.getCompany().getName())){
+                singularReception.setStatus(statusRepository.getStatusByStatusName("unloading_pending","Reception"));
+                singularReception.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                singularReception.setLocation(location);
+                receptionRepository.save(singularReception);
+                transaction.setAdditionalInformation("Assign reception: " + receptionNumber + " to dock door: " + location.getLocationName());
+                transaction.setReceptionStatus(singularReception.getStatus().getStatus());
+                saveTransactionModel(singularReception, transaction);
+                enoughCapacity = true;
+            }
+            else{
+                transaction.setAdditionalInformation("Assign reception: " + receptionNumber + " to dock door: " + location.getLocationName() + " unsuccessful because of not enough location free capacity");
+                transaction.setReceptionStatus(singularReception.getStatus().getStatus());
+                enoughCapacity = false;
+            }
         }
-        transaction.setTransactionType("118");
-        transactionService.add(transaction);
+        if(enoughCapacity){
+            transaction.setTransactionDescription("Reception assigned to reception dock door");
+            session.setAttribute("receptionMessage", "Reception: " + receptionNumber + " assigned to door: " + location.getLocationName());
+            transaction.setTransactionType("118");
+            transactionService.add(transaction);
+            log.info("close creation service receptionMessage: " + session.getAttribute("receptionMessage"));
+        }
+        else{
+            session.setAttribute("receptionMessage", "Not enough space or free weight in location: " + location.getLocationName());
+        }
 
-        session.setAttribute("receptionMessage", "Reception: " + receptionNumber + " assigned to door: " + location.getLocationName());
-
-        log.info("close creation service receptionMessage: " + session.getAttribute("receptionMessage"));
     }
 
     @Override
@@ -404,8 +421,6 @@ public class ReceptionServiceImpl implements ReceptionService {
             transaction.setTransactionGroup("Reception");
             saveTransactionModel(reception, transaction);
             transactionService.add(transaction);
-            reception.setStatus(statusRepository.getStatusByStatusName("unloading_pending","Reception"));
-            receptionRepository.save(reception);
         }
         session.setAttribute("receptionMessage","Truck with reception: " + receptionNumber + " arrived to warehouse");
 
@@ -417,6 +432,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     public void openCreation(Long receptionNumber,HttpSession session) {
         List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
         for(Reception reception : receptions){
+            locationService.restoreTheAvailableLocationCapacity(reception.getLocation().getLocationName(),reception.getArticle().getArticle_number(),reception.getPieces_qty(),reception.getWarehouse().getName(),reception.getCompany().getName());
             Transaction transaction = new Transaction();
             transaction.setTransactionDescription("Reception Opened");
             transaction.setAdditionalInformation("Reception Number: " + reception.getReceptionNumber()  +  ", HD number: " + reception.getHd_number() + " opened");

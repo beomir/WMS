@@ -14,7 +14,6 @@ import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationSearch;
 
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -28,6 +27,7 @@ public class LocationServiceImpl implements LocationService {
     public LocationSearch locationSearch;
     public LocationNameConstruction lNC;
     private final IssueLogService issueLogService;
+    private final ArticleRepository articleRepository;
     private final StorageZoneRepository storageZoneRepository;
     private final WarehouseRepository warehouseRepository;
     private final TransactionService transactionService;
@@ -40,11 +40,12 @@ public class LocationServiceImpl implements LocationService {
     String locationName;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC, IssueLogService issueLogService, StorageZoneRepository storageZoneRepository, WarehouseRepository warehouseRepository, TransactionService transactionService, CompanyRepository companyRepository, AddLocationToStorageZone addLocationToStorageZone, ExtremelyRepository extremelyRepository) {
+    public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC, IssueLogService issueLogService, ArticleRepository articleRepository, StorageZoneRepository storageZoneRepository, WarehouseRepository warehouseRepository, TransactionService transactionService, CompanyRepository companyRepository, AddLocationToStorageZone addLocationToStorageZone, ExtremelyRepository extremelyRepository) {
         this.locationRepository = locationRepository;
         this.locationSearch = locationSearch;
         this.lNC = lNC;
         this.issueLogService = issueLogService;
+        this.articleRepository = articleRepository;
         this.storageZoneRepository = storageZoneRepository;
         this.warehouseRepository = warehouseRepository;
         this.transactionService = transactionService;
@@ -405,6 +406,51 @@ public class LocationServiceImpl implements LocationService {
 
     }
 
+    @Override
+    public Boolean reduceTheAvailableContentOfTheLocation(String locationName, Long articleNumber, Long piecesQty,String warehouseName,String companyName) {
+        Location location = locationRepository.findLocationByLocationName(locationName,warehouseName);
+        Article article = articleRepository.findArticleByArticleNumberAndCompanyName(articleNumber,companyName);
+        log.error("reduceTheAvailableContentOfTheLocation: ");
+        log.error("Article number: " + article.getArticle_number());
+        log.error("Pieces Qty: " + piecesQty);
+        double articlesVolume = article.getVolume() * piecesQty;
+        double articlesWeight = article.getWeight() * piecesQty;
+        log.error("articlesVolume: " + articlesVolume);
+        log.error("articlesWeight: " + articlesWeight);
+        log.error("location: " + locationName + " Warehouse: " + warehouseName);
+        log.error("locationFreeSpace: " + location.getFreeSpace());
+        log.error("locationFreeWeight: " + location.getFreeWeight());
+        if(location.getFreeSpace() < articlesVolume || location.getFreeWeight() < articlesWeight){
+            log.error("Not enough space or free weight");
+            return false;
+        }
+        else{
+            location.setFreeWeight(location.getFreeWeight() - articlesWeight);
+            location.setFreeSpace(location.getFreeSpace() - articlesVolume);
+            locationRepository.save(location);
+            log.error("enough space and free weight");
+            return true;
+        }
+
+    }
+
+    @Override
+    public void restoreTheAvailableLocationCapacity(String locationName, Long articleNumber, Long piecesQty, String warehouseName, String companyName) {
+        log.error("restoreTheAvailableLocationCapacity:");
+        log.error("locationName: " + locationName);
+        Location location = locationRepository.findLocationByLocationName(locationName,warehouseName);
+        log.error("Location free space before: "+ location.getFreeSpace());
+        log.error("Location free weight before: "+ location.getFreeWeight());
+        Article article = articleRepository.findArticleByArticleNumberAndCompanyName(articleNumber,companyName);
+        double articlesVolume = article.getVolume() * piecesQty;
+        double articlesWeight = article.getWeight() * piecesQty;
+        location.setFreeSpace(location.getFreeSpace() + articlesVolume);
+        location.setFreeWeight(location.getFreeWeight() + articlesWeight);
+        locationRepository.save(location);
+        log.error("Location free space after: "+ location.getFreeSpace());
+        log.error("Location free weight after: "+ location.getFreeWeight());
+    }
+
     private void addLocationsToStorageZoneIssueLogCreation(String requestedLocationToAdd, AddLocationToStorageZone aLTSZ) {
 
         if (locationRepository.findLocationByLocationName(requestedLocationToAdd,aLTSZ.warehouse) == null) {
@@ -721,10 +767,6 @@ public class LocationServiceImpl implements LocationService {
     }
 
 
-    @Override
-    public List<Location> getLocationByWarehouseName(String warehouseName) {
-        return locationRepository.getLocationByWarehouseName(warehouseName);
-    }
 
     //for fixtures
     @Override

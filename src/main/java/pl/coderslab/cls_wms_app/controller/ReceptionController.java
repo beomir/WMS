@@ -276,11 +276,9 @@ public class ReceptionController {
                                                  HttpServletRequest request,HttpSession session) {
         if(usersService.warehouseSelection(session,chosenWarehouse,request).equals("warehouseSelected")) {
             receptionService.closeCreation(receptionNumber, session);
-            Long doorLocation = 0L;
             List<Location> receptionDoorLocations = locationRepository.receptionDoorLocations(warehouseRepository.getWarehouseByName(chosenWarehouse).getId());
             model.addAttribute("locations", receptionDoorLocations);
             model.addAttribute(receptionNumber);
-            model.addAttribute(doorLocation);
             usersService.loggedUserData(model,session);
             return "wmsOperations/unloadingDoor";
         }
