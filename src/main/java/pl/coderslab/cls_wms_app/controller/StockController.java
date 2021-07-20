@@ -24,6 +24,7 @@ import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
 import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -64,18 +65,17 @@ public class StockController {
     }
 
     @GetMapping("/stock")
-    public String list(Model model, HttpSession session) {
-        List<Stock> storage = stockService.getStorage(customerUserDetailsService.chosenWarehouse,SecurityUtils.username());
-        List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
-        model.addAttribute("stock", storage);
-        model.addAttribute("warehouse", warehouse);
-
-        usersService.loggedUserData(model,session);
-        if(customerUserDetailsService.chosenWarehouse == null){
-            return "redirect:/warehouse";
+    public String list(Model model, HttpSession session, @SessionAttribute(required = false) String chosenWarehouse, HttpServletRequest request) {
+        if(usersService.warehouseSelection(session,chosenWarehouse,request).equals("warehouseSelected")){
+            List<Stock> storage = stockService.getStorage(chosenWarehouse,SecurityUtils.username());
+            Warehouse warehouse = warehouseService.getWarehouseByName(chosenWarehouse);
+            model.addAttribute("stock", storage);
+            model.addAttribute("warehouse", warehouse);
+            usersService.loggedUserData(model,session);
+            return "stock";
         }
             else{
-                return "stock";
+            return "redirect:/selectWarehouse";
         }
     }
 

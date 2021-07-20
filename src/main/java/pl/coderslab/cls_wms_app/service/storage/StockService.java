@@ -10,10 +10,9 @@ import java.util.List;
 public interface StockService {
 
 
-    List<Stock> getStorage(Long id,String username);
+    List<Stock> getStorage(String warehouseName,String username);
 
     List<Warehouse> getWarehouse(Long id);
-
 
     Stock findById(Long id);
 

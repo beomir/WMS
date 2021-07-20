@@ -11,9 +11,6 @@ import java.util.List;
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
 
-    @Query("Select l from Location l join Warehouse w where w.name = ?1 order by l.locationName")
-    List<Location> getLocationByWarehouseName(String warehouseName);
-
     @Query("Select l from Location l where l.active = false")
     List<Location> getDeactivatedLocation();
 
@@ -33,7 +30,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     List<Location> LocationsPlusStorageZone();
 
     @Query("Select l from Location l left join fetch l.stockList where l.warehouse.id = ?1")
-    List<Location> locations(Long id);
+    List<Location> locations(Long warehouseId);
 
     @Query("Select l from Location l where l.warehouse.id = ?1 and l.locationType = 'RDL'")
     List<Location> receptionDoorLocations(Long warehouseId);
