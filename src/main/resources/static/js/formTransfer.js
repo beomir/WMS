@@ -1,4 +1,6 @@
 var doorLocationValue;
+var equipmentLocationValue;
+var productionLocationValue;
 var notEnoughSpaceInLocation;
 var notEnoughWeightInLocation;
 var locationNotExistsValue;
@@ -53,6 +55,9 @@ let canBeMixed = 0;
 let counter;
 let doorLocations;
 
+let equipmentLocations;
+let productionLocations;
+
 let locationOccupied;
 let selectedArticleClass;
 let selectedArticleClassesMixed;
@@ -76,9 +81,10 @@ let nearbyAvailableLocation = document.getElementById('nearbyAvailableLocation')
 let foundAvailableNearbyLocationQty;
 let nearbyAvailableLocationList = document.getElementById('nearbyAvailableLocationList')
 let originLocationId;
-
+let counterOfLocations;
 
 nearbyAvailableLocation.addEventListener('change',function(){
+    counterOfLocations = 0;
     if(this.checked){
         nearbyAvailableLocationList.innerHTML = "";
         foundAvailableNearbyLocationQty = 0;
@@ -274,7 +280,7 @@ nearbyEmptyLocation.addEventListener('change',function(){
         for (let j = originLocationId; j >= 0; j--) {
             console.log("stockExists[j].textContent: " + stockExists[j].textContent)
             console.log("loop down " + locations[j].textContent)
-            if (stockExists[j].textContent == "true" && locationType[j].textContent != "RDL" && locationType[j].textContent != "SDL") {
+            if (stockExists[j].textContent == "true" && locationType[j].textContent != "RDL" && locationType[j].textContent != "SDL" && locationType[j].textContent != "PPL" && locationType[j].textContent != "EQL") {
                 foundEmptyNearbyLocationQty++
                 console.log("foundEmptyNearbyLocationQty " + foundEmptyNearbyLocationQty)
                 nearbyEmptyLocationList.append(locations[j].textContent);
@@ -288,7 +294,7 @@ nearbyEmptyLocation.addEventListener('change',function(){
         for (let j = originLocationId; j < storageZones.length; j++) {
             console.log("stockExists[j].textContent: " + stockExists[j].textContent)
             console.log("loop up " + locations[j].textContent)
-            if (stockExists[j].textContent == "true" && locationType[j].textContent != "RDL" && locationType[j].textContent != "SDL") {
+            if (stockExists[j].textContent == "true" && locationType[j].textContent != "RDL" && locationType[j].textContent != "SDL" && locationType[j].textContent != "PPL" && locationType[j].textContent != "EQL") {
                 foundEmptyNearbyLocationQty++
                 console.log("foundEmptyNearbyLocationQty " + foundEmptyNearbyLocationQty)
                 nearbyEmptyLocationList.append(locations[j].textContent);
@@ -344,7 +350,10 @@ piecesQty.addEventListener('keyup', function() {
         $('#splitPallet').css('border-radius', '5px');
         console.log("checkedArticleValue + " + checkedArticleValue)
         console.log("currentArticle + " + currentArticle)
-        if(sameCompany == 1){
+        if(sameCompany == 1 && locationIsEmpty == 0 && parseInt(document.getElementById('piecesQty').value) <= parseInt(originalPiecesQty)){
+            console.log("dupa1")
+            console.log("locationIsEmpty: " + locationIsEmpty)
+
             $("#createNewPalletNumberInLocation").show(500);
         }
 
@@ -359,7 +368,9 @@ piecesQty.addEventListener('keyup', function() {
         console.log("locationIsEmpty: " + locationIsEmpty)
         console.log("checkedArticleValue + " + checkedArticleValue)
         console.log("currentArticle + " + currentArticle)
-        if(sameCompany == 1){
+        if(sameCompany == 1 && locationIsEmpty == 0 && parseInt(document.getElementById('piecesQty').value) <= parseInt(originalPiecesQty)){
+            console.log("dupa2")
+            console.log("locationIsEmpty: " + locationIsEmpty)
             $("#createNewPalletNumberInLocation").show(500);
         }
     }
@@ -392,6 +403,8 @@ createNewPalletNumberInLocationCheckbox.addEventListener('change', function (){
 
 function checkLocationAvailability(){
     doorLocationValue = 0;
+    equipmentLocationValue = 0;
+    productionLocationValue = 0;
     notEnoughSpaceInLocation = 0;
     notEnoughWeightInLocation = 0;
     locationNotExistsValue = 0;
@@ -443,6 +456,13 @@ function checkLocationAvailability(){
                     selectedArticleClassesMixed = articleClassesMixed[j].textContent
                     if(currentLocationType == "RDL" || currentLocationType == "SDL"){
                         doorLocations = 1;
+                    }
+                    else if(currentLocationType == "EQL"){
+                        equipmentLocations = 1;
+                    }
+                    else if(currentLocationType == "PPL"){
+                        productionLocations = 1;
+
                     }
                     else {
                         doorLocations = 0;
@@ -539,6 +559,46 @@ function checkLocationAvailability(){
         $('#articleInformation').css('border', '2px solid');
         $('#articleInformation').css('border-radius', '5px');
         doorLocationValue = 1;
+        locationIsEmpty = 0;
+    }
+    else if(productionLocations ==1){
+        message.innerHTML = "Location exists, but is not possible transfer stock directly to Production locations";
+        $('#message').css('color', 'red');
+        $('#message').css('background-color', 'black');
+        $('#message').css('border', '2px solid');
+        $('#message').css('border-radius', '5px');
+        currentLocationFreeSpace.innerHTML ="";
+        $('#currentLocationFreeSpace').css('color', 'transparent');
+        $('#currentLocationFreeSpace').css('background-color', 'transparent');
+        currentLocationFreeWeight.innerHTML ="";
+        $('#currentLocationFreeWeight').css('color', 'transparent');
+        $('#currentLocationFreeWeight').css('background-color', 'transparent');
+        articleInformation.innerHTML = "Class: " + selectedArticleClass;
+        $('#articleInformation').css('color', 'green');
+        $('#articleInformation').css('background-color', 'black');
+        $('#articleInformation').css('border', '2px solid');
+        $('#articleInformation').css('border-radius', '5px');
+        productionLocationValue = 1;
+        locationIsEmpty = 0;
+    }
+    else if(equipmentLocations==1){
+        message.innerHTML = "Location exists, but is not possible transfer stock directly to Equipment locations";
+        $('#message').css('color', 'red');
+        $('#message').css('background-color', 'black');
+        $('#message').css('border', '2px solid');
+        $('#message').css('border-radius', '5px');
+        currentLocationFreeSpace.innerHTML ="";
+        $('#currentLocationFreeSpace').css('color', 'transparent');
+        $('#currentLocationFreeSpace').css('background-color', 'transparent');
+        currentLocationFreeWeight.innerHTML ="";
+        $('#currentLocationFreeWeight').css('color', 'transparent');
+        $('#currentLocationFreeWeight').css('background-color', 'transparent');
+        articleInformation.innerHTML = "Class: " + selectedArticleClass;
+        $('#articleInformation').css('color', 'green');
+        $('#articleInformation').css('background-color', 'black');
+        $('#articleInformation').css('border', '2px solid');
+        $('#articleInformation').css('border-radius', '5px');
+        equipmentLocationValue = 1;
         locationIsEmpty = 0;
     }
     else if(sameLocation == 1){
@@ -648,8 +708,10 @@ function checkLocationAvailability(){
             $("#ifLocationEmpty").show(500);
             $('#hd_number').val(originPallet.textContent);
             locationIsEmpty = 0;
-            if(sameCompany == 1){
+            if(sameCompany == 1 && locationIsEmpty == 0){
                 $("#createNewPalletNumberInLocation").show(500);
+                console.log("dupa3")
+                console.log("locationIsEmpty: " + locationIsEmpty)
             }
             checkIfPartialTransfer()
         }
@@ -689,8 +751,10 @@ function checkLocationAvailability(){
             $('#splitPallet').css('border-radius', '5px');
             console.log("checkedArticleValue + " + checkedArticleValue)
             console.log("currentArticle + " + currentArticle)
-            if(sameCompany == 1){
+            if(sameCompany == 1 && locationIsEmpty == 0 && parseInt(document.getElementById('piecesQty').value) <= parseInt(originalPiecesQty)){
                 $("#createNewPalletNumberInLocation").show(500);
+                console.log("dupa4")
+                console.log("locationIsEmpty: " + locationIsEmpty)
             }
 
         }
@@ -704,8 +768,10 @@ function checkLocationAvailability(){
             console.log("locationIsEmpty: " + locationIsEmpty)
             console.log("checkedArticleValue + " + checkedArticleValue)
             console.log("currentArticle + " + currentArticle)
-            if(sameCompany == 1){
+            if(sameCompany == 1 && locationIsEmpty == 0 && parseInt(document.getElementById('piecesQty').value) <= parseInt(originalPiecesQty)){
                 $("#createNewPalletNumberInLocation").show(500);
+                console.log("dupa5")
+                console.log("locationIsEmpty: " + locationIsEmpty)
             }
         }
     })
@@ -766,6 +832,16 @@ function checkAllValidations(){
         returnToPreviousPage();
         return false;
     }
+    else if(productionLocationValue==1){
+        alert("Location exists, but is not possible transfer stock directly to Production locations")
+        returnToPreviousPage();
+        return false;
+    }
+    else if(equipmentLocationValue==1){
+        alert("Location exists, but is not possible transfer stock directly to Equipment locations")
+        returnToPreviousPage();
+        return false;
+    }
     else if(notEnoughSpaceInLocation==1){
         alert("You can not add this article with this quantity. Location have not enough space for it")
         returnToPreviousPage();
@@ -818,23 +894,45 @@ function returnToPreviousPage() {
 }
 
 function nearbyAvailablePartialOccupiedLocationsAdd(){
-    if (locationOccupied > 0 && canBeMixed == 0 && originLocationName.textContent != locations[iterator].textContent) {
-        if (multiItemOnLocation == 1 && checkedArticleValue == currentArticle) {
-            foundAvailableNearbyLocationQty++
-            console.log("foundAvailableNearbyLocationQty " + foundAvailableNearbyLocationQty)
-            console.log("locations[i].textContent: " + locations[iterator].textContent)
-            document.getElementById('nearbyAvailableLocationList').append(locations[iterator].textContent);
-            let br = document.createElement("br")
-            document.getElementById('nearbyAvailableLocationList').append(br);
-        }
-        else if(multiItemOnLocation == 0){
-            foundAvailableNearbyLocationQty++
-            console.log("foundAvailableNearbyLocationQty " + foundAvailableNearbyLocationQty)
-            console.log("locations[i].textContent: " + locations[iterator].textContent)
 
-            document.getElementById('nearbyAvailableLocationList').append(locations[iterator].textContent);
+    if (locationOccupied > 0 && canBeMixed == 0 && originLocationName.textContent != locations[iterator].textContent) {
+        if (multiItemOnLocation == 1 && checkedArticleValue == currentArticle && locationType[iterator].textContent != "PPL" && locationType[iterator].textContent != "EQL") {
+            foundAvailableNearbyLocationQty++
+            counterOfLocations++;
+            console.log("foundAvailableNearbyLocationQty " + foundAvailableNearbyLocationQty)
+            console.log("locations[i].textContent: " + locations[iterator].textContent)
+            console.log("nearbyAvailablePartialOccupiedLocationsSpan1: " + $('#nearbyAvailablePartialOccupiedLocationsSpan1').text())
+            console.log("locationType[i].textContent: " + locationType[iterator].textContent)
+            let dateSpan = document.createElement('span')
             let br = document.createElement("br")
+            if($('#nearbyAvailablePartialOccupiedLocationsSpan1').text() != locations[iterator].textContent){
+            document.getElementById('nearbyAvailableLocationList').appendChild(dateSpan);
+            dateSpan.id = "nearbyAvailablePartialOccupiedLocationsSpan" + counterOfLocations
+            document.getElementById('nearbyAvailablePartialOccupiedLocationsSpan' + counterOfLocations).append(locations[iterator].textContent);
             document.getElementById('nearbyAvailableLocationList').append(br);
+            }
+            // document.getElementById('nearbyAvailableLocationList').append(locations[iterator].textContent);
+            // let br = document.createElement("br")
+            // document.getElementById('nearbyAvailableLocationList').append(br);
+        }
+        else if(multiItemOnLocation == 0 && locationType[iterator].textContent != "PPL" && locationType[iterator].textContent != "EQL"){
+            foundAvailableNearbyLocationQty++
+            counterOfLocations++;
+            console.log("foundAvailableNearbyLocationQty " + foundAvailableNearbyLocationQty)
+            console.log("locations[i].textContent: " + locations[iterator].textContent)
+            console.log("nearbyAvailablePartialOccupiedLocationsSpan1: " + $('#nearbyAvailablePartialOccupiedLocationsSpan1').text())
+            console.log("locationType[i].textContent: " + locationType[iterator].textContent)
+            // document.getElementById('nearbyAvailableLocationList').append(locations[iterator].textContent);
+            // let br = document.createElement("br")
+            // document.getElementById('nearbyAvailableLocationList').append(br);
+            let dateSpan = document.createElement('span')
+            let br = document.createElement("br")
+            if($('#nearbyAvailablePartialOccupiedLocationsSpan1').text() != locations[iterator].textContent){
+            document.getElementById('nearbyAvailableLocationList').appendChild(dateSpan);
+            dateSpan.id = "nearbyAvailablePartialOccupiedLocationsSpan" + counterOfLocations
+            document.getElementById('nearbyAvailablePartialOccupiedLocationsSpan' + counterOfLocations).append(locations[iterator].textContent);
+            document.getElementById('nearbyAvailableLocationList').append(br);
+            }
         }
     }
 }
