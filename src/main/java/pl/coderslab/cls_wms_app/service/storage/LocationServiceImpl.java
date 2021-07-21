@@ -407,7 +407,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Boolean reduceTheAvailableContentOfTheLocation(String locationName, Long articleNumber, Long piecesQty,String warehouseName,String companyName) {
+    public Boolean reduceTheAvailableContentOfTheLocation(String locationName, Long articleNumber, Long piecesQty,String warehouseName,String companyName, String workType) {
         Location location = locationRepository.findLocationByLocationName(locationName,warehouseName);
         Article article = articleRepository.findArticleByArticleNumberAndCompanyName(articleNumber,companyName);
         log.error("reduceTheAvailableContentOfTheLocation: ");
@@ -420,7 +420,9 @@ public class LocationServiceImpl implements LocationService {
         log.error("location: " + locationName + " Warehouse: " + warehouseName);
         log.error("locationFreeSpace: " + location.getFreeSpace());
         log.error("locationFreeWeight: " + location.getFreeWeight());
-        if(location.getFreeSpace() < articlesVolume || location.getFreeWeight() < articlesWeight){
+        //TODO make a check about maximum capacity of equipment before start work on scanner
+        log.error("workType: " + workType);
+        if(!workType.equals("ReceptionPutaway") && (location.getFreeSpace() < articlesVolume || location.getFreeWeight() < articlesWeight)){
             log.error("Not enough space or free weight");
             return false;
         }
@@ -563,7 +565,7 @@ public class LocationServiceImpl implements LocationService {
                 }
             } else if(maxQtyOfLocationsToCreate <= locationsRange){
                 log.error("Extremly value: " + maxQtyOfLocationsToCreate + " is lower than location range or extremelyValue is not a number check issueLog");
-                if(extremelyValueSetup == true){
+                if(extremelyValueSetup){
                     IssueLog issueLog = new IssueLog();
                     issueLog.setIssueLogContent("Exteremly value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremlyValue is not a number");
                     maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
@@ -590,7 +592,7 @@ public class LocationServiceImpl implements LocationService {
                 }
             } else if(maxQtyOfLocationsToCreate <= locationsRange){
                 log.error("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
-                if(extremelyValueSetup == true) {
+                if(extremelyValueSetup) {
                     IssueLog issueLog = new IssueLog();
                     issueLog.setIssueLogContent("Extremly value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
                     maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
@@ -618,7 +620,7 @@ public class LocationServiceImpl implements LocationService {
                 }
             } else if(maxQtyOfLocationsToCreate <= locationsRange){
                 log.error("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
-                if(extremelyValueSetup == true) {
+                if(extremelyValueSetup) {
                     IssueLog issueLog = new IssueLog();
                     issueLog.setIssueLogContent("Extremly value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
                     maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
@@ -666,7 +668,7 @@ public class LocationServiceImpl implements LocationService {
             }
             else if(maxQtyOfLocationsToCreate <= rackNumberRange * rackHeightRange * locationNumberRange){
                 log.error("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range + " + rackNumberRange * rackHeightRange * locationNumberRange + " or extremlyValue is not a number");
-                if(extremelyValueSetup == true) {
+                if(extremelyValueSetup) {
                     IssueLog issueLog = new IssueLog();
                     issueLog.setIssueLogContent("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range or extremelyValue is not a number check issueLog");
                     maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
@@ -676,7 +678,7 @@ public class LocationServiceImpl implements LocationService {
         }
         log.error("maxQtyOfLocationsToCreate in main method: " + maxQtyOfLocationsToCreate);
         log.error("extremelyValueSetup: " + extremelyValueSetup);
-        if(extremelyValueSetup == false){
+        if(!extremelyValueSetup){
             lNC.message = "Extremely value for warehouse: " + location.getWarehouse().getName() + " is not setup, check issue log";
         }
         else if(maxQtyOfLocationsToCreate == 0){

@@ -204,7 +204,7 @@ public class ScannerProductionPickingController {
     @GetMapping("{token}/{warehouse}/{equipment}/5/1/{productionNumber}/hdNumber/article")
     public String pickingMenuManualWorkProductionNumberFoundArticle(@PathVariable String warehouse, @PathVariable String token, @PathVariable String equipment,
                                                                     Model model, @SessionAttribute Long productionNumberSearch,
-                                                                    @SessionAttribute(required = false) String productionScannerArticleMessage) {
+                                                                    @SessionAttribute(required = false) String productionScannerArticleMessage,HttpSession session) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
@@ -217,6 +217,7 @@ public class ScannerProductionPickingController {
         WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(productionNumberSearch.toString(), warehouse, SecurityUtils.username());
         model.addAttribute("workToDoFound", workToDoFound);
 
+        session.setAttribute("productionPickingPiecesQty",workToDoFound.getPiecesQty());
         return "wmsOperations/scanner/production/picking/scannerProductionPickingFoundArticle";
     }
 
@@ -225,7 +226,9 @@ public class ScannerProductionPickingController {
                                                                         String token, @RequestParam String productionScannerExpectedArticle, @RequestParam String productionScannerEnteredArticle,
                                                                         HttpSession session, @SessionAttribute int scannerMenuChoice, @SessionAttribute String scannerChosenEquipment,
                                                                         @SessionAttribute int workProductionScannerChoice, @SessionAttribute Long productionNumberSearch,
-                                                                        @SessionAttribute String productionScannerEnteredHdNumber, @SessionAttribute String productionScannerFromLocation) {
+                                                                        @SessionAttribute String productionScannerEnteredHdNumber,
+                                                                        @SessionAttribute String productionScannerFromLocation,
+                                                                        @SessionAttribute Long productionPickingPiecesQty) {
         log.error("Article found by query: " + productionScannerExpectedArticle);
         log.error("Article enter by user: " + productionScannerEnteredArticle);
         String nextPath = "toLocation";
@@ -233,7 +236,7 @@ public class ScannerProductionPickingController {
         String prevprevious = "hdNumber";
         if (productionScannerExpectedArticle.equals(productionScannerEnteredArticle)) {
             session.setAttribute("productionScannerEnteredArticle", productionScannerEnteredArticle);
-            workDetailsService.pickUpGoods(productionScannerFromLocation, productionScannerEnteredArticle, productionScannerEnteredHdNumber, scannerChosenEquipment, scannerChosenWarehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),productionNumberSearch.toString());
+            workDetailsService.pickUpGoods(productionScannerFromLocation, productionScannerEnteredArticle, productionScannerEnteredHdNumber, scannerChosenEquipment, scannerChosenWarehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),productionNumberSearch.toString(),productionPickingPiecesQty,"ProductionPicking");
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumberSearch + '/' + prevprevious + '/' + previous + '/' + nextPath;
 
         } else {

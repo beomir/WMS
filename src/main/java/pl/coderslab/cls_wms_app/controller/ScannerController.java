@@ -170,7 +170,7 @@ public class ScannerController {
                                    @SessionAttribute int scannerMenuChoice,
                                    @SessionAttribute String scannerChosenEquipment) {
         log.debug("Shipment Step scanner.scannerMenu: " +  scannerShipment);
-        session.setAttribute("workReceptionScannerChoice", scannerShipment);
+        session.setAttribute("scannerShipment", scannerShipment);
         return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerShipment;
     }
 
@@ -195,7 +195,7 @@ public class ScannerController {
                                   @SessionAttribute int scannerMenuChoice,
                                   @SessionAttribute String scannerChosenEquipment) {
         log.debug("Shipment Step scanner.scannerMenu: " +  scannerPreview);
-        session.setAttribute("workReceptionScannerChoice", scannerPreview);
+        session.setAttribute("scannerPreview", scannerPreview);
         return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerPreview;
     }
 
@@ -206,24 +206,26 @@ public class ScannerController {
     public String stockMenu(@PathVariable String warehouse,
                             @PathVariable String token,
                             @PathVariable String equipment,
+                            @SessionAttribute(required = false) String stockTransferScannerLocationToMessage,
                             Model model) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
+        model.addAttribute("message", stockTransferScannerLocationToMessage);
         return "wmsOperations/scanner/scannerStock";
     }
     @PostMapping("scannerStock")
     public String stockMenuPost(@SessionAttribute String scannerChosenWarehouse,
                                 String token,
-                                @RequestParam int scannerPreview,
+                                @RequestParam int scannerStock,
                                 HttpSession session,
                                 @SessionAttribute int scannerMenuChoice,
                                 @SessionAttribute String scannerChosenEquipment) {
-        log.debug("Shipment Step scanner.scannerMenu: " +  scannerPreview);
-        session.setAttribute("workReceptionScannerChoice", scannerPreview);
-        return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerPreview;
+        log.debug("Shipment Step scanner.scannerMenu: " +  scannerStock);
+        session.setAttribute("scannerStock", scannerStock);
+        return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerStock;
     }
 
 

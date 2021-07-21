@@ -89,22 +89,7 @@
 				<span id="originCompany" th:text="${stock.company.name}"></span>
 				<span id="originLocationName" th:text="${stock.location.locationName}"></span>
 				<span id="originArticleNumber" th:text="${stock.article.article_number}"></span>
-<!--				<input type="hidden" th:field="*{chosenStockPosition.idObj}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.changeByObj}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.articleId}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.commentObj}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.companyId}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.createdObj}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.hd_numberObj}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.locationId}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.qualityObj}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.unitId}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.receptionNumberObj}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.warehouseId}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.statusId}"/>-->
-<!--				<input type="hidden" th:field="*{chosenStockPosition.last_updateObj}"/>-->
 				<input id="originalPiecesQty" type="hidden" th:field="*{chosenStockPosition.pieces_qty}"/>
-<!--				<input type="hidden" th:field="*{chosenStockPosition.shipmentNumberObj}"/>-->
 			</section>
 			<section>
 				<br/><button name="formTransfer" th:value="1" th:text="#{app.createTransferWork}" class="button" type="submit" onclick="return checkAllValidations()">Save</button>

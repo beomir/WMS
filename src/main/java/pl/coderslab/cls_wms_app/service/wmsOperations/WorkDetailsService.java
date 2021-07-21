@@ -23,12 +23,11 @@ public interface WorkDetailsService {
 
     void edit(WorkDetails workDetails);
 
-    void pickUpGoods(String fromLocation,String enteredArticle, String enteredHdNumber , String equipment,String warehouse, String company,String workHandle);
+    void pickUpGoods(String fromLocation,String enteredArticle, String enteredHdNumber , String equipment,String warehouse, String company,String workHandle,Long piecesQty,String workType);
 
     void workLineFinish(WorkDetails workDetails,String scannerChosenEquipment);
 
     void workFinished(WorkDetails workDetails, HttpSession session);
-
 
     List<WorkDetailsRepository.WorkHeaderList> workHeaderList(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType, String workDetailsHandle, String workDetailsHandleDevice, String workDetailsStatus, String workDetailsLocationFrom, String workDetailsLocationTo, String workDetailsWorkNumber);
 

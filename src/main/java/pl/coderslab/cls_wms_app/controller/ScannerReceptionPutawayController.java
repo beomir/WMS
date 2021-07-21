@@ -286,6 +286,9 @@ public class ScannerReceptionPutawayController {
         session.setAttribute("locationToMessage","");
         session.setAttribute("hdNumberMessage","");
 
+        session.setAttribute("receptionPutawayPiecesQty",workToDoFound.getPiecesQty());
+        log.error("receptionPutawayPiecesQty: " +workToDoFound.getPiecesQty());
+
         return "wmsOperations/scanner/reception/scannerReceptionWorkFoundArticle";
     }
 
@@ -300,7 +303,8 @@ public class ScannerReceptionPutawayController {
                                                                          @SessionAttribute int workReceptionScannerChoice,
                                                                          @SessionAttribute Long receptionNumberSearch,
                                                                          @SessionAttribute String enteredHdNumber,
-                                                                         @SessionAttribute String fromLocation) {
+                                                                         @SessionAttribute String fromLocation,
+                                                                         @SessionAttribute Long receptionPutawayPiecesQty) {
         log.error("Article found by query: " + expectedArticle);
         log.error("Article enter by user: " + enteredArticle);
         String nextPath = "toLocation";
@@ -308,7 +312,7 @@ public class ScannerReceptionPutawayController {
         String prevprevious = "hdNumber";
         if(expectedArticle.equals(enteredArticle)){
             session.setAttribute("enteredArticle", enteredArticle);
-            workDetailsService.pickUpGoods(fromLocation,enteredArticle,enteredHdNumber,scannerChosenEquipment,scannerChosenWarehouse,companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),receptionNumberSearch.toString());
+            workDetailsService.pickUpGoods(fromLocation,enteredArticle,enteredHdNumber,scannerChosenEquipment,scannerChosenWarehouse,companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),receptionNumberSearch.toString(),receptionPutawayPiecesQty,"ReceptionPutaway");
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumberSearch + '/' + prevprevious + '/' +  previous + '/' + nextPath ;
 
         }

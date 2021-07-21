@@ -24,25 +24,20 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form method="post" th:action="@{/scanner/scannerMenu}">
-			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
-			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
-			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
-			<div class="formDescription" th:text="#{app.scannerDescription}"> </div><br/><br/><br/>
-			<div class="formContent" th:text="'1. ' + #{app.reception}"> </div>
-			<div class="formContent" th:text="'2. ' + #{app.stock}"> </div>
-			<div class="formContent" th:text="'3. ' + #{app.shipment}"> </div>
-			<div class="formContent" th:text="'4. ' + #{app.preview}"> </div>
-			<div class="formContent" th:text="'5. ' + #{app.production}"> </div>
+		<form method="post" th:action="@{/scanner/stockTransferArticleScan}">
+			<div th:include="fragments/scannerStockTransfer :: scannerStockTransfer"></div><br/>
+
+			<div class="formDescription" th:text="#{app.pickedHdNumber} + ': ' + ${workToDoFound.hdNumber}"></div>
 			<br/><br/>
-			<input  type="hidden" th:value="${token}" name="token"/>
+
+			<label  th:text="#{app.scan} + ' ' + #{app.articleNumber} +  ' (' + ${workToDoFound.article} + ')'" style="margin-left: 15%;color: white;font-weight: bold"></label>
+			<br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[0-9].{15,}" min="9" max="16" type="text" name="stockTransferScannerEnteredArticle"/>
+			<label style="margin-left: 15%;color: white;font-weight: bold" th:text="#{app.withQty} + ': ' + ${workToDoFound.piecesQty}"></label>
+			<br/><br/>
+			<input type="hidden" th:value="${token}" name="token"/>
+			<input type="hidden" th:value="${workToDoFound.article}" name="stockTransferScannerExpectedArticle">
 			<section style="display: flex; align-items: center;justify-content: center;">
-				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse}}"><div class="circle" th:title="#{app.moveBack}"><-</div></a>
-				<button name="scannerMenu" type="submit" th:value="1" class="circle">1</button>
-				<button name="scannerMenu" type="submit" th:value="2" class="circle">2</button>
-				<button name="scannerMenu" type="submit" th:value="3" class="circle">3</button>
-				<button name="scannerMenu" type="submit" th:value="4" class="circle">4</button>
-				<button name="scannerMenu" type="submit" th:value="5" class="circle">5</button>
+				<button type="submit" class="circleBig" style="font-size:12px" th:text="#{app.confirm}"></button>
 			</section>
 		</form>
 

@@ -9,9 +9,10 @@
         <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/1') }  " th:text="' ' + #{app.toFindPickingWork}"></span>
         <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/2')}" th:text="' ' + #{app.toFindProduceWork}"></span>
         <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/3') || #strings.contains(#httpServletRequest.requestURI, '/1/1')}" th:text="' ' + #{app.toFindPutawayWork}"></span>
+        <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/2/1')}" th:text="' ' + #{app.toFindStockTransferWork}"></span>
     </div>
     <div class="formDescription" style="text-align: right">
-        <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/')}" th:text="#{app.workQueueList} + ': '"></span>
+        <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/5/') || #strings.contains(#httpServletRequest.requestURI, '/2/')}" th:text="#{app.workQueueList} + ': '"></span>
         <span th:if="${#strings.contains(#httpServletRequest.requestURI, '/1/1')}" th:text="#{app.receptionQueueList} + ': '"></span>
         <div id="check" style="float: right;font-size:12px" class="circle" th:text="#{app.check}"></div>
         <div name="hide" id="workQueueList" style="display: none">
@@ -19,7 +20,6 @@
             <tr th:each="work : ${workDetailsQueue}">
                 <td th:if="${#strings.contains(#httpServletRequest.requestURI, '/1/1')}" name="workNumber" style="font-size:14px;color: deepskyblue" th:text="${#strings.substring(work.workNumber,6,14)}"></td>
                 <td th:unless="${#strings.contains(#httpServletRequest.requestURI, '/1/1')}" name="workNumber" style="font-size:14px;color: deepskyblue" th:text="${work.workNumber}"></td>
-
             </tr>
         </table>
         </div>
