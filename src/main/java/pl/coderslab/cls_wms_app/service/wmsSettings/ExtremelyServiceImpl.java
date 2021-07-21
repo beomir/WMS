@@ -8,6 +8,9 @@ import pl.coderslab.cls_wms_app.entity.Extremely;
 import pl.coderslab.cls_wms_app.entity.Transaction;
 import pl.coderslab.cls_wms_app.repository.*;
 
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -118,7 +121,13 @@ public class ExtremelyServiceImpl implements ExtremelyService{
 
     @Override
     public Long nextWorkNumber() {
-        return extremelyRepository.nextWorkNumber();
+        if(extremelyRepository.nextWorkNumber() == null){
+            return Long.parseLong( Year.now() + "0000000001");
+        }
+        else{
+            return extremelyRepository.nextWorkNumber();
+        }
+
     }
 
 

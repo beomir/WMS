@@ -11,6 +11,7 @@ import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.storage.LocationService;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.ExtremelyService;
+import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
@@ -32,6 +33,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     private final ProductionRepository productionRepository;
     private final LocationService locationService;
     private final ExtremelyService extremelyService;
+
 
     @Autowired
     public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository, ReceptionService receptionService, ArticleRepository articleRepository, ProductionRepository productionRepository, LocationService locationService, ExtremelyService extremelyService) {
@@ -76,10 +78,6 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         return workDetailsRepository.getAll();
     }
 
-    @Override
-    public List<WorkDetails> getWorkDetailsPerWarehouse(Long warehouseId) {
-        return workDetailsRepository.getWorkDetailsPerWarehouse(warehouseId);
-    }
 
     @Override
     public WorkDetails findById(Long id) {
@@ -239,37 +237,6 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         }
     }
 
-    @Override
-    public List<WorkDetails> getWorkDetailsByCriteria(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType,String workDetailsHandle,String workDetailsHandleDevice,String workDetailsStatus,String workDetailsLocationFrom,String workDetailsLocationTo,String workDetailsWorkNumber){
-        if(workDetailsWarehouse == null || workDetailsWarehouse.equals("")){
-            workDetailsWarehouse = "%";
-        }
-        if(workDetailsCompany == null || workDetailsCompany.equals("")){
-            workDetailsCompany = "%";
-        }
-        if(workDetailsArticle == null || workDetailsArticle.equals("")){
-            workDetailsArticle = "%";
-        }
-        if(workDetailsType == null || workDetailsType.equals("")){
-            workDetailsType = "%";
-        }
-        if(workDetailsHandle == null || workDetailsHandle.equals("")){
-            workDetailsHandle = "%";
-        }
-        if(workDetailsHandleDevice == null || workDetailsHandleDevice.equals("")){
-            workDetailsHandleDevice = "%";
-        }
-        if(workDetailsLocationFrom == null || workDetailsLocationFrom.equals("")){
-            workDetailsLocationFrom = "%";
-        }
-        if(workDetailsLocationTo == null || workDetailsLocationTo.equals("")){
-            workDetailsLocationTo = "%";
-        }
-        if(workDetailsWorkNumber == null || workDetailsWorkNumber.equals("")){
-            workDetailsWorkNumber = "%";
-        }
-            return workDetailsRepository.getWorkDetailsByCriteria(workDetailsWarehouse,workDetailsCompany,workDetailsArticle,workDetailsType,workDetailsHandle,workDetailsHandleDevice,workDetailsStatus,workDetailsLocationFrom,workDetailsLocationTo,workDetailsWorkNumber);
-    }
 
     @Override
     public List<WorkDetailsRepository.WorkHeaderList> workHeaderList(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType, String workDetailsHandle, String workDetailsHandleDevice, String workDetailsStatus, String workDetailsLocationFrom, String workDetailsLocationTo, String workDetailsWorkNumber) {
@@ -357,6 +324,33 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
             workDetailsRepository.save(singularWork);
             log.error("changeStatusAfterStartWork: " + singularWork.getId() + " " + singularWork.getWorkNumber());
         }
+    }
+
+    @Override
+    public void createTransferWork(Stock chosenStockPositional, Stock stock, String locationN){
+        WorkDetails transferWork = new WorkDetails();
+        log.error("extremelyService.nextWorkNumber(): " + extremelyService.nextWorkNumber());
+        transferWork.setWorkNumber(extremelyService.nextWorkNumber());
+        transferWork.setCompany(chosenStockPositional.getCompany());
+        transferWork.setWarehouse(chosenStockPositional.getWarehouse());
+        transferWork.setWorkDescription("Transfer Work");
+        transferWork.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        transferWork.setWorkType("Transfer");
+        transferWork.setArticle(stock.getArticle());
+        transferWork.setStatus("open");
+        transferWork.setToLocation(locationRepository.findLocationByLocationName(locationN,stock.getWarehouse().getName()));
+        transferWork.setFromLocation(chosenStockPositional.getLocation());
+        transferWork.setPiecesQty(chosenStockPositional.getPieces_qty());
+        transferWork.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        transferWork.setHdNumber(chosenStockPositional.getHd_number());
+        transferWork.setChangeBy(SecurityUtils.username());
+        workDetailsRepository.save(transferWork);
+        chosenStockPositional.setStatus(statusRepository.getStatusByStatusName("transfer","Stock"));
+        chosenStockPositional.setChangeBy(SecurityUtils.username());
+        chosenStockPositional.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        chosenStockPositional.setHandle(transferWork.getWorkNumber().toString());
+        chosenStockPositional.setComment("Transfer work Number: " + transferWork.getWorkNumber());
+        stockRepository.save(chosenStockPositional);
     }
 
 }

@@ -34,6 +34,7 @@
 			<div class="formContent" th:text="'3. ' + #{app.shipment}"> </div>
 			<div class="formContent" th:text="'4. ' + #{app.preview}"> </div>
 			<div class="formContent" th:text="'5. ' + #{app.production}"> </div>
+			<div class="formContent" th:text="'6. ' + #{app.transferr}"> </div>
 			<br/><br/>
 			<input  type="hidden" th:value="${token}" name="token"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
@@ -43,6 +44,7 @@
 				<button name="scannerMenu" type="submit" th:value="3" class="circle">3</button>
 				<button name="scannerMenu" type="submit" th:value="4" class="circle">4</button>
 				<button name="scannerMenu" type="submit" th:value="5" class="circle">5</button>
+				<button name="scannerMenu" type="submit" th:value="6" class="circle">6</button>
 			</section>
 		</form>
 

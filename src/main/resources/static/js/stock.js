@@ -25,6 +25,11 @@ for(let i = 0; i < statusTD.length; i++){
     else if($(statusTD[i]).children().last().attr("title").includes("reception")){
         $(statusTD[i]).children().last().attr("src","/images/on_reception30x30.png")
     }
+    else if($(statusTD[i]).children().last().attr("title") == "transfer"){
+        $(statusTD[i]).children().last().attr("src","/images/transfer.png")
+        $(statusTD[i]).children().last().attr("style","height:30px;width:30px")
+        $(stockTR[i]).css("background-color", "#0a4b78")
+    }
 
 
 }

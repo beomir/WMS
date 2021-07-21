@@ -28,16 +28,12 @@
 			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div>
 			<div class="underTitle" th:text="#{app.stock}">stock</div><br/><br/>
 			<div class="formDescription" th:text="#{app.scannerDescription}"> </div><br/><br/><br/>
-<!--			<div class="formContent" th:text="'1. ' + #{app.chooseWorkManually}"> </div>-->
-<!--			<div class="formContent" th:text="'2. ' + #{app.assignWorkAutomatically}"> </div>-->
 			<div style="text-align: center;font-weight: bold;color: white;font-size: 16px" th:text="#{app.screenInProgress}" >Screen not available for the moment. Work in progress</div>
 			<br/><br/>
 			<input  type="hidden" th:value="${token}" name="token"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
 
 				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment}}"><div class="circle" th:title="#{app.moveBack}"><-</div></a>
-<!--				<button name="scannerReception" type="submit"  th:value="1" class="circle">1</button>-->
-<!--				<button name="scannerReception" type="submit"  th:value="2" class="circle">2</button>-->
 			</section>
 		</form>
 

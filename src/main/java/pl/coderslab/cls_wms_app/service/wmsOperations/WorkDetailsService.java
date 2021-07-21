@@ -1,7 +1,9 @@
 package pl.coderslab.cls_wms_app.service.wmsOperations;
 
+import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
 import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
+import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -12,7 +14,6 @@ public interface WorkDetailsService {
 
     List<WorkDetails> getWorkDetails();
 
-    List<WorkDetails> getWorkDetailsPerWarehouse(Long warehouseId);
 
     WorkDetails findById(Long id);
 
@@ -28,11 +29,12 @@ public interface WorkDetailsService {
 
     void workFinished(WorkDetails workDetails, HttpSession session);
 
-    List<WorkDetails> getWorkDetailsByCriteria(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType,String workDetailsHandle,String workDetailsHandleDevice,String workDetailsStatus,String workDetailsLocationFrom,String workDetailsLocationTo,String workDetailsWorkNumber);
 
     List<WorkDetailsRepository.WorkHeaderList> workHeaderList(String workDetailsWarehouse, String workDetailsCompany, String workDetailsArticle, String workDetailsType, String workDetailsHandle, String workDetailsHandleDevice, String workDetailsStatus, String workDetailsLocationFrom, String workDetailsLocationTo, String workDetailsWorkNumber);
 
     void createPutAwayWork(Long productionNumberToConfirm, HttpSession session) throws CloneNotSupportedException;
+
+    void createTransferWork(Stock chosenStockPositional, Stock stock, String locationN);
 
     void closeWorkDetail(Long workNumber,String warehouseName);
 
