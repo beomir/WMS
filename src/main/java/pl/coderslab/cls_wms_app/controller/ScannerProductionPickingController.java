@@ -253,7 +253,7 @@ public class ScannerProductionPickingController {
                                                                         @SessionAttribute int workProductionScannerChoice, @SessionAttribute Long productionNumberSearch,
                                                                         @SessionAttribute String productionScannerEnteredHdNumber,
                                                                         @SessionAttribute String productionScannerFromLocation,
-                                                                        @SessionAttribute Long productionPickingPiecesQty) {
+                                                                        @SessionAttribute Long productionPickingPiecesQty) throws CloneNotSupportedException {
         log.error("Article found by query: " + productionScannerExpectedArticle);
         log.error("Article enter by user: " + productionScannerEnteredArticle);
         String nextPath = "toLocation";

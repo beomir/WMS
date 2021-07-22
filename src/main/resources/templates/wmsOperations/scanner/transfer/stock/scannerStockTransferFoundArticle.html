@@ -27,7 +27,8 @@
 		<form method="post" th:action="@{/scanner/stockTransferArticleScan}">
 			<div th:include="fragments/scannerStockTransfer :: scannerStockTransfer"></div><br/>
 
-			<div class="formDescription" th:text="#{app.pickedHdNumber} + ': ' + ${workToDoFound.hdNumber}"></div>
+			<div class="formDescription" th:text="#{app.from} + ': ' + ${workToDoFound.hdNumber}"></div>
+			<div class="formDescription" th:if="${workToDoFound.handle != workToDoFound.hdNumber}" th:text="#{app.to} + ' ' + #{app.handleDevice} + ' (' + ${workToDoFound.handle} + ')'"></div>
 			<br/><br/>
 
 			<label  th:text="#{app.scan} + ' ' + #{app.articleNumber} +  ' (' + ${workToDoFound.article} + ')'" style="margin-left: 15%;color: white;font-weight: bold"></label>

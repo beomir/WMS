@@ -321,7 +321,7 @@ public class ScannerReceptionPutawayController {
                                                                          @SessionAttribute Long receptionNumberSearch,
                                                                          @SessionAttribute String enteredHdNumber,
                                                                          @SessionAttribute String fromLocation,
-                                                                         @SessionAttribute Long receptionPutawayPiecesQty) {
+                                                                         @SessionAttribute Long receptionPutawayPiecesQty) throws CloneNotSupportedException {
         log.error("Article found by query: " + expectedArticle);
         log.error("Article enter by user: " + enteredArticle);
         String nextPath = "toLocation";

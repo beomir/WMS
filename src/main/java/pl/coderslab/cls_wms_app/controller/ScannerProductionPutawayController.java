@@ -243,7 +243,7 @@ public class ScannerProductionPutawayController {
                                                                            @SessionAttribute Long productionNumberSearch,
                                                                            @SessionAttribute String productionScannerEnteredHdNumber,
                                                                            @SessionAttribute String productionScannerFromLocation,
-                                                                           @SessionAttribute Long productionPutawayPiecesQty) {
+                                                                           @SessionAttribute Long productionPutawayPiecesQty) throws CloneNotSupportedException {
         log.error("Article found by query: " + productionScannerExpectedArticle);
         log.error("Article enter by user: " + productionScannerEnteredArticle);
         String nextPath = "toLocation";

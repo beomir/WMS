@@ -43,7 +43,7 @@ public interface LocationService {
 
     Location findAvailableLocationAfterProducing(Article article, StorageZone storageZone, String warehouseName);
 
-    Boolean reduceTheAvailableContentOfTheLocation(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName,String workType);
+    Boolean reduceTheAvailableContentOfTheLocation(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName);
 
     void restoreTheAvailableLocationCapacity(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName);
 }

@@ -23,7 +23,7 @@ public interface WorkDetailsService {
 
     void edit(WorkDetails workDetails);
 
-    void pickUpGoods(String fromLocation,String enteredArticle, String enteredHdNumber , String equipment,String warehouse, String company,String workHandle,Long piecesQty,String workType);
+    void pickUpGoods(String fromLocation,String enteredArticle, String enteredHdNumber , String equipment,String warehouse, String company,String workHandle,Long piecesQty,String workType) throws CloneNotSupportedException;
 
     void workLineFinish(WorkDetails workDetails,String scannerChosenEquipment);
 

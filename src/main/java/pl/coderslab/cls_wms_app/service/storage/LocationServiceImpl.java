@@ -407,7 +407,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Boolean reduceTheAvailableContentOfTheLocation(String locationName, Long articleNumber, Long piecesQty,String warehouseName,String companyName, String workType) {
+    public Boolean reduceTheAvailableContentOfTheLocation(String locationName, Long articleNumber, Long piecesQty,String warehouseName,String companyName) {
         Location location = locationRepository.findLocationByLocationName(locationName,warehouseName);
         Article article = articleRepository.findArticleByArticleNumberAndCompanyName(articleNumber,companyName);
         log.error("reduceTheAvailableContentOfTheLocation: ");
@@ -420,9 +420,9 @@ public class LocationServiceImpl implements LocationService {
         log.error("location: " + locationName + " Warehouse: " + warehouseName);
         log.error("locationFreeSpace: " + location.getFreeSpace());
         log.error("locationFreeWeight: " + location.getFreeWeight());
-        //TODO make a check about maximum capacity of equipment before start work on scanner
-        log.error("workType: " + workType);
-        if(!workType.equals("ReceptionPutaway") && (location.getFreeSpace() < articlesVolume || location.getFreeWeight() < articlesWeight)){
+        String extremelyMaxEquipmentCapacityStatus = extremelyRepository.findExtremelyByCompanyNameAndExtremelyName(companyName,"max_capacity_on_equipment").getExtremelyValue();
+        log.error("extremelyMaxEquipmentCapacityStatus: " + extremelyMaxEquipmentCapacityStatus);
+        if(!extremelyMaxEquipmentCapacityStatus.equals("1") && (location.getFreeSpace() < articlesVolume || location.getFreeWeight() < articlesWeight)){
             log.error("Not enough space or free weight");
             return false;
         }

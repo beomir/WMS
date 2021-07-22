@@ -134,7 +134,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     }
 
     @Override
-    public void pickUpGoods(String fromLocation, String enteredArticle, String enteredHdNumber, String equipment, String warehouse, String company, String workHandle,Long piecesQty,String workType) {
+    public void pickUpGoods(String fromLocation, String enteredArticle, String enteredHdNumber, String equipment, String warehouse, String company, String workHandle,Long piecesQty,String workType) throws CloneNotSupportedException {
         log.error("fromLocation: " + fromLocation);
         log.error("enteredArticle: " + enteredArticle);
         log.error("enteredHdNumber: " + enteredHdNumber);
@@ -144,14 +144,27 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         log.error("workHandle: " + workHandle);
         Location equipmentLocation = locationRepository.findLocationByLocationName(equipment,warehouse);
 
-
         Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(Long.parseLong(enteredHdNumber),Long.parseLong(enteredArticle),fromLocation,warehouse,company,workHandle);
-        stock.setLocation(equipmentLocation);
-        stockService.add(stock);
+        if(workType.equals("StockTransfer") && stock.getPieces_qty() != piecesQty){
 
-        if(locationService.reduceTheAvailableContentOfTheLocation(equipment,Long.parseLong(enteredArticle),piecesQty,warehouse,company,workType)) {
-            locationService.restoreTheAvailableLocationCapacity(fromLocation,Long.parseLong(enteredArticle),piecesQty,warehouse,company);
+            Stock transferredStock = (Stock) stock.clone();
+            transferredStock.setId(null);
+            transferredStock.setLocation(equipmentLocation);
+            transferredStock.setPieces_qty(piecesQty);
+            transferredStock.setHd_number(Long.parseLong(workDetailsRepository.getOneWorkDetailsByWorkNumber(Long.parseLong(workHandle)).getHandle()));
+            stockRepository.save(transferredStock);
+            stock.setPieces_qty(stock.getPieces_qty() - piecesQty);
+            stockRepository.save(stock);
+
         }
+        else{
+            stock.setLocation(equipmentLocation);
+            stockService.add(stock);
+        }
+        locationService.reduceTheAvailableContentOfTheLocation(equipment,Long.parseLong(enteredArticle),piecesQty,warehouse,company);
+        locationService.restoreTheAvailableLocationCapacity(fromLocation,Long.parseLong(enteredArticle),piecesQty,warehouse,company);
+
+
     }
 
     @Override
@@ -164,18 +177,32 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         log.error("workDetails.getCompany().getName(): " + workDetails.getCompany().getName());
         log.error("workDetails.getHandle(): " + workDetails.getHandle());
         log.error("stock: " + stockRepository.getStockByHdNumberArticleNumberLocation(workDetails.getHdNumber(),workDetails.getArticle().getArticle_number(),scannerChosenEquipment,workDetails.getWarehouse().getName(),workDetails.getCompany().getName(),workDetails.getHandle()));
-
-        Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(workDetails.getHdNumber(),workDetails.getArticle().getArticle_number(),scannerChosenEquipment,workDetails.getWarehouse().getName(),workDetails.getCompany().getName(),workDetails.getHandle());
-        stock.setLocation(locationRepository.findLocationByLocationName(workDetails.getToLocation().getLocationName(),workDetails.getWarehouse().getName()));
-        if(workDetails.getWorkDescription().equals("Putaway after producing")){
-            stock.setStatus(statusRepository.getStatusByStatusName("on_hand","Stock"));
+        if(workDetails.getWorkDescription().equals("Stock transfer Work") && workDetails.getHdNumber() != Long.parseLong(workDetails.getHandle())){
+            List<Stock> stockList = stockRepository.getStockForTransfer(workDetails.getArticle().getArticle_number(),workDetails.getWarehouse().getName(),workDetails.getCompany().getName(),workDetails.getWorkNumber().toString());
+            for (Stock singularStock: stockList) {
+                if(singularStock.getLocation().getLocationName().equals(scannerChosenEquipment)){
+                    singularStock.setLocation(locationRepository.findLocationByLocationName(workDetails.getToLocation().getLocationName(),workDetails.getWarehouse().getName()));
+                }
+            }
         }
-        stockService.add(stock);
+        else if(workDetails.getWorkDescription().equals("Stock transfer Work") && workDetails.getHdNumber() == Long.parseLong(workDetails.getHandle())){
+            Stock stock = stockRepository.getStockForFullStockTransfer(workDetails.getHdNumber(),workDetails.getArticle().getArticle_number(),scannerChosenEquipment,workDetails.getWarehouse().getName(),workDetails.getCompany().getName());
+            stock.setLocation(locationRepository.findLocationByLocationName(workDetails.getToLocation().getLocationName(),workDetails.getWarehouse().getName()));
+            stockService.add(stock);
+        }
+        else{
+            Stock stock = stockRepository.getStockByHdNumberArticleNumberLocation(workDetails.getHdNumber(),workDetails.getArticle().getArticle_number(),scannerChosenEquipment,workDetails.getWarehouse().getName(),workDetails.getCompany().getName(),workDetails.getHandle());
+            stock.setLocation(locationRepository.findLocationByLocationName(workDetails.getToLocation().getLocationName(),workDetails.getWarehouse().getName()));
+            if(workDetails.getWorkDescription().equals("Putaway after producing")){
+                stock.setStatus(statusRepository.getStatusByStatusName("on_hand","Stock"));
+            }
+            stockService.add(stock);
+        }
         workDetails.setStatus("close");
         workDetailsRepository.save(workDetails);
-        if(locationService.reduceTheAvailableContentOfTheLocation(workDetails.getToLocation().getLocationName(),workDetails.getArticle().getArticle_number(),workDetails.getPiecesQty(),workDetails.getWarehouse().getName(),workDetails.getCompany().getName(),workDetails.getWorkType())){
-            locationService.restoreTheAvailableLocationCapacity(scannerChosenEquipment,workDetails.getArticle().getArticle_number(),workDetails.getPiecesQty(),workDetails.getWarehouse().getName(),workDetails.getCompany().getName());
-        }
+        locationService.reduceTheAvailableContentOfTheLocation(workDetails.getToLocation().getLocationName(),workDetails.getArticle().getArticle_number(),workDetails.getPiecesQty(),workDetails.getWarehouse().getName(),workDetails.getCompany().getName());
+        locationService.restoreTheAvailableLocationCapacity(scannerChosenEquipment,workDetails.getArticle().getArticle_number(),workDetails.getPiecesQty(),workDetails.getWarehouse().getName(),workDetails.getCompany().getName());
+
     }
 
     @Override
@@ -193,7 +220,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     }
 
     public void stockTransferFinish(WorkDetails workDetails,HttpSession session){
-        List<Stock> stock = stockRepository.getStockByWorkHandleAndWorkDescription(workDetails.getHandle(),"Stock transfer Work");
+        List<Stock> stock = stockRepository.getStockListForFinishStockTransfer(workDetails.getWorkNumber().toString(),"Stock transfer Work");
         log.error("stockTransferFinish Stock List: " + stock);
         for (Stock value:stock) {
             value.setStatus(statusRepository.getStatusByStatusName("on_hand","Stock"));
@@ -371,10 +398,10 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         transferWork.setWorkType("Transfer");
         transferWork.setArticle(stock.getArticle());
         transferWork.setStatus("open");
-        transferWork.setHandle(transferWork.getWorkNumber().toString());
+        transferWork.setHandle(stock.getHd_number().toString());
         transferWork.setToLocation(locationRepository.findLocationByLocationName(locationN,stock.getWarehouse().getName()));
         transferWork.setFromLocation(chosenStockPositional.getLocation());
-        transferWork.setPiecesQty(chosenStockPositional.getPieces_qty());
+        transferWork.setPiecesQty(stock.getPieces_qty());
         transferWork.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         transferWork.setHdNumber(chosenStockPositional.getHd_number());
         transferWork.setChangeBy(SecurityUtils.username());

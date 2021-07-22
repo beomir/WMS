@@ -44,6 +44,12 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("Select s from Stock s where s.hd_number = ?1 and s.article.article_number =?2 and s.location.locationName = ?3 and s.warehouse.name = ?4 and s.company.name = ?5 and s.handle = ?6")
     Stock getStockByHdNumberArticleNumberLocation(Long hdNumber, Long articleNumber, String locationName,String warehouseName, String companyName, String handle);
 
+    @Query("Select s from Stock s where s.hd_number = ?1 and s.article.article_number =?2 and s.location.locationName = ?3 and s.warehouse.name = ?4 and s.company.name = ?5 ")
+    Stock getStockForFullStockTransfer(Long hdNumber, Long articleNumber, String locationName,String warehouseName, String companyName);
+
+    @Query("Select s from Stock s where s.article.article_number =?1 and s.warehouse.name = ?2 and s.company.name = ?3 and s.handle = ?4")
+    List<Stock> getStockForTransfer(Long articleNumber, String warehouseName, String companyName, String handle);
+
     @Query("Select s from Stock s where s.receptionNumber = ?1")
     List<Stock> getStockListByReceptionNumber(Long receptionNumber);
 
@@ -53,6 +59,9 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     @Query("Select s from Stock s join WorkDetails wd on s.hd_number = wd.hdNumber and s.article = wd.article where s.handle = ?1 and wd.workDescription = ?2")
     List<Stock> getStockByWorkHandleAndWorkDescription(String handle, String workDescription);
+
+    @Query("Select s from Stock s join WorkDetails wd on s.handle = concat(wd.workNumber,'') and s.article = wd.article where s.handle = ?1 and wd.workDescription = ?2")
+    List<Stock> getStockListForFinishStockTransfer(String handle, String workDescription);
 
     @Query("Select s from Stock s join WorkDetails wd on s.hd_number = wd.hdNumber and s.article = wd.article where s.handle = ?1")
     List<Stock> getStockByStockHandle(String handle);

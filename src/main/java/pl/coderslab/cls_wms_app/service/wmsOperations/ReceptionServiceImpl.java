@@ -137,7 +137,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         Transaction transaction = new Transaction();
 
         for (Reception singularReception: receptions) {
-            if(locationService.reduceTheAvailableContentOfTheLocation(location.getLocationName(),singularReception.getArticle().getArticle_number(),singularReception.getPieces_qty(),singularReception.getWarehouse().getName(),singularReception.getCompany().getName(),"Reception_unloading")){
+            if(locationService.reduceTheAvailableContentOfTheLocation(location.getLocationName(),singularReception.getArticle().getArticle_number(),singularReception.getPieces_qty(),singularReception.getWarehouse().getName(),singularReception.getCompany().getName())){
                 singularReception.setStatus(statusRepository.getStatusByStatusName("unloading_pending","Reception"));
                 singularReception.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                 singularReception.setLocation(location);

@@ -649,9 +649,9 @@ public class StockServiceImpl implements StockService {
     public void produceGoods(Long productionNumberToConfirm) throws CloneNotSupportedException {
         Stock finishProduct = new Stock();
         WorkDetails workDetails = workDetailsRepository.getOneWorkDetailsByWorkNumber(productionNumberToConfirm);
-        if(locationService.reduceTheAvailableContentOfTheLocation(workDetails.getToLocation().getLocationName(),workDetails.getArticle().getArticle_number(),workDetails.getPiecesQty(),workDetails.getWarehouse().getName(),workDetails.getCompany().getName(),"Produce")){
+        locationService.reduceTheAvailableContentOfTheLocation(workDetails.getToLocation().getLocationName(),workDetails.getArticle().getArticle_number(),workDetails.getPiecesQty(),workDetails.getWarehouse().getName(),workDetails.getCompany().getName());
             locationService.restoreTheAvailableLocationCapacity(workDetails.getFromLocation().getLocationName(),workDetails.getArticle().getArticle_number(),workDetails.getPiecesQty(),workDetails.getWarehouse().getName(),workDetails.getCompany().getName());
-        }
+
 
         List<Stock> stockList = stockRepository.getStockByWorkHandleAndWorkDescription(workDetailsRepository.workDetailHandle(productionNumberToConfirm,"Producing finish product from collected intermediate articles"),"Production picking");
         log.debug("productionNumberToConfirm: " + productionNumberToConfirm);

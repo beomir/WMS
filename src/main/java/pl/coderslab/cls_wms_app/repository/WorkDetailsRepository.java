@@ -45,10 +45,29 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
     @Query("Select w from WorkDetails w where w.hdNumber = ?1 and w.warehouse.name = ?2 and w.workNumber = ?3 and w.article.article_number = ?4")
     WorkDetails workLineFinish(Long hdNumber, String warehouseName, Long workNumber, Long articleNumber);
 
+    @Query("Select w from WorkDetails w where w.hdNumber = ?1 and w.warehouse.name = ?2 and w.workNumber = ?3 and w.article.article_number = ?4")
+    WorkDetails workLineFinishByWorkNumber(Long hdNumber, String warehouseName, Long workNumber, Long articleNumber);
+
     @Query(value="select a.rowNumber workDescription,a.id,a.handle,a.hdNumber,a.fromLocation,a.toLocation,a.piecesQty,a.article,a.status,max(a.rowNumber) created from (select row_number() over () rowNumber,w.id,w.handle,hd_number hdNumber,lFrom.location_name fromLocation,lTo.location_name toLocation,pieces_qty piecesQty,a.article_number article,w.status from work_details w inner join location lFrom on w.from_location_id = lFrom.id inner join location lTo on w.to_location_id = lTo.id inner join warehouse w2 on w.warehouse_id = w2.id inner join article a on w.article_id = a.id where w.handle = ?1 and w2.name = ?2 ) a where a.status = ?3 order by article limit 1",nativeQuery = true)
     WorkToDoFound workToDoFound(String handle,String warehouseName, String status);
 
     public static interface WorkToDoFound {
+        Integer getWorkDescription();
+        Long getId();
+        String getHandle();
+        String getHdNumber();
+        String getFromLocation();
+        String getToLocation();
+        String getPiecesQty();
+        String getArticle();
+        String getStatus();
+        String getCreated();
+    }
+
+    @Query(value="select a.rowNumber workDescription,a.id,a.handle,a.hdNumber,a.fromLocation,a.toLocation,a.piecesQty,a.article,a.status,max(a.rowNumber) created from (select row_number() over () rowNumber,w.id,w.handle,hd_number hdNumber,lFrom.location_name fromLocation,lTo.location_name toLocation,pieces_qty piecesQty,a.article_number article,w.status from work_details w inner join location lFrom on w.from_location_id = lFrom.id inner join location lTo on w.to_location_id = lTo.id inner join warehouse w2 on w.warehouse_id = w2.id inner join article a on w.article_id = a.id where w.work_number = ?1 and w2.name = ?2 ) a where a.status = ?3 order by article limit 1",nativeQuery = true)
+    WorkToDoFoundByWorkNumber workToDoFoundByWorkNumber(Long workNumber,String warehouseName, String status);
+
+    public static interface WorkToDoFoundByWorkNumber {
         Integer getWorkDescription();
         Long getId();
         String getHandle();

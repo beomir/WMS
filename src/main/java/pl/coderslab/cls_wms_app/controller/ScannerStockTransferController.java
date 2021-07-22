@@ -96,7 +96,7 @@ public class ScannerStockTransferController {
                 }
             }
             //when on equipment is not enough space for pick goods
-            WorkDetailsRepository.MaxVolumeAndWeightForWork maxVolumeAndWeightForWork = workDetailsRepository.maxVolumeAndWeightForWork(stockTransferWorkNumber.toString());
+            WorkDetailsRepository.MaxVolumeAndWeightForWorkByWorkNumber maxVolumeAndWeightForWork = workDetailsRepository.maxVolumeAndWeightForWorkByWorkNumber(stockTransferWorkNumber.toString());
             Location equipment = locationRepository.findLocationByLocationName(scannerChosenEquipment,scannerChosenWarehouse);
             log.error("maxVolumeAndWeightForWork.getHandle(): " + maxVolumeAndWeightForWork.getHandle());
             log.error("equipment.getFreeWeight(): " + equipment.getFreeWeight());
@@ -130,8 +130,8 @@ public class ScannerStockTransferController {
         model.addAttribute("workNumber", stockTransferWorkNumber);
         model.addAttribute("message", stockTransferScannerMessageLocationFrom);
 
-        WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(stockTransferWorkNumber.toString(), warehouse, SecurityUtils.username());
-        model.addAttribute("workToDoFound", workToDoFound);
+        WorkDetailsRepository.WorkToDoFoundByWorkNumber workToDoFoundByWorkNumber = workDetailsRepository.workToDoFoundByWorkNumber(stockTransferWorkNumber, warehouse, SecurityUtils.username());
+        model.addAttribute("workToDoFound", workToDoFoundByWorkNumber);
         return "wmsOperations/scanner/transfer/stock/scannerStockTransferFoundOriginLocation";
     }
 
@@ -166,8 +166,8 @@ public class ScannerStockTransferController {
 //        model.addAttribute("workNumber", stockTransferWorkNumber);
         model.addAttribute("message", stockTransferScannerHdNumberMessage);
 
-        WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(stockTransferWorkNumber.toString(), warehouse, SecurityUtils.username());
-        model.addAttribute("workToDoFound", workToDoFound);
+        WorkDetailsRepository.WorkToDoFoundByWorkNumber workToDoFoundByWorkNumber = workDetailsRepository.workToDoFoundByWorkNumber(stockTransferWorkNumber, warehouse, SecurityUtils.username());
+        model.addAttribute("workToDoFound", workToDoFoundByWorkNumber);
         return "wmsOperations/scanner/transfer/stock/scannerStockTransferFoundHdNumber";
     }
 
@@ -200,13 +200,13 @@ public class ScannerStockTransferController {
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("warehouse", warehouse);
-//        model.addAttribute("workNumber", stockTransferWorkNumber);
+        model.addAttribute("workNumber", stockTransferWorkNumber);
         model.addAttribute("message", stockTransferScannerArticleMessage);
 
-        WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(stockTransferWorkNumber.toString(), warehouse, SecurityUtils.username());
-        model.addAttribute("workToDoFound", workToDoFound);
+        WorkDetailsRepository.WorkToDoFoundByWorkNumber workToDoFoundByWorkNumber = workDetailsRepository.workToDoFoundByWorkNumber(stockTransferWorkNumber, warehouse, SecurityUtils.username());
+        model.addAttribute("workToDoFound", workToDoFoundByWorkNumber);
 
-        session.setAttribute("stockTransferPiecesQty",workToDoFound.getPiecesQty());
+        session.setAttribute("stockTransferPiecesQty",workToDoFoundByWorkNumber.getPiecesQty());
         return "wmsOperations/scanner/transfer/stock/scannerStockTransferFoundArticle";
     }
 
@@ -217,7 +217,7 @@ public class ScannerStockTransferController {
                                                                         @SessionAttribute int scannerStock, @SessionAttribute Long stockTransferWorkNumber,
                                                                         @SessionAttribute String stockTransferScannerEnteredHdNumber,
                                                                         @SessionAttribute String stockTransferScannerFromLocation,
-                                                                        @SessionAttribute Long stockTransferPiecesQty){
+                                                                        @SessionAttribute Long stockTransferPiecesQty) throws CloneNotSupportedException {
         log.error("Article found by query: " + stockTransferScannerExpectedArticle);
         log.error("Article enter by user: " + stockTransferScannerEnteredArticle);
         String nextPath = "toLocation";
@@ -249,8 +249,8 @@ public class ScannerStockTransferController {
         model.addAttribute("workNumber", stockTransferWorkNumber);
         model.addAttribute("message", stockTransferScannerLocationToMessage);
 
-        WorkDetailsRepository.WorkToDoFound workToDoFound = workDetailsRepository.workToDoFound(stockTransferWorkNumber.toString(), warehouse, SecurityUtils.username());
-        model.addAttribute("workToDoFound", workToDoFound);
+        WorkDetailsRepository.WorkToDoFoundByWorkNumber workToDoFoundByWorkNumber = workDetailsRepository.workToDoFoundByWorkNumber(stockTransferWorkNumber, warehouse, SecurityUtils.username());
+        model.addAttribute("workToDoFound", workToDoFoundByWorkNumber);
         return "wmsOperations/scanner/transfer/stock/scannerStockTransferFoundDestinationLocation";
     }
 
@@ -267,7 +267,13 @@ public class ScannerStockTransferController {
         String prevprevious = "hdNumber";
         if (stockTransferScannerExpectedDestinationLocation.equals(stockTransferEnteredDestinationLocation)) {
             session.setAttribute("stockTransferEnteredDestinationLocation", stockTransferEnteredDestinationLocation);
-            WorkDetails workDetails = workDetailsRepository.workLineFinish(Long.parseLong(stockTransferScannerEnteredHdNumber), scannerChosenWarehouse, stockTransferWorkNumber.toString(), stockTransferScannerEnteredArticle);
+            log.error("Long.parseLong(stockTransferScannerEnteredHdNumber): " + Long.parseLong(stockTransferScannerEnteredHdNumber));
+            log.error("scannerChosenWarehouse: " + scannerChosenWarehouse);
+            log.error("stockTransferWorkNumber: " + stockTransferWorkNumber);
+            log.error("stockTransferScannerEnteredArticle: " + stockTransferScannerEnteredArticle);
+
+            WorkDetails workDetails = workDetailsRepository.workLineFinishByWorkNumber(Long.parseLong(stockTransferScannerEnteredHdNumber), scannerChosenWarehouse, stockTransferWorkNumber, stockTransferScannerEnteredArticle);
+            log.error("workDetails: " + workDetails);
             workDetailsService.workLineFinish(workDetails, scannerChosenEquipment);
             if (workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(stockTransferWorkNumber.toString(), scannerChosenWarehouse, SecurityUtils.username(), "Stock transfer Work") == 0) {
                 workDetailsService.workFinished(workDetails, session);

@@ -26,7 +26,7 @@
 	<div class="login-form">
 		<form method="post" th:action="@{/scanner/stockTransferScanLocationFrom}">
 			<div th:include="fragments/scannerStockTransfer :: scannerStockTransfer"></div><br/>
-			<div class="formDescription" th:text="#{app.workForProductionNumber} + ': ' + ${workNumber} + ' ' + #{app.found} "></div><br/><br/>
+			<div class="formDescription" th:text="#{app.workNumber} + ': ' + ${workNumber} + ' ' + #{app.found} "></div><br/><br/>
 
 			<label  th:text="#{app.scanOriginLocation} + ' (' + ${workToDoFound.fromLocation} + ')'" style="margin-left: 15%;color: white;font-weight: bold"></label>
 			<br/><input style="max-width:30%;margin-left: 15%" class="check" required="required" pattern="[a-zA-Z0-9].{8,}" min="9" max="9" type="text" name="stockTransferOriginLocation"/>
