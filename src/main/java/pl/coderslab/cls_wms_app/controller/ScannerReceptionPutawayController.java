@@ -7,12 +7,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
+import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
 
+import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -24,12 +29,18 @@ public class ScannerReceptionPutawayController {
     private final WorkDetailsService workDetailsService;
     private final CompanyService companyService;
     private final WorkDetailsRepository workDetailsRepository;
+    private final LocationRepository locationRepository;
+    private final UsersService usersService;
+    private final ReceptionService receptionService;
 
     @Autowired
-    public ScannerReceptionPutawayController(WorkDetailsService workDetailsService,CompanyService companyService,  WorkDetailsRepository workDetailsRepository) {
+    public ScannerReceptionPutawayController(WorkDetailsService workDetailsService, CompanyService companyService, WorkDetailsRepository workDetailsRepository, LocationRepository locationRepository, UsersService usersService, ReceptionService receptionService) {
         this.workDetailsService = workDetailsService;
         this.companyService = companyService;
         this.workDetailsRepository = workDetailsRepository;
+        this.locationRepository = locationRepository;
+        this.usersService = usersService;
+        this.receptionService = receptionService;
     }
 
 
@@ -80,7 +91,8 @@ public class ScannerReceptionPutawayController {
                                           @PathVariable String token,
                                           @PathVariable String equipment,
                                           Model model,HttpSession session,
-                                          @SessionAttribute(required = false) String manualReceptionMessage) {
+                                          @SessionAttribute(required = false) String manualReceptionMessage,
+                                          HttpServletRequest request) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
@@ -98,6 +110,9 @@ public class ScannerReceptionPutawayController {
 
         session.setAttribute("hdNumberMessage","");
         session.setAttribute("articleMessage","");
+        session.setAttribute("overloadingEquipment",false);
+        usersService.nextURL(request,session);
+
         List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Reception", "%", "%", SecurityUtils.username(), "%", "%", "%", "Reception Put Away");
         model.addAttribute("workDetailsQueue", workDetailsQueue);
 
@@ -105,45 +120,51 @@ public class ScannerReceptionPutawayController {
     }
     @PostMapping("scannerReceptionManualWork")
     public String receptionMenuManualWorkPost(@SessionAttribute String scannerChosenWarehouse,
-                                              String token, Long receptionNumber,
+                                              String token,
+                                              Long receptionNumber,
                                               HttpSession session,
                                               @SessionAttribute int scannerMenuChoice,
                                               @SessionAttribute String scannerChosenEquipment,
                                               @SessionAttribute int workReceptionScannerChoice,
                                               String automaticallyFinder) {
+
         log.error("automaticallyFinder value: " + automaticallyFinder);
+        //situation when user force front end without attributes
         if (automaticallyFinder == null && receptionNumber == null) {
             session.setAttribute("scannerProductionPutawayMessage", "Please enter production number manually or push button check to find work automatically by system ");
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice;
         }
         else{
-            if(automaticallyFinder.equals("automatically")){
-                log.error("WorkNumberByCompanyAndWarehouse: " + workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Putaway after producing",SecurityUtils.username()));
+            //selected automatic search
+            if(automaticallyFinder != null){
+                log.error("WorkNumberByCompanyAndWarehouse: " + workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Reception Put Away",SecurityUtils.username()));
+                //work for reception not found
                 if(workDetailsRepository.handleByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Reception Put Away",SecurityUtils.username()) == null){
                     session.setAttribute("manualReceptionMessage", "No works found");
                     return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice;
                 }
+                //work for reception found
                 else{
                     receptionNumber = workDetailsRepository.handleByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Reception Put Away",SecurityUtils.username());
+                    session.setAttribute("receptionNumberSearch", receptionNumber);
                 }
             }
-
-            if(workDetailsRepository.checkIfWorksExistsForHandle(receptionNumber.toString(),scannerChosenWarehouse)>0){
-                session.setAttribute("receptionNumberSearch", receptionNumber);
-                List<WorkDetails> works = workDetailsRepository.getWorkListByWarehouseAndHandle(receptionNumber.toString(),scannerChosenWarehouse);
-                for(WorkDetails singularWork : works){
-                    singularWork.setStatus(SecurityUtils.username());
-                    workDetailsRepository.save(singularWork);
-                    log.error(singularWork.getId() + " " + singularWork.getWorkNumber());
-                }
-                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumber;
+            //when on equipment is not enough space for pick goods
+            WorkDetailsRepository.MaxVolumeAndWeightForWork maxVolumeAndWeightForWork = workDetailsRepository.maxVolumeAndWeightForWork(receptionNumber.toString());
+            Location equipment = locationRepository.findLocationByLocationName(scannerChosenEquipment,scannerChosenWarehouse);
+            log.error("maxVolumeAndWeightForWork.getHandle(): " + maxVolumeAndWeightForWork.getHandle());
+            log.error("equipment.getFreeWeight(): " + equipment.getFreeWeight());
+            log.error("maxVolumeAndWeightForWork.getPiecesQty(): " + maxVolumeAndWeightForWork.getPiecesQty());
+            log.error("equipment.getFreeSpace(): " + equipment.getFreeSpace());
+            if(maxVolumeAndWeightForWork.getHandle()>equipment.getFreeWeight() || maxVolumeAndWeightForWork.getPiecesQty()>equipment.getFreeSpace()){
+                log.error("OverloadedPath");
+                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + receptionNumber + "/equipmentOverloaded" ;
             }
-            else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUser(receptionNumber.toString(),scannerChosenWarehouse,SecurityUtils.username()) > 0){
-                session.setAttribute("receptionNumberSearch", receptionNumber);
+            //work for reception found logic
+            if(receptionService.receptionPutawayWorkSearch(session,receptionNumber,scannerMenuChoice,scannerChosenWarehouse,scannerChosenEquipment,token)){
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumber;
             }
             else{
-                session.setAttribute("manualReceptionMessage","To reception number: " + receptionNumber + " are not assigned any works to do");
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice;
             }
         }
@@ -355,14 +376,15 @@ public class ScannerReceptionPutawayController {
 
     @PostMapping("receptionMenuManualWorkReceptionNumberFoundDestinationLocation")
     public String receptionMenuManualWorkReceptionNumberFoundDestinationLocationPost(@SessionAttribute String scannerChosenWarehouse,
-                                                                         String token, @RequestParam String expectedDestinationLocation,
+                                                                                     String token,
+                                                                                     @RequestParam String expectedDestinationLocation,
                                                                                      @RequestParam String enteredDestinationLocation,
-                                                                         HttpSession session,
+                                                                                     HttpSession session,
                                                                                      @SessionAttribute int scannerMenuChoice,
                                                                                      @SessionAttribute String scannerChosenEquipment,
-                                                                         @SessionAttribute int workReceptionScannerChoice,
+                                                                                     @SessionAttribute int workReceptionScannerChoice,
                                                                                      @SessionAttribute Long receptionNumberSearch,
-                                                                         @SessionAttribute String enteredHdNumber,
+                                                                                     @SessionAttribute String enteredHdNumber,
                                                                                      @SessionAttribute Long enteredArticle) {
         log.error("Destination location found by query: " + expectedDestinationLocation);
         log.error("Destination location enter by user: " + enteredDestinationLocation);

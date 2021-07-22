@@ -9,6 +9,7 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.repository.*;
+import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 
 import javax.servlet.http.HttpSession;
@@ -22,12 +23,14 @@ public class ScannerController {
     private final WarehouseRepository warehouseRepository;
     private final CompanyService companyService;
     private final LocationRepository locationRepository;
+    private final WorkDetailsService workDetailsService;
 
     @Autowired
-    public ScannerController( WarehouseRepository warehouseRepository, CompanyService companyService, LocationRepository locationRepository) {
+    public ScannerController(WarehouseRepository warehouseRepository, CompanyService companyService, LocationRepository locationRepository, WorkDetailsService workDetailsService) {
         this.warehouseRepository = warehouseRepository;
         this.companyService = companyService;
         this.locationRepository = locationRepository;
+        this.workDetailsService = workDetailsService;
     }
 
     //warehouse selection
@@ -228,7 +231,38 @@ public class ScannerController {
         return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerStock;
     }
 
+    //equipment overloaded
+    @GetMapping("{token}/{warehouse}/{equipment}/{workNumber}/equipmentOverloaded")
+    public String overloadedEquipment(@PathVariable String warehouse,
+                                      @PathVariable String token,
+                                      @PathVariable String equipment,
+                                      @PathVariable String workNumber,
+                                      Model model){
+        model.addAttribute("warehouse", warehouse);
+        model.addAttribute("token", token);
+        model.addAttribute("equipment", equipment);
+        model.addAttribute("workNumber", workNumber);
+        return "wmsOperations/scanner/equipmentOverloaded";
+    }
 
+    @PostMapping("equipmentOverloaded")
+    public String overloadedEquipmentPost(@SessionAttribute(required = false) String nextURL,
+                                          String equipmentOverloadedDecision,
+                                          Long workNumber,
+                                          String token,
+                                          @SessionAttribute(required = false) String scannerChosenWarehouse,
+                                          @SessionAttribute(required = false) int scannerMenuChoice,
+                                          @SessionAttribute(required = false) String scannerChosenEquipment,
+                                          HttpSession session){
+        if(equipmentOverloadedDecision.equals("1")){
+            workDetailsService.assigningWorkLogic(session,workNumber,scannerMenuChoice,scannerChosenWarehouse,scannerChosenEquipment,token);
+            return "redirect:" + nextURL + '/' + workNumber;
+        }
+        else{
+            return "redirect:" + nextURL;
+        }
+
+    }
 
 
 

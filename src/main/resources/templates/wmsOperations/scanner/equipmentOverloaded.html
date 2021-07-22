@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div sec:authorize="!hasRole('ROLE_SCANNER')" th:include="fragments/stockNavigation :: stockNavigation"></div>
+</div>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form method="post" th:action="@{/scanner/equipmentOverloaded}">
+			<section style="margin-left: 34%;position: absolute">
+				<span><img style="height: 50px;width:50px" class="makeItBigger" th:src="@{/images/overloaded.png}"/></span>
+			</section>
+			<div class="titleList" th:text="#{app.scannerMenu}"></div>
+			<div class="underTitle" th:text="#{app.equipmentOverloaded}"></div><br/>
+			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
+			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
+			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
+			<div class="formDescription" th:text="#{app.overloadedEquipmentInfo}"> </div><br/><br/><br/>
+			<br/><br/>
+			<input  type="hidden" th:value="${token}" name="token"/>
+			<input  type="hidden" th:value="${workNumber}" name="workNumber"/>
+			<section style="display: flex; align-items: center;justify-content: center;">
+				<button name="equipmentOverloadedDecision" type="submit"  th:value="1" th:text="#{app.yes}" th:title="#{app.overloadedDecisionYes}" class="circle"></button>
+				<button name="equipmentOverloadedDecision" type="submit"  th:value="2" th:text="#{app.no}"  th:title="#{app.overloadedDecisionNo}" class="circle"></button>
+			</section>
+			<br>
+			<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment}}"><div class="circle" th:title="#{app.moveBack}"><-</div></a>
+		</form>
+
+		<div th:include="fragments/footer :: footer"></div>
+	</div>
+	<div class="w3copyright-agile">
+		<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+	</div>
+</div>
+<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+</body>
+</html>

@@ -144,4 +144,12 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
 
     @Query(value="Select count(*) from work_details where hd_number = ?1",nativeQuery = true)
     int checkIfHdNumberExistsInWorkDetails(Long hd_number);
+
+    @Query(value ="select round(max(pieces_qty * a.weight),2) handle,round(max(pieces_qty * a.volume),2) piecesQty from work_details inner join article a on work_details.article_id = a.id where handle = ?1",nativeQuery = true)
+    MaxVolumeAndWeightForWork maxVolumeAndWeightForWork(String handle);
+
+    public static interface MaxVolumeAndWeightForWork{
+        Long getHandle();
+        Long getPiecesQty();
+    }
 }

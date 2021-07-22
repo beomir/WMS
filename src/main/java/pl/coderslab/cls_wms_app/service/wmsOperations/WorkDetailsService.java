@@ -38,4 +38,6 @@ public interface WorkDetailsService {
     void closeWorkDetail(Long workNumber,String warehouseName);
 
     void changeStatusAfterStartWork(Long workNumber,String warehouseName);
+
+    void assigningWorkLogic(HttpSession session,Long receptionNumber,int scannerMenuChoice,String scannerChosenWarehouse,String scannerChosenEquipment, String token);
 }

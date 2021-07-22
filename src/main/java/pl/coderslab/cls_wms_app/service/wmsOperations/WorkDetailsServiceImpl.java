@@ -390,4 +390,12 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         stockRepository.save(chosenStockPositional);
     }
 
+    @Override
+    public void assigningWorkLogic(HttpSession session,Long workNumber,int scannerMenuChoice,String scannerChosenWarehouse,String scannerChosenEquipment, String token) {
+        log.error("NextURL value: " + session.getAttribute("nextURL").toString());
+        if(session.getAttribute("nextURL").toString().contains("1/1")){
+            receptionService.receptionPutawayWorkSearch(session,workNumber,scannerMenuChoice,scannerChosenWarehouse,scannerChosenEquipment,token);
+        }
+    }
+
 }

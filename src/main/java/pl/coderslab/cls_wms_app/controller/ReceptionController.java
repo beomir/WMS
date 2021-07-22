@@ -113,12 +113,18 @@ public class ReceptionController {
     }
 
     @GetMapping("reception")
-    public String list(Model model,@SessionAttribute(required = false) String chosenWarehouse,@SessionAttribute(required = false) String receptionCreatedBy,
-                       @SessionAttribute(required = false) String receptionWarehouse,@SessionAttribute(required = false) String receptionCompany,
-                       @SessionAttribute(required = false) String receptionVendor,@SessionAttribute(required = false) String receptionReceptionNumber
-            ,@SessionAttribute(required = false) String receptionHdNumber,@SessionAttribute(required = false) String receptionStatus,
-                       @SessionAttribute(required = false) String receptionLocation,@SessionAttribute(required = false) String receptionCreatedFrom
-            ,@SessionAttribute(required = false) String receptionCreatedTo,@SessionAttribute(required = false) String receptionMessage,HttpSession session) {
+    public String list(Model model,@SessionAttribute(required = false) String chosenWarehouse,
+                       @SessionAttribute(required = false) String receptionCreatedBy,
+                       @SessionAttribute(required = false) String receptionWarehouse,
+                       @SessionAttribute(required = false) String receptionCompany,
+                       @SessionAttribute(required = false) String receptionVendor,
+                       @SessionAttribute(required = false) String receptionReceptionNumber,
+                       @SessionAttribute(required = false) String receptionHdNumber,
+                       @SessionAttribute(required = false) String receptionStatus,
+                       @SessionAttribute(required = false) String receptionLocation,
+                       @SessionAttribute(required = false) String receptionCreatedFrom,
+                       @SessionAttribute(required = false) String receptionCreatedTo,
+                       @SessionAttribute(required = false) String receptionMessage,HttpSession session) {
 
         String warehouseName = receptionWarehouse;
         if(warehouseName==null){
@@ -156,7 +162,10 @@ public class ReceptionController {
     }
 
     @GetMapping("receptionDetails/{receptionNumber}")
-    public String list(@PathVariable Long receptionNumber,Model model,@SessionAttribute(required = false) String receptionMessage,@SessionAttribute(required = false) String chosenWarehouse, HttpServletRequest request,HttpSession session) {
+    public String list(@PathVariable Long receptionNumber,Model model,
+                       @SessionAttribute(required = false) String receptionMessage,
+                       @SessionAttribute(required = false) String chosenWarehouse,
+                       HttpServletRequest request,HttpSession session) {
         log.error("receptionMessage: " + receptionMessage);
         if(usersService.warehouseSelection(session,chosenWarehouse,request).equals("warehouseSelected")){
             List<Reception> reception = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
@@ -219,7 +228,10 @@ public class ReceptionController {
 
 
     @GetMapping("formReception")
-    public String receptionForm(Model model, @SessionAttribute(required = false) String searchingWarehouse,@SessionAttribute(required = false) String chosenWarehouse, HttpServletRequest request,HttpSession session){
+    public String receptionForm(Model model,
+                                @SessionAttribute(required = false) String searchingWarehouse,
+                                @SessionAttribute(required = false) String chosenWarehouse,
+                                HttpServletRequest request,HttpSession session){
         String warehouseName = searchingWarehouse;
         if(searchingWarehouse==null){
             warehouseName = chosenWarehouse;

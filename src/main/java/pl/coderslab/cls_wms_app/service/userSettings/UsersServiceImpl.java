@@ -170,6 +170,18 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public void nextURL(HttpServletRequest request,HttpSession session){
+        if(request.getRequestURL().toString().contains("localhost:8080")){
+            session.setAttribute("nextURL",request.getRequestURL().toString().substring(request.getRequestURL().toString().lastIndexOf("localhost:8080") + 14));
+            log.error("localHost: " + session.getAttribute("nextURL").toString());
+        }
+        else{
+            session.setAttribute("nextURL",request.getRequestURL().toString().substring(request.getRequestURL().toString().lastIndexOf("https://cls-wms.herokuapp.com") + 28));
+            log.error("Heroku: " +session.getAttribute("nextURL").toString());
+        }
+    }
+
+    @Override
     public String FindUsernameByToken(String username) {
         return usersRepository.FindUsernameByToken(username);
     }
