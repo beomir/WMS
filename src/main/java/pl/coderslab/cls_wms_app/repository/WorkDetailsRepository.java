@@ -152,4 +152,12 @@ public interface WorkDetailsRepository extends JpaRepository<WorkDetails, Long> 
         Long getHandle();
         Long getPiecesQty();
     }
+
+    @Query(value ="select round(max(pieces_qty * a.weight),2) handle,round(max(pieces_qty * a.volume),2) piecesQty from work_details inner join article a on work_details.article_id = a.id where work_number = ?1",nativeQuery = true)
+    MaxVolumeAndWeightForWorkByWorkNumber maxVolumeAndWeightForWorkByWorkNumber(String handle);
+
+    public static interface MaxVolumeAndWeightForWorkByWorkNumber{
+        Long getHandle();
+        Long getPiecesQty();
+    }
 }

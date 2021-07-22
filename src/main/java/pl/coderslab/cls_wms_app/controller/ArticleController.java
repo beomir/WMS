@@ -73,7 +73,7 @@ public class ArticleController {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
 
         try{
-            Extremely extremely = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
+            Extremely extremely = extremelyRepository.findExtremelyByCompanyNameAndExtremelyName(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
             model.addAttribute("productionModule", extremely.getExtremelyValue());
             log.error("extremely value: " + extremely.getExtremelyValue());
         }
@@ -113,7 +113,7 @@ public class ArticleController {
         List<Warehouse> warehouseList = warehouseRepository.getWarehouse();
 
         try{
-            Extremely extremely = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
+            Extremely extremely = extremelyRepository.findExtremelyByCompanyNameAndExtremelyName(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
             model.addAttribute("productionModule", extremely.getExtremelyValue());
             log.error("extremely value: " + extremely.getExtremelyValue());
         }
@@ -178,7 +178,7 @@ public class ArticleController {
         }
 
         try{
-            Extremely extremely = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
+            Extremely extremely = extremelyRepository.findExtremelyByCompanyNameAndExtremelyName(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
             model.addAttribute("productionModule", extremely.getExtremelyValue());
             log.debug("extremely value: " + extremely.getExtremelyValue());
         }

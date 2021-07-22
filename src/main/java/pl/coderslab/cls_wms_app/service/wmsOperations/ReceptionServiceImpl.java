@@ -806,29 +806,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         return receptionRepository.getReceptionSummary(receptionCompany,receptionWarehouse,receptionVendor,receptionStatus,receptionLocation,receptionReceptionNumber,receptionHdNumber,receptionCreatedFrom,receptionCreatedTo,receptionCreatedBy);
     }
 
-    @Override
-    public boolean receptionPutawayWorkSearch(HttpSession session, Long receptionNumber, int scannerMenuChoice, String scannerChosenWarehouse, String scannerChosenEquipment, String token) {
-        if(workDetailsRepository.checkIfWorksExistsForHandle(receptionNumber.toString(),scannerChosenWarehouse)>0){
-            session.setAttribute("receptionNumberSearch", receptionNumber);
-            List<WorkDetails> works = workDetailsRepository.getWorkListByWarehouseAndHandle(receptionNumber.toString(),scannerChosenWarehouse);
-            for(WorkDetails singularWork : works){
-                singularWork.setStatus(SecurityUtils.username());
-                workDetailsRepository.save(singularWork);
-                log.error(singularWork.getId() + " " + singularWork.getWorkNumber());
-            }
-            return true;
-        }
-        //work for reception found with userName status
-        else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUser(receptionNumber.toString(),scannerChosenWarehouse,SecurityUtils.username()) > 0){
-            session.setAttribute("receptionNumberSearch", receptionNumber);
-            return true;
-        }
-        //work for reception not found
-        else{
-            session.setAttribute("manualReceptionMessage","To reception number: " + receptionNumber + " are not assigned any works to do");
-            return false;
-        }
-    }
+
 
 
 

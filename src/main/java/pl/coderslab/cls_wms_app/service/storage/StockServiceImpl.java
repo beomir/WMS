@@ -8,10 +8,12 @@ import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.*;
+import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
 import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
 
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -38,8 +40,6 @@ public class StockServiceImpl implements StockService {
     private final UnitRepository unitRepository;
     private final ArticleRepository articleRepository;
     private final TransactionService transactionService;
-    private final WarehouseRepository warehouseRepository;
-    private final CompanyRepository companyRepository;
     public String locationName;
     private final IssueLogService issueLogService;
     private final WorkDetailsRepository workDetailsRepository;
@@ -48,7 +48,7 @@ public class StockServiceImpl implements StockService {
     public List<Stock> storage = new ArrayList<>();
 
     @Autowired
-    public StockServiceImpl(StockRepository stockRepository, LocationRepository locationRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, StatusRepository statusRepository, UnitRepository unitRepository, ArticleRepository articleRepository, TransactionService transactionService, WarehouseRepository warehouseRepository, CompanyRepository companyRepository, IssueLogService issueLogService, WorkDetailsRepository workDetailsRepository, LocationService locationService) {
+    public StockServiceImpl(StockRepository stockRepository, LocationRepository locationRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ReceptionRepository receptionRepository, StatusRepository statusRepository, UnitRepository unitRepository, ArticleRepository articleRepository, TransactionService transactionService, IssueLogService issueLogService, WorkDetailsRepository workDetailsRepository, LocationService locationService) {
         this.stockRepository = stockRepository;
         this.locationRepository = locationRepository;
         this.sendEmailService = sendEmailService;
@@ -58,8 +58,6 @@ public class StockServiceImpl implements StockService {
         this.unitRepository = unitRepository;
         this.articleRepository = articleRepository;
         this.transactionService = transactionService;
-        this.warehouseRepository = warehouseRepository;
-        this.companyRepository = companyRepository;
         this.issueLogService = issueLogService;
         this.workDetailsRepository = workDetailsRepository;
         this.locationService = locationService;
@@ -672,5 +670,7 @@ public class StockServiceImpl implements StockService {
         finishProduct.setChangeBy(SecurityUtils.usernameForActivations());
         stockRepository.save(finishProduct);
     }
+
+
 }
 

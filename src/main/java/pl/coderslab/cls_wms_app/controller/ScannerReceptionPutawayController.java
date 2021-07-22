@@ -9,11 +9,9 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
-
 import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
-import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 
@@ -31,16 +29,14 @@ public class ScannerReceptionPutawayController {
     private final WorkDetailsRepository workDetailsRepository;
     private final LocationRepository locationRepository;
     private final UsersService usersService;
-    private final ReceptionService receptionService;
 
     @Autowired
-    public ScannerReceptionPutawayController(WorkDetailsService workDetailsService, CompanyService companyService, WorkDetailsRepository workDetailsRepository, LocationRepository locationRepository, UsersService usersService, ReceptionService receptionService) {
+    public ScannerReceptionPutawayController(WorkDetailsService workDetailsService, CompanyService companyService, WorkDetailsRepository workDetailsRepository, LocationRepository locationRepository, UsersService usersService) {
         this.workDetailsService = workDetailsService;
         this.companyService = companyService;
         this.workDetailsRepository = workDetailsRepository;
         this.locationRepository = locationRepository;
         this.usersService = usersService;
-        this.receptionService = receptionService;
     }
 
 
@@ -161,7 +157,7 @@ public class ScannerReceptionPutawayController {
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + receptionNumber + "/equipmentOverloaded" ;
             }
             //work for reception found logic
-            if(receptionService.receptionPutawayWorkSearch(session,receptionNumber,scannerMenuChoice,scannerChosenWarehouse,scannerChosenEquipment,token)){
+            if(workDetailsService.receptionPutawayWorkSearch(session,receptionNumber,scannerChosenWarehouse)){
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workReceptionScannerChoice + '/' + receptionNumber;
             }
             else{

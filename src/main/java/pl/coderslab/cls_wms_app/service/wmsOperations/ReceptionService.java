@@ -43,6 +43,6 @@ public interface ReceptionService {
 
     List<ReceptionRepository.ReceptionViewObject> receptionSummary(String company, String warehouse, String vendor, String status, String location, String receptionNumber, String hdNumber, String createdFrom, String createdTo, String createdBy);
 
-    boolean receptionPutawayWorkSearch(HttpSession session,Long receptionNumber,int scannerMenuChoice,String scannerChosenWarehouse,String scannerChosenEquipment,String token);
+
 
 }

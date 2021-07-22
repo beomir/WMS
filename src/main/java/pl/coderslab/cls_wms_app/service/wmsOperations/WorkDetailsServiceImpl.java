@@ -32,12 +32,11 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     private final ProductionRepository productionRepository;
     private final LocationService locationService;
     private final ExtremelyService extremelyService;
-    private final WarehouseRepository warehouseRepository;
-    private final CompanyRepository companyRepository;
+
 
 
     @Autowired
-    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository, ReceptionService receptionService, ArticleRepository articleRepository, ProductionRepository productionRepository, LocationService locationService, ExtremelyService extremelyService, WarehouseRepository warehouseRepository, CompanyRepository companyRepository) {
+    public WorkDetailsServiceImpl(WorkDetailsRepository workDetailsRepository, TransactionRepository transactionRepository, StockRepository stockRepository, LocationRepository locationRepository, StockService stockService, StatusRepository statusRepository, ReceptionRepository receptionRepository, ReceptionService receptionService, ArticleRepository articleRepository, ProductionRepository productionRepository, LocationService locationService, ExtremelyService extremelyService) {
         this.workDetailsRepository = workDetailsRepository;
         this.transactionRepository = transactionRepository;
         this.stockRepository = stockRepository;
@@ -50,8 +49,6 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         this.productionRepository = productionRepository;
         this.locationService = locationService;
         this.extremelyService = extremelyService;
-        this.warehouseRepository = warehouseRepository;
-        this.companyRepository = companyRepository;
     }
 
     @Override
@@ -253,7 +250,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
         workDetailsRepository.save(productionWork);
         session.setAttribute("productionScannerMessage","Work: " + workDetails.getWorkNumber() + " finished. Goods are available to produce on location: " + workDetails.getToLocation().getLocationName() + " by producing work: " +  productionWork.getWorkNumber());
         List<Production> productionList = productionRepository.getProductionListByNumber(workDetails.getWorkNumber());
-        Long sumOfIntermediateArticlePieces = 0L;
+        long sumOfIntermediateArticlePieces = 0L;
         for (Production singleProduction:productionList) {
             singleProduction.setStatus("Close");
             sumOfIntermediateArticlePieces = sumOfIntermediateArticlePieces + singleProduction.getIntermediateArticlePieces();
@@ -391,10 +388,117 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
     }
 
     @Override
-    public void assigningWorkLogic(HttpSession session,Long workNumber,int scannerMenuChoice,String scannerChosenWarehouse,String scannerChosenEquipment, String token) {
+    public void assigningWorkLogic(HttpSession session,Long workNumber,String scannerChosenWarehouse) {
         log.error("NextURL value: " + session.getAttribute("nextURL").toString());
         if(session.getAttribute("nextURL").toString().contains("1/1")){
-            receptionService.receptionPutawayWorkSearch(session,workNumber,scannerMenuChoice,scannerChosenWarehouse,scannerChosenEquipment,token);
+            receptionPutawayWorkSearch(session,workNumber,scannerChosenWarehouse);
+        }
+        else if(session.getAttribute("nextURL").toString().contains("2/1")){
+            stockTransferWorkSearch(session,workNumber,scannerChosenWarehouse);
+        }
+        else if(session.getAttribute("nextURL").toString().contains("5/1")){
+            productionPickingWorkSearch(session,workNumber,scannerChosenWarehouse);
+        }
+        else if(session.getAttribute("nextURL").toString().contains("5/2")){
+            productionProduceWorkSearch(session,workNumber,scannerChosenWarehouse);
+        }
+        else if(session.getAttribute("nextURL").toString().contains("5/3")){
+            productionPutawayWorkSearch(session,workNumber,scannerChosenWarehouse);
+        }
+    }
+
+    @Override
+    public boolean stockTransferWorkSearch(HttpSession session, Long stockTransferWorkNumber, String scannerChosenWarehouse) {
+        if(workDetailsRepository.checkIfWorksExistsForHandleProduction(stockTransferWorkNumber,scannerChosenWarehouse,"Stock transfer Work")>0){
+            session.setAttribute("stockTransferWorkNumber", stockTransferWorkNumber);
+            changeStatusAfterStartWork(stockTransferWorkNumber,scannerChosenWarehouse);
+            return true;
+        }
+        else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(stockTransferWorkNumber.toString(),scannerChosenWarehouse,SecurityUtils.username(),"Stock transfer Work") > 0){
+            session.setAttribute("stockTransferWorkNumber", stockTransferWorkNumber);
+            return true;
+        }
+        else{
+            session.setAttribute("stockTransferScannerMessage","To Work number: " + stockTransferWorkNumber + " are not assigned any works to do");
+            return false;
+        }
+    }
+
+    @Override
+    public boolean productionPickingWorkSearch(HttpSession session, Long productionNumber, String scannerChosenWarehouse) {
+        if (workDetailsRepository.checkIfWorksExistsForHandleProduction(productionNumber, scannerChosenWarehouse, "Production picking") > 0) {
+            session.setAttribute("productionNumberSearch", productionNumber);
+            List<WorkDetails> works = workDetailsRepository.getWorkListByWarehouseAndHandle(productionNumber.toString(), scannerChosenWarehouse);
+            for (WorkDetails singularWork : works) {
+                singularWork.setStatus(SecurityUtils.username());
+                workDetailsRepository.save(singularWork);
+                log.error("Production: " + singularWork.getId() + " " + singularWork.getWorkNumber());
+            }
+            return true;
+        } else if (workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(productionNumber.toString(), scannerChosenWarehouse, SecurityUtils.username(), "Production picking") > 0) {
+            session.setAttribute("productionNumberSearch", productionNumber);
+            return true;
+        } else {
+            session.setAttribute("manualProductionScannerMessage", "To production number: " + productionNumber + " are not assigned any works to do");
+            return false;
+        }
+    }
+
+    @Override
+    public boolean productionProduceWorkSearch(HttpSession session, Long productionNumber, String scannerChosenWarehouse) {
+        if(workDetailsRepository.checkIfWorksExistsForHandleProduction(productionNumber,scannerChosenWarehouse,"Producing finish product from collected intermediate articles")>0){
+            session.setAttribute("productionNumberSearch", productionNumber);
+            changeStatusAfterStartWork(productionNumber,scannerChosenWarehouse);
+            return true;
+        }
+        else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(productionNumber.toString(),scannerChosenWarehouse,SecurityUtils.username(),"Producing finish product from collected intermediate articles") > 0){
+            session.setAttribute("productionNumberSearch", productionNumber);
+            return true;
+        }
+        else{
+            session.setAttribute("produceScannerMessage","To production number: " + productionNumber + " are not assigned any works to do");
+            return false;
+        }
+    }
+
+    @Override
+    public boolean productionPutawayWorkSearch(HttpSession session, Long productionNumber, String scannerChosenWarehouse) {
+        if(workDetailsRepository.checkIfWorksExistsForHandleProduction(productionNumber,scannerChosenWarehouse,"Putaway after producing")>0){
+            session.setAttribute("productionNumberSearch", productionNumber);
+            changeStatusAfterStartWork(productionNumber,scannerChosenWarehouse);
+            return true;
+        }
+        else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(productionNumber.toString(),scannerChosenWarehouse,SecurityUtils.username(),"Putaway after producing") > 0){
+            session.setAttribute("productionNumberSearch", productionNumber);
+            return true;
+        }
+        else{
+            session.setAttribute("scannerProductionPutawayMessage","To production number: " + productionNumber + " are not assigned any works to do");
+            return false;
+        }
+    }
+
+    @Override
+    public boolean receptionPutawayWorkSearch(HttpSession session, Long receptionNumber, String scannerChosenWarehouse) {
+        if(workDetailsRepository.checkIfWorksExistsForHandle(receptionNumber.toString(),scannerChosenWarehouse)>0){
+            session.setAttribute("receptionNumberSearch", receptionNumber);
+            List<WorkDetails> works = workDetailsRepository.getWorkListByWarehouseAndHandle(receptionNumber.toString(),scannerChosenWarehouse);
+            for(WorkDetails singularWork : works){
+                singularWork.setStatus(SecurityUtils.username());
+                workDetailsRepository.save(singularWork);
+                log.error(singularWork.getId() + " " + singularWork.getWorkNumber());
+            }
+            return true;
+        }
+        //work for reception found with userName status
+        else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUser(receptionNumber.toString(),scannerChosenWarehouse,SecurityUtils.username()) > 0){
+            session.setAttribute("receptionNumberSearch", receptionNumber);
+            return true;
+        }
+        //work for reception not found
+        else{
+            session.setAttribute("manualReceptionMessage","To reception number: " + receptionNumber + " are not assigned any works to do");
+            return false;
         }
     }
 

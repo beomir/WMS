@@ -39,5 +39,16 @@ public interface WorkDetailsService {
 
     void changeStatusAfterStartWork(Long workNumber,String warehouseName);
 
-    void assigningWorkLogic(HttpSession session,Long receptionNumber,int scannerMenuChoice,String scannerChosenWarehouse,String scannerChosenEquipment, String token);
+    void assigningWorkLogic(HttpSession session,Long receptionNumber,String scannerChosenWarehouse);
+
+    boolean receptionPutawayWorkSearch(HttpSession session,Long receptionNumber,String scannerChosenWarehouse);
+
+    boolean stockTransferWorkSearch(HttpSession session, Long receptionNumber, String scannerChosenWarehouse);
+
+    boolean productionPickingWorkSearch(HttpSession session, Long productionNumber, String scannerChosenWarehouse);
+
+    boolean productionProduceWorkSearch(HttpSession session, Long productionNumber, String scannerChosenWarehouse);
+
+    boolean productionPutawayWorkSearch(HttpSession session, Long productionNumber, String scannerChosenWarehouse);
+
 }

@@ -7,12 +7,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
+import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
+import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -25,20 +29,29 @@ public class ScannerStockTransferController {
     private final StockService stockService;
     private final CompanyService companyService;
     private final WorkDetailsRepository workDetailsRepository;
+    private final LocationRepository locationRepository;
+    private final UsersService usersService;
 
 
     @Autowired
-    public ScannerStockTransferController(WorkDetailsService workDetailsService, StockService stockService, CompanyService companyService, WorkDetailsRepository workDetailsRepository) {
+    public ScannerStockTransferController(WorkDetailsService workDetailsService, StockService stockService, CompanyService companyService, WorkDetailsRepository workDetailsRepository, LocationRepository locationRepository, UsersService usersService) {
         this.workDetailsService = workDetailsService;
         this.stockService = stockService;
         this.companyService = companyService;
         this.workDetailsRepository = workDetailsRepository;
+        this.locationRepository = locationRepository;
+        this.usersService = usersService;
     }
 
     //Selection Transfer Work
     @GetMapping("{token}/{warehouse}/{equipment}/2/1")
-    public String stockTransfer(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,
-                                          @SessionAttribute(required = false) String stockTransferScannerMessage) {
+    public String stockTransfer(@PathVariable String warehouse,
+                                @PathVariable String token,
+                                @PathVariable String equipment,
+                                Model model,
+                                @SessionAttribute(required = false) String stockTransferScannerMessage,
+                                HttpSession session,
+                                HttpServletRequest request) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
@@ -46,43 +59,58 @@ public class ScannerStockTransferController {
         model.addAttribute("message", stockTransferScannerMessage);
         model.addAttribute("warehouse", warehouse);
 
+        usersService.nextURL(request,session);
+
         List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Transfer", "%", "%", SecurityUtils.username(), "%", "%", "%", "Stock transfer Work");
         model.addAttribute("workDetailsQueue", workDetailsQueue);
 
         return "wmsOperations/scanner/transfer/stock/scannerStockTransfer";
     }
     @PostMapping("scannerStockTransfer")
-    public String stockTransferPost(@SessionAttribute String scannerChosenWarehouse,String token, Long stockTransferWorkNumber,
-                                              HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
-                                              @SessionAttribute int scannerStock, String automaticallyFinder) {
+    public String stockTransferPost(@SessionAttribute String scannerChosenWarehouse,
+                                    String token,
+                                    Long stockTransferWorkNumber,
+                                    HttpSession session,
+                                    @SessionAttribute int scannerMenuChoice,
+                                    @SessionAttribute String scannerChosenEquipment,
+                                    @SessionAttribute int scannerStock,
+                                    String automaticallyFinder) {
         log.error("automaticallyFinder value: " + automaticallyFinder);
+        //situation when user force front end without attributes
         if (automaticallyFinder == null && stockTransferWorkNumber == null) {
             session.setAttribute("stockTransferScannerMessage", "Please enter work number manually or push button check to find work automatically by system ");
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerStock;
         }
         else{
-            if(automaticallyFinder.equals("automatically")){
+            //selected automatic search
+            if(automaticallyFinder != null){
                 log.error("workNumberBrCompanyAndWarehouse: " + workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Stock transfer Work",SecurityUtils.username()));
                 if(workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Stock transfer Work",SecurityUtils.username()) == null){
                     session.setAttribute("stockTransferScannerMessage", "No works found");
                     return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerStock;
                 }
                 else{
+                    //work for reception found
                     stockTransferWorkNumber = workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Stock transfer Work",SecurityUtils.username());
+                    session.setAttribute("stockTransferWorkNumber", stockTransferWorkNumber);
                 }
             }
-
-            if(workDetailsRepository.checkIfWorksExistsForHandleProduction(stockTransferWorkNumber,scannerChosenWarehouse,"Stock transfer Work")>0){
-                session.setAttribute("stockTransferWorkNumber", stockTransferWorkNumber);
-                workDetailsService.changeStatusAfterStartWork(stockTransferWorkNumber,scannerChosenWarehouse);
-                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerStock + '/' + stockTransferWorkNumber;
+            //when on equipment is not enough space for pick goods
+            WorkDetailsRepository.MaxVolumeAndWeightForWork maxVolumeAndWeightForWork = workDetailsRepository.maxVolumeAndWeightForWork(stockTransferWorkNumber.toString());
+            Location equipment = locationRepository.findLocationByLocationName(scannerChosenEquipment,scannerChosenWarehouse);
+            log.error("maxVolumeAndWeightForWork.getHandle(): " + maxVolumeAndWeightForWork.getHandle());
+            log.error("equipment.getFreeWeight(): " + equipment.getFreeWeight());
+            log.error("maxVolumeAndWeightForWork.getPiecesQty(): " + maxVolumeAndWeightForWork.getPiecesQty());
+            log.error("equipment.getFreeSpace(): " + equipment.getFreeSpace());
+            if(maxVolumeAndWeightForWork.getHandle()>equipment.getFreeWeight() || maxVolumeAndWeightForWork.getPiecesQty()>equipment.getFreeSpace()){
+                log.error("OverloadedPath");
+                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + stockTransferWorkNumber + "/equipmentOverloaded" ;
             }
-            else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(stockTransferWorkNumber.toString(),scannerChosenWarehouse,SecurityUtils.username(),"Stock transfer Work") > 0){
-                session.setAttribute("stockTransferWorkNumber", stockTransferWorkNumber);
+            //work for reception found logic
+            if(workDetailsService.stockTransferWorkSearch(session,stockTransferWorkNumber,scannerChosenWarehouse)){
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerStock + '/' + stockTransferWorkNumber;
             }
             else{
-                session.setAttribute("stockTransferScannerMessage","To Work number: " + stockTransferWorkNumber + " are not assigned any works to do");
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + scannerStock;
             }
         }

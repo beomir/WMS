@@ -33,16 +33,13 @@
 			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
 			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
 			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
-			<div class="formDescription" th:text="#{app.overloadedEquipmentInfo}"> </div><br/><br/><br/>
-			<br/><br/>
-			<input  type="hidden" th:value="${token}" name="token"/>
-			<input  type="hidden" th:value="${workNumber}" name="workNumber"/>
-			<section style="display: flex; align-items: center;justify-content: center;">
-				<button name="equipmentOverloadedDecision" type="submit"  th:value="1" th:text="#{app.yes}" th:title="#{app.overloadedDecisionYes}" class="circle"></button>
-				<button name="equipmentOverloadedDecision" type="submit"  th:value="2" th:text="#{app.no}"  th:title="#{app.overloadedDecisionNo}" class="circle"></button>
-			</section>
-			<br>
-			<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment}}"><div class="circle" th:title="#{app.moveBack}"><-</div></a>
+
+			<span th:if="${overloadedEquipmentSetting} == '1'" th:include="fragments/overloadingEquipmentAllowed :: overloadingEquipmentAllowed"> </span>
+			<span th:if="${overloadedEquipmentSetting} == '2'" th:include="fragments/overloadingEquipmentNotAllowed :: overloadingEquipmentNotAllowed"> </span>
+			<span class="formDescription" th:if="${overloadedEquipmentSetting != '1' && overloadedEquipmentSetting != '2'}">Check Extremely setting for overloading Equipment </span>
+
+			<br/>
+			<button name="equipmentOverloadedDecision" type="submit"  th:value="2"  th:title="#{app.moveBack}" class="circle"><--</button>
 		</form>
 
 		<div th:include="fragments/footer :: footer"></div>

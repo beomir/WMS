@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
-import pl.coderslab.cls_wms_app.repository.LocationRepository;
-import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -27,20 +27,27 @@ public class ScannerProductionProduceController {
     private final StockService stockService;
     private final CompanyService companyService;
     private final WorkDetailsRepository workDetailsRepository;
+    private final UsersService usersService;
 
 
     @Autowired
-    public ScannerProductionProduceController(WorkDetailsService workDetailsService, StockService stockService, CompanyService companyService,  WorkDetailsRepository workDetailsRepository) {
+    public ScannerProductionProduceController(WorkDetailsService workDetailsService, StockService stockService, CompanyService companyService, WorkDetailsRepository workDetailsRepository, UsersService usersService) {
         this.workDetailsService = workDetailsService;
         this.stockService = stockService;
         this.companyService = companyService;
         this.workDetailsRepository = workDetailsRepository;
+        this.usersService = usersService;
     }
 
     //Selection Produce Work
     @GetMapping("{token}/{warehouse}/{equipment}/5/2")
-    public String produceMenuManualWork(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,
-                                          @SessionAttribute(required = false) String produceScannerMessage) {
+    public String produceMenuManualWork(@PathVariable String warehouse,
+                                        @PathVariable String token,
+                                        @PathVariable String equipment,
+                                        Model model,
+                                        @SessionAttribute(required = false) String produceScannerMessage,
+                                        HttpSession session,
+                                        HttpServletRequest request) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
@@ -48,15 +55,22 @@ public class ScannerProductionProduceController {
         model.addAttribute("message", produceScannerMessage);
         model.addAttribute("warehouse", warehouse);
 
+        usersService.nextURL(request,session);
+
         List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", SecurityUtils.username(), "%", "%", "%", "Producing finish product from collected intermediate articles");
         model.addAttribute("workDetailsQueue", workDetailsQueue);
 
         return "wmsOperations/scanner/production/produce/scannerProduceManualWork";
     }
     @PostMapping("scannerProduceManualWork")
-    public String produceMenuManualWorkPost(@SessionAttribute String scannerChosenWarehouse,String token, Long productionNumber,
-                                              HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
-                                              @SessionAttribute int workProductionScannerChoice, String automaticallyFinder) {
+    public String produceMenuManualWorkPost(@SessionAttribute String scannerChosenWarehouse,
+                                            String token,
+                                            Long productionNumber,
+                                            HttpSession session,
+                                            @SessionAttribute int scannerMenuChoice,
+                                            @SessionAttribute String scannerChosenEquipment,
+                                            @SessionAttribute int workProductionScannerChoice,
+                                            String automaticallyFinder) {
         log.error("automaticallyFinder value: " + automaticallyFinder);
         if (automaticallyFinder == null && productionNumber == null) {
             session.setAttribute("produceScannerMessage", "Please enter production number manually or push button check to find work automatically by system ");
@@ -64,7 +78,7 @@ public class ScannerProductionProduceController {
         }
         else{
 
-            if(automaticallyFinder.equals("automatically")){
+            if(automaticallyFinder != null){
                 log.error("workNumberBrCompanyAndWarehouse: " + workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Producing finish product from collected intermediate articles",SecurityUtils.username()));
                 if(workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Producing finish product from collected intermediate articles",SecurityUtils.username()) == null){
                     session.setAttribute("produceScannerMessage", "No works found");
@@ -72,22 +86,18 @@ public class ScannerProductionProduceController {
                 }
                 else{
                     productionNumber = workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Producing finish product from collected intermediate articles",SecurityUtils.username());
+                    session.setAttribute("productionNumberSearch", productionNumber);
                 }
             }
 
-            if(workDetailsRepository.checkIfWorksExistsForHandleProduction(productionNumber,scannerChosenWarehouse,"Producing finish product from collected intermediate articles")>0){
-                session.setAttribute("productionNumberSearch", productionNumber);
-                workDetailsService.changeStatusAfterStartWork(productionNumber,scannerChosenWarehouse);
-                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumber;
-            }
-            else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(productionNumber.toString(),scannerChosenWarehouse,SecurityUtils.username(),"Producing finish product from collected intermediate articles") > 0){
-                session.setAttribute("productionNumberSearch", productionNumber);
+            //work for production found logic
+            if(workDetailsService.productionProduceWorkSearch(session,productionNumber,scannerChosenWarehouse)){
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumber;
             }
             else{
-                session.setAttribute("produceScannerMessage","To production number: " + productionNumber + " are not assigned any works to do");
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
             }
+
         }
 
     }

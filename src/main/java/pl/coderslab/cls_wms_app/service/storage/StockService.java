@@ -4,6 +4,7 @@ import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 

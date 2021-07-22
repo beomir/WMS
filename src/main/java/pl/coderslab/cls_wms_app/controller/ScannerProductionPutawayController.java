@@ -7,13 +7,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Company;
+import pl.coderslab.cls_wms_app.entity.Location;
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
 import pl.coderslab.cls_wms_app.repository.LocationRepository;
-import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
+import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -25,20 +27,29 @@ public class ScannerProductionPutawayController {
     private final WorkDetailsService workDetailsService;
     private final CompanyService companyService;
     private final WorkDetailsRepository workDetailsRepository;
+    private final UsersService usersService;
+    private final LocationRepository locationRepository;
 
 
     @Autowired
-    public ScannerProductionPutawayController(WorkDetailsService workDetailsService, CompanyService companyService,  WorkDetailsRepository workDetailsRepository) {
+    public ScannerProductionPutawayController(WorkDetailsService workDetailsService, CompanyService companyService, WorkDetailsRepository workDetailsRepository, UsersService usersService, LocationRepository locationRepository) {
         this.workDetailsService = workDetailsService;
         this.companyService = companyService;
         this.workDetailsRepository = workDetailsRepository;
+        this.usersService = usersService;
+        this.locationRepository = locationRepository;
     }
 
 
     //Selection Putaway Work
     @GetMapping("{token}/{warehouse}/{equipment}/5/3")
-    public String scannerProductionPutaway(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment, Model model,
-                                          @SessionAttribute(required = false) String scannerProductionPutawayMessage) {
+    public String scannerProductionPutaway(@PathVariable String warehouse,
+                                           @PathVariable String token,
+                                           @PathVariable String equipment,
+                                           Model model,
+                                           @SessionAttribute(required = false) String scannerProductionPutawayMessage,
+                                           HttpSession session,
+                                           HttpServletRequest request) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
@@ -46,15 +57,22 @@ public class ScannerProductionPutawayController {
         model.addAttribute("message", scannerProductionPutawayMessage);
         model.addAttribute("warehouse", warehouse);
 
+        usersService.nextURL(request,session);
+
         List<WorkDetailsRepository.WorkHeaderListProduction> workDetailsQueue = workDetailsRepository.workHeaderListProduction(warehouse, companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(), "%", "Production", "%", "%", SecurityUtils.username(), "%", "%", "%", "Putaway after producing");
         model.addAttribute("workDetailsQueue", workDetailsQueue);
 
         return "wmsOperations/scanner/production/putaway/scannerProductionPutaway";
     }
     @PostMapping("scannerProductionPutaway")
-    public String scannerProductionPutawayPost(@SessionAttribute String scannerChosenWarehouse,String token, Long productionNumber,
-                                              HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
-                                              @SessionAttribute int workProductionScannerChoice, String automaticallyFinder) {
+    public String scannerProductionPutawayPost(@SessionAttribute String scannerChosenWarehouse,
+                                               String token,
+                                               Long productionNumber,
+                                               HttpSession session,
+                                               @SessionAttribute int scannerMenuChoice,
+                                               @SessionAttribute String scannerChosenEquipment,
+                                               @SessionAttribute int workProductionScannerChoice,
+                                               String automaticallyFinder) {
 
         log.error("automaticallyFinder value: " + automaticallyFinder);
         if (automaticallyFinder == null && productionNumber == null) {
@@ -62,7 +80,7 @@ public class ScannerProductionPutawayController {
             return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
         }
         else {
-            if(automaticallyFinder.equals("automatically")){
+            if(automaticallyFinder != null){
                 log.error("WorkNumberByCompanyAndWarehouse: " + workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Putaway after producing",SecurityUtils.username()));
                 if(workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Putaway after producing",SecurityUtils.username()) == null){
                     session.setAttribute("manualProductionScannerMessage", "No works found");
@@ -70,22 +88,32 @@ public class ScannerProductionPutawayController {
                 }
                 else{
                     productionNumber = workDetailsRepository.workNumberByCompanyWarehouseWorkDescriptionStatusUser(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),scannerChosenWarehouse,"Putaway after producing",SecurityUtils.username());
+                    session.setAttribute("productionNumberSearch", productionNumber);
                 }
             }
 
-            if(workDetailsRepository.checkIfWorksExistsForHandleProduction(productionNumber,scannerChosenWarehouse,"Putaway after producing")>0){
-                session.setAttribute("productionNumberSearch", productionNumber);
-                workDetailsService.changeStatusAfterStartWork(productionNumber,scannerChosenWarehouse);
-                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumber;
+            //when on equipment is not enough space for pick goods
+            WorkDetailsRepository.MaxVolumeAndWeightForWorkByWorkNumber maxVolumeAndWeightForWork = workDetailsRepository.maxVolumeAndWeightForWorkByWorkNumber(productionNumber.toString());
+            Location equipment = locationRepository.findLocationByLocationName(scannerChosenEquipment,scannerChosenWarehouse);
+            log.error("maxVolumeAndWeightForWork.getHandle(): " + maxVolumeAndWeightForWork.getHandle());
+            log.error("equipment.getFreeWeight(): " + equipment.getFreeWeight());
+            log.error("maxVolumeAndWeightForWork.getPiecesQty(): " + maxVolumeAndWeightForWork.getPiecesQty());
+            log.error("equipment.getFreeSpace(): " + equipment.getFreeSpace());
+            if(maxVolumeAndWeightForWork.getHandle()>equipment.getFreeWeight() || maxVolumeAndWeightForWork.getPiecesQty()>equipment.getFreeSpace()){
+                log.error("OverloadedPath");
+                return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + productionNumber + "/equipmentOverloaded" ;
             }
-            else if( workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(productionNumber.toString(),scannerChosenWarehouse,SecurityUtils.username(),"Putaway after producing") > 0){
-                session.setAttribute("productionNumberSearch", productionNumber);
+
+            ////
+
+            //work for production found logic
+            if(workDetailsService.productionPutawayWorkSearch(session,productionNumber,scannerChosenWarehouse)){
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice + '/' + productionNumber;
             }
             else{
-                session.setAttribute("scannerProductionPutawayMessage","To production number: " + productionNumber + " are not assigned any works to do");
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + scannerMenuChoice + '/' + workProductionScannerChoice;
             }
+
         }
 
     }
@@ -93,8 +121,11 @@ public class ScannerProductionPutawayController {
 
     //scan locationFrom
     @GetMapping("{token}/{warehouse}/{equipment}/5/3/{productionNumber}")
-    public String scannerProductionPutawayProductionNumberFound(@PathVariable String warehouse,@PathVariable String token,
-                                                                @PathVariable String equipment, Model model,@SessionAttribute Long productionNumberSearch,
+    public String scannerProductionPutawayProductionNumberFound(@PathVariable String warehouse,
+                                                                @PathVariable String token,
+                                                                @PathVariable String equipment,
+                                                                Model model,
+                                                                @SessionAttribute Long productionNumberSearch,
                                                                 @SessionAttribute(required = false) String productionPutawayScannerLocationFromMessage) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
@@ -110,10 +141,15 @@ public class ScannerProductionPutawayController {
     }
 
     @PostMapping("scannerProductionPutawayFoundOriginLocation")
-    public String scannerProductionPutawayProductionNumberFoundPost(@SessionAttribute String scannerChosenWarehouse,String token,@RequestParam String productionScannerFromLocation,
-                                                                  @RequestParam String originLocation, HttpSession session,@SessionAttribute int scannerMenuChoice,
-                                                                  @SessionAttribute String scannerChosenEquipment, @SessionAttribute int workProductionScannerChoice,
-                                                                  @SessionAttribute Long productionNumberSearch) {
+    public String scannerProductionPutawayProductionNumberFoundPost(@SessionAttribute String scannerChosenWarehouse,
+                                                                    String token,
+                                                                    @RequestParam String productionScannerFromLocation,
+                                                                    @RequestParam String originLocation,
+                                                                    HttpSession session,
+                                                                    @SessionAttribute int scannerMenuChoice,
+                                                                    @SessionAttribute String scannerChosenEquipment,
+                                                                    @SessionAttribute int workProductionScannerChoice,
+                                                                    @SessionAttribute Long productionNumberSearch) {
         log.error("Location found by query: " + productionScannerFromLocation);
         log.error("Location enter by user: " + originLocation);
         if(productionScannerFromLocation.equals(originLocation)){
@@ -129,8 +165,10 @@ public class ScannerProductionPutawayController {
 
     //scan HdNumber
     @GetMapping("{token}/{warehouse}/{equipment}/5/3/{productionNumber}/hdNumber")
-    public String scannerProductionPutawayProductionNumberFoundHdNumber(@PathVariable String warehouse,@PathVariable String token,
-                                                                        @PathVariable String equipment, Model model,
+    public String scannerProductionPutawayProductionNumberFoundHdNumber(@PathVariable String warehouse,
+                                                                        @PathVariable String token,
+                                                                        @PathVariable String equipment,
+                                                                        Model model,
                                                                         @SessionAttribute Long productionNumberSearch,
                                                                         @SessionAttribute(required = false) String productionPutawayScannerHdNumberMessage ) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
@@ -148,9 +186,14 @@ public class ScannerProductionPutawayController {
 
     @PostMapping("scannerProductionPutawayFoundHdNumber")
     public String scannerProductionPutawayProductionNumberFoundHdNumberPost(@SessionAttribute String scannerChosenWarehouse,
-                                                                          String token,@RequestParam String productionScannerExpectedHdNumber, @RequestParam String productionScannerEnteredHdNumber,
-                                                                          HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
-                                                                          @SessionAttribute int workProductionScannerChoice,@SessionAttribute Long productionNumberSearch) {
+                                                                            String token,
+                                                                            @RequestParam String productionScannerExpectedHdNumber,
+                                                                            @RequestParam String productionScannerEnteredHdNumber,
+                                                                            HttpSession session,
+                                                                            @SessionAttribute int scannerMenuChoice,
+                                                                            @SessionAttribute String scannerChosenEquipment,
+                                                                            @SessionAttribute int workProductionScannerChoice,
+                                                                            @SessionAttribute Long productionNumberSearch) {
         log.error("HdNumber found by query: " + productionScannerExpectedHdNumber);
         log.error("HdNumber enter by user: " + productionScannerEnteredHdNumber);
         String nextPath = "article";
@@ -167,9 +210,13 @@ public class ScannerProductionPutawayController {
 
     //scan Article
     @GetMapping("{token}/{warehouse}/{equipment}/5/3/{productionNumber}/hdNumber/article")
-    public String scannerProductionPutawayProductionNumberFoundArticle(@PathVariable String warehouse,@PathVariable String token,@PathVariable String equipment,
-                                                                       Model model,@SessionAttribute Long productionNumberSearch,
-                                                                       @SessionAttribute(required = false) String productionPutawayScannerArticleMessage, HttpSession session ) {
+    public String scannerProductionPutawayProductionNumberFoundArticle(@PathVariable String warehouse,
+                                                                       @PathVariable String token,
+                                                                       @PathVariable String equipment,
+                                                                       Model model,
+                                                                       @SessionAttribute Long productionNumberSearch,
+                                                                       @SessionAttribute(required = false) String productionPutawayScannerArticleMessage,
+                                                                       HttpSession session ) {
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companies", companies);
         model.addAttribute("token", token);
@@ -188,10 +235,13 @@ public class ScannerProductionPutawayController {
 
     @PostMapping("scannerProductionPutawayFoundArticle")
     public String scannerProductionPutawayProductionNumberFoundArticlePost(@SessionAttribute String scannerChosenWarehouse,
-                                                                         String token,@RequestParam String productionScannerExpectedArticle, @RequestParam String productionScannerEnteredArticle,
-                                                                         HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
-                                                                         @SessionAttribute int workProductionScannerChoice,@SessionAttribute Long productionNumberSearch,
-                                                                         @SessionAttribute String productionScannerEnteredHdNumber,
+                                                                           String token,@RequestParam String productionScannerExpectedArticle,
+                                                                           @RequestParam String productionScannerEnteredArticle,
+                                                                           HttpSession session,@SessionAttribute int scannerMenuChoice,
+                                                                           @SessionAttribute String scannerChosenEquipment,
+                                                                           @SessionAttribute int workProductionScannerChoice,
+                                                                           @SessionAttribute Long productionNumberSearch,
+                                                                           @SessionAttribute String productionScannerEnteredHdNumber,
                                                                            @SessionAttribute String productionScannerFromLocation,
                                                                            @SessionAttribute Long productionPutawayPiecesQty) {
         log.error("Article found by query: " + productionScannerExpectedArticle);
@@ -233,10 +283,16 @@ public class ScannerProductionPutawayController {
 
     @PostMapping("scannerProductionPutawayFoundDestinationLocation")
     public String scannerProductionPutawayProductionNumberFoundDestinationLocationPost(@SessionAttribute String scannerChosenWarehouse,
-                                                                                     String token,@RequestParam String productionScannerExpectedDestinationLocation, @RequestParam String productionScannerEnteredDestinationLocation,
-                                                                                     HttpSession session,@SessionAttribute int scannerMenuChoice,@SessionAttribute String scannerChosenEquipment,
-                                                                                     @SessionAttribute int workProductionScannerChoice,@SessionAttribute Long productionNumberSearch,
-                                                                                     @SessionAttribute String productionScannerEnteredHdNumber, @SessionAttribute Long productionScannerEnteredArticle) {
+                                                                                       String token,
+                                                                                       @RequestParam String productionScannerExpectedDestinationLocation,
+                                                                                       @RequestParam String productionScannerEnteredDestinationLocation,
+                                                                                       HttpSession session,
+                                                                                       @SessionAttribute int scannerMenuChoice,
+                                                                                       @SessionAttribute String scannerChosenEquipment,
+                                                                                       @SessionAttribute int workProductionScannerChoice,
+                                                                                       @SessionAttribute Long productionNumberSearch,
+                                                                                       @SessionAttribute String productionScannerEnteredHdNumber,
+                                                                                       @SessionAttribute Long productionScannerEnteredArticle) {
         log.error("Destination location found by query: " + productionScannerExpectedDestinationLocation);
         log.error("Destination location enter by user: " + productionScannerEnteredDestinationLocation);
         String nextPath = "toLocation";
@@ -248,6 +304,7 @@ public class ScannerProductionPutawayController {
             workDetailsService.workLineFinish(workDetails,scannerChosenEquipment);
             if(workDetailsRepository.checkIfWorksExistsForHandleWithStatusUserProduction(productionNumberSearch.toString(),scannerChosenWarehouse,SecurityUtils.username(),"Production picking") == 0 ){
                 workDetailsService.workFinished(workDetails,session);
+                session.setAttribute("scannerProductionPutawayMessage","Work : " + productionNumberSearch + " finished, Goods available on stock in location: " + productionScannerEnteredDestinationLocation);
                 return "redirect:/scanner/" + token + '/' + scannerChosenWarehouse + '/' + scannerChosenEquipment + '/' + '5';
             }
             session.setAttribute("productionPutawayScannerLocationFromMessage","Work for: " + workDetails.getHdNumber() + " finished, start next one from your production");

@@ -24,13 +24,15 @@ public class ScannerController {
     private final CompanyService companyService;
     private final LocationRepository locationRepository;
     private final WorkDetailsService workDetailsService;
+    private final ExtremelyRepository extremelyRepository;
 
     @Autowired
-    public ScannerController(WarehouseRepository warehouseRepository, CompanyService companyService, LocationRepository locationRepository, WorkDetailsService workDetailsService) {
+    public ScannerController(WarehouseRepository warehouseRepository, CompanyService companyService, LocationRepository locationRepository, WorkDetailsService workDetailsService, ExtremelyRepository extremelyRepository) {
         this.warehouseRepository = warehouseRepository;
         this.companyService = companyService;
         this.locationRepository = locationRepository;
         this.workDetailsService = workDetailsService;
+        this.extremelyRepository = extremelyRepository;
     }
 
     //warehouse selection
@@ -238,7 +240,9 @@ public class ScannerController {
                                       @PathVariable String equipment,
                                       @PathVariable String workNumber,
                                       Model model){
+
         model.addAttribute("warehouse", warehouse);
+        model.addAttribute("overloadedEquipmentSetting", extremelyRepository.findExtremelyByCompanyNameAndExtremelyName(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"max_capacity_on_equipment").getExtremelyValue());
         model.addAttribute("token", token);
         model.addAttribute("equipment", equipment);
         model.addAttribute("workNumber", workNumber);
@@ -249,13 +253,10 @@ public class ScannerController {
     public String overloadedEquipmentPost(@SessionAttribute(required = false) String nextURL,
                                           String equipmentOverloadedDecision,
                                           Long workNumber,
-                                          String token,
                                           @SessionAttribute(required = false) String scannerChosenWarehouse,
-                                          @SessionAttribute(required = false) int scannerMenuChoice,
-                                          @SessionAttribute(required = false) String scannerChosenEquipment,
                                           HttpSession session){
         if(equipmentOverloadedDecision.equals("1")){
-            workDetailsService.assigningWorkLogic(session,workNumber,scannerMenuChoice,scannerChosenWarehouse,scannerChosenEquipment,token);
+            workDetailsService.assigningWorkLogic(session,workNumber,scannerChosenWarehouse);
             return "redirect:" + nextURL + '/' + workNumber;
         }
         else{
@@ -263,7 +264,4 @@ public class ScannerController {
         }
 
     }
-
-
-
 }
