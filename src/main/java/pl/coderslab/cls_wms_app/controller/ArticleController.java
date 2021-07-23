@@ -13,6 +13,7 @@ import pl.coderslab.cls_wms_app.service.storage.ArticleServiceImpl;
 import pl.coderslab.cls_wms_app.service.storage.ArticleTypesService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersServiceImpl;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionServiceImpl;
+import pl.coderslab.cls_wms_app.service.wmsSettings.IntermediateArticleService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.ProductionArticleService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
@@ -46,9 +47,10 @@ public class ArticleController {
     private final ProductionArticleService productionArticleService;
     private final LocationRepository locationRepository;
     private final WarehouseRepository warehouseRepository;
+    private final IntermediateArticleService intermediateArticleService;
 
     @Autowired
-    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository, ExtremelyRepository extremelyRepository, StorageZoneRepository storageZoneRepository, ProductionArticleService productionArticleService, LocationRepository locationRepository, WarehouseRepository warehouseRepository) {
+    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository, ExtremelyRepository extremelyRepository, StorageZoneRepository storageZoneRepository, ProductionArticleService productionArticleService, LocationRepository locationRepository, WarehouseRepository warehouseRepository, IntermediateArticleService intermediateArticleService) {
         this.articleService = articleService;
         this.receptionServiceImpl = receptionServiceImpl;
         this.articleServiceImpl = articleServiceImpl;
@@ -65,6 +67,7 @@ public class ArticleController {
         this.productionArticleService = productionArticleService;
         this.locationRepository = locationRepository;
         this.warehouseRepository = warehouseRepository;
+        this.intermediateArticleService = intermediateArticleService;
     }
 
     @GetMapping("article")
@@ -142,7 +145,16 @@ public class ArticleController {
     public String articleAdd(Article article, ProductionArticle productionArticle, HttpServletRequest request) {
         articleService.addNew(article,productionArticle,request);
         log.error("productionArticle value New Article Post: " + productionArticle);
-        productionArticleService.addNew(productionArticle,article);
+        log.error("productionArticle.getProductionArticleType(): " + productionArticle.getProductionArticleType());
+        if(productionArticle.getProductionArticleType().equals("finish product")){
+            productionArticleService.addNew(productionArticle,article);
+            log.error("finish product way");
+        }
+        else if(productionArticle.getProductionArticleType().equals("intermediate")){
+            log.error("intermediate way 1/2");
+            intermediateArticleService.addNew(productionArticle,article);
+        }
+
         return "redirect:/article";
     }
 
@@ -167,15 +179,21 @@ public class ArticleController {
         List<LocationRepository.ProductionLocations> productionLocations = locationRepository.getProductionLocations();
         List<Warehouse> warehouseList = warehouseRepository.getWarehouse();
 
-        if(productionArticleService.getProductionArticleByArticleId(id) == null){
-            model.addAttribute("productionArticle", new ProductionArticle());
-            log.error("productionArticle value is null");
-        }
+
         if(productionArticleService.getProductionArticleByArticleId(id) != null){
             ProductionArticle productionArticle = productionArticleService.getProductionArticleByArticleId(id);
             model.addAttribute("productionArticle", productionArticle);
             log.error("productionArticle value: " + productionArticleService.getProductionArticleByArticleId(id));
         }
+        if(productionArticleService.getProductionArticleByArticleId(id) == null){
+            model.addAttribute("productionArticle", new ProductionArticle());
+            log.error("productionArticle value is null");
+        }
+        if(intermediateArticleService.getIntermediateArticleByArticleId(id) != null){
+            IntermediateArticle intermediateArticle = intermediateArticleService.getIntermediateArticleByArticleId(id);
+            model.addAttribute("intermediateArticle",intermediateArticle);
+        }
+
 
         try{
             Extremely extremely = extremelyRepository.findExtremelyByCompanyNameAndExtremelyName(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
@@ -204,11 +222,19 @@ public class ArticleController {
 
     @PostMapping("formEditArticle")
     public String edit(Article article,ProductionArticle productionArticle,String warehouseName,String productionArticleId,HttpServletRequest request) {
-        articleService.edit(article,productionArticle,request);
+
         log.info("productionArticle value edit Article Post: " + productionArticle);
         log.info("chosen warehouse: " +  warehouseName);
         log.error("productionArticleId: " + productionArticleId);
-        productionArticleService.edit(productionArticle,article,warehouseName,productionArticleId);
+        articleService.edit(article,productionArticle,request);
+
+        if(productionArticle.getProductionArticleType().equals("finish product")) {
+            productionArticleService.edit(productionArticle, article, warehouseName, productionArticleId);
+        }
+        else if(productionArticle.getProductionArticleType().equals("intermediate")){
+            log.error("intermediate way edit 1/2");
+            intermediateArticleService.edit(productionArticle, article, warehouseName);
+        }
         return "redirect:/article";
     }
 

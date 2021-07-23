@@ -7,7 +7,6 @@
 	<meta name="keywords" content="" />
 
 	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
 
 	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
 	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
@@ -115,7 +114,13 @@
 					</div>
 				</div>
 			</section>
-
+			<span class="d-none" th:if="${intermediateArticle} != null">
+			<span th:each="i : ${intermediateArticle.productionArticle}"  >
+				<span id="productionArticleForIntermediate" th:text="${i.article.article_number}"></span>
+			</span>
+			<span id="productionArticleTypeForIntermediate" th:text="${intermediateArticle.productionArticleType}"></span>
+			<span id="intermediateQtyForProduction" th:text="${intermediateArticle.quantityForFinishedProduct}"></span>
+			</span>
 			<table class="d-none" >
 				<tr th:each="i : ${productionLocations}">
 					<td th:text="${i.location}" name="productionLocation"></td>
@@ -139,7 +144,8 @@
 	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 </div>
 </div>
-<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+<script type="text/javascript" th:src="@{/js/editArticle.js}"></script>
 <script type="text/javascript" th:src="@{/js/formArticle.js}"></script>
+
 </body>
 </html>

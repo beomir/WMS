@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.IntermediateArticle;
+import pl.coderslab.cls_wms_app.entity.ProductionArticle;
 import pl.coderslab.cls_wms_app.entity.Transaction;
+import pl.coderslab.cls_wms_app.repository.ArticleRepository;
 import pl.coderslab.cls_wms_app.repository.IntermediateArticleRepository;
 import pl.coderslab.cls_wms_app.repository.ProductionArticleRepository;
 import pl.coderslab.cls_wms_app.repository.TransactionRepository;
@@ -25,14 +27,16 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
     private WarehouseService warehouseService;
     private TransactionRepository transactionRepository;
     private IntermediateArticleRepository intermediateArticleRepository;
+    private ArticleRepository articleRepository;
 
 
     @Autowired
-    public IntermediateArticleServiceImpl(ProductionArticleRepository productionArticleRepository, WarehouseService warehouseService, TransactionRepository transactionRepository, IntermediateArticleRepository intermediateArticleRepository) {
+    public IntermediateArticleServiceImpl(ProductionArticleRepository productionArticleRepository, WarehouseService warehouseService, TransactionRepository transactionRepository, IntermediateArticleRepository intermediateArticleRepository, ArticleRepository articleRepository) {
         this.productionArticleRepository = productionArticleRepository;
         this.warehouseService = warehouseService;
         this.transactionRepository = transactionRepository;
         this.intermediateArticleRepository = intermediateArticleRepository;
+        this.articleRepository = articleRepository;
     }
 
 
@@ -42,31 +46,38 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
     }
 
     @Override
-    public void addNew(IntermediateArticle intermediateArticle, Article article) {
+    public void addNew(ProductionArticle productionArticle, Article article) {
         if(article.isProduction()){
-
+            log.error("intermediate way 2/2");
+            IntermediateArticle intermediateArticle = new IntermediateArticle();
             intermediateArticle.setArticle(article);
             intermediateArticle.setCompany(article.getCompany());
+            intermediateArticle.setChangeBy(productionArticle.getChangeBy());
+            intermediateArticle.setCreated(productionArticle.getCreated());
+            intermediateArticle.setLast_update(productionArticle.getLast_update());
+            intermediateArticle.setQuantityForFinishedProduct(productionArticle.getQuantityForFinishedProduct());
+            intermediateArticle.setStorageZone(productionArticle.getStorageZone());
+            intermediateArticle.setProductionArticleType(productionArticle.getProductionArticleType());
+            intermediateArticle.setLocation(productionArticle.getLocation());
+            intermediateArticle.setWarehouse(productionArticle.getWarehouse());
+            intermediateArticle.getProductionArticle().add(productionArticleRepository.getProductionArticleByArticle(Long.parseLong(productionArticle.getProductionArticleConnection())));
             intermediateArticleRepository.save(intermediateArticle);
         }
     }
 
     @Override
-    public void edit(IntermediateArticle intermediateArticle, Article article,String warehouseName,String intermediateArticleId) {
+    public void edit(ProductionArticle productionArticle, Article article,String warehouseName) {
         String storageZoneEdited = "";
         String storageZonePrimary = "";
 
-        if(intermediateArticle.getStorageZone() == null){
+        if(productionArticle.getStorageZone() == null){
             storageZoneEdited = "not assigned";
         }
-        if(intermediateArticle.getStorageZone() != null){
-            storageZoneEdited = intermediateArticle.getStorageZone().getStorageZoneName();
+        if(productionArticle.getStorageZone() != null){
+            storageZoneEdited = productionArticle.getStorageZone().getStorageZoneName();
         }
-
+        IntermediateArticle intermediateArticleEdited = intermediateArticleRepository.getIntermediateArticleByArticle(article);
         if(article.isProduction()){
-
-            Long id = Long.parseLong(intermediateArticleId);
-            IntermediateArticle intermediateArticleEdited = intermediateArticleRepository.getOne(id);
             if(intermediateArticleEdited.getStorageZone() == null){
                 storageZonePrimary = "not assigned";
             }
@@ -96,22 +107,29 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             transaction.setWarehouse(warehouseService.getWarehouseByName(warehouseName));
             transactionRepository.save(transaction);
 
-            intermediateArticleEdited.setWarehouse(warehouseService.getWarehouseByName(warehouseName));
-            intermediateArticleEdited.setCompany(article.getCompany());
+
+            ProductionArticle productionArticleOld = productionArticleRepository.getProductionArticleByArticle(articleRepository.finishProductNumberByIntermediateNumberAndCompanyName(article.getArticle_number(),article.getCompany().getName()));
+            log.error("productionArticleOld: " + productionArticleOld);
+
+            intermediateArticleEdited.getProductionArticle().remove(productionArticleOld);
             intermediateArticleEdited.setArticle(article);
-            intermediateArticleEdited.setLocation(intermediateArticle.getLocation());
-            intermediateArticleEdited.setProductionArticleType(intermediateArticle.getProductionArticleType());
-            intermediateArticleEdited.setStorageZone(intermediateArticle.getStorageZone());
-            intermediateArticleEdited.setQuantityForFinishedProduct(intermediateArticle.getQuantityForFinishedProduct());
-            intermediateArticleEdited.setChangeBy(article.getChangeBy());
-            intermediateArticleEdited.setLast_update(article.getLast_update());
+            intermediateArticleEdited.setCompany(article.getCompany());
+            intermediateArticleEdited.setChangeBy(productionArticle.getChangeBy());
+            intermediateArticleEdited.setCreated(productionArticle.getCreated());
+            intermediateArticleEdited.setLast_update(productionArticle.getLast_update());
+            intermediateArticleEdited.setQuantityForFinishedProduct(productionArticle.getQuantityForFinishedProduct());
+            intermediateArticleEdited.setStorageZone(productionArticle.getStorageZone());
+            intermediateArticleEdited.setProductionArticleType(productionArticle.getProductionArticleType());
+            intermediateArticleEdited.setLocation(productionArticle.getLocation());
+            intermediateArticleEdited.setWarehouse(productionArticle.getWarehouse());
+            intermediateArticleEdited.getProductionArticle().add(productionArticleRepository.getProductionArticleByArticle(Long.parseLong(productionArticle.getProductionArticleConnection())));
             intermediateArticleRepository.save(intermediateArticleEdited);
         }
-        else if(!article.isProduction() && intermediateArticleRepository.getOne(Long.parseLong(intermediateArticleId)) != null){
+        else if(!article.isProduction()){
 
             Transaction transaction = new Transaction();
             transaction.setHdNumber(0L);
-            transaction.setAdditionalInformation("Production Article: " + article.getArticle_number() + ", type: " + intermediateArticle.getProductionArticleType() + " changed on not production Article");
+            transaction.setAdditionalInformation("Production Article: " + article.getArticle_number() + ", type: " + productionArticle.getProductionArticleType() + " changed on not production Article");
             transaction.setArticle(article.getArticle_number());
             transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
             transaction.setCreatedBy(SecurityUtils.usernameForActivations());
@@ -130,7 +148,7 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             transaction.setVendor("");
             transaction.setWarehouse(warehouseService.getWarehouseByName(warehouseName));
             transactionRepository.save(transaction);
-            productionArticleRepository.delete(productionArticleRepository.getOne(Long.parseLong(intermediateArticleId)));
+            productionArticleRepository.delete(productionArticleRepository.getOne(intermediateArticleEdited.getId()));
             log.error("Edited article: " + article.getArticle_number() + " deleted from production Article table");
         }
     }

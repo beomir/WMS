@@ -150,6 +150,7 @@ public class ArticleServiceImpl implements ArticleService{
                     articleMessage = "Article successfully edited";
                 }
                 else if(article.isProduction() && productionArticle.getProductionArticleType().equals("finish product")){
+                    log.error("article.getArticle_number(): " + article.getArticle_number());
                     log.debug("sum of intermediate article qty needed to finish product:  " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
                     log.debug("value from form about qty needed for finish product: " + productionArticle.getQuantityForFinishedProduct());
                     if(productionArticle.getQuantityForFinishedProduct() >= articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName())){
@@ -214,15 +215,16 @@ public class ArticleServiceImpl implements ArticleService{
 
     private void articleEdition(Article article,ProductionArticle productionArticle, HttpServletRequest request) {
         if(article.isProduction() && productionArticle.getProductionArticleType().equals("intermediate")){
-            log.debug("getProductionArticleConnection: " + productionArticle.getProductionArticleConnection());
-            log.debug("getProductionArticleType: " + productionArticle.getProductionArticleType());
+            log.error("getProductionArticleConnection: " + productionArticle.getProductionArticleConnection());
+            log.error("getProductionArticleType: " + productionArticle.getProductionArticleType());
             try{ Long productionArticleNumberForConnection = Long.parseLong(productionArticle.getProductionArticleConnection());
                 if(articleRepository.checkIfFinishProductExists(productionArticleNumberForConnection)>0) {
-                    log.error("qtyNeededToCreateFinishProduct: " + articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()));
-                    log.error("sumOfAssignedIntermediateArticlesQty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()));
-                    log.error("QuantityForFinishedProduct from form: " + productionArticle.getQuantityForFinishedProduct());
-                    log.error(" QuantityForFinishedProduct from DB" + articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName()));
-                    if(articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) >= articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + productionArticle.getQuantityForFinishedProduct() - articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName())){
+                    log.error("+ sumOfAssignedIntermediateArticlesQtyForEdition: " + articleRepository.sumOfAssignedIntermediateArticlesQtyForEdition(productionArticleNumberForConnection,article.getCompany().getName(),article.getArticle_number()));
+                    log.error("+ QuantityForFinishedProduct from form(input): " + productionArticle.getQuantityForFinishedProduct());
+                    log.error("- articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName()): " + articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName()));
+                    log.error("article.getArticle_number(): " + article.getArticle_number());
+                    log.error("QuantityForFinishedProduct from DB: " + articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(Long.parseLong(productionArticle.getProductionArticleConnection()),article.getCompany().getName()));
+                    if(articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) >= articleRepository.sumOfAssignedIntermediateArticlesQtyForEdition(productionArticleNumberForConnection,article.getCompany().getName(),article.getArticle_number()) + productionArticle.getQuantityForFinishedProduct() - articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName())){
                         article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
                         articleRepository.save(article);
                         if(request.getHeader("Referer").contains("formEditArticle")){
@@ -231,9 +233,7 @@ public class ArticleServiceImpl implements ArticleService{
                         if(request.getHeader("Referer").contains("formArticle")){
                             articleMessage = "Article successfully created";
                         }
-                        log.debug("qty needed: " + articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) );
-                        log.debug("sum of assigned:" + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()));
-                        log.debug("qty in form:" + productionArticle.getQuantityForFinishedProduct());
+
                     }
                     else{
                         IssueLog issueLog = new IssueLog();

@@ -10,9 +10,9 @@ public interface IntermediateArticleService {
 
     void add(IntermediateArticle intermediateArticle);
 
-    void addNew(IntermediateArticle intermediateArticle, Article article);
+    void addNew(ProductionArticle productionArticle, Article article);
 
-    void edit(IntermediateArticle intermediateArticle, Article article, String warehouseName,String productionArticleId);
+    void edit(ProductionArticle productionArticle, Article article, String warehouseName);
 
     List<IntermediateArticle> getIntermediateArticlesByUsername(String username);
 

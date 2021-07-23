@@ -104,6 +104,9 @@ $('#productionArticle').click(function() {
 });
 
 select.addEventListener("change", function () {
+    if(window.location.href.includes("formEditArticle")){
+        changeOptionForIntermediate();
+    }
     productionArticleConnectionFunction();
 
 })
@@ -113,7 +116,7 @@ articleNumber.addEventListener("keyup", function () {
 });
 
 function productionArticleConnectionFunction(){
-    if(document.getElementById('selectId').value == "finish product"){
+    if(document.getElementById('selectId').value == "finish product" && !window.location.href.includes("formEditArticle")){
         $("#productionArticleConnection").prop('readonly',true);
         document.getElementById("productionArticleConnection").value = document.getElementById('articleNumber').value
         productionArticleConnection.innerHTML = document.getElementById('articleNumber').value

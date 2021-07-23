@@ -347,7 +347,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
             putAwayAfterProduction.setWorkNumber(extremelyService.nextWorkNumber());
             log.debug("findAvailableLocationAfterProducing: " + locationService.findAvailableLocationAfterProducing(putAwayAfterProduction.getArticle(),putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone(),putAwayAfterProduction.getWarehouse().getName()));
           if(locationService.findAvailableLocationAfterProducing(putAwayAfterProduction.getArticle(),putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone(),putAwayAfterProduction.getWarehouse().getName())==null){
-              session.setAttribute("produceScannerMessage","Available location to putaway in storage zone: " + putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone().getStorageZoneName() + " not found ");
+              session.setAttribute("produceScannerMessage","Available location to putaway in storage zone: " + putAwayAfterProduction.getArticle().getProductionArticle().getStorageZone().getStorageZoneName() + " ,is not found ");
               session.setAttribute("putawayLocationAfterProducing","notfound");
               log.error("locationTo null");
           }

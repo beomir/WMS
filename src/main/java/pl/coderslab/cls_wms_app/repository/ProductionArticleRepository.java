@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Company;
+import pl.coderslab.cls_wms_app.entity.Production;
 import pl.coderslab.cls_wms_app.entity.ProductionArticle;
 
 import java.util.List;
@@ -20,5 +21,9 @@ public interface ProductionArticleRepository extends JpaRepository<ProductionArt
 
     @Query("Select ap from ProductionArticle ap where ap.article.id = ?1")
     ProductionArticle getProductionArticleByArticleId(Long id);
+
+    @Query("Select ap from ProductionArticle ap where ap.article.article_number = ?1")
+    ProductionArticle getProductionArticleByArticle(Long articleNumber);
+
 
 }
