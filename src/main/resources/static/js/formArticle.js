@@ -104,9 +104,9 @@ $('#productionArticle').click(function() {
 });
 
 select.addEventListener("change", function () {
-    if(window.location.href.includes("formEditArticle")){
-        changeOptionForIntermediate();
-    }
+    // if(window.location.href.includes("formEditArticle")){
+    //     changeOptionForIntermediate();
+    // }
     productionArticleConnectionFunction();
 
 })
@@ -116,12 +116,12 @@ articleNumber.addEventListener("keyup", function () {
 });
 
 function productionArticleConnectionFunction(){
-    if(document.getElementById('selectId').value == "finish product" && !window.location.href.includes("formEditArticle")){
+    if(document.getElementById('selectId').value == "finish product"){
         $("#productionArticleConnection").prop('readonly',true);
         document.getElementById("productionArticleConnection").value = document.getElementById('articleNumber').value
         productionArticleConnection.innerHTML = document.getElementById('articleNumber').value
     }
-    else if(!window.location.href.includes("formEditArticle")){
+    else{
         productionArticleConnection.value = "";
         $("#productionArticleConnection").removeAttr('readonly').val("")
 
@@ -144,7 +144,7 @@ if(window.location.href.indexOf("formEditArticle") > -1){
     if(storageZoneValue=="NotAssigned"){
         $('#specialStorageZoneDetail option[value=""]').attr('selected','selected');
     }
-    //////////////////
+
 }
 
 /////////// 01.06.2021

@@ -69,6 +69,7 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
     public void edit(ProductionArticle productionArticle, Article article,String warehouseName) {
         String storageZoneEdited = "";
         String storageZonePrimary = "";
+        boolean articleWasNotProductionBefore = false;
 
         if(productionArticle.getStorageZone() == null){
             storageZoneEdited = "not assigned";
@@ -77,17 +78,25 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             storageZoneEdited = productionArticle.getStorageZone().getStorageZoneName();
         }
         IntermediateArticle intermediateArticleEdited = intermediateArticleRepository.getIntermediateArticleByArticle(article);
+        if (intermediateArticleEdited == null){
+            intermediateArticleEdited = new IntermediateArticle();
+            articleWasNotProductionBefore = true;
+        }
+        ProductionArticle productionArticleOld = productionArticleRepository.getProductionArticleByArticle(articleRepository.finishProductNumberByIntermediateNumberAndCompanyName(article.getArticle_number(),article.getCompany().getName()));
+        log.error("productionArticleOld: " + productionArticleOld);
         if(article.isProduction()){
+
             if(intermediateArticleEdited.getStorageZone() == null){
                 storageZonePrimary = "not assigned";
             }
             if(intermediateArticleEdited.getStorageZone() != null){
                 storageZonePrimary = intermediateArticleEdited.getStorageZone().getStorageZoneName();
             }
-
             Transaction transaction = new Transaction();
+            if(!articleWasNotProductionBefore){
+                transaction.setAdditionalInformation("Production Article Edited || before changing: " + intermediateArticleEdited.getArticle().getArticle_number() + ", type: " + intermediateArticleEdited.getProductionArticleType()  + ",qty for finished: " + intermediateArticleEdited.getQuantityForFinishedProduct() + ",location: " + intermediateArticleEdited.getLocation().getLocationName() + ",storageZone " + storageZonePrimary + ",warehouse: " + intermediateArticleEdited.getWarehouse().getName());
+            }
             transaction.setHdNumber(0L);
-            transaction.setAdditionalInformation("Production Article Edited || before changing: " + intermediateArticleEdited.getArticle().getArticle_number() + ", type: " + intermediateArticleEdited.getProductionArticleType()  + ",qty for finished: " + intermediateArticleEdited.getQuantityForFinishedProduct() + ",location: " + intermediateArticleEdited.getLocation().getLocationName() + ",storageZone " + storageZonePrimary + ",warehouse: " + intermediateArticleEdited.getWarehouse().getName());
             transaction.setArticle(article.getArticle_number());
             transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
             transaction.setCreatedBy(SecurityUtils.usernameForActivations());
@@ -98,7 +107,7 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             transaction.setReceptionStatus("");
             transaction.setShipmentNumber(0L);
             transaction.setShipmentStatus("");
-            transaction.setTransactionDescription("Production Article Edited || after changing: " + article.getArticle_number() + ", type: " + intermediateArticleEdited.getProductionArticleType() +  ",qty for finished: " + intermediateArticleEdited.getQuantityForFinishedProduct() + ",location: " + intermediateArticleEdited.getLocation().getLocationName() + ",storageZone " + storageZoneEdited + ",warehouse: " + warehouseName);
+            transaction.setTransactionDescription("Production Article Edited || after changing: " + article.getArticle_number() + ", type: " + productionArticle.getProductionArticleType() +  ",qty for finished: " + productionArticle.getQuantityForFinishedProduct() + ",location: " + productionArticle.getLocation().getLocationName() + ",storageZone " + storageZoneEdited + ",warehouse: " + warehouseName);
             transaction.setTransactionType("502");
             transaction.setTransactionGroup("Configuration");
             transaction.setUnit("");
@@ -107,9 +116,6 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             transaction.setWarehouse(warehouseService.getWarehouseByName(warehouseName));
             transactionRepository.save(transaction);
 
-
-            ProductionArticle productionArticleOld = productionArticleRepository.getProductionArticleByArticle(articleRepository.finishProductNumberByIntermediateNumberAndCompanyName(article.getArticle_number(),article.getCompany().getName()));
-            log.error("productionArticleOld: " + productionArticleOld);
 
             intermediateArticleEdited.getProductionArticle().remove(productionArticleOld);
             intermediateArticleEdited.setArticle(article);
@@ -148,7 +154,8 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             transaction.setVendor("");
             transaction.setWarehouse(warehouseService.getWarehouseByName(warehouseName));
             transactionRepository.save(transaction);
-            productionArticleRepository.delete(productionArticleRepository.getOne(intermediateArticleEdited.getId()));
+            intermediateArticleEdited.getProductionArticle().remove(productionArticleOld);
+            intermediateArticleRepository.delete(intermediateArticleEdited);
             log.error("Edited article: " + article.getArticle_number() + " deleted from production Article table");
         }
     }
