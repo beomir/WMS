@@ -136,9 +136,9 @@
 					<td th:text="${i.id}" name="productionLocationId"></td>
 				</tr>
 			</table>
-			<table>
+			<table class="d-none">
 				<tr th:each="j : ${productionArticlesList}">
-					<td th:text="${j.article.article_number}"></td>
+					<td name="productionArticles" th:text="${j.article.article_number}"></td>
 				</tr>
 			</table>
 			<span th:if="${productionArticle.storageZone} != null" style="display: none" id="storageZone" th:text="${productionArticle.storageZone.storageZoneName}"></span>

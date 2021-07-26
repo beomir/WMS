@@ -34,6 +34,7 @@ public class ArticleServiceImpl implements ArticleService{
     private CompanyService companyService;
     public String articleMessage;
     public ArticleSearch articleSearch;
+    public boolean intermediateQtyForFinishProduct = true;
 
 
     @Autowired
@@ -191,6 +192,7 @@ public class ArticleServiceImpl implements ArticleService{
                         issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                         issueLogService.add(issueLog);
                         articleMessage = "Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + productionArticle.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()) + ", check issueLog" ;
+                        intermediateQtyForFinishProduct = false;
                     }
                 }
                 else {
@@ -210,6 +212,7 @@ public class ArticleServiceImpl implements ArticleService{
             issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
             issueLogService.add(issueLog);
             articleMessage = "One from dimension were 0 or under 0. Check issue log" ;
+            intermediateQtyForFinishProduct = false;
         }
     }
 
@@ -248,6 +251,7 @@ public class ArticleServiceImpl implements ArticleService{
                         issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                         issueLogService.add(issueLog);
                         articleMessage = "Information about sum of quantity needed to create finish good: " + productionArticle.getProductionArticleConnection() + ", is lower than sum  already assigned articles quantity + value from last intermediate article, check issuelog";
+                        intermediateQtyForFinishProduct = false;
                     }
 
                 } else {
@@ -263,6 +267,7 @@ public class ArticleServiceImpl implements ArticleService{
                     issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                     issueLogService.add(issueLog);
                     articleMessage = "Article connector for production: " + productionArticle.getProductionArticleConnection() + ", not exists as finish product. Check IssueLog ";
+                    intermediateQtyForFinishProduct = false;
                 }
             }
             catch (NumberFormatException e){

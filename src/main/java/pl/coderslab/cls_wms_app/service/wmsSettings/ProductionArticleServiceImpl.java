@@ -78,6 +78,18 @@ public class ProductionArticleServiceImpl implements ProductionArticleService {
 
         if(article.isProduction()){
 
+            productionArticleEdited.setWarehouse(warehouseService.getWarehouseByName(warehouseName));
+            productionArticleEdited.setCompany(article.getCompany());
+            productionArticleEdited.setArticle(article);
+            productionArticleEdited.setLocation(productionArticle.getLocation());
+            productionArticleEdited.setProductionArticleType(productionArticle.getProductionArticleType());
+            productionArticleEdited.setStorageZone(productionArticle.getStorageZone());
+            productionArticleEdited.setProductionArticleConnection(productionArticle.getProductionArticleConnection());
+            productionArticleEdited.setQuantityForFinishedProduct(productionArticle.getQuantityForFinishedProduct());
+            productionArticleEdited.setChangeBy(article.getChangeBy());
+            productionArticleEdited.setLast_update(article.getLast_update());
+            productionArticleRepository.save(productionArticleEdited);
+
             if(productionArticleEdited.getStorageZone() == null){
                 storageZonePrimary = "not assigned";
             }
@@ -109,18 +121,6 @@ public class ProductionArticleServiceImpl implements ProductionArticleService {
             transaction.setVendor("");
             transaction.setWarehouse(warehouseService.getWarehouseByName(warehouseName));
             transactionRepository.save(transaction);
-
-            productionArticleEdited.setWarehouse(warehouseService.getWarehouseByName(warehouseName));
-            productionArticleEdited.setCompany(article.getCompany());
-            productionArticleEdited.setArticle(article);
-            productionArticleEdited.setLocation(productionArticle.getLocation());
-            productionArticleEdited.setProductionArticleType(productionArticle.getProductionArticleType());
-            productionArticleEdited.setStorageZone(productionArticle.getStorageZone());
-            productionArticleEdited.setProductionArticleConnection(productionArticle.getProductionArticleConnection());
-            productionArticleEdited.setQuantityForFinishedProduct(productionArticle.getQuantityForFinishedProduct());
-            productionArticleEdited.setChangeBy(article.getChangeBy());
-            productionArticleEdited.setLast_update(article.getLast_update());
-            productionArticleRepository.save(productionArticleEdited);
         }
         else if(!article.isProduction()
 //                && productionArticleRepository.getOne(Long.parseLong(productionArticleId)) != null

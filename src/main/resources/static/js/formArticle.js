@@ -44,6 +44,11 @@ function checkValidation(){
         returnToPreviousPage();
         return false;
     }
+    if(window.location.href.includes("formEditArticle") && finishProductStatus == false){
+        alert("Finish product: " + productionArticleConnectionForEdit.val() + " not exists")
+        returnToPreviousPage();
+        return false;
+    }
 }
 
 function returnToPreviousPage() {
@@ -122,6 +127,7 @@ function productionArticleConnectionFunction(){
         productionArticleConnection.innerHTML = document.getElementById('articleNumber').value
     }
     else{
+
         productionArticleConnection.value = "";
         $("#productionArticleConnection").removeAttr('readonly').val("")
     }
@@ -190,6 +196,8 @@ function chooseProductionLocation(){
     document.getElementById("productionLocationHeader").style.display = "none";
     $("#productionLocationHeader").show(400);
 }
+
+
 
 
 

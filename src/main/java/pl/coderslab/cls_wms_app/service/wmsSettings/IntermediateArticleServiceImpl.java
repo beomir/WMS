@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
-import pl.coderslab.cls_wms_app.entity.Article;
-import pl.coderslab.cls_wms_app.entity.IntermediateArticle;
-import pl.coderslab.cls_wms_app.entity.ProductionArticle;
-import pl.coderslab.cls_wms_app.entity.Transaction;
+import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.ArticleRepository;
 import pl.coderslab.cls_wms_app.repository.IntermediateArticleRepository;
 import pl.coderslab.cls_wms_app.repository.ProductionArticleRepository;
@@ -28,6 +25,7 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
     private TransactionRepository transactionRepository;
     private IntermediateArticleRepository intermediateArticleRepository;
     private ArticleRepository articleRepository;
+
 
 
     @Autowired
@@ -73,6 +71,7 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
     public void edit(ProductionArticle productionArticle, Article article,String warehouseName) {
         String storageZoneEdited = "";
         String storageZonePrimary = "";
+        Warehouse warehouse = warehouseService.getWarehouseByName(warehouseName);
         boolean articleWasNotProductionBefore = false;
 
         if(productionArticle.getStorageZone() == null){
@@ -89,6 +88,19 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
         ProductionArticle productionArticleOld = productionArticleRepository.getProductionArticleByArticleNumber(articleRepository.finishProductNumberByIntermediateNumberAndCompanyName(article.getArticle_number(),article.getCompany().getName()));
         log.error("productionArticleOld: " + productionArticleOld);
         if(article.isProduction()){
+            intermediateArticleEdited.getProductionArticle().remove(productionArticleOld);
+            intermediateArticleEdited.setArticle(article);
+            intermediateArticleEdited.setCompany(article.getCompany());
+            intermediateArticleEdited.setChangeBy(productionArticle.getChangeBy());
+            intermediateArticleEdited.setCreated(productionArticle.getCreated());
+            intermediateArticleEdited.setLast_update(productionArticle.getLast_update());
+            intermediateArticleEdited.setQuantityForFinishedProduct(productionArticle.getQuantityForFinishedProduct());
+            intermediateArticleEdited.setStorageZone(productionArticle.getStorageZone());
+            intermediateArticleEdited.setProductionArticleType(productionArticle.getProductionArticleType());
+            intermediateArticleEdited.setLocation(productionArticle.getLocation());
+            intermediateArticleEdited.setWarehouse(warehouse);
+            intermediateArticleEdited.getProductionArticle().add(productionArticleRepository.getProductionArticleByArticleNumber(Long.parseLong(productionArticle.getProductionArticleConnection())));
+            intermediateArticleRepository.save(intermediateArticleEdited);
 
             if(intermediateArticleEdited.getStorageZone() == null){
                 storageZonePrimary = "not assigned";
@@ -119,21 +131,6 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             transaction.setVendor("");
             transaction.setWarehouse(warehouseService.getWarehouseByName(warehouseName));
             transactionRepository.save(transaction);
-
-
-            intermediateArticleEdited.getProductionArticle().remove(productionArticleOld);
-            intermediateArticleEdited.setArticle(article);
-            intermediateArticleEdited.setCompany(article.getCompany());
-            intermediateArticleEdited.setChangeBy(productionArticle.getChangeBy());
-            intermediateArticleEdited.setCreated(productionArticle.getCreated());
-            intermediateArticleEdited.setLast_update(productionArticle.getLast_update());
-            intermediateArticleEdited.setQuantityForFinishedProduct(productionArticle.getQuantityForFinishedProduct());
-            intermediateArticleEdited.setStorageZone(productionArticle.getStorageZone());
-            intermediateArticleEdited.setProductionArticleType(productionArticle.getProductionArticleType());
-            intermediateArticleEdited.setLocation(productionArticle.getLocation());
-            intermediateArticleEdited.setWarehouse(productionArticle.getWarehouse());
-            intermediateArticleEdited.getProductionArticle().add(productionArticleRepository.getProductionArticleByArticleNumber(Long.parseLong(productionArticle.getProductionArticleConnection())));
-            intermediateArticleRepository.save(intermediateArticleEdited);
 
 
         }

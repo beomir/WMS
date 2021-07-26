@@ -50,9 +50,10 @@ public class ArticleController {
     private final IntermediateArticleService intermediateArticleService;
     private final ArticleRepository articleRepository;
     private final ProductionArticleRepository productionArticleRepository;
+    private final ArticleServiceImpl articleServiceimpl;
 
     @Autowired
-    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository, ExtremelyRepository extremelyRepository, StorageZoneRepository storageZoneRepository, ProductionArticleService productionArticleService, LocationRepository locationRepository, WarehouseRepository warehouseRepository, IntermediateArticleService intermediateArticleService, ArticleRepository articleRepository, ProductionArticleRepository productionArticleRepository) {
+    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository, ExtremelyRepository extremelyRepository, StorageZoneRepository storageZoneRepository, ProductionArticleService productionArticleService, LocationRepository locationRepository, WarehouseRepository warehouseRepository, IntermediateArticleService intermediateArticleService, ArticleRepository articleRepository, ProductionArticleRepository productionArticleRepository, ArticleServiceImpl articleServiceimpl) {
         this.articleService = articleService;
         this.receptionServiceImpl = receptionServiceImpl;
         this.articleServiceImpl = articleServiceImpl;
@@ -71,8 +72,8 @@ public class ArticleController {
         this.warehouseRepository = warehouseRepository;
         this.intermediateArticleService = intermediateArticleService;
         this.articleRepository = articleRepository;
-
         this.productionArticleRepository = productionArticleRepository;
+        this.articleServiceimpl = articleServiceimpl;
     }
 
     @GetMapping("article")
@@ -240,11 +241,11 @@ public class ArticleController {
         log.info("chosen warehouse: " +  warehouseName);
         log.error("productionArticleId: " + productionArticleId);
         articleService.edit(article,productionArticle,request);
-
-        if(productionArticle.getProductionArticleType().equals("finish product")) {
+        log.error("intermediateQtyForFinishProduct: " + articleServiceimpl.intermediateQtyForFinishProduct);
+        if(productionArticle.getProductionArticleType().equals("finish product") && articleServiceimpl.intermediateQtyForFinishProduct) {
             productionArticleService.edit(productionArticle, article, warehouseName, productionArticleId);
         }
-        else if(productionArticle.getProductionArticleType().equals("intermediate")){
+        else if(productionArticle.getProductionArticleType().equals("intermediate") && articleServiceimpl.intermediateQtyForFinishProduct){
             log.error("intermediate way edit 1/2");
             intermediateArticleService.edit(productionArticle, article, warehouseName);
         }
