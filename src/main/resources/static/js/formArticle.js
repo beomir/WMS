@@ -76,15 +76,15 @@ specialStorageZone.addEventListener("click",function(){
 productionArticle.addEventListener("click", function (e) {
     if (!this.checked) {
         $("#hide").hide(400);
-        // $("#productionArticleConnection").removeAttr('required').val("")
+        $("#productionArticleConnection").removeAttr('required').val("")
         // $("#quantityForFinishedProduct").removeAttr('required').val("")
-        production.value = "false"
         productionArticleConnectionFunction();
     } else {
         $("#hide").show(400);
         // $("#productionArticleConnection").prop('required',true);
         // $("#quantityForFinishedProduct").prop('required',true);
         productionArticleConnectionFunction()
+        $("#productionArticleConnection").prop('required',true)
         production.value = "true"
     }
 })
@@ -104,9 +104,9 @@ $('#productionArticle').click(function() {
 });
 
 select.addEventListener("change", function () {
-    // if(window.location.href.includes("formEditArticle")){
-    //     changeOptionForIntermediate();
-    // }
+    if(window.location.href.includes("formEditArticle")){
+        changeOptionForIntermediate();
+    }
     productionArticleConnectionFunction();
 
 })
@@ -124,7 +124,6 @@ function productionArticleConnectionFunction(){
     else{
         productionArticleConnection.value = "";
         $("#productionArticleConnection").removeAttr('readonly').val("")
-
     }
 }
 

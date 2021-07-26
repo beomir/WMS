@@ -17,11 +17,22 @@ function intermediateValues(){
     $('#selectId').find('[value="finish product"]').remove();
 }
 
+console.log($('#qtyOfAssignedIntermediateToFinishProduct').text())
+if($('#qtyOfAssignedIntermediateToFinishProduct').text() >= 0){
+    $('#productionArticleConnection').val($('#qtyOfAssignedIntermediateToFinishProduct').text());
+    if($('#qtyOfAssignedIntermediateToFinishProduct').text() > 0)
+    $('#selectId').find('[value="intermediate"]').remove();
 
-// function changeOptionForIntermediate(){
-//     console.log($('#selectId').find(":selected").val())
-//     if($('#selectId').find(":selected").val() == "intermediate"){
-//         $('#productionArticleConnection').val($('#productionArticleForIntermediate').text()) ;
-//         $('#quantityForFinishedProduct').val($('#intermediateQtyForProduction').text());
-//     }
-// }
+}
+
+
+function changeOptionForIntermediate(){
+    console.log($('#selectId').find(":selected").val())
+    if($('#selectId').find(":selected").val() == "intermediate"){
+        $("#productionArticleConnection").prop('required',true)
+    }
+    else{
+        $("#productionArticleConnection").removeAttr('required').val("")
+    }
+}
+

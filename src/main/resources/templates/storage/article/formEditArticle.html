@@ -28,7 +28,12 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form method="post" th:action="@{/formEditArticle}">
-			<div style="text-align: center"><span th:text="#{app.edit} + ' ' + #{app.article}" class="titleList">Edit Article</span><img th:if="${productionModule} == 'off'" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionTurnOff}"/></div><br/>
+			<div style="text-align: center">
+				<span th:text="#{app.edit} + ' ' + #{app.article}" class="titleList">Edit Article</span>
+				<img th:if="${productionModule} == 'off'" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionTurnOff}"/>
+				<img th:if="${productionArticle != null && qtyOfAssignedIntermediateToFinishProduct >0}" id="informationIcon" class="makeItBigger" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.qtyOfAssignedIntermediateToFinishProduct} + ' ' + ${qtyOfAssignedIntermediateToFinishProduct}"/>
+				<img th:if="${productionArticle != null && qtyOfAssignedIntermediateToFinishProduct == 0}" id="informationIcon" class="makeItBigger" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.toFinishProductIsNotAssignedAnyIntermediate}"/>
+			</div><br/>
 			<section>
 				<label th:text="#{app.articleNumber}" style="color: white;font-weight: bold">Article number (16 digits)</label>
 				<input id="articleNumber" th:title="#{app.min16Digits}" class="check" required type="text" th:field="*{article.article_number}" pattern="[0-9]{16}" minlength="16" maxlength="16" />
@@ -76,7 +81,9 @@
 				<input type="checkbox" id="productionArticle"/>
 				<label th:text="#{app.productionArticle}" style="letter-spacing: 2px;color: white"></label><br/><br/>
 				<div id="productionArticleDetails" style="background: #2309ca;border-radius:10px;padding: 8px">
-					<label th:text="#{app.productionArticleType}" style="color: white;font-weight: normal"></label>
+					<label th:text="#{app.productionArticleType}" style="color: white;font-weight: normal">
+					</label>
+					<img th:if="${productionArticle != null && qtyOfAssignedIntermediateToFinishProduct >0}" class="makeItBigger" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.possibiltyToChangeFinishProductToIntermediateDenied}  + ' ' + ${qtyOfAssignedIntermediateToFinishProduct} + ' ' + #{app.assignedIntermediateToFinish}"/>
 					<select id="selectId" class="select-css" th:field="*{productionArticle.productionArticleType}">
 						<option th:text="#{app.finishProduct}" th:value="'finish product'"></option>
 						<option th:text="#{app.intermediateProduct}" th:value="'intermediate'"></option>
@@ -121,11 +128,17 @@
 			<span id="productionArticleTypeForIntermediate" th:text="${intermediateArticle.productionArticleType}"></span>
 			<span id="intermediateQtyForProduction" th:text="${intermediateArticle.quantityForFinishedProduct}"></span>
 			</span>
+			<span class="d-none" id="qtyOfAssignedIntermediateToFinishProduct" th:if="${productionArticle != null}" th:text="${qtyOfAssignedIntermediateToFinishProduct}"></span>
 			<table class="d-none" >
 				<tr th:each="i : ${productionLocations}">
 					<td th:text="${i.location}" name="productionLocation"></td>
 					<td th:text="${i.warehouse}" name="productionWarehouse"></td>
 					<td th:text="${i.id}" name="productionLocationId"></td>
+				</tr>
+			</table>
+			<table>
+				<tr th:each="j : ${productionArticlesList}">
+					<td th:text="${j.article.article_number}"></td>
 				</tr>
 			</table>
 			<span th:if="${productionArticle.storageZone} != null" style="display: none" id="storageZone" th:text="${productionArticle.storageZone.storageZoneName}"></span>

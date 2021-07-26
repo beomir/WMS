@@ -21,6 +21,9 @@ public interface IntermediateArticleRepository extends JpaRepository<Intermediat
     @Query("Select ia from IntermediateArticle ia where ia.article.id = ?1")
     IntermediateArticle getIntermediateArticleByArticleId(Long id);
 
+    @Query("Select ia from IntermediateArticle ia where ia.article.article_number = ?1")
+    IntermediateArticle getIntermediateArticleByArticleNumber(Long articleNumber);
+
     @Query("Select ia from IntermediateArticle ia where ia.article = ?1")
     IntermediateArticle getIntermediateArticleByArticle(Article article);
 

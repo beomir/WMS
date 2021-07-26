@@ -236,6 +236,7 @@ public class ArticleServiceImpl implements ArticleService{
 
                     }
                     else{
+                        log.error("Qty needed to create finish product");
                         IssueLog issueLog = new IssueLog();
                         issueLog.setIssueLogContent("Qty needed to create finish product (article number: " + productionArticle.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + productionArticle.getQuantityForFinishedProduct());
                         issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
@@ -250,6 +251,7 @@ public class ArticleServiceImpl implements ArticleService{
                     }
 
                 } else {
+                    log.error("Article connector for production");
                     IssueLog issueLog = new IssueLog();
                     issueLog.setIssueLogContent("Article connector for production: " + productionArticle.getProductionArticleConnection() + ", not exists as finish product");
                     issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
@@ -264,6 +266,7 @@ public class ArticleServiceImpl implements ArticleService{
                 }
             }
             catch (NumberFormatException e){
+                log.error(" can't be parse on number");
                 IssueLog issueLog = new IssueLog();
                 issueLog.setIssueLogContent(productionArticle.getProductionArticleConnection() + " can't be parse on number");
                 issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));

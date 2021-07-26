@@ -60,7 +60,11 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             intermediateArticle.setProductionArticleType(productionArticle.getProductionArticleType());
             intermediateArticle.setLocation(productionArticle.getLocation());
             intermediateArticle.setWarehouse(productionArticle.getWarehouse());
-            intermediateArticle.getProductionArticle().add(productionArticleRepository.getProductionArticleByArticle(Long.parseLong(productionArticle.getProductionArticleConnection())));
+            if(!productionArticle.getProductionArticleConnection().equals("")){
+            ProductionArticle productionArticleMain = productionArticleRepository.getProductionArticleByArticleNumber(Long.parseLong(productionArticle.getProductionArticleConnection()));
+                intermediateArticle.getProductionArticle().add(productionArticleMain);
+            }
+
             intermediateArticleRepository.save(intermediateArticle);
         }
     }
@@ -82,7 +86,7 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             intermediateArticleEdited = new IntermediateArticle();
             articleWasNotProductionBefore = true;
         }
-        ProductionArticle productionArticleOld = productionArticleRepository.getProductionArticleByArticle(articleRepository.finishProductNumberByIntermediateNumberAndCompanyName(article.getArticle_number(),article.getCompany().getName()));
+        ProductionArticle productionArticleOld = productionArticleRepository.getProductionArticleByArticleNumber(articleRepository.finishProductNumberByIntermediateNumberAndCompanyName(article.getArticle_number(),article.getCompany().getName()));
         log.error("productionArticleOld: " + productionArticleOld);
         if(article.isProduction()){
 
@@ -128,8 +132,10 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             intermediateArticleEdited.setProductionArticleType(productionArticle.getProductionArticleType());
             intermediateArticleEdited.setLocation(productionArticle.getLocation());
             intermediateArticleEdited.setWarehouse(productionArticle.getWarehouse());
-            intermediateArticleEdited.getProductionArticle().add(productionArticleRepository.getProductionArticleByArticle(Long.parseLong(productionArticle.getProductionArticleConnection())));
+            intermediateArticleEdited.getProductionArticle().add(productionArticleRepository.getProductionArticleByArticleNumber(Long.parseLong(productionArticle.getProductionArticleConnection())));
             intermediateArticleRepository.save(intermediateArticleEdited);
+
+
         }
         else if(!article.isProduction()){
 

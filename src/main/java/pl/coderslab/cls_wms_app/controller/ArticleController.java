@@ -48,9 +48,11 @@ public class ArticleController {
     private final LocationRepository locationRepository;
     private final WarehouseRepository warehouseRepository;
     private final IntermediateArticleService intermediateArticleService;
+    private final ArticleRepository articleRepository;
+    private final ProductionArticleRepository productionArticleRepository;
 
     @Autowired
-    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository, ExtremelyRepository extremelyRepository, StorageZoneRepository storageZoneRepository, ProductionArticleService productionArticleService, LocationRepository locationRepository, WarehouseRepository warehouseRepository, IntermediateArticleService intermediateArticleService) {
+    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository, ExtremelyRepository extremelyRepository, StorageZoneRepository storageZoneRepository, ProductionArticleService productionArticleService, LocationRepository locationRepository, WarehouseRepository warehouseRepository, IntermediateArticleService intermediateArticleService, ArticleRepository articleRepository, ProductionArticleRepository productionArticleRepository) {
         this.articleService = articleService;
         this.receptionServiceImpl = receptionServiceImpl;
         this.articleServiceImpl = articleServiceImpl;
@@ -68,6 +70,9 @@ public class ArticleController {
         this.locationRepository = locationRepository;
         this.warehouseRepository = warehouseRepository;
         this.intermediateArticleService = intermediateArticleService;
+        this.articleRepository = articleRepository;
+
+        this.productionArticleRepository = productionArticleRepository;
     }
 
     @GetMapping("article")
@@ -146,11 +151,12 @@ public class ArticleController {
         articleService.addNew(article,productionArticle,request);
         log.error("productionArticle value New Article Post: " + productionArticle);
         log.error("productionArticle.getProductionArticleType(): " + productionArticle.getProductionArticleType());
-        if(productionArticle.getProductionArticleType().equals("finish product")){
+        Article checkIfArticleSavedInDB = articleRepository.findArticleByArticle_number(article.getArticle_number());
+        if(productionArticle.getProductionArticleType().equals("finish product") && checkIfArticleSavedInDB != null){
             productionArticleService.addNew(productionArticle,article);
             log.error("finish product way");
         }
-        else if(productionArticle.getProductionArticleType().equals("intermediate")){
+        else if(productionArticle.getProductionArticleType().equals("intermediate") && checkIfArticleSavedInDB != null){
             log.error("intermediate way 1/2");
             intermediateArticleService.addNew(productionArticle,article);
         }
@@ -179,10 +185,15 @@ public class ArticleController {
         List<LocationRepository.ProductionLocations> productionLocations = locationRepository.getProductionLocations();
         List<Warehouse> warehouseList = warehouseRepository.getWarehouse();
 
+        List<ProductionArticle> productionArticlesList = productionArticleRepository.getProductionArticles();
+        model.addAttribute("productionArticlesList",productionArticlesList);
 
         if(productionArticleService.getProductionArticleByArticleId(id) != null){
             ProductionArticle productionArticle = productionArticleService.getProductionArticleByArticleId(id);
             model.addAttribute("productionArticle", productionArticle);
+            int qtyOfAssignedIntermediateToFinishProduct = articleRepository.intermediateProductNumberByFinishProductNumberAndCompanyName(article.getArticle_number(),companyService.getOneCompanyByUsername(SecurityUtils.username()).getName()).size();
+            model.addAttribute("qtyOfAssignedIntermediateToFinishProduct",qtyOfAssignedIntermediateToFinishProduct);
+
             log.error("productionArticle value: " + productionArticleService.getProductionArticleByArticleId(id));
         }
         if(productionArticleService.getProductionArticleByArticleId(id) == null){
@@ -205,6 +216,8 @@ public class ArticleController {
             model.addAttribute("productionModule", productionModule);
             log.error("extremely value is null");
         }
+
+
         model.addAttribute(article);
         model.addAttribute("companies", companies);
         model.addAttribute("articleTypesList", articleTypesList);
