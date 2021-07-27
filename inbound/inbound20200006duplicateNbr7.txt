@@ -1,0 +1,4 @@
+Reception_Number:20200006
+ArticleNumber:1122334455747896,ArticleDescription:table,HandleDeviceNumber:202100000000000003,PiecesQuantity:21,VendorName:Sharpico,VendorAddress:Yokohama,Tokugawa 12,JapanUnit:EA,Company:Strojem,FromWarehouse:WRO1,ChangedBy:MagdaM
+Receive in door: DOORREC01
+Located in: FLP00101004

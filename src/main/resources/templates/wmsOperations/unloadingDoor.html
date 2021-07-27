@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:include="fragments/stockNavigation :: stockNavigation"></div>
+</div>
+
+<span th:include="fragments/receptionMenu :: receptionMenu"></span>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form method="post" th:action="@{/reception/unloadingDoor}">
+			<div th:text="#{app.truckArrived}" class="titleList"></div><br/>
+			<section>
+				<label th:text="#{app.assignDoorToReception} + ': ' + ${receptionNumber}" style="color: white;font-weight: bold"></label>
+				<select  class="select-css" name="doorLocation" id="doorLocation">
+					<option th:each="i : ${locations}" th:value="${i.id}" th:text="${i.locationName}">
+				</select>
+				<input type="hidden" th:value="${receptionNumber}" name="receptionNumber" id="receptionNumber"/>
+			</section><br/>
+			<section>
+				<br/><button class="button" type="submit">Save</button>
+			</section>
+		</form>
+
+	</div>
+
+	<div th:include="fragments/footer :: footer"></div>
+
+</div>
+<div class="w3copyright-agile">
+	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+</div>
+</div>
+</body>
+</html>

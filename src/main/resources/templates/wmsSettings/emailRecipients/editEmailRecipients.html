@@ -53,7 +53,7 @@
 				</label>
 			</section>
 			<section sec:authorize="hasRole('ROLE_ADMIN')">
-				<label style="color: white;font-weight: bold">Company</label>
+				<label style="color: white;font-weight: bold" th:text="#{app.company}"></label>
 				<select class="select-css" th:field="*{company}">
 					<option th:each="i : ${companies}" th:value="${i.id}" th:text="${i.name}">
 					</option>

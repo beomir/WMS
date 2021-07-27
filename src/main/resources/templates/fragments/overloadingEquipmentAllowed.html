@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+<div th:fragment="overloadingEquipmentAllowed">
+    <div class="formDescription" th:text="#{app.overloadedEquipmentInfo}"> </div><br/><br/><br/>
+    <br/><br/>
+    <input  type="hidden" th:value="${token}" name="token"/>
+    <input  type="hidden" th:value="${workNumber}" name="workNumber"/>
+
+    <section style="display: flex; align-items: center;justify-content: center;">
+        <button name="equipmentOverloadedDecision" type="submit"  th:value="1" th:text="#{app.yes}" th:title="#{app.overloadedDecisionYes}" class="circle"></button>
+        <button name="equipmentOverloadedDecision" type="submit"  th:value="2" th:text="#{app.no}"  th:title="#{app.overloadedDecisionNo}" class="circle"></button>
+    </section>
+
+</div>
+</body>
+</html>

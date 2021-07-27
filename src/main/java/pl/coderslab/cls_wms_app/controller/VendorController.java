@@ -13,6 +13,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsValues.VendorService;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,35 +33,35 @@ public class VendorController {
     }
 
     @GetMapping("/reception/vendor")
-    public String list(Model model) {
+    public String list(Model model, HttpSession session) {
         List<Vendor> vendor = vendorService.getVendor(SecurityUtils.username());
         model.addAttribute("vendor", vendor);
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
+        usersService.loggedUserData(model,session);
         return "wmsValues/vendor/vendor";
     }
 
     @GetMapping("/config/vendorDeactivatedList")
-    public String vendorDeactivatedList(Model model) {
+    public String vendorDeactivatedList(Model model,HttpSession session) {
         List<Vendor> vendor = vendorService.getDeactivatedVendor();
         model.addAttribute("vendor", vendor);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsValues/vendor/vendorDeactivatedList";
     }
 
 
     @GetMapping("/reception/formVendor")
-    public String vendorForm(Model model){
+    public String vendorForm(Model model,HttpSession session){
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("vendor", new Vendor());
         model.addAttribute("companies", companies);
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsValues/vendor/formVendor";
     }
 
@@ -83,7 +84,7 @@ public class VendorController {
     }
 
     @GetMapping("/reception/formEditVendor/{id}")
-    public String updateVendor(@PathVariable Long id, Model model) {
+    public String updateVendor(@PathVariable Long id, Model model,HttpSession session) {
         Vendor vendor = vendorService.findById(id);
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute(vendor);
@@ -91,7 +92,7 @@ public class VendorController {
         model.addAttribute("localDateTime", LocalDateTime.now());
         List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsValues/vendor/formEditVendor";
     }
 

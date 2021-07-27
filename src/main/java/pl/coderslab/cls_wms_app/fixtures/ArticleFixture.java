@@ -3,9 +3,7 @@ package pl.coderslab.cls_wms_app.fixtures;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
-import pl.coderslab.cls_wms_app.entity.Article;
-import pl.coderslab.cls_wms_app.entity.ArticleTypes;
-import pl.coderslab.cls_wms_app.entity.Company;
+import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.storage.ArticleTypesService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
@@ -23,21 +21,32 @@ public class ArticleFixture {
 
 
     private List<Article> articleList = Arrays.asList(
-            new Article(null, 1234567890123455L, "bicycle",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",97,20,185,358900,15.00,null),
-            new Article(null, 1234567890123456L, "sandbag",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",60,40,30,72000,30.00,null),
-            new Article(null, 1234567890123457L, "cement",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",60,40,30,72000,35.00,null),
-            new Article(null, 1234567890123458L, "glue",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",40,20,20,16000,20.00,null),
-            new Article(null, 1234567890123459L, "wheel",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",50,50,20,50000,15.00,null),
-            new Article(null, 1234567890123460L, "electric cables",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",500,5,5,12500,10.00,null),
-            new Article(null, 3234567890123458L, "tv",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",150,50,15,112500,15.00,null),
-            new Article(null, 3234567890123458L, "laptop",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",30,15,5,2250,1.00,null),
-            new Article(null, 4234567890123458L, "screw",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",5,1,1,5,0.30,null),
-            new Article(null, 7234567890123458L, "propeller",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",800,100,50,4000000,300,null),
-            new Article(null, 5234567890123458L, "trousers",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",120,50,10,60000,1.40,null),
-            new Article(null, 6234567890123458L, "socks",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",10,40,7,2800,0.30,null),
-            new Article(null, 5234567890123423L, "jewelry",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",5,5,5,125,1.00,null),
-            new Article(null, 1234567890123475L, "mini-parts",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",10,3,3,90,2.00,null),
-            new Article(null, 9234567890123455L, "wooden box",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",10,10,10,1000,3.30,null)
+            new Article(null, 1234567890123455L, "bicycle",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",97,20,185,358900,15.00,null,false,null,null),
+            new Article(null, 1234567890123456L, "sandbag",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",60,40,30,72000,30.00,null,false,null,null),
+            new Article(null, 1234567890123457L, "cement",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",60,40,30,72000,35.00,null,false,null,null),
+            new Article(null, 1234567890123458L, "glue",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",40,20,20,16000,20.00,null,false,null,null),
+            new Article(null, 1234567890123459L, "wheel",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",50,50,20,50000,15.00,null,false,null,null),
+            new Article(null, 1234567890123460L, "electric cables",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",500,5,5,12500,10.00,null,false,null,null),
+            new Article(null, 3234567890123458L, "tv",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",150,50,15,112500,15.00,null,false,null,null),
+            new Article(null, 3234567890123458L, "laptop",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",30,15,5,2250,1.00,null,false,null,null),
+            new Article(null, 4234567890123458L, "screw 12mm",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",5,1,1,5,0.30,null,false,null,null),
+            new Article(null, 7234567890123458L, "propeller",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",800,100,50,4000000,300,null,false,null,null),
+            new Article(null, 5234567890123458L, "trousers",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",120,50,10,60000,1.40,null,false,null,null),
+            new Article(null, 6234567890123458L, "socks",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",10,40,7,2800,0.30,null,false,null,null),
+            new Article(null, 5234567890123423L, "jewelry",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",5,5,5,125,1.00,null,false,null,null),
+            new Article(null, 1234567890123475L, "mini-parts",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",10,3,3,90,2.00,null,false,null,null),
+            new Article(null, 9234567890123455L, "wooden box",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",10,10,10,1000,3.30,null,false,null,null),
+            new Article(null, 1122334455747896L, "table",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",100,230,130,2990000,17.80,null,true,null,null),
+            new Article(null, 7122334455747896L, "screw 8mm",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",5,1,1,5,0.02,null,true,null,null),
+            new Article(null, 7122334455747897L, "screw 13mm",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",5,1,1,5,0.02,null,true,null,null),
+            new Article(null, 7122334455747996L, "metal buckles",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",3,3,0.1,0.9,0.10,null,true,null,null),
+            new Article(null, 5122334455747896L, "non-slip pads",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",1,10,10,100,0.10,null,true,null,null),
+            new Article(null, 9122334455747196L, "wooden table legs 80x15x15cm color light pine",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",80,15,15,18000,2.00,null,true,null,null),
+            new Article(null, 9122334455747296L, "table top 220x120x10cm color light pine",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",220,120,10,264000,8.50,null,true,null,null),
+            new Article(null, 8888121882121821L, "chair",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",150,40,40,240000,3.00,null,true,null,null),
+            new Article(null, 8888121882121823L, "chair-back",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",150,10,10,150000,2.0,null,true,null,null),
+            new Article(null, 8888121882121824L, "chair-legs",null,null,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",20,30,30,18000,1.0,null,true,null,null)
+
     );
 
     @Autowired
@@ -71,6 +80,18 @@ public class ArticleFixture {
         Article article14 = articleList.get(13);
         Article article15 = articleList.get(14);
 
+        Article article16 = articleList.get(15);
+        Article article17 = articleList.get(16);
+        Article article18 = articleList.get(17);
+        Article article19 = articleList.get(18);
+        Article article20 = articleList.get(19);
+        Article article21 = articleList.get(20);
+        Article article22 = articleList.get(21);
+
+        Article article23 = articleList.get(22);
+        Article article24 = articleList.get(23);
+        Article article25 = articleList.get(24);
+
         article1.setArticleTypes(articleTypes.get(2));
         article2.setArticleTypes(articleTypes.get(1));
         article3.setArticleTypes(articleTypes.get(1));
@@ -86,6 +107,19 @@ public class ArticleFixture {
         article13.setArticleTypes(articleTypes.get(6));
         article14.setArticleTypes(articleTypes.get(2));
         article15.setArticleTypes(articleTypes.get(3));
+        article15.setArticleTypes(articleTypes.get(3));
+
+        article16.setArticleTypes(articleTypes.get(3));
+        article17.setArticleTypes(articleTypes.get(3));
+        article18.setArticleTypes(articleTypes.get(3));
+        article19.setArticleTypes(articleTypes.get(3));
+        article20.setArticleTypes(articleTypes.get(4));
+        article21.setArticleTypes(articleTypes.get(3));
+        article22.setArticleTypes(articleTypes.get(3));
+
+        article23.setArticleTypes(articleTypes.get(3));
+        article24.setArticleTypes(articleTypes.get(3));
+        article25.setArticleTypes(articleTypes.get(3));
 
         article1.setCompany(companies.get(0));
         article2.setCompany(companies.get(1));
@@ -103,6 +137,19 @@ public class ArticleFixture {
         article14.setCompany(companies.get(5));
         article15.setCompany(companies.get(2));
 
+        article16.setCompany(companies.get(0));
+        article17.setCompany(companies.get(0));
+        article18.setCompany(companies.get(0));
+        article19.setCompany(companies.get(0));
+        article20.setCompany(companies.get(0));
+        article21.setCompany(companies.get(0));
+        article22.setCompany(companies.get(0));
+
+        article23.setCompany(companies.get(0));
+        article24.setCompany(companies.get(0));
+        article25.setCompany(companies.get(0));
+
+
         articleService.add(article1);
         articleService.add(article2);
         articleService.add(article3);
@@ -118,6 +165,18 @@ public class ArticleFixture {
         articleService.add(article13);
         articleService.add(article14);
         articleService.add(article15);
+
+        articleService.add(article16);
+        articleService.add(article17);
+        articleService.add(article18);
+        articleService.add(article19);
+        articleService.add(article20);
+        articleService.add(article21);
+        articleService.add(article22);
+
+        articleService.add(article23);
+        articleService.add(article24);
+        articleService.add(article25);
 
     }
 }

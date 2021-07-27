@@ -1,3 +1,0 @@
-Stock for: Eni
-ArticleNumber:1234567890123460,ArticleDescription:electric cables,HandleDeviceNumber:202000000000000006,PiecesQuantity20,Unit:EA,Company:Eni,FromWarehouse:MIE1,ChangedBy:system
-ArticleNumber:1234567890123460,ArticleDescription:electric cables,HandleDeviceNumber:202000000000000007,PiecesQuantity44,Unit:EA,Company:Eni,FromWarehouse:MIE1,ChangedBy:system

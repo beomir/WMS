@@ -1,11 +1,14 @@
 package pl.coderslab.cls_wms_app.service.storage;
 
 
+import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Location;
+import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationSearch;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public interface LocationService {
@@ -17,8 +20,6 @@ public interface LocationService {
     void editLocation(Location location, LocationNameConstruction locationNameConstruction);
 
     void createLocationPack(Location location, LocationNameConstruction locationNameConstruction);
-
-    List<Location> getLocationByWarehouseName(String warehouseName);
 
     List<Location> getLocations(); //for fixtures
 
@@ -40,4 +41,9 @@ public interface LocationService {
 
     void addLocationsToStorageZone(AddLocationToStorageZone aLTSZ);
 
+    Location findAvailableLocationAfterProducing(Article article, StorageZone storageZone, String warehouseName);
+
+    Boolean reduceTheAvailableContentOfTheLocation(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName);
+
+    void restoreTheAvailableLocationCapacity(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName);
 }

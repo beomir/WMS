@@ -28,35 +28,70 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
-				<div th:each="warehouse: ${warehouses}" class="titleList" th:text="#{app.workDetails} + ' ' + #{app.for} +  ' ' +  ${warehouse.name}"></div><br/>
+				<div th:if="${searchingWarehouse != '%' && searchingWarehouse != null}" class="titleList" th:text="#{app.workDetails} + ' ' + #{app.for} +  ' ' +  ${searchingWarehouse}"></div>
+				<div th:if="${searchingWarehouse} == '%'" class="titleList" th:text="#{app.workDetails} + ' ' + #{app.in} +  ' ' +   #{app.allWarehouses}"></div>
+				<div th:if="${searchingWarehouse} == null" class="titleList" th:text="#{app.workDetails} + ' ' + #{app.for} +  ' ' +  ${workDetailsWarehouse}"></div>
 				<div sec:authorize="!hasRole('ROLE_ADMIN')">
 					<div th:each="companies: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.for} + ' ' + #{app.company} + ' ' + ${companies.name}"></div>
 					<br/><br/>
-				</div><br/><br/>
+				</div>
+				<a th:href="@{/workDetails-browser}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.changeCriteria}"></div></a>
+				<div>
+					<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
+					<table class="criteria">
+						<tr>
+							<th style="color:blue;font-weight: bold" th:text="#{app.warehouseName} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${workDetailsWarehouse}"></th>
+							<th style="color:blue;font-weight: bold" th:text="#{app.company} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${workDetailsCompany}"></th>
+						</tr>
+						<tr>
+							<th style="color:blue;font-weight: bold" th:text="#{app.articleNumber} + ': '"></th>
+							<th  style="color:blue;font-style:italic" th:text="${workDetailsArticle}"></th>
+							<th style="color:blue;font-weight: bold" th:text="#{app.type} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${workDetailsType}"></th>
+						</tr>
+						<tr>
+							<th style="color:blue;font-weight: bold" th:text="#{app.handle} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${workDetailsHandle}"></th>
+							<th style="color:blue;font-weight: bold" th:text="#{app.handleDevice} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${workDetailsHandleDevice}"></th>
+						</tr>
+						<tr>
+							<th style="color:blue;font-weight: bold" th:text="#{app.status} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus} == 'open'" th:text="#{app.open}"></th>
+							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus} == 'close'" th:text="#{app.close}"></th>
+							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus} == '%'" th:text="#{app.all}"></th>
+							<th style="color:blue;font-style:italic" th:if="${workDetailsStatus != '%' && workDetailsStatus != 'open' && workDetailsStatus != 'close'} " th:text="${workDetailsStatus}"></th>
+							<th style="color:blue;font-weight: bold" th:text="#{app.from} + ' ' + #{app.location} + ': '">></th>
+							<th style="color:blue;font-style:italic" th:text="${workDetailsLocationFrom}"></th>
+						</tr>
+						<tr>
+							<th style="color:blue;font-weight: bold" th:text="#{app.to} + ' ' + #{app.location} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${workDetailsLocationTo}"></th>
+							<th style="color:blue;font-weight: bold" th:text="#{app.workNumber} + ': '">></th>
+							<th style="color:blue;font-style:italic" th:text="${workDetailsWorkNumber}"></th>
+						</tr>
+					</table>
+				</div>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
 						<th th:text="#{app.number}" class="tables">Number</th>
 						<th th:text="#{app.description}" class="tables">Description</th>
 						<th th:text="#{app.type}" class="tables">Type</th>
 						<th th:text="#{app.handle}" class="tables">Type</th>
-						<th th:text="#{app.handleDevice}" class="tables">Handle Device</th>
-						<th th:text="#{app.article}" class="tables">Handle Device</th>
 						<th th:text="#{app.piecesQty}" class="tables">Pieces Qty</th>
+						<th th:text="#{app.warehouseName}" class="tables">Warehouse</th>
 						<th th:text="#{app.status}" class="tables">Status</th>
-						<th th:text="#{app.from} + ' ' + #{app.location}" class="tables">From location</th>
-						<th th:text="#{app.to} + ' ' + #{app.location}" class="tables">To location</th>
-						<th sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="#{app.company}"></th>
-						<th class="tables">Created</th>
-						<th class="tables">Last update</th>
-						<th class="tables">Changed by</th>
+						<th th:text="#{app.amountOfWorks}" class="tables"></th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="workDetails: ${workDetails}">
 						<td class="tables" style="padding-bottom: 2px">
 							<ol><div th:text="${workDetails.workNumber}"></div>
 								<li>
 									<ul>
-										<li th:if="${workDetails.status == false}"><a th:href="@{/formEditWork/{id}(id=${workDetails.id})}" th:text="#{app.edit}">Edit</a></li>
-										<li th:if="${workDetails.status == false}"><a th:href="@{/deleteWork/{id}(id=${workDetails.id})}" th:text="#{app.delete}">Delete</a></li>
+										<li><a th:href="@{/workNumberDetails/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.details}"></a></li>
+										<li th:if="${workDetails.status != 'close'}"><a th:href="@{/deleteWork/{workNumber}(workNumber=${workDetails.workNumber})}" th:text="#{app.delete}"></a></li>
 									</ul>
 								</li>
 							</ol>
@@ -64,19 +99,14 @@
 						<td class="tables" th:text="${workDetails.workDescription}"></td>
 						<td class="tables" th:text="${workDetails.workType}"></td>
 				        <td class="tables" th:text="${workDetails.handle}"></td>
-				        <td class="tables" th:text="${workDetails.hdNumber}"></td>
-				        <td class="tables" th:text="${workDetails.article.article_number}"></td>
 				        <td class="tables" th:text="${workDetails.piecesQty}"></td>
-				        <td th:if="${workDetails.status == false}" class="tables" th:text="#{app.open}"></td>
-				        <td th:if="${workDetails.status == true}" class="tables" th:text="#{app.close}"></td>
-						<td class="tables" th:text="${workDetails.fromLocation.locationName}"></td>
-						<td class="tables" th:text="${workDetails.toLocation.locationName}"></td>
-						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${workDetails.company.name}"></td>
-						<td class="tables" th:text="${#strings.replace(#strings.substring(workDetails.created,0,19),'T',' ')}"></td>
-						<td class="tables" th:text="${#strings.replace(#strings.substring(workDetails.last_update,0,19),'T',' ')}"></td>
-						<td class="tables" th:text="${workDetails.changeBy}"></td>
-
-				    </tr>
+				        <td class="tables" th:text="${workDetails.changeBy}"></td>
+				        <td th:if="${workDetails.status == 'open'}" class="tables" th:text="#{app.open}"></td>
+				        <td th:if="${workDetails.status == 'close'}" class="tables" th:text="#{app.close}"></td>
+				        <td th:if="${workDetails.status == '%'}" class="tables" th:text="#{app.various}"></td>
+				        <td th:if="${workDetails.status != 'close' && workDetails.status != 'open' && workDetails.status != '%'}" class="tables" th:text="${workDetails.status}"></td>
+						<td class="tables" th:text="${workDetails.hdNumber}"></td>
+						</tr>
 				</table>
 
 			</div><br/><br/><br/>

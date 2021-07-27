@@ -4,12 +4,13 @@ import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @Entity
-public class WorkDetails {
+public class WorkDetails implements Cloneable{
 
 
     @Id
@@ -23,7 +24,7 @@ public class WorkDetails {
     private String handle;
     private Long hdNumber;
     private Long piecesQty;
-    private boolean status;
+    private String status;
 
     @NotNull
     @ManyToOne
@@ -51,6 +52,8 @@ public class WorkDetails {
     @ManyToOne
     private Location toLocation;
 
-
-
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

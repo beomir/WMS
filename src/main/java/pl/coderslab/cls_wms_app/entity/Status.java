@@ -22,15 +22,17 @@ public class Status {
 
     private String status;
     private String status_desc;
+    private String process;
     private String created;
 
     private String last_update;
     private String changeBy;
 
-    public Status(Long id, String status, String status_desc, String created, String last_update,String changeBy) {
+    public Status(Long id, String status, String status_desc,String process, String created, String last_update,String changeBy) {
         this.id = id;
         this.status = status;
         this.status_desc = status_desc;
+        this.process = process;
         this.created = created;
         this.last_update = last_update;
         this.changeBy = changeBy;

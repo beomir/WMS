@@ -24,7 +24,12 @@ public class StorageZoneFixture {
             new StorageZone(null, "Picking Rack","Picking floor zone2", "type1",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system"),
             new StorageZone(null, "Reserve","Reserve zone", "type1",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system"),
             new StorageZone(null, "Doors","Picking floor location", "type2",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system"),
-            new StorageZone(null, "Not assigned","Not assigned locations", "type0",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system")
+            new StorageZone(null, "Not assigned","Not assigned locations", "type0",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system"),
+            new StorageZone(null, "Production","Production put off", "type3",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system"),
+            new StorageZone(null, "Production Picking","Production picking", "type4",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system"),
+            new StorageZone(null, "Production","Production put off", "type3",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system"),
+            new StorageZone(null, "Production Picking","Production picking", "type4",null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system")
+
     );
 
     @Autowired
@@ -46,6 +51,10 @@ public class StorageZoneFixture {
         StorageZone storageZone4 = storageZoneList.get(3);
         StorageZone storageZone5 = storageZoneList.get(4);
         StorageZone storageZone6 = storageZoneList.get(5);
+        StorageZone storageZone7 = storageZoneList.get(6);
+        StorageZone storageZone8 = storageZoneList.get(7);
+        StorageZone storageZone9 = storageZoneList.get(8);
+        StorageZone storageZone10 = storageZoneList.get(9);
 
         storageZone1.setWarehouse(warehouseList.get(0));
         storageZone2.setWarehouse(warehouseList.get(0));
@@ -53,6 +62,10 @@ public class StorageZoneFixture {
         storageZone4.setWarehouse(warehouseList.get(0));
         storageZone5.setWarehouse(warehouseList.get(0));
         storageZone6.setWarehouse(warehouseList.get(1));
+        storageZone7.setWarehouse(warehouseList.get(0));
+        storageZone8.setWarehouse(warehouseList.get(0));
+        storageZone9.setWarehouse(warehouseList.get(1));
+        storageZone10.setWarehouse(warehouseList.get(1));
 
         storageZoneService.add(storageZone1);
         storageZoneService.add(storageZone2);
@@ -60,6 +73,10 @@ public class StorageZoneFixture {
         storageZoneService.add(storageZone4);
         storageZoneService.add(storageZone5);
         storageZoneService.add(storageZone6);
+        storageZoneService.add(storageZone7);
+        storageZoneService.add(storageZone8);
+        storageZoneService.add(storageZone9);
+        storageZoneService.add(storageZone10);
 
     }
 }

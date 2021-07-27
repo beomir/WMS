@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>WMS CLS app</title>
+	<meta charset="ISO-8859-1" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+
+	<script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo();iconFlashing()">
+	<div class="main-agileits">
+		<div th:include="fragments/header :: header"></div>
+	</div>
+	<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+		<div th:include="fragments/stockNavigation :: stockNavigation"></div>
+	</div>
+
+	<div id="content" class="mainw3-agileinfo">
+		<div style="width: 1200px" class="login-form">
+			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
+				<span th:if="${productionAfterCreationValue} == '1'">
+					<div th:if="${chosenWarehouse != '%' && chosenWarehouse != null}" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +  ${chosenWarehouse}"></span><img id="informationIcon" class="makeItBigger" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation1}"/></div>
+					<div th:if="${chosenWarehouse} == '%'" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +   #{app.allWarehouses}"></span><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation1}"/></div>
+					<div th:if="${chosenWarehouse} == null" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.for} +  ' ' +  #{app.allWarehouses}"> </span><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation1}"/></div>
+				</span>
+				<span th:if="${productionAfterCreationValue} == '2'">
+					<div th:if="${chosenWarehouse != '%' && chosenWarehouse != null}" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +  ${chosenWarehouse}"></span><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation2}"/></div>
+					<div th:if="${chosenWarehouse} == '%'" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.in} +  ' ' +   #{app.allWarehouses}"></span><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation2}"/></div>
+					<div th:if="${chosenWarehouse} == null" class="titleList" ><span class="titleList" th:text="#{app.production} + ' ' + #{app.for} +  ' ' +  #{app.allWarehouses}"> </span><img th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.productionAfterCreationDesc} + ' ' + ${productionAfterCreationValue} +'. ' + #{app.productionAfterCreation2}"/></div>
+				</span>
+<br/><br/>
+				<div sec:authorize="!hasRole('ROLE_ADMIN')">
+					<div><span style="color: white;text-align: left;font-size: 20px;font-weight: bold;" th:text="#{app.company} + ': '"></span><span style="color: darkblue;text-align: left;font-size: 20px;font-weight: bold;font-style: italic" th:text="${article.company.name}"></span><a th:href="@{/production-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.ongoingProductions}"></div></a></div>
+				</div>
+				<div><span style="color: white;text-align: left;font-size: 20px;font-weight: bold;" th:text="#{app.for} + ' ' + #{app.article} + ': '"></span><span style="color: darkblue;font-style: italic;font-weight:bold;font-size: 20px" th:text="${article.article_desc} +  ' ' +  ${article.article_number}"></span><a th:href="@{/startProducing}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.startProducing}"></div></a></div>
+
+
+				<a th:href="@{/article-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right;margin-bottom: 30px" th:text="#{app.articles}"></div></a>
+				<br/><br/><br/><br/><br/>
+			<section>
+				<div class="login-form">
+				<form method="post" th:action="@{/production/producingHeader}">
+					<input type="hidden" th:field="*{production.id}"/>
+					<input type="hidden" name="articleId" th:value="${article.id}"/>
+					<label  style="color: white;font-weight: bold" th:text="#{app.howManyFinishProduct} + ': ' + ${article.article_number}  + ' ' + #{app.doYouWantProduce}"></label>
+					<input id="piecesToProduct" type="number" th:field="*{production.finishProductPieces}"/>
+					<button class="button2" type="submit" onclick="return checkValidation()" ><span th:text="#{app.produce} + ' '"></span><img th:src="@{/images/20x20gear.gif}"/> </button>
+				</form>
+				</div>
+			</section><br/>
+				<table class="unsetColors" style="color: white;text-align: left;width:100%;border: solid 1px">
+					<tr style="border: solid 1px">
+						<th th:text="#{app.articleNumber}" class="tables"></th>
+						<th th:text="#{app.articleDescription}" class="tables"></th>
+						<th th:text="#{app.quantityForOneFinishedProduct}" class="tables"></th>
+						<th th:text="#{app.onStock}" class="tables"></th>
+						<th th:text="#{app.productionRequest}" class="tables"></th>
+					</tr>
+					<tr th:each="productionArticle : ${productionArticleOnStocks}">
+						<td th:style="${productionArticle.changeBy.equals('intermediate')} == TRUE ? 'background: sandybrown;' : 'background: green'" class="tables" th:text="${productionArticle.article_number}"></td>
+						<td th:style="${productionArticle.changeBy.equals('intermediate')} == TRUE ? 'background: sandybrown;' : 'background: green'" class="tables" th:text="${productionArticle.article_desc}"></td>
+						<td th:style="${productionArticle.changeBy.equals('intermediate')} == TRUE ? 'background: sandybrown;' : 'background: green'" class="tables" th:text="${productionArticle.depth}" name="neededToProduceOne"></td>
+						<td th:style="${productionArticle.changeBy.equals('intermediate')} == TRUE ? 'background: sandybrown;' : 'background: green'" class="tables" th:text="${productionArticle.volume}" name="onStock"></td>
+						<td th:if="${productionArticle.changeBy.equals('intermediate')}" class="tables" name="intermediate"></td>
+						<td th:if="${!productionArticle.changeBy.equals('intermediate')}" class="tables" name="finishProduct"></td>
+					</tr>
+				</table>
+
+			</div><br/><br/><br/>
+			<div th:include="fragments/footer :: footer"></div>
+		</div>
+		<div class="w3copyright-agile">
+			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+		</div>
+	</div>
+	<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+	<script type="text/javascript" th:src="@{/js/producingHeader.js}"></script>
+</body>
+</html>

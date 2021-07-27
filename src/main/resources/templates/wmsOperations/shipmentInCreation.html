@@ -29,7 +29,7 @@
 
 				<div th:each="warehouse: ${warehouse}" class="titleList" th:text="'Your Shipments during Creation in ' + ${warehouse.city}"></div><br/>
 				<span sec:authorize="!hasRole('ROLE_ADMIN')">
-					<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companys.name}"></div>
+					<div th:each="companies: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companies.name}"></div>
 				</span>
 
 				<div th:unless="${stockDifferences.isEmpty()}" th:style="${messages.equals('Change red underlined qty to pass the validation')} == TRUE ? 'color: darkred;font-weight: bold;text-align: center' : 'color: green;font-weight: bold;text-align: center'"  th:text="${messages}"></div>

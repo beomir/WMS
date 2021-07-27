@@ -7,14 +7,18 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.IssueLog;
+import pl.coderslab.cls_wms_app.entity.ProductionArticle;
 import pl.coderslab.cls_wms_app.entity.Transaction;
 import pl.coderslab.cls_wms_app.repository.ArticleRepository;
+import pl.coderslab.cls_wms_app.repository.ProductionArticleRepository;
 import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.temporaryObjects.ArticleSearch;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -27,16 +31,22 @@ public class ArticleServiceImpl implements ArticleService{
     private TransactionService transactionService;
     private IssueLogService issueLogService;
     private WarehouseRepository warehouseRepository;
+    private CompanyService companyService;
     public String articleMessage;
     public ArticleSearch articleSearch;
+    public boolean intermediateQtyForFinishProduct = true;
+
 
     @Autowired
-    public ArticleServiceImpl(ArticleRepository articleRepository, TransactionService transactionService, IssueLogService issueLogService, WarehouseRepository warehouseRepository,ArticleSearch articleSearch) {
+    public ArticleServiceImpl(ArticleRepository articleRepository, TransactionService transactionService, IssueLogService issueLogService, WarehouseRepository warehouseRepository, CompanyService companyService, ArticleSearch articleSearch) {
         this.articleRepository = articleRepository;
         this.transactionService = transactionService;
         this.issueLogService = issueLogService;
         this.warehouseRepository = warehouseRepository;
+        this.companyService = companyService;
         this.articleSearch = articleSearch;
+
+
     }
 
     @Override
@@ -45,33 +55,37 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public void addNew(Article article) {
+    public void addNew(Article article, ProductionArticle productionArticle,HttpServletRequest request) {
         if(article.getDepth() * article.getHeight() * article.getWidth() > 0 && article.getWeight() > 0){
             if(articleRepository.findArticleByArticle_numberAndCompanyName(article.getArticle_number(),article.getCompany()) == null){
-                article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
-                articleRepository.save(article);
-                Transaction transaction = new Transaction();
-                transaction.setHdNumber(0L);
-                transaction.setAdditionalInformation("Article: " + article.getArticle_number() + ", created for Company: " + article.getCompany().getName());
-                transaction.setArticle(article.getArticle_number());
-                transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-                transaction.setCreatedBy(SecurityUtils.usernameForActivations());
-                transaction.setCustomer("");
-                transaction.setQuality("");
-                transaction.setQuantity(0L);
-                transaction.setReceptionNumber(0L);
-                transaction.setReceptionStatus("");
-                transaction.setShipmentNumber(0L);
-                transaction.setShipmentStatus("");
-                transaction.setTransactionDescription("Article Created");
-                transaction.setTransactionType("500");
-                transaction.setTransactionGroup("Configuration");
-                transaction.setUnit("");
-                transaction.setCompany(article.getCompany());
-                transaction.setVendor("");
-                transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
-                transactionService.add(transaction);
-                articleMessage = "Article successfully created";
+                if(!productionArticle.getProductionArticleType().equals("intermediate")) {
+                    article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                    articleRepository.save(article);
+                    Transaction transaction = new Transaction();
+                    transaction.setHdNumber(0L);
+                    transaction.setAdditionalInformation("Article: " + article.getArticle_number() + ", created for Company: " + article.getCompany().getName());
+                    transaction.setArticle(article.getArticle_number());
+                    transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                    transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+                    transaction.setCustomer("");
+                    transaction.setQuality("");
+                    transaction.setQuantity(0L);
+                    transaction.setReceptionNumber(0L);
+                    transaction.setReceptionStatus("");
+                    transaction.setShipmentNumber(0L);
+                    transaction.setShipmentStatus("");
+                    transaction.setTransactionDescription("Article Created");
+                    transaction.setTransactionType("500");
+                    transaction.setTransactionGroup("Configuration");
+                    transaction.setUnit("");
+                    transaction.setCompany(article.getCompany());
+                    transaction.setVendor("");
+                    transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                    transactionService.add(transaction);
+                    articleMessage = "Article successfully created";
+
+                }
+                else articleEdition(article, productionArticle, request);
             }
             else{
                 IssueLog issueLog = new IssueLog();
@@ -100,52 +114,91 @@ public class ArticleServiceImpl implements ArticleService{
             issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
             issueLogService.add(issueLog);
             articleMessage = "One from dimension were 0 or under 0. Check issue log" ;
+        }
+        if(articleSearch.company == null){
+            articleSearch.company = companyService.getOneCompanyByUsername(SecurityUtils.username()).getName();
         }
     }
 
     @Override
-    public void edit(Article article) {
+    public void edit(Article article,ProductionArticle productionArticle,HttpServletRequest request) {
         if(article.getDepth() * article.getHeight() * article.getWidth() > 0 && article.getWeight() > 0){
             if(article.getId() == articleRepository.findArticleByArticle_number(article.getArticle_number()).getId()){
-                article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
-                articleRepository.save(article);
-                Transaction transaction = new Transaction();
-                transaction.setHdNumber(0L);
-                transaction.setAdditionalInformation("Article: " + article.getArticle_number() + ", edited for Company: " + article.getCompany().getName());
-                transaction.setArticle(article.getArticle_number());
-                transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-                transaction.setCreatedBy(SecurityUtils.usernameForActivations());
-                transaction.setCustomer("");
-                transaction.setQuality("");
-                transaction.setQuantity(0L);
-                transaction.setReceptionNumber(0L);
-                transaction.setReceptionStatus("");
-                transaction.setShipmentNumber(0L);
-                transaction.setShipmentStatus("");
-                transaction.setTransactionDescription("Article Edited");
-                transaction.setTransactionType("501");
-                transaction.setTransactionGroup("Configuration");
-                transaction.setUnit("");
-                transaction.setCompany(article.getCompany());
-                transaction.setVendor("");
-                transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
-                transactionService.add(transaction);
-                articleMessage = "Article successfully edited";
+                if(!article.isProduction()) {
+                    article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                    articleRepository.save(article);
+                    Transaction transaction = new Transaction();
+                    transaction.setHdNumber(0L);
+                    transaction.setAdditionalInformation("Article: " + article.getArticle_number() + ", edited for Company: " + article.getCompany().getName());
+                    transaction.setArticle(article.getArticle_number());
+                    transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                    transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+                    transaction.setCustomer("");
+                    transaction.setQuality("");
+                    transaction.setQuantity(0L);
+                    transaction.setReceptionNumber(0L);
+                    transaction.setReceptionStatus("");
+                    transaction.setShipmentNumber(0L);
+                    transaction.setShipmentStatus("");
+                    transaction.setTransactionDescription("Article Edited");
+                    transaction.setTransactionType("501");
+                    transaction.setTransactionGroup("Configuration");
+                    transaction.setUnit("");
+                    transaction.setCompany(article.getCompany());
+                    transaction.setVendor("");
+                    transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                    transactionService.add(transaction);
+                    articleMessage = "Article successfully edited";
+                }
+                else if(article.isProduction() && productionArticle.getProductionArticleType().equals("finish product")){
+                    log.error("article.getArticle_number(): " + article.getArticle_number());
+                    log.debug("sum of intermediate article qty needed to finish product:  " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
+                    log.debug("value from form about qty needed for finish product: " + productionArticle.getQuantityForFinishedProduct());
+                    if(productionArticle.getQuantityForFinishedProduct() >= articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName())){
+                        article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                        articleRepository.save(article);
+                        Transaction transaction = new Transaction();
+                        transaction.setHdNumber(0L);
+                        transaction.setAdditionalInformation("Article: " + article.getArticle_number() + ", edited for Company: " + article.getCompany().getName());
+                        transaction.setArticle(article.getArticle_number());
+                        transaction.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                        transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+                        transaction.setCustomer("");
+                        transaction.setQuality("");
+                        transaction.setQuantity(0L);
+                        transaction.setReceptionNumber(0L);
+                        transaction.setReceptionStatus("");
+                        transaction.setShipmentNumber(0L);
+                        transaction.setShipmentStatus("");
+                        transaction.setTransactionDescription("Article Edited");
+                        transaction.setTransactionType("501");
+                        transaction.setTransactionGroup("Configuration");
+                        transaction.setUnit("");
+                        transaction.setCompany(article.getCompany());
+                        transaction.setVendor("");
+                        transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                        transactionService.add(transaction);
+                        articleMessage = "Finish product successfully edited";
+                    }
+                    else{
+                        IssueLog issueLog = new IssueLog();
+                        issueLog.setIssueLogContent("Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + productionArticle.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
+                        issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                        issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                        issueLog.setAdditionalInformation("Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + productionArticle.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()));
+                        issueLog.setIssueLogFileName("");
+                        issueLog.setIssueLogFilePath("");
+                        issueLog.setIssueLogFileName("");
+                        issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                        issueLogService.add(issueLog);
+                        articleMessage = "Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + productionArticle.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()) + ", check issueLog" ;
+                        intermediateQtyForFinishProduct = false;
+                    }
+                }
+                else {
+                    articleEdition(article,productionArticle,request);
+                }
             }
-            else{
-                IssueLog issueLog = new IssueLog();
-                issueLog.setIssueLogContent("Article number: " + article.getArticle_number() + ", already exists");
-                issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-                issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
-                issueLog.setAdditionalInformation("Article number: " + article.getArticle_number() + ", already exists for company: " + article.getCompany().getName());
-                issueLog.setIssueLogFileName("");
-                issueLog.setIssueLogFilePath("");
-                issueLog.setIssueLogFileName("");
-                issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
-                issueLogService.add(issueLog);
-                articleMessage = "Article number: " + article.getArticle_number() + ", already exists for company: " + article.getCompany().getName() + ". Check IssueLog ";
-            }
-
         }
         else{
             IssueLog issueLog = new IssueLog();
@@ -159,6 +212,78 @@ public class ArticleServiceImpl implements ArticleService{
             issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
             issueLogService.add(issueLog);
             articleMessage = "One from dimension were 0 or under 0. Check issue log" ;
+            intermediateQtyForFinishProduct = false;
+        }
+    }
+
+    private void articleEdition(Article article,ProductionArticle productionArticle, HttpServletRequest request) {
+        if(article.isProduction() && productionArticle.getProductionArticleType().equals("intermediate")){
+            log.error("getProductionArticleConnection: " + productionArticle.getProductionArticleConnection());
+            log.error("getProductionArticleType: " + productionArticle.getProductionArticleType());
+            try{ Long productionArticleNumberForConnection = Long.parseLong(productionArticle.getProductionArticleConnection());
+                if(articleRepository.checkIfFinishProductExists(productionArticleNumberForConnection)>0) {
+                    log.error("+ sumOfAssignedIntermediateArticlesQtyForEdition: " + articleRepository.sumOfAssignedIntermediateArticlesQtyForEdition(productionArticleNumberForConnection,article.getCompany().getName(),article.getArticle_number()));
+                    log.error("+ QuantityForFinishedProduct from form(input): " + productionArticle.getQuantityForFinishedProduct());
+                    log.error("- articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName()): " + articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName()));
+                    log.error("article.getArticle_number(): " + article.getArticle_number());
+                    log.error("QuantityForFinishedProduct from DB: " + articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(Long.parseLong(productionArticle.getProductionArticleConnection()),article.getCompany().getName()));
+                    if(articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) >= articleRepository.sumOfAssignedIntermediateArticlesQtyForEdition(productionArticleNumberForConnection,article.getCompany().getName(),article.getArticle_number()) + productionArticle.getQuantityForFinishedProduct() - articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName())){
+                        article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                        articleRepository.save(article);
+                        if(request.getHeader("Referer").contains("formEditArticle")){
+                            articleMessage = "Article successfully edited";
+                        }
+                        if(request.getHeader("Referer").contains("formArticle")){
+                            articleMessage = "Article successfully created";
+                        }
+
+                    }
+                    else{
+                        log.error("Qty needed to create finish product");
+                        IssueLog issueLog = new IssueLog();
+                        issueLog.setIssueLogContent("Qty needed to create finish product (article number: " + productionArticle.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + productionArticle.getQuantityForFinishedProduct());
+                        issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                        issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                        issueLog.setAdditionalInformation("Qty needed to create finish good (article number: " + productionArticle.getProductionArticleConnection() + "): " +  articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) + ", already assigned qty: " + articleRepository.sumOfAssignedIntermediateArticlesQty(productionArticleNumberForConnection,article.getCompany().getName()) + " + qty from last entry: " + productionArticle.getQuantityForFinishedProduct());
+                        issueLog.setIssueLogFileName("");
+                        issueLog.setIssueLogFilePath("");
+                        issueLog.setIssueLogFileName("");
+                        issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                        issueLogService.add(issueLog);
+                        articleMessage = "Information about sum of quantity needed to create finish good: " + productionArticle.getProductionArticleConnection() + ", is lower than sum  already assigned articles quantity + value from last intermediate article, check issuelog";
+                        intermediateQtyForFinishProduct = false;
+                    }
+
+                } else {
+                    log.error("Article connector for production");
+                    IssueLog issueLog = new IssueLog();
+                    issueLog.setIssueLogContent("Article connector for production: " + productionArticle.getProductionArticleConnection() + ", not exists as finish product");
+                    issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                    issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                    issueLog.setAdditionalInformation("Article connector for production: " + productionArticle.getProductionArticleConnection() + ", not exists as finish product");
+                    issueLog.setIssueLogFileName("");
+                    issueLog.setIssueLogFilePath("");
+                    issueLog.setIssueLogFileName("");
+                    issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                    issueLogService.add(issueLog);
+                    articleMessage = "Article connector for production: " + productionArticle.getProductionArticleConnection() + ", not exists as finish product. Check IssueLog ";
+                    intermediateQtyForFinishProduct = false;
+                }
+            }
+            catch (NumberFormatException e){
+                log.error(" can't be parse on number");
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent(productionArticle.getProductionArticleConnection() + " can't be parse on number");
+                issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                issueLog.setAdditionalInformation("Article connector for production with name: " + productionArticle.getProductionArticleConnection() + " can't be parse on number");
+                issueLog.setIssueLogFileName("");
+                issueLog.setIssueLogFilePath("");
+                issueLog.setIssueLogFileName("");
+                issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                issueLogService.add(issueLog);
+                articleMessage = "Article connector for production with name: " + productionArticle.getProductionArticleConnection() + " can't be parse on number. Check IssueLog ";
+            }
         }
     }
 
@@ -265,24 +390,6 @@ public class ArticleServiceImpl implements ArticleService{
         if(lastUpdateDateTo == null || lastUpdateDateTo.equals("")){
             lastUpdateDateTo = "2222-02-02";
         }
-
-        log.error("article_number" + article_number);
-        log.error("createdBy" + createdBy);
-        log.error("volumeBiggerThan" + volumeBiggerThan);
-        log.error("volumeLowerThan" + volumeLowerThan);
-        log.error("widthBiggerThan" + widthBiggerThan);
-        log.error("widthLowerThan" + widthLowerThan);
-        log.error("depthBiggerThan" + depthBiggerThan);
-        log.error("depthLowerThan" + depthLowerThan);
-        log.error("heightBiggerThan" + heightBiggerThan);
-        log.error("heightLowerThan" + heightLowerThan);
-        log.error("weightBiggerThan" + weightBiggerThan);
-        log.error("weightLowerThan" + weightLowerThan);
-        log.error("creationDateFrom" + creationDateFrom);
-        log.error("creationDateTo" + creationDateTo);
-        log.error("lastUpdateDateFrom" + lastUpdateDateFrom);
-        log.error("lastUpdateDateTo" + lastUpdateDateTo);
-        log.error("company" + company);
 
 
         return articleRepository.getArticleByCriteria(article_number,Double.parseDouble(volumeBiggerThan),Double.parseDouble(volumeLowerThan),Double.parseDouble(widthBiggerThan),Double.parseDouble(widthLowerThan),Double.parseDouble(depthBiggerThan),Double.parseDouble(depthLowerThan),Double.parseDouble(heightBiggerThan),Double.parseDouble(heightLowerThan),Double.parseDouble(weightBiggerThan),Double.parseDouble(weightLowerThan),createdBy,creationDateFrom,creationDateTo,lastUpdateDateFrom,lastUpdateDateTo,company,articleDescription,articleTypes);

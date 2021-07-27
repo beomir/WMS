@@ -13,6 +13,7 @@ import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,19 +39,19 @@ public class IssueLogController {
     }
 
     @GetMapping("/user/issueLog")
-    public String list(Model model) {
+    public String list(Model model, HttpSession session) {
         List<IssueLog> issueLogs = issueLogService.getIssueLogByAllCriteria(issueLogSearch.getIssueLogFileName(),issueLogSearch.getCreatedFrom(),issueLogSearch.getCreatedTo(),issueLogSearch.getCreatedBy(),issueLogSearch.getIssueLogContent(),issueLogSearch.getWarehouse());
         log.debug(issueLogSearch.getIssueLogFileName() + " " + issueLogSearch.getCreatedFrom() + " " + issueLogSearch.getCreatedTo() + " " + issueLogSearch.getCreatedBy() + " " + issueLogSearch.getIssueLogContent() + " " + issueLogSearch.getWarehouse());
         model.addAttribute("issueLogs", issueLogs);
         model.addAttribute("issueLogSearch",issueLogSearch);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsSettings/issueLog/issueLog";
     }
 
     @GetMapping("/user/issueLog-browser")
-    public String browser(Model model) {
+    public String browser(Model model,HttpSession session) {
         model.addAttribute("issueLogSearching", new IssueLogSearch());
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         model.addAttribute("warehouses", warehouses);
         return "wmsSettings/issueLog/issueLog-browser";

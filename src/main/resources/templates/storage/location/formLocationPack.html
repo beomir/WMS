@@ -112,16 +112,37 @@
 				<div style="color: white;font-weight: bold" id="floorLocationSimulation"></div><br/><br/>
 
 			</section>
+			<section id="equipment">
+				<span th:text="#{app.equipment}" style="color: white;font-weight: bold">Equipment</span><br/>
+				<label th:text="#{app.equi1}" style="color: white;font-style: italic" title="For example PALLETJACK">Name (ten alpha)</label>
+				<input class="location2" id="equipmentFirstSep" onkeyup="this.value = this.value.toUpperCase();" pattern="[A-Za-z]{10}" type="text" maxlength="10" title="For example PALLETJACK" th:field="*{locationNameConstruction.firstSepEquipment}"/>
+				<table class="locationPack">
+					<tbody>
+					<tr>
+						<td><label th:text="#{app.equi2} + ' ' + #{app.from}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (three numeric) From</label></td>
+						<td><label th:text="#{app.equi2} + ' ' + #{app.to}" title="Numeric Value three digits" 	style="color: white;font-style: italic">Number (three numeric) To</label></td>
+					</tr>
+					<tr>
+						<td><input class="location2" id="equipmentSecondSep" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{locationNameConstruction.secondSepEquipment}"/></td>
+						<td><input class="location2" id="equipmentSecondSepTo" pattern="[0-9]{3}" minlength="3" maxlength="3" title="Numeric Value three digits" 	type="text"  th:field="*{locationNameConstruction.secondSepEquipmentTo}"/></td>
+					</tr>
+					</tbody>
+				</table>
+				<label th:text="#{app.simNumOfLoc}" style="color: white;font-style: italic">Simulation number of location to create</label>
+				<div style="color: white;font-weight: bold" id="equipmentSimulation"></div><br/><br/>
+			</section>
+
 			<div sec:authorize="hasRole('ROLE_ADMIN')"  th:title="#{app.maxLocationsQtyToCreateParameterInfoAdmin}" style="color: white;font-weight: bold"><span  th:text="#{app.maxLocationsQtyToCreateParameter} + ' '"></span><a style="color: white" th:href="@{/config/extremely}"><span  id="maxLocationValue"></span></a></div>
 			<div sec:authorize="!hasRole('ROLE_ADMIN')" th:title="#{app.maxLocationsQtyToCreateParameterInfoUser}" style="color: white;font-weight: bold"><span th:text="#{app.maxLocationsQtyToCreateParameter} + ' '"></span><span id="maxLocationValue"></span></div>
 			<section>
 				<label th:text="#{app.locationType}" style="color: white;font-weight: bold">Location type</label>
 				<select id="selectId" class="select-css" th:field="*{location.locationType}">
-					<option th:value="RDL">Reception Door</option>
-					<option th:value="PFL">Stock Picking Floor</option>
-					<option th:value="PRL">Stock Picking Racks</option>
-					<option th:value="RRL">Stock Reserve Racks</option>
-					<option th:value="SDL">Ship Door</option>
+					<option th:text="#{app.receptionDoor}" th:value="RDL">Reception Door</option>
+					<option th:text="#{app.stockPickingFloor}" th:value="PFL">Stock Picking Floor</option>
+					<option th:text="#{app.stockPickingRacks}" th:value="PRL">Stock Picking Racks</option>
+					<option th:text="#{app.stockReserveRacks}" th:value="RRL">Stock Reserve Racks</option>
+					<option th:text="#{app.shipDoor}" th:value="SDL">Ship Door</option>
+					<option th:text="#{app.equipment}" th:value="EQL">Equipment</option>
 				</select> <br/>
 			</section>
 			<section>
@@ -134,15 +155,15 @@
 			<section id="multiItem">
 				<label th:text="#{app.multiItem}" style="color: white;font-weight: bold">Multi Item allowed</label>
 				<select id="multiItemSelection" class="select-css" th:field="*{location.multiItem}">
-					<option th:value="true">Yes</option>
-					<option th:value="false">No</option>
+					<option th:text="#{app.yes}" th:value="true">Yes</option>
+					<option th:text="#{app.no}" th:value="false">No</option>
 				</select> <br/>
 			</section>
 			<section  id="hdControling">
 				<label th:text="#{app.hdControl}" style="color: white;font-weight: bold">HD controlled</label>
 				<select class="select-css"  id="hdControl" name="hdControl">
-					<option selected th:value="true">Control</option>
-					<option th:value="false">Not control</option>
+					<option th:text="#{app.control}" selected th:value="true">Control</option>
+					<option th:text="#{app.notControl}" th:value="false">Not control</option>
 				</select> <br/>
 			</section>
 			<section>
@@ -192,6 +213,7 @@
 
 <script type="text/javascript" th:src="@{/js/logo.js}"></script>
 <script type="text/javascript" th:src="@{/js/formLocationPack.js}"></script>
+<script type="text/javascript" th:src="@{/js/switchingLocationTypes.js}"></script>
 <script>
 
 

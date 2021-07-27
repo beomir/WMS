@@ -51,8 +51,6 @@ public class Location {
     private double freeSpace;
     private double freeWeight;
 
-
-
     public Location(Long id, String locationName, String locationDesc, String locationType, Warehouse warehouse, StorageZone storageZone, String created, String last_update, boolean active, String changeBy,boolean multiItem,boolean hdControl,double height,double width,double depth, double volume, double maxWeight,double freeSpace,double freeWeight) {
         this.id = id;
         this.locationName = locationName;
@@ -77,6 +75,9 @@ public class Location {
 
     @OneToMany(mappedBy="location")
     public List<Stock> stockList = new ArrayList<>();
+
+    @OneToMany(mappedBy="location")
+    public List<Reception> receptionList = new ArrayList<>();
 
     @Override
     public String toString() {

@@ -8,6 +8,19 @@ $('#volume').css('background-color', 'black');
 $('#volume').css('border', '2px solid');
 $('#volume').css('border-radius', '5px');
 
+if(document.getElementById('selectId').value == "SDL" || document.getElementById('selectId').value == "RDL") {
+    document.getElementById("doorLocationSimulation").innerHTML = document.getElementById("doorFirstSep").value + document.getElementById("doorSecondSep").value + document.getElementById("doorThirdSep").value
+}
+if(document.getElementById('selectId').value == "PRL" || document.getElementById('selectId').value == "RRL"){
+    document.getElementById("floorLocationSimulation").innerHTML = document.getElementById("rackFirstSep").value + document.getElementById("rackSecondSep").value + document.getElementById("rackThirdSep").value + document.getElementById("rackFourthSep").value
+}
+if(document.getElementById('selectId').value == "EQL" || document.getElementById('selectId').value == "PPL"){
+    document.getElementById("equipmentSimulation").innerHTML = document.getElementById("equipmentFirstSep").value + document.getElementById("equipmentSecondSep").value
+}
+if(document.getElementById('selectId').value == "PFL"){
+    document.getElementById("floorLocationSimulation").innerHTML = document.getElementById("floorFirstSep").value + document.getElementById("floorSecondSep").value
+}
+
 //rackLocations
 let rackFirstSep = document.getElementById("rackFirstSep")
 let rackSecondSep = document.getElementById("rackSecondSep")
@@ -62,85 +75,19 @@ floorSecondSep.addEventListener("keyup", function () {
     floorLocationSimulation.innerHTML = document.getElementById("floorFirstSep").value + document.getElementById("floorSecondSep").value
 });
 
+//equipment
+let equipmentFirstSep = document.getElementById("equipmentFirstSep")
+let equipmentSecondSep = document.getElementById("equipmentSecondSep")
 
-//switching location type
-let rackLocation = document.getElementById("rackLocation")
-let doorLocation = document.getElementById("doorLocation")
-let floorLocation = document.getElementById("floorLocation")
-let select = document.getElementById('selectId')
-let hdControl = document.getElementById("hdControling")
-let multiItem = document.getElementById("multiItem")
+let equipmentSimulation = document.getElementById("equipmentSimulation")
 
+equipmentFirstSep.addEventListener("keyup", function () {
+    equipmentSimulation.innerHTML = document.getElementById("equipmentFirstSep").value + document.getElementById("equipmentSecondSep").value
+});
+equipmentSecondSep.addEventListener("keyup", function () {
+    equipmentSimulation.innerHTML = document.getElementById("equipmentFirstSep").value + document.getElementById("equipmentSecondSep").value
+});
 
-select.addEventListener("change", function () {
-    if(document.getElementById('selectId').value == "SDL" || document.getElementById('selectId').value == "RDL") {
-        $("#doorLocation").show(500);
-        $("#rackLocation").hide(500);
-        $("#floorLocation").hide(500);
-        $("#hdControling").hide(500);
-        $("#multiItem").hide(500);
-
-        $("#rackSecondSep").removeAttr('required').val("")
-        $("#rackFirstSep").removeAttr('required').val("")
-        $("#rackThirdSep").removeAttr('required').val("")
-        $("#rackFourthSep").removeAttr('required').val("")
-        rackLocationSimulation.innerHTML = "";
-
-        $("#floorSecondSep").removeAttr('required').val("")
-        $("#floorFirstSep").removeAttr('required').val("")
-        floorLocationSimulation.innerHTML = "";
-
-        doorFirstSep.setAttribute("required", "");
-        doorSecondSep.setAttribute("required", "");
-        doorThirdSep.setAttribute("required", "");
-
-
-
-    } else if(document.getElementById('selectId').value == "PRL" || document.getElementById('selectId').value == "RRL"){
-        $("#rackLocation").show(500);
-        $("#doorLocation").hide(500);
-        $("#floorLocation").hide(500);
-
-        $("#hdControling").show(500);
-        $("#multiItem").show(500);
-
-
-        rackSecondSep.setAttribute("required", "");
-        rackFirstSep.setAttribute("required", "");
-        rackThirdSep.setAttribute("required", "");
-        rackFourthSep.setAttribute("required", "");
-
-        $("#floorSecondSep").removeAttr('required').val("")
-        $("#floorFirstSep").removeAttr('required').val("")
-        floorLocationSimulation.innerHTML = "";
-
-        $("#doorFirstSep").removeAttr('required').val("")
-        $("#doorSecondSep").removeAttr('required').val("")
-        $("#doorThirdSep").removeAttr('required').val("")
-        doorLocationSimulation.innerHTML = "";
-    }
-    else{
-        $("#floorLocation").show(500);
-        $("#rackLocation").hide(500);
-        $("#doorLocation").hide(500);
-        $("#hdControling").show(500);
-        $("#multiItem").show(500);
-
-        $("#doorFirstSep").removeAttr('required').val("")
-        $("#doorSecondSep").removeAttr('required').val("")
-        $("#doorThirdSep").removeAttr('required').val("")
-        doorLocationSimulation.innerHTML = "";
-
-        $("#rackSecondSep").removeAttr('required').val("")
-        $("#rackFirstSep").removeAttr('required').val("")
-        $("#rackThirdSep").removeAttr('required').val("")
-        $("#rackFourthSep").removeAttr('required').val("")
-        rackLocationSimulation.innerHTML = "";
-
-        floorFirstSep.setAttribute("required", "");
-        floorSecondSep.setAttribute("required", "");
-    }
-})
 
 $('#width,#height,#depth,#weight').on('keyup', function (){
     let volume = document.getElementById('volume');
@@ -239,3 +186,5 @@ function checkValidation(){
 function returnToPreviousPage() {
     window.history.forward(-1)
 }
+
+

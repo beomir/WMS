@@ -26,56 +26,94 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
-				<div th:each="warehouse: ${warehouse}" class="titleList" th:text="'Your Receptions in ' + ${warehouse.city}"></div><br/>
+				<div th:if="${warehouseName} != '%'" class="titleList" th:text="#{app.yourReceptionIn} + ' ' + ${warehouseName}"></div>
+				<div th:if="${warehouseName} == '%'" class="titleList" th:text="#{app.yourReceptionIn} + ' ' + #{app.allWarehouses}"></div>
 				<div sec:authorize="!hasRole('ROLE_ADMIN')">
-				<div th:each="companys: ${companys}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companys.name}"></div>
+				<div th:each="companies: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} + ' ' + ${companies.name}"></div>
 				</div>
-				<div style="color: darkred;font-weight: bold" th:text="${fileStatus}">
+				<br/>
+				<div style="color: darkred;font-weight: bold" th:text="${fileStatus}"></div>
+				<div th:unless="${receptionMessage == null}" id="message" style="color: darkred;font-weight: bold;text-align: center" th:text="${receptionMessage}"></div>
+				<a th:href="@{/workDetails}" target="_blank"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.works}"></div></a>
+				<a th:href="@{/reception/receptions-browser}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{app.findReception}"></div></a>
+				<div>
+					<span style="color:darkred;font-weight: bold;font-size:20px" th:text="#{app.citeria} + ': '"></span><br/>
+					<table class="criteria">
+						<tr>
+							<th style="color:blue;font-weight: bold" th:text="#{app.vendorsName} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionVendor}"></th>
+							<th style="color:blue;font-weight: bold" th:text="#{app.status} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionStatus}"></th>
+						</tr>
+						<tr>
+							<th style="color:blue;font-weight: bold" th:text="#{app.location} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionLocation}"></th>
+							<th style="color:blue;font-weight: bold" th:text="#{app.receptionNumber} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionReceptionNumber}"></th>
+						</tr>
+						<tr>
+							<th style="color:blue;font-weight: bold" th:text="#{app.warehouseName} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionWarehouse}"></th>
+							<th style="color:blue;font-weight: bold" th:text="#{app.company} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionCompany}"></th>
+						</tr>
+						<tr>
+							<th style="color:blue;font-weight: bold" th:text="#{app.handleDevice} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionHdNumber}"></th>
+							<th style="color:blue;font-weight: bold" th:text="#{app.createdBy} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionCreatedBy}"></th>
+						</tr>
+						<tr>
+							<th style="color:blue;font-weight: bold" th:text="#{app.receptionCreated} + ' ' + #{app.from} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionCreatedFrom}"></th>
+							<th style="color:blue;font-weight: bold" th:text="#{app.receptionCreated} + ' ' + #{app.to} + ': '"></th>
+							<th style="color:blue;font-style:italic" th:text="${receptionCreatedTo}"></th>
+						</tr>
+					</table>
 				</div>
 				<br/><br/>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
-						<th class="tables">Reception Number</th>
-						<th class="tables">Pallet number</th>
-						<th class="tables">Article</th>
-						<th class="tables">Unit</th>
-						<th class="tables">Pieces Qty</th>
-						<th th:if="${#request.remoteUser.contains('admin')}" class="tables">Company</th>
-						<th class="tables">Quality</th>
-						<th class="tables">Creation closed</th>
-						<th class="tables">Finished</th>
-						<th class="tables">Created</th>
-						<th class="tables">Last update</th>
-						<th class="tables">Changed by</th>
+						<th th:text="#{app.receptionNumber}" class="tables">Reception Number</th>
+						<th th:text="#{app.warehouseName}" class="tables">Warehouse</th>
+						<th th:text="#{app.piecesQty}" class="tables">Pieces Qty</th>
+						<th th:text="#{app.handleDeviceQty}" class="tables">Qty of Pallets</th>
+						<th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{app.company}" class="tables">Company</th>
+						<th th:text="#{app.status}" class="tables">Status</th>
+						<th th:text="#{app.location}" class="tables">Location</th>
+						<th th:text="#{app.created}" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" class="tables">Last update</th>
+						<th th:text="#{app.chandedBy}" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="reception: ${receptions}">
 						<td class="tables" style="padding-bottom: 2px">
 							<ol><div th:text="${reception.receptionNumber}"></div>
 							<li>
 								<ul>
-									<li th:if="${reception.finished == false && reception.creation_closed != false}"><a th:href="@{/reception/finishedReception/{id}(id=${reception.id})}">Finish</a></li>
-									<li th:if="${reception.creation_closed == true && reception.finished == false }"><a th:href="@{/reception/openCreationReception/{id}(id=${reception.id})}">Open Creation</a></li>
-									<li th:if="${reception.creation_closed == false && reception.finished == false }"><a th:href="@{/reception/closeCreationReception/{id}(id=${reception.id})}">Close Creation</a></li>
-									<li th:if="${reception.creation_closed == false && reception.finished == false }"><a th:href="@{/reception/editReceptionLine/{id}(id=${reception.id})}">Edit</a></li>
+									<li th:if="${reception.status == 'put_away_pending'}"><a th:href="@{/reception/finishedReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.finishPutAwayWorks}">Finish put away Works</a></li>
+									<li th:if="${reception.status == 'unloading_pending'}"><a th:href="@{/reception/finishUnloadingReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.unloadingFinished}">Unloading Finished</a></li>
+									<li th:if="${reception.status == 'unloading_pending'}"><a th:href="@{/reception/openCreationReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.backToCreation}">Back to Create</a></li>
+									<li th:if="${reception.status == 'creation_pending' && reception.hd_number > 0}"><a th:href="@{/reception/unloadingDoor/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.truckArrived}">Creation Finish - truck arrived</a></li>
+									<li th:if="${reception.pieces_qty != 0}"><a th:href="@{/reception/receptionDetails/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.checkDetails}">Check Details</a></li>
+									<li th:if="${reception.pieces_qty == 0 }"><a th:href="@{/reception/editReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.createNewReceptionLine}">Create New Reception line</a></li>
 								</ul>
 							</li>
 						</ol>
 						</td>
-						<td class="tables" th:text="${reception.hd_number}"></td>
-						<td class="tables" th:text="${reception.article.article_number}"></td>
-				        <td class="tables" th:text="${reception.unit.name}"></td>
+				        <td class="tables" th:text="${reception.warehouse}"></td>
 				        <td class="tables" th:text="${reception.pieces_qty}"></td>
-						<td th:if="${#request.remoteUser.contains('admin')}" class="tables" th:text="${reception.company.name}"></td>
-				        <td class="tables" th:text="${reception.quality}"></td>
-				        <td class="tables" th:text="${reception.creation_closed}"></td>
-				        <td class="tables" th:text="${reception.finished}"></td>
+				        <td class="tables" th:text="${reception.hd_number}"></td>
+						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${reception.company}"></td>
+				        <td class="tables" th:text="${reception.status}"></td>
+						<td th:if="${#strings.equals(reception.location,'')}" class="tables"><span th:text="#{app.receptionDuringCreation}" ></span></td>
+						<td th:if="${!#strings.equals(reception.location,'')}" class="tables"><span th:text="${reception.location}"></span></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.created,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(reception.last_update,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${reception.changeBy}"></td>
 				    </tr>
 				</table>
 
-				<a th:href="@{/reception/formReception}"><div class="buttonik" style="float: right;max-width: 20%;">Add to Reception </div></a>
+				<a th:href="@{/reception/formReception}"><div class="buttonik" style="float: right;max-width: 20%;" th:text="#{app.CreateReception}">Create Reception</div></a>
 				<form enctype="multipart/form-data" class="buttonik2" style="float: right;max-width: 20%;clear:right" method="post" th:action="@{/reception/receptionFile}">
 				<label for="receptionFile" title="File structure: Reception_number:,ArticleNumber:,HandleDeviceNumber:,PiecesQuantity:, VendorName,Unit:,Company:,FromWarehouse:,Quality:">Create Reception from file:</label>
 				<input type="file"

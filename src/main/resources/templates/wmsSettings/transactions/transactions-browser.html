@@ -31,15 +31,14 @@
 			<section>
 				<label style="color: white;font-weight: bold">Warehouse</label>
 				<select class="select-css" th:field="*{warehouse}">
-					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}">
+					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}"></option>
 					<option th:value="'%'">All</option>
-					</option>
 				</select>
 			</section><br/><br/>
 			<section>
-				<label style="color: white;font-weight: bold">Company</label>
+				<label style="color: white;font-weight: bold" th:text="#{app.company}">Company</label>
 				<select class="select-css" th:field="*{company}">
-					<option th:each="i : ${company}" th:value="${i.name}" th:text="${i.name}">
+					<option th:each="i : ${activeCompany}" th:value="${i.name}" th:text="${i.name}">
 					</option>
 				</select>
 			</section><br/><br/>

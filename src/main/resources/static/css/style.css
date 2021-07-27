@@ -273,9 +273,43 @@ h1 {
     -ms-transition: 0.5s all;
 }
 
+.button2 {
+    font-size: 1em;
+    color: #fff;
+    background: #00BCD4;
+    border: 1px solid #00BCD4;
+    outline: none;
+    cursor: pointer;
+    padding: .7em 1em;
+    margin-top: 2em;
+    -webkit-appearance: none;
+    width: 98%;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+}
+
+.button2:hover {
+    background: transparent;
+    color: #00BCD4;
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+}
+
 .tables {
     border: solid 1px;
     padding-left: 2px;
+}
+
+.widerTables {
+    border: solid 1px;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -649,33 +683,7 @@ input.checkbox:checked:after {
         letter-spacing: 0.5px;
     }
 
-    .button {
-        font-size: 1em;
-        color: #fff;
-        background: #00BCD4;
-        border: 1px solid #00BCD4;
-        outline: none;
-        cursor: pointer;
-        padding: .7em 1em;
-        margin-top: 2em;
-        -webkit-appearance: none;
-        width: 100%;
-        -webkit-border-radius: 2px;
-        -moz-border-radius: 2px;
-        -ms-border-radius: 2px;
-        -o-border-radius: 2px;
-        border-radius: 2px;
-    }
 
-    .button:hover {
-        background: transparent;
-        color: #00BCD4;
-        transition: 0.5s all;
-        -webkit-transition: 0.5s all;
-        -moz-transition: 0.5s all;
-        -o-transition: 0.5s all;
-        -ms-transition: 0.5s all;
-    }
 }
 
 ol
@@ -922,6 +930,28 @@ tr:hover > td{
     text-align: center;
     font-size: 32px;
     font-weight: bold;
+}
+
+.underTitle {
+    color: white;
+    text-align: center;
+    font-size: 25px;
+    font-style: italic;
+}
+
+.formDescription {
+    color: white;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.formContent {
+    color: white;
+    text-align: left;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 15%;
 }
 
 .btn3 {
@@ -1178,4 +1208,87 @@ input:invalid:focus.check {
     margin-left: 10px;
     width: 90%;
     border-radius: 2px;
+}
+
+.circle {
+    width: 70px;
+    line-height: 70px;
+    cursor: pointer;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 21px;
+    font-weight: bold;
+    color: white;
+    border: 1px solid white;
+    background-image: linear-gradient(orange, red);
+    margin-left: 10px;
+    margin-right: 10px;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+}
+
+.circle:hover{
+    -o-transition: all 0.6s;
+    -moz-transition: all 0.6s;
+    -webkit-transition: all 0.6s;
+    -moz-transform: scale(1.4);
+    -o-transform:scale(1.4);
+    -webkit-transform: scale(1.4);
+}
+
+.circleBig {
+    width: 130px;
+    line-height: 130px;
+    cursor: pointer;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    border: 1px solid white;
+    background-image: linear-gradient(orange, red);
+    margin-left: 10px;
+    margin-right: 10px;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+}
+
+.circleBig:hover{
+    -o-transition: all 0.6s;
+    -moz-transition: all 0.6s;
+    -webkit-transition: all 0.6s;
+    -moz-transform: scale(1.2);
+    -o-transform:scale(1.2);
+    -webkit-transform: scale(1.2);
+}
+
+.makeItBigger{
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+}
+
+.makeItBigger:hover{
+    -o-transition: all 0.6s;
+    -moz-transition: all 0.6s;
+    -webkit-transition: all 0.6s;
+    -moz-transform: scale(1.4);
+    -o-transform:scale(1.4);
+    -webkit-transform: scale(1.4);
+}
+
+.unsetColors tr:hover > td{
+    background-color: unset !important;
+    color: unset !important;
+}
+
+.makeItBigger--active{
+    -o-transition: all 1s;
+    -moz-transition: all 1s;
+    -webkit-transition: all 1s;
+    -moz-transform: scale(1.4);
+    -o-transform:scale(1.4);
+    -webkit-transform: scale(1.4);
 }

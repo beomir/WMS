@@ -1,27 +1,34 @@
 package pl.coderslab.cls_wms_app.service.userSettings;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.app.TimeUtils;
+import pl.coderslab.cls_wms_app.entity.Company;
 import pl.coderslab.cls_wms_app.entity.Users;
 import pl.coderslab.cls_wms_app.repository.UsersRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleServiceImpl;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionServiceImpl;
+import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.CheckPassword;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
@@ -33,9 +40,10 @@ public class UsersServiceImpl implements UsersService {
     public String oldPass;
     private SendEmailService sendEmailService;
     private ArticleServiceImpl articleServiceImpl;
+    private CompanyService companyService;
 
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, SendEmailService sendEmailService, ArticleServiceImpl articleServiceImpl) {
+    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ReceptionServiceImpl receptionServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone,  SendEmailService sendEmailService, ArticleServiceImpl articleServiceImpl, CompanyService companyService) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.receptionServiceImpl = receptionServiceImpl;
@@ -43,6 +51,7 @@ public class UsersServiceImpl implements UsersService {
         this.addLocationToStorageZone = addLocationToStorageZone;
         this.sendEmailService = sendEmailService;
         this.articleServiceImpl = articleServiceImpl;
+        this.companyService = companyService;
     }
 
     @Override
@@ -115,15 +124,61 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public void loggedUserData(Model model) {
+    public void loggedUserData(Model model,HttpSession session) {
         receptionServiceImpl.insertReceptionFileResult = "";
         locationNameConstruction.message = "";
         addLocationToStorageZone.message = "";
         alertMessage = "";
         articleServiceImpl.articleMessage = "";
-        String token = FindUsernameByToken(SecurityUtils.username());
+        session.setAttribute("productionMessage","");
+        session.setAttribute("receptionMessage","");
+        session.setAttribute("stockMessage","");
+        String userName = "";
+        if(SecurityUtils.username().equals("%")){
+            userName = "admin";
+        }
+        else {
+            userName = SecurityUtils.username();
+        }
+        String token = FindUsernameByToken(userName);
         model.addAttribute("token", token);
         model.addAttribute("localDateTime", LocalDateTime.now());
+
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
+
+        log.debug("token: " + token);
+
+    }
+
+    @Override
+    public String warehouseSelection(HttpSession session, @SessionAttribute(required = false) String chosenWarehouse, HttpServletRequest request) {
+        if(chosenWarehouse == null){
+            if(request.getRequestURL().toString().contains("localhost:8080")){
+                session.setAttribute("goingToURL",request.getRequestURL().toString().substring(request.getRequestURL().toString().lastIndexOf("localhost:8080") + 14));
+                log.error("localHost: " + session.getAttribute("goingToURL").toString());
+            }
+            else{
+                session.setAttribute("goingToURL",request.getRequestURL().toString().substring(request.getRequestURL().toString().lastIndexOf("https://cls-wms.herokuapp.com") + 28));
+                log.error("Heroku: " +session.getAttribute("goingToURL").toString());
+            }
+            return "noDataAboutSelectedWarehouse";
+        }
+        else{
+            return "warehouseSelected";
+        }
+    }
+
+    @Override
+    public void nextURL(HttpServletRequest request,HttpSession session){
+        if(request.getRequestURL().toString().contains("localhost:8080")){
+            session.setAttribute("nextURL",request.getRequestURL().toString().substring(request.getRequestURL().toString().lastIndexOf("localhost:8080") + 14));
+            log.error("localHost: " + session.getAttribute("nextURL").toString());
+        }
+        else{
+            session.setAttribute("nextURL",request.getRequestURL().toString().substring(request.getRequestURL().toString().lastIndexOf("https://cls-wms.herokuapp.com") + 28));
+            log.error("Heroku: " +session.getAttribute("nextURL").toString());
+        }
     }
 
     @Override

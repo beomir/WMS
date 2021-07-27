@@ -66,29 +66,25 @@ function calculateRackLocations(){
 let doorThirdSep = document.getElementById("doorThirdSep")
 let doorThirdSepTo = document.getElementById("doorThirdSepTo")
 
-
 let doorLocationSimulation = document.getElementById("doorLocationSimulation")
 
-doorThirdSep.addEventListener("keyup", function () {
-    let firstRangeDoor = parseInt(document.getElementById("doorThirdSepTo").value) - parseInt(document.getElementById("doorThirdSep").value) +1
-    firstRangeDoor = firstRangeDoor || 0;
-    if(firstRangeDoor<0){
-        firstRangeDoor = 0;
-    }
-    console.log("extremelyValueToCheck" + extremelyValueToCheck)
-    doorLocationSimulation.innerHTML = firstRangeDoor;
-    if(firstRangeDoor > extremelyValueToCheck ){
-        $("#doorLocationSimulation").css({'color' : 'red'})
-        $("#maxLocationValue").css({'color' : 'red'})
-    }
-    else{
-        $("#doorLocationSimulation").css({'color' : 'white'})
-        $("#maxLocationValue").css({'color' : 'white'})
-    }
+doorFirstSep.addEventListener("keyup", function () {
+    doorChanges();
+});
 
+doorSecondSep.addEventListener("keyup", function () {
+    doorChanges();
+});
+
+doorThirdSep.addEventListener("keyup", function () {
+    doorChanges();
 });
 
 doorThirdSepTo.addEventListener("keyup", function () {
+    doorChanges();
+});
+
+function doorChanges(){
     let firstRangeDoor = parseInt(document.getElementById("doorThirdSepTo").value) - parseInt(document.getElementById("doorThirdSep").value) +1
     firstRangeDoor = firstRangeDoor || 0;
     if(firstRangeDoor<0){
@@ -103,8 +99,7 @@ doorThirdSepTo.addEventListener("keyup", function () {
         $("#doorLocationSimulation").css({'color' : 'white'})
         $("#maxLocationValue").css({'color' : 'white'})
     }
-});
-
+}
 
 //floorLocations
 let floorSecondSep = document.getElementById("floorSecondSep")
@@ -113,6 +108,16 @@ let floorSecondSepTo = document.getElementById("floorSecondSepTo")
 let floorLocationSimulation = document.getElementById("floorLocationSimulation")
 
 floorFirstSep.addEventListener("keyup", function () {
+    floorChanges()
+});
+floorSecondSep.addEventListener("keyup", function () {
+    floorChanges()
+});
+floorSecondSepTo.addEventListener("keyup", function () {
+    floorChanges()
+});
+
+function floorChanges(){
     let firstRangeFloor = parseInt(document.getElementById("floorSecondSepTo").value) - parseInt(document.getElementById("floorSecondSep").value) + 1
     firstRangeFloor = firstRangeFloor || 0;
     if(firstRangeFloor<0){
@@ -127,123 +132,41 @@ floorFirstSep.addEventListener("keyup", function () {
         $("#floorLocationSimulation").css({'color' : 'white'})
         $("#maxLocationValue").css({'color' : 'white'})
     }
+}
+
+//Equipment
+let equipmentSecondSep = document.getElementById("equipmentSecondSep")
+let equipmentSecondSepTo = document.getElementById("equipmentSecondSepTo")
+
+let equipmentSimulation = document.getElementById("equipmentSimulation")
+
+equipmentFirstSep.addEventListener("keyup", function () {
+    equipmentChanges();
 });
-floorSecondSepTo.addEventListener("keyup", function () {
-    let firstRangeFloor = parseInt(document.getElementById("floorSecondSepTo").value) - parseInt(document.getElementById("floorSecondSep").value) +1
-    firstRangeFloor = firstRangeFloor || 0;
-    if(firstRangeFloor<0){
-        firstRangeFloor = 0;
+
+equipmentSecondSep.addEventListener("keyup", function () {
+    equipmentChanges();
+});
+equipmentSecondSepTo.addEventListener("keyup", function () {
+    equipmentChanges();
+});
+
+function equipmentChanges(){
+    let firstRangeEquipment = parseInt(document.getElementById("equipmentSecondSepTo").value) - parseInt(document.getElementById("equipmentSecondSep").value) + 1
+    firstRangeEquipment = firstRangeEquipment || 0;
+    if(firstRangeEquipment<0){
+        firstRangeEquipment = 0;
     }
-    floorLocationSimulation.innerHTML = firstRangeFloor;
-    if(firstRangeFloor > extremelyValueToCheck ){
-        $("#floorLocationSimulation").css({'color' : 'red'})
+    equipmentSimulation.innerHTML = firstRangeEquipment;
+    if(firstRangeEquipment > extremelyValueToCheck ){
+        $("#equipmentSimulation").css({'color' : 'red'})
         $("#maxLocationValue").css({'color' : 'red'})
     }
     else{
-        $("#floorLocationSimulation").css({'color' : 'white'})
+        $("#equipmentSimulation").css({'color' : 'white'})
         $("#maxLocationValue").css({'color' : 'white'})
     }
-});
-
-
-//switching location type
-let rackLocation = document.getElementById("rackLocation")
-let doorLocation = document.getElementById("doorLocation")
-let floorLocation = document.getElementById("floorLocation")
-let hdControl = document.getElementById("hdControling")
-let multiItem = document.getElementById("multiItem")
-let select = document.getElementById('selectId')
-rackLocation.classList.add("d-none")
-floorLocation.classList.add("d-none")
-hdControl.classList.add("d-none")
-multiItem.classList.add("d-none")
-
-
-select.addEventListener("change", function () {
-    if(document.getElementById('selectId').value == "SDL" || document.getElementById('selectId').value == "RDL") {
-
-        $("#doorLocation").show(500);
-        $("#rackLocation").hide(500);
-        $("#floorLocation").hide(500);
-        $("#hdControling").hide(500);
-        $("#multiItem").hide(500);
-
-        $("#rackFirstSep").removeAttr('required').val("")
-        $("#rackSecondSep").removeAttr('required').val("")
-        $("#rackSecondSepTo").removeAttr('required').val("")
-        $("#rackThirdSep").removeAttr('required').val("")
-        $("#rackThirdSepTo").removeAttr('required').val("")
-        $("#rackFourthSep").removeAttr('required').val("")
-        $("#rackFourthSepTo").removeAttr('required').val("")
-        rackLocationSimulation.innerHTML = "";
-
-        $("#floorSecondSep").removeAttr('required').val("")
-        $("#floorFirstSep").removeAttr('required').val("")
-        $("#floorSecondSepTo").removeAttr('required').val("")
-        floorLocationSimulation.innerHTML = "";
-
-        doorFirstSep.setAttribute("required", "");
-        doorSecondSep.setAttribute("required", "");
-        doorThirdSep.setAttribute("required", "");
-        doorThirdSepTo.setAttribute("required", "");
-
-
-
-    } else if(document.getElementById('selectId').value == "PRL" || document.getElementById('selectId').value == "RRL"){
-        $("#rackLocation").show(500);
-        $("#doorLocation").hide(500);
-        $("#floorLocation").hide(500);
-
-        $("#hdControling").show(500);
-        $("#multiItem").show(500);
-
-        rackFirstSep.setAttribute("required", "");
-        rackSecondSep.setAttribute("required", "");
-        rackSecondSepTo.setAttribute("required", "");
-        rackThirdSep.setAttribute("required", "");
-        rackThirdSepTo.setAttribute("required", "");
-        rackFourthSep.setAttribute("required", "");
-        rackFourthSepTo.setAttribute("required", "");
-
-        $("#floorSecondSep").removeAttr('required').val("")
-        $("#floorFirstSep").removeAttr('required').val("")
-        $("#floorSecondSepTo").removeAttr('required').val("")
-        floorLocationSimulation.innerHTML = "";
-
-        $("#doorFirstSep").removeAttr('required').val("")
-        $("#doorSecondSep").removeAttr('required').val("")
-        $("#doorThirdSep").removeAttr('required').val("")
-        $("#doorThirdSepTo").removeAttr('required').val("")
-        doorLocationSimulation.innerHTML = "";
-    }
-    else{
-        $("#floorLocation").show(500);
-        $("#rackLocation").hide(500);
-        $("#doorLocation").hide(500);
-        $("#hdControling").show(500);
-        $("#multiItem").show(500);
-
-
-        $("#doorFirstSep").removeAttr('required').val("")
-        $("#doorSecondSep").removeAttr('required').val("")
-        $("#doorThirdSep").removeAttr('required').val("")
-        $("#doorThirdSepTo").removeAttr('required').val("")
-        doorLocationSimulation.innerHTML = "";
-
-        $("#rackFirstSep").removeAttr('required').val("")
-        $("#rackSecondSep").removeAttr('required').val("")
-        $("#rackSecondSepTo").removeAttr('required').val("")
-        $("#rackThirdSep").removeAttr('required').val("")
-        $("#rackThirdSepTo").removeAttr('required').val("")
-        $("#rackFourthSep").removeAttr('required').val("")
-        $("#rackFourthSepTo").removeAttr('required').val("")
-        rackLocationSimulation.innerHTML = "";
-
-        floorFirstSep.setAttribute("required", "");
-        floorSecondSep.setAttribute("required", "");
-        floorSecondSepTo.setAttribute("required", "");
-    }
-})
+}
 
 $('#width,#height,#depth').on('keyup', function (){
     let volume = document.getElementById('volume');

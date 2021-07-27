@@ -14,6 +14,8 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.EmailRecipientsService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.EmailTypesService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
+
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -33,36 +35,34 @@ public class EmailRecipientsController {
     }
 
     @GetMapping("emailRecipients")
-    public String emailRecipientsList(Model model) {
+    public String emailRecipientsList(Model model, HttpSession session) {
         List<EmailRecipients> emailRecipients = emailRecipientsService.getEmailRecipientsForCompanyByUsername(SecurityUtils.username());
-        List<Company> companys = companyService.getCompanyByUsername(SecurityUtils.username());
         model.addAttribute("emailRecipients", emailRecipients);
-        model.addAttribute("companys", companys);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
         return "wmsSettings/emailRecipients/emailRecipients";
     }
 
     @GetMapping("/config/emailRecipientsDeactivatedList")
-    public String emailRecipientsDeactivatedList(Model model) {
+    public String emailRecipientsDeactivatedList(Model model,HttpSession session) {
         List<EmailRecipients> emailRecipients = emailRecipientsService.getEmailRecipients();
         model.addAttribute("emailRecipients", emailRecipients);
 
         List<EmailTypes> emailTypes = emailTypesService.getEmailTypes();
         model.addAttribute("emailTypes", emailTypes);
-        usersService.loggedUserData(model);
+        usersService.loggedUserData(model,session);
 
         return "wmsSettings/emailRecipients/emailRecipientsDeactivatedList";
     }
 
 
     @GetMapping("/user/formEmailRecipients")
-    public String emailRecipientsForm(Model model){
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+    public String emailRecipientsForm(Model model, HttpSession session){
+
         List<EmailTypes> emailTypes = emailTypesService.getEmailTypes();
         model.addAttribute("emailTypes", emailTypes);
         model.addAttribute("emailRecipients", new EmailRecipients());
-        model.addAttribute("companies", companies);
-        usersService.loggedUserData(model);
+
+        usersService.loggedUserData(model, session);
         return "wmsSettings/emailRecipients/formEmailRecipients";
     }
 
@@ -85,14 +85,14 @@ public class EmailRecipientsController {
     }
 
     @GetMapping("/user/editEmailRecipients/{token}")
-    public String updateEmailRecipients(@PathVariable String token, Model model) {
+    public String updateEmailRecipients(@PathVariable String token, Model model,HttpSession session) {
         EmailRecipients emailRecipients = emailRecipientsService.findByToken(token);
-        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+
         List<EmailTypes> emailTypes = emailTypesService.getEmailTypes();
         model.addAttribute("emailTypes", emailTypes);
         model.addAttribute(emailRecipients);
-        model.addAttribute("companies", companies);
-        usersService.loggedUserData(model);
+
+        usersService.loggedUserData(model,session);
         return "wmsSettings/emailRecipients/editEmailRecipients";
     }
 

@@ -5,10 +5,10 @@
 
     <script type="text/javascript" th:src="@{/js/logo.js}"></script>
     <section style="float: left;position: absolute">
-        <span id="topA"><a th:href="@{''(lang=ru)}"><img th:src="@{/images/ru2.png}"/></a></span>
-        <span><a th:href="@{''(lang=pl)}"><img th:src="@{/images/pl2.png}"/></a> </span>
-        <span><a th:href="@{''(lang=en)}"><img th:src="@{/images/gb2.png}"/></a></span>
-        <span><a th:href="@{''(lang=fr)}"><img th:src="@{/images/fr2.png}"/></a></span>
+        <span id="topA"><a th:href="@{''(lang=ru)}"><img class="makeItBigger" th:src="@{/images/ru2.png}"/></a></span>
+        <span><a th:href="@{''(lang=pl)}"><img class="makeItBigger" th:src="@{/images/pl2.png}"/></a> </span>
+        <span><a th:href="@{''(lang=en)}"><img class="makeItBigger" th:src="@{/images/gb2.png}"/></a></span>
+        <span><a th:href="@{''(lang=fr)}"><img class="makeItBigger" th:src="@{/images/fr2.png}"/></a></span>
     </section>
     <section sec:authorize="isAuthenticated()" style="position:absolute;margin-left: 90%">
         <a  th:href="@{/users/myProfile/{token}(token=${token})}"><div th:text="#{app.myProfile}" class="buttonik3">My Profile</div></a>

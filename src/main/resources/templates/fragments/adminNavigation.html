@@ -34,9 +34,8 @@
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addCompany}" th:href="@{/config/formCompany}">Create New Company</a>
+                            <a th:text="#{app.addCompany}" th:href="@{/config/formCompany}">Create New Company</a></li>
                         <li><a th:text="#{app.deactivateCompany}" th:href="@{/config/companyDeactivatedList}">Deactivated company list</a></li>
-                        </li>
                     </ul>
                 </li>
             </ol>
@@ -46,9 +45,9 @@
             <li style="min-width: 100%;">
                 <ul>
                     <li>
-                        <a th:text="#{app.addVendor}" th:href="@{/reception/formVendor}">Create New Vendor</a>
+                        <a th:text="#{app.addVendor}" th:href="@{/reception/formVendor}">Create New Vendor</a></li>
                     <li><a th:text="#{app.deactivateVendor}" th:href="@{/config/vendorDeactivatedList}">Deactivated vendor list</a></li>
-                    </li>
+
                 </ul>
             </li>
         </ol>
@@ -58,9 +57,9 @@
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addCustomer}" th:href="@{/shipment/formCustomer}">Create New Customer</a>
+                            <a th:text="#{app.addCustomer}" th:href="@{/shipment/formCustomer}">Create New Customer</a></li>
                         <li><a th:text="#{app.deactivateCustomer}" th:href="@{/config/customerDeactivatedList}">Deactivated customer list</a></li>
-                        </li>
+
                     </ul>
                 </li>
             </ol>
@@ -77,9 +76,9 @@
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addArticle}" th:href="@{formArticle}">Create New Article</a>
+                            <a th:text="#{app.addArticle}" th:href="@{formArticle}">Create New Article</a></li>
                         <li><a th:text="#{app.deactivateArticle}" th:href="@{/config/articleDeactivatedList}">Deactivated article list</a></li>
-                        </li>
+
                     </ul>
                 </li>
             </ol>
@@ -189,19 +188,22 @@
             <span th:text="#{app.warehouseOperations}"></span>
             <img id="whsOperationsImg" th:src="@{/images/list.png}" class="right"/>
         </div>
-        <span id="whsOperationsBtn" class="d-none" style="min-width: 100%">
-        <a th:href="@{/warehouse}"><div  class="btn3">
-            <span th:text="#{app.chWarehouse}"></span>
+        <span id="whsOperationsBtn" style="width: 100%" class="d-none" >
+        <a th:href="@{/warehouse}">
+            <div  class="btn3">
+            <span th:text="#{app.chWarehouse}" ></span>
             <img th:src="@{/images/return.png}" class="right"/>
             </div></a>
-        <a th:href="@{/stock}" ><div th:text="#{app.checkStock}" class="btn3">Check Stock</div></a>
+        <a th:href="@{/stock}" >
+            <div th:text="#{app.checkStock}" class="btn3">Check Stock</div>
+        </a>
         <div class="btn3" id="reception">
             <span th:text="#{app.receptionMenu}"></span>
             <img id="receptionImg" th:src="@{/images/list.png}" class="right"/>
         </div>
         <div id="receptionBtn" class="d-none">
         <a th:href="@{/reception/formReception}"><div th:text="#{app.declareReception}" class="btn2">Declare Reception</div></a>
-        <a th:href="@{/reception/reception}"><div th:text="#{app.checkReceptions}" class="btn2">Check Receptions</div></a>
+        <a th:href="@{/reception/receptions-browser}"><div th:text="#{app.checkReceptions}" class="btn2">Check Receptions</div></a>
             </div>
         <div class="btn3" id="shipment">
             <span th:text="#{app.shipmentMenu}"></span>
@@ -221,9 +223,43 @@
             </ol>
         </a>
             </div>
+    <a th:href="@{/workDetails-browser}" ><div th:text="#{app.works}" class="btn3">Works</div></a>
+              <div class="btn3" id="productionMenu">
+            <span th:text="#{app.productionMenu}"></span>
+                  <img id="productionImg" th:src="@{/images/list.png}" class="right"/>
+        </div>
+        <div id="productionBtn" class="d-none">
+        <a th:href="@{/production-browser}"><div th:text="#{app.ongoingProductions}" class="btn2"></div></a>
+        <a th:href="@{/startProducing}"><div th:text="#{app.startProducing}" class="btn2"></div></a>
+        </div>
+    <a th:href="@{/scanner/{token}(token=${token})}" ><div th:text="#{app.scanner}" class="btn3">scanner</div></a>
         </span>
     </div>
     <script>
+        const productionMenu = document.getElementById("productionMenu");
+        let switcherProd = 0;
+
+        const handleClickProduction = () => {
+            switcherProd = switcherProd + 1;
+            imgSwitcherProd();
+        }
+
+        function imgSwitcherProd(){
+            if(switcherProd % 2 == 0){
+                document.getElementById('productionImg').src = '/images/list.png';
+                $("#productionBtn").hide(500)
+            }
+            else{
+                document.getElementById('productionImg').src = '/images/close.png';
+                $("#productionBtn").show(500);
+                $('html, body').animate({
+                    scrollTop: $("#productionMenu").offset().top
+                }, 2000);
+            }
+        }
+
+        productionMenu.addEventListener('click', handleClickProduction);
+
         const companyMenu = document.getElementById("companyMenu");
         let switcherCom = 0;
 
@@ -307,6 +343,7 @@
             if (switcherSet % 2 == 0) {
                 document.getElementById('configImg').src  = '/images/list.png';
                 $("#configBtn").hide(500);
+
             }
             else {
                 document.getElementById('configImg').src = '/images/close.png';
