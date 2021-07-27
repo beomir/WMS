@@ -42,10 +42,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query(value = "Select count(article_number) from article a inner join production_article pa on a.id = pa.article_id where a.article_number = ?1 and pa.production_article_type = 'finish product'",nativeQuery = true)
     int checkIfFinishProductExists(Long articleNumber);
 
-    ////// TODO check the demand for it
-//    @Query(value = "Select sum(quantity_for_finished_product) from article inner join production_article pa on article.id = pa.article_id inner join company c on article.company_id = c.id where production_article_connection = ?1 and production_article_type = 'intermediate' and c.name = ?2",nativeQuery = true)
-//    int sumOfAssignedIntermediateArticlesQty(Long articleNumber,String companyName);
-
     @Query(value = "select case when sum(b.qty) is null then 0 else sum(b.qty) end from(Select a.article_number,pa.production_article_type,iapa.production_article_id pai,IF(quantity_for_finished_product is null, 0,quantity_for_finished_product) qty,c.name from article a inner join intermediate_article pa on a.id = pa.article_id inner join company c on a.company_id = c.id left join intermediate_article_production_article iapa on pa.id = iapa.intermediate_article_id union select a.article_number, production_article_type, pa.id, if(quantity_for_finished_product is null,0,quantity_for_finished_product), c.name from article a inner join production_article pa on a.id = pa.article_id inner join company c on a.company_id = c.id left join intermediate_article_production_article iapa on pa.id = iapa.production_article_id ) b join production_article p on  b.pai = p.id join article a2 on p.article_id = a2.id where b.production_article_type = 'intermediate' and a2.article_number = ?1 and b.name = ?2",nativeQuery = true)
     int sumOfAssignedIntermediateArticlesQty(Long articleNumber,String companyName);
 

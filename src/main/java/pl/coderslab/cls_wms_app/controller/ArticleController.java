@@ -50,10 +50,9 @@ public class ArticleController {
     private final IntermediateArticleService intermediateArticleService;
     private final ArticleRepository articleRepository;
     private final ProductionArticleRepository productionArticleRepository;
-    private final ArticleServiceImpl articleServiceimpl;
 
     @Autowired
-    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository, ExtremelyRepository extremelyRepository, StorageZoneRepository storageZoneRepository, ProductionArticleService productionArticleService, LocationRepository locationRepository, WarehouseRepository warehouseRepository, IntermediateArticleService intermediateArticleService, ArticleRepository articleRepository, ProductionArticleRepository productionArticleRepository, ArticleServiceImpl articleServiceimpl) {
+    public ArticleController(ArticleService articleService, ReceptionServiceImpl receptionServiceImpl, ArticleServiceImpl articleServiceImpl, ArticleTypesService articleTypesService, CompanyService companyService, UsersService usersService, UsersServiceImpl usersServiceImpl, LocationNameConstruction locationNameConstruction, AddLocationToStorageZone addLocationToStorageZone, ArticleSearch articleSearch, ArticleTypesRepository articleTypesRepository, ExtremelyRepository extremelyRepository, StorageZoneRepository storageZoneRepository, ProductionArticleService productionArticleService, LocationRepository locationRepository, WarehouseRepository warehouseRepository, IntermediateArticleService intermediateArticleService, ArticleRepository articleRepository, ProductionArticleRepository productionArticleRepository) {
         this.articleService = articleService;
         this.receptionServiceImpl = receptionServiceImpl;
         this.articleServiceImpl = articleServiceImpl;
@@ -73,7 +72,6 @@ public class ArticleController {
         this.intermediateArticleService = intermediateArticleService;
         this.articleRepository = articleRepository;
         this.productionArticleRepository = productionArticleRepository;
-        this.articleServiceimpl = articleServiceimpl;
     }
 
     @GetMapping("article")
@@ -148,16 +146,17 @@ public class ArticleController {
     }
 
     @PostMapping("formArticle")
-    public String articleAdd(Article article, ProductionArticle productionArticle, HttpServletRequest request) {
-        articleService.addNew(article,productionArticle,request);
+    public String articleAdd(Article article, ProductionArticle productionArticle, HttpServletRequest request,boolean productionArticleCheckbox,HttpSession session) {
+        articleService.addNew(article,productionArticle,request,session);
         log.error("productionArticle value New Article Post: " + productionArticle);
+        log.error("productionArticleCheckbox: " + productionArticleCheckbox);
         log.error("productionArticle.getProductionArticleType(): " + productionArticle.getProductionArticleType());
         Article checkIfArticleSavedInDB = articleRepository.findArticleByArticle_number(article.getArticle_number());
-        if(productionArticle.getProductionArticleType().equals("finish product") && checkIfArticleSavedInDB != null){
+        if(productionArticle.getProductionArticleType().equals("finish product") && checkIfArticleSavedInDB != null && productionArticleCheckbox){
             productionArticleService.addNew(productionArticle,article);
             log.error("finish product way");
         }
-        else if(productionArticle.getProductionArticleType().equals("intermediate") && checkIfArticleSavedInDB != null){
+        else if(productionArticle.getProductionArticleType().equals("intermediate") && checkIfArticleSavedInDB != null && productionArticleCheckbox){
             log.error("intermediate way 1/2");
             intermediateArticleService.addNew(productionArticle,article);
         }
@@ -168,6 +167,21 @@ public class ArticleController {
     @GetMapping("/deleteArticle/{id}")
     public String removeArticle(@PathVariable Long id) {
         articleService.delete(id);
+        return "redirect:/article";
+    }
+
+    @PostMapping("/deactivateArticle")
+    public String deactivateArticle(String deactivateValue,Long id) {
+        log.error("deactivateValue: " + deactivateValue);
+        if(deactivateValue.equals("2")){
+            articleService.delete(id);
+            log.error("deactivateArticle selected No");
+        }
+        else if(deactivateValue.equals("1")){
+            articleService.deactivateFinishProductWithIntermediates(id);
+            log.error("deactivateArticle selected Yes");
+        }
+
         return "redirect:/article";
     }
 
@@ -235,17 +249,18 @@ public class ArticleController {
     }
 
     @PostMapping("formEditArticle")
-    public String edit(Article article,ProductionArticle productionArticle,String warehouseName,String productionArticleId,HttpServletRequest request) {
+    public String edit(Article article,ProductionArticle productionArticle,String warehouseName,String productionArticleId,HttpServletRequest request,boolean productionArticleCheckbox,HttpSession session) {
 
         log.info("productionArticle value edit Article Post: " + productionArticle);
         log.info("chosen warehouse: " +  warehouseName);
         log.error("productionArticleId: " + productionArticleId);
-        articleService.edit(article,productionArticle,request);
-        log.error("intermediateQtyForFinishProduct: " + articleServiceimpl.intermediateQtyForFinishProduct);
-        if(productionArticle.getProductionArticleType().equals("finish product") && articleServiceimpl.intermediateQtyForFinishProduct) {
+        articleService.edit(article,productionArticle,request,session);
+        boolean intermediateQtyForFinishProductStatus = (boolean) session.getAttribute("intermediateQtyForFinishProductStatus");
+        log.error("intermediateQtyForFinishProduct: " + intermediateQtyForFinishProductStatus);
+        if(productionArticle.getProductionArticleType().equals("finish product") && intermediateQtyForFinishProductStatus && productionArticleCheckbox) {
             productionArticleService.edit(productionArticle, article, warehouseName, productionArticleId);
         }
-        else if(productionArticle.getProductionArticleType().equals("intermediate") && articleServiceimpl.intermediateQtyForFinishProduct){
+        else if(productionArticle.getProductionArticleType().equals("intermediate") && intermediateQtyForFinishProductStatus && productionArticleCheckbox){
             log.error("intermediate way edit 1/2");
             intermediateArticleService.edit(productionArticle, article, warehouseName);
         }

@@ -48,12 +48,8 @@ if(productionArticleTypeForIntermediate == "intermediate"){
     intermediateValues()
 }
 function intermediateValues(){
-    console.log("before: " + productionArticleConnectionForEdit.val())
     productionArticleConnectionForEdit.val(productionArticleForIntermediate) ;
-    console.log("after: " +productionArticleConnectionForEdit.val())
-    console.log("before: " +quantityForFinishedProductForEdit.val())
     quantityForFinishedProductForEdit.val(intermediateQtyForProduction);
-    console.log("after: " +quantityForFinishedProductForEdit.val())
     selectIdForEdit.val(productionArticleTypeForIntermediate).change();
     $('#selectId').find('[value="finish product"]').remove();
 }

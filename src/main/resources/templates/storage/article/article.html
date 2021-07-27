@@ -198,39 +198,63 @@
 						<th th:text="#{app.chandedBy}" style="font-weight: bold" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="article: ${article}">
-						<span th:if="${article.productionArticle == null && article.intermediateArticle == null}"><td class="tables" style="padding-bottom: 2px"></span>
-						<span th:if="${article.productionArticle} != null">
-						<span th:if="${article.productionArticle.productionArticleType == 'finish product'}"><td class="tables" th:title="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? #{app.productionArticle} + ': ' + #{app.finishProduct}" th:style="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? 'background: green;padding-bottom: 2px' : 'padding-bottom: 2px'"></span>
+
+						<span th:if="${article.productionArticle == null && article.intermediateArticle == null}">
+							<td class="tables" th:title="${article.active == false} == TRUE ? #{app.deactivated}" th:style="${article.active == false} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'">
 						</span>
+
+						<span th:if="${article.productionArticle} != null">
+
+						<span th:if="${article.productionArticle.productionArticleType == 'finish product'}">
+							<td th:name="${article.productionArticle.productionArticleType}" th:if="${article.active == true}" class="tables" th:title="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? #{app.productionArticle} + ': ' + #{app.finishProduct}" th:style="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? 'background: green;padding-bottom: 2px' : 'padding-bottom: 2px'">
+							<td th:name="${article.productionArticle.productionArticleType}" th:if="${article.active == false}" class="tables"  th:title="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? #{app.deactivated} + ' ' + #{app.productionArticle} + ': ' + #{app.finishProduct}" th:style="${article.production == true && article.productionArticle.productionArticleType == 'finish product'} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'">
+						</span>
+
+						</span>
+
 						<span th:if="${article.intermediateArticle} != null">
 							<span th:if="${article.intermediateArticle.productionArticleType == 'intermediate'}">
-								<td th:each="a,i : *{article.intermediateArticle.productionArticle}"   class="tables" th:title="${article.production == true && article.intermediateArticle.productionArticleType == 'intermediate'} == TRUE ? #{app.productionArticle} + ': ' + #{app.intermediateProduct} + ', ' + #{app.finishProduct} + ': ' +  ${a.article.article_number}" th:style="${article.production == true && article.intermediateArticle.productionArticleType == 'intermediate'} == TRUE ? 'background: sandybrown;padding-bottom: 2px' : 'padding-bottom: 2px'">
+								<td th:name="${article.intermediateArticle.productionArticleType}" th:if="${article.active == true}" th:each="a,i : *{article.intermediateArticle.productionArticle}"   class="tables" th:title="${article.production == true && article.intermediateArticle.productionArticleType == 'intermediate'} == TRUE ? #{app.productionArticle} + ': ' + #{app.intermediateProduct} + ', ' + #{app.finishProduct} + ': ' +  ${a.article.article_number}" th:style="${article.production == true && article.intermediateArticle.productionArticleType == 'intermediate'} == TRUE ? 'background: sandybrown;padding-bottom: 2px' : 'padding-bottom: 2px'">
+								<td th:name="${article.intermediateArticle.productionArticleType}" th:if="${article.active == false}" th:each="a,i : *{article.intermediateArticle.productionArticle}"   class="tables" th:title="${article.production == true && article.intermediateArticle.productionArticleType == 'intermediate'} == TRUE ? #{app.deactivated} + ' ' + #{app.productionArticle} + ': ' + #{app.intermediateProduct} + ', ' + #{app.finishProduct} + ': ' +  ${a.article.article_number}" th:style="${article.production == true && article.intermediateArticle.productionArticleType == 'intermediate'} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'">
 							</span>
 						</span>
+
 						<ol>
 								<div th:text="${article.article_number}" ></div>
 								<li>
 									<ul>
-										<li><a th:text="#{app.deactivate}" th:href="@{/deleteArticle/{id}(id=${article.id})}">DEACTIVATE</a></li>
-										<li><a th:text="#{app.edit}" th:href="@{/formEditArticle/{id}(id=${article.id})}">EDIT</a></li>
+										<li th:if="${article.productionArticle} == null" ><a  th:href="@{/deleteArticle/{id}(id=${article.id})}"><span th:title="#{app.deactivateArticleAndMakeItUnavailableForUsage}" th:text="#{app.deactivate}"></span></a></li>
+										<li th:if="${article.productionArticle} != null" ><div th:alt="${article.article_number}" th:name="${article.id}" th:title="#{app.deactivateArticleAndMakeItUnavailableForUsage}" class="show-modal" ><span th:text="#{app.deactivate}"></span></div></li>
+										<li><a th:href="@{/formEditArticle/{id}(id=${article.id})}"><span th:title="#{app.goToEditPanelToSeeOrChangeDetails}" th:text="#{app.edit}"></span></a></li>
 									</ul>
 								</li>
 							</ol>
 						</td>
-						<td class="tables" th:text="${article.article_desc}"></td>
-						<td class="tables" th:text="${article.volume}"></td>
-						<td class="tables" th:text="${article.height}"></td>
-						<td class="tables" th:text="${article.width}"></td>
-						<td class="tables" th:text="${article.depth}"></td>
-						<td class="tables" th:text="${article.weight}"></td>
-						<td class="tables" th:text="${article.company.name}"></td>
-						<td class="tables" th:text="${article.articleTypes.articleClass}"></td>
-						<td class="tables" th:text="${article.changeBy}" th:title="#{app.lastUpdate} + ': ' + ${#strings.replace(#strings.substring(article.last_update,0,19),'T',' ')} + ' ' + #{app.created} + ': ' + ${#strings.replace(#strings.substring(article.created,0,19),'T',' ')}"></td>
+						<td th:style="${article.active == false} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" th:text="${article.article_desc}"></td>
+						<td th:style="${article.active == false} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" th:text="${article.volume}"></td>
+						<td th:style="${article.active == false} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" th:text="${article.height}"></td>
+						<td th:style="${article.active == false} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" th:text="${article.width}"></td>
+						<td th:style="${article.active == false} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" th:text="${article.depth}"></td>
+						<td th:style="${article.active == false} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" th:text="${article.weight}"></td>
+						<td th:style="${article.active == false} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" th:text="${article.company.name}"></td>
+						<td th:style="${article.active == false} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" th:text="${article.articleTypes.articleClass}"></td>
+						<td th:style="${article.active == false} == TRUE ? 'background: #888888;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" th:text="${article.changeBy}" th:title="#{app.lastUpdate} + ': ' + ${#strings.replace(#strings.substring(article.last_update,0,19),'T',' ')} + ' ' + #{app.created} + ': ' + ${#strings.replace(#strings.substring(article.created,0,19),'T',' ')}"></td>
 				    </tr>
 				</table>
 
 				<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/config/articleDeactivatedList}"><div th:text="#{app.deactivatedList}" class="buttonik" style="float: right;max-width: 20%;">Deactivated List</div></a>
 			</div><br/><br/>
+
+<!--			<button id="show-modal">Click</button>-->
+
+<!--			<div class="modal">-->
+<!--				<div class="modal__close-bar">-->
+<!--				<div class="modal__contents">-->
+<!--					<span>X</span>-->
+<!--				</div>-->
+<!--					<span th:text="#{app.doYouWantDeactivateAllIntermediateArticlesLinkedWithSelectedFinishProduct}"></span>-->
+<!--				</div>-->
+<!--			</div>-->
 
 			<div th:include="fragments/footer :: footer"></div>
 		</div>
@@ -238,6 +262,24 @@
 			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 		</div>
 	</div>
+
+	<div class="overlay overlay--hidden"></div>
+	<div class="modal modal--hidden">
+		<div class="modal__contents">
+			<div class="modal__close-bar">
+				<span>X</span>
+			</div>
+			<p id="textModalMessage" th:text="#{app.doYouWantDeactivateAllIntermediateArticlesLinkedWithSelectedFinishProduct}"></p>
+			<form style="text-align: center" method="post" th:action="@{/deactivateArticle}">
+				<button style="width: 49%" name="deactivateValue" value="1" th:text="#{app.yes}"></button>
+				<button style="width: 49%" name="deactivateValue" value="2" th:text="#{app.no}"></button>
+				<input type="hidden" id="id" name="id"><br/>
+			</form>
+		</div>
+	</div>
+
+
+	<script type="text/javascript" th:src="@{/js/article.js}"></script>
 	<script>
 		function errorMessage(){
 			setTimeout(function (){

@@ -96,11 +96,13 @@ productionArticle.addEventListener("click", function (e) {
 $('#productionArticle').click(function() {
     if ($(this).is(':checked')) {
         $("#productionArticleDetails").show(400);
+        $("#quantityForFinishedProduct").prop("required",true);
         $('html, body').animate({
             scrollTop: $("#productionArticleDetails").offset().top
         }, 2000);
     } else {
         $("#productionArticleDetails").hide(400);
+        $("#quantityForFinishedProduct").prop("required","");
         console.log("Checkbox is unchecked.")
         $('html, body').animate({
             scrollTop: $("#top").offset().top

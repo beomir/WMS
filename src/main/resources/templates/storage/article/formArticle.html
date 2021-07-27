@@ -74,7 +74,7 @@
 				</select>
 			</section><br/>
 			<section th:if="${productionModule} == 'on'">
-				<input type="checkbox" id="productionArticle"/>
+				<input type="checkbox" name="productionArticleCheckbox" id="productionArticle"/>
 				<label th:text="#{app.productionArticle}" style="letter-spacing: 2px;color: white"></label><br/><br/>
 				<div id="productionArticleDetails" style="background: #2309ca;border-radius:10px;padding: 8px">
 						<label th:text="#{app.productionArticleType}" style="color: white;font-weight: normal"></label>

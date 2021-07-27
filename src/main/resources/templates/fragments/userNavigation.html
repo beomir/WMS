@@ -23,7 +23,7 @@
             <ol class="btn2"><div th:text="#{app.scheduler}" style="color: white;font-weight: normal"></div>
                 <li style="min-width: 100%;">
                     <ul>
-                        <li><a th:text="#{app.addScheduler}" th:href="@{/user/formScheduler}">Create Scheduler</a></li>
+                        <li><a th:href="@{/user/formScheduler}"><span th:text="#{app.addScheduler}"></span></a></li>
                     </ul>
                 </li>
             </ol>
@@ -33,7 +33,7 @@
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a sec:authorize="hasRole('ROLE_USER')" th:text="#{app.addRecipientsList}" th:href="@{/user/formEmailRecipients}">Create New email recipient</a>
+                            <a sec:authorize="hasRole('ROLE_USER')"  th:href="@{/user/formEmailRecipients}"><span th:text="#{app.addRecipientsList}"></span></a>
                         </li>
                     </ul>
                 </li>
@@ -44,7 +44,7 @@
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addArticle}" th:href="@{/formArticle}">Create New Article</a>
+                            <a  th:href="@{/formArticle}"><span th:text="#{app.addArticle}"></span></a>
                         </li>
                     </ul>
                 </li>
@@ -59,7 +59,7 @@
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addCustomer}" th:href="@{/shipment/formCustomer}">Create New Customer</a>
+                            <a  th:href="@{/shipment/formCustomer}"><span th:text="#{app.addCustomer}"></span></a>
                         </li>
                     </ul>
                 </li>
@@ -70,7 +70,7 @@
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addVendor}" th:href="@{/reception/formVendor}">Create New Vendor</a>
+                            <a  th:href="@{/reception/formVendor}"><span th:text="#{app.addVendor}"> </span></a>
                         </li>
                     </ul>
                 </li>
@@ -89,9 +89,9 @@
                  <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addLocation}" th:href="@{/user/formLocation}">Create New Location</a>
-                            <a th:text="#{app.addLocations}" th:href="@{/user/formLocationPack}">Create Location pack</a>
-                            <a th:text="#{app.addLocationsToStorageZone}" th:href="@{/user/addLocToStorageZones}">Add Locations To Storage Zone</a>
+                            <a  th:href="@{/user/formLocation}"><span th:text="#{app.addLocation}"></span></a>
+                            <a  th:href="@{/user/formLocationPack}"><span th:text="#{app.addLocations}"></span></a>
+                            <a  th:href="@{/user/addLocToStorageZones}"><span th:text="#{app.addLocationsToStorageZone}"> </span></a>
                         </li>
                     </ul>
                 </li>
@@ -102,7 +102,7 @@
                  <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addStorageZone}" th:href="@{/user/formLocation}">Create New Storage Zone</a>
+                            <a  th:href="@{/user/formLocation}"><span th:text="#{app.addStorageZone}"></span></a>
                         </li>
                     </ul>
                 </li>
@@ -140,7 +140,7 @@
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.checkShipmentInCreation}" th:href="@{/shipment/shipmentInCreation}">Check Shipments in Creation</a>
+                            <a  th:href="@{/shipment/shipmentInCreation}"><span th:text="#{app.checkShipmentInCreation}"></span></a>
                         </li>
                     </ul>
                 </li>
