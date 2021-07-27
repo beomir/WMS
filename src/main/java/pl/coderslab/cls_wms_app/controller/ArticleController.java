@@ -75,7 +75,7 @@ public class ArticleController {
     }
 
     @GetMapping("article")
-    public String list(Model model) {
+    public String list(Model model,HttpSession session) {
         List<Article> article = articleService.getArticleByAllCriteria(articleSearch.getArticle_number(),articleSearch.getVolumeBiggerThan(),articleSearch.getVolumeLowerThan(),articleSearch.getWidthBiggerThan(),articleSearch.getWidthLowerThan(),articleSearch.getDepthBiggerThan(),articleSearch.getDepthLowerThan(),articleSearch.getHeightBiggerThan(),articleSearch.getHeightLowerThan(),articleSearch.getWeightBiggerThan(),articleSearch.getWeightLowerThan(),articleSearch.getCreatedBy(),articleSearch.getCreationDateFrom(),articleSearch.getCreationDateTo(),articleSearch.getLastUpdateDateFrom(),articleSearch.getLastUpdateDateTo(),articleSearch.getCompany(),articleSearch.getArticleDescription(),articleSearch.getArticleTypes());
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
 
@@ -90,7 +90,7 @@ public class ArticleController {
             log.error("extremely value is null");
         }
         model.addAttribute("article", article);
-        model.addAttribute("articleMessage", articleServiceImpl.articleMessage);
+        model.addAttribute("articleMessage", session.getAttribute("articleMessage"));
         model.addAttribute("companies", companies);
         model.addAttribute("articleSearch",articleSearch);
         receptionServiceImpl.insertReceptionFileResult = "";
@@ -165,29 +165,41 @@ public class ArticleController {
     }
 
     @GetMapping("/deleteArticle/{id}")
-    public String removeArticle(@PathVariable Long id) {
-        articleService.delete(id);
+    public String removeArticle(@PathVariable Long id,HttpSession session) {
+        articleService.delete(id,session);
         return "redirect:/article";
     }
 
-    @PostMapping("/deactivateArticle")
-    public String deactivateArticle(String deactivateValue,Long id) {
-        log.error("deactivateValue: " + deactivateValue);
-        if(deactivateValue.equals("2")){
-            articleService.delete(id);
-            log.error("deactivateArticle selected No");
+    @PostMapping("/changeStatusOfProductionArticle")
+    public String changeStatusOfProductionArticle(String multiChange,Long id,String status,HttpSession session) {
+        log.error("multiChange: " + multiChange);
+        log.error("status: " + status);
+        if(multiChange.equals("2")){
+            if(status.equals("deactivated")){
+                articleService.activate(id,session);
+            }
+            else{
+                articleService.delete(id,session);
+            }
+
+            log.error("statusValue selected No");
         }
-        else if(deactivateValue.equals("1")){
-            articleService.deactivateFinishProductWithIntermediates(id);
-            log.error("deactivateArticle selected Yes");
+        else if(multiChange.equals("1")){
+            if(status.equals("deactivated")){
+                articleService.activateFinishProductWithIntermediates(id,session);
+            }
+            else{
+                articleService.deactivateFinishProductWithIntermediates(id,session);
+            }
+            log.error("multiChange selected Yes");
         }
 
         return "redirect:/article";
     }
 
     @GetMapping("/config/activateArticle/{id}")
-    public String activateArticle(@PathVariable Long id) {
-        articleService.activate(id);
+    public String activateArticle(@PathVariable Long id,HttpSession session) {
+        articleService.activate(id,session);
         return "redirect:/config/articleDeactivatedList";
     }
 

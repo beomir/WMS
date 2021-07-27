@@ -5,12 +5,30 @@ const toggleModal = () => {
         .classList.toggle('overlay--hidden');
 }
 let appendMessage;
+let clickedArticleStatus;
+
+let textActive = $("#textModalMessageActivate").text()
+let textDeactivate = $("#textModalMessageDeactivate").text()
 
 $( ".show-modal" ).click(function(){
-    $("#id").val($(this).attr('name'))
-    appendMessage = ': ' + $(this).attr('alt') + '?'
-    $("#textModalMessage").append(appendMessage)
-    toggleModal();
+    clickedArticleStatus = $(this).attr("lang");
+    console.log($(this).attr("lang"))
+    console.log(clickedArticleStatus)
+    if(clickedArticleStatus == "active"){
+        $("#id").val($(this).attr('name'))
+        $("#status").val($(this).attr('lang'))
+        appendMessage = ': ' + $(this).attr('alt') + '?'
+        $("#textModalMessage").text(textDeactivate + ' ' + appendMessage);
+        toggleModal();
+    }
+    else{
+        $("#id").val($(this).attr('name'))
+        $("#status").val($(this).attr('lang'))
+        appendMessage = ': ' + $(this).attr('alt') + '?'
+        $("#textModalMessage").text(textActive + ' ' + appendMessage);
+        toggleModal();
+    }
+
 })
 
 document.querySelector('.overlay')
@@ -18,7 +36,6 @@ document.querySelector('.overlay')
 
 
 $( ".modal__close-bar span" ).click(function() {
-    $("#textModalMessage").text($("#textModalMessage").text().replace(appendMessage,""));
     toggleModal()
 })
 

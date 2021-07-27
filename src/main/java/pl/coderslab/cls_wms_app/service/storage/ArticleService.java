@@ -25,11 +25,13 @@ public interface ArticleService {
 
     Article findById(Long id);
 
-    void delete(Long id);
+    void delete(Long id,HttpSession session);
 
-    void deactivateFinishProductWithIntermediates(Long id);
+    void deactivateFinishProductWithIntermediates(Long id,HttpSession session);
 
-    void activate(Long id);
+    void activate(Long id,HttpSession session);
+
+    void activateFinishProductWithIntermediates(Long id,HttpSession session);
 
     void save(ArticleSearch articleSearch);
 

@@ -223,8 +223,10 @@
 								<div th:text="${article.article_number}" ></div>
 								<li>
 									<ul>
-										<li th:if="${article.productionArticle} == null" ><a  th:href="@{/deleteArticle/{id}(id=${article.id})}"><span th:title="#{app.deactivateArticleAndMakeItUnavailableForUsage}" th:text="#{app.deactivate}"></span></a></li>
-										<li th:if="${article.productionArticle} != null" ><div th:alt="${article.article_number}" th:name="${article.id}" th:title="#{app.deactivateArticleAndMakeItUnavailableForUsage}" class="show-modal" ><span th:text="#{app.deactivate}"></span></div></li>
+										<li th:if="${article.productionArticle == null && article.active == true} " ><a  th:href="@{/deleteArticle/{id}(id=${article.id})}"><span th:title="#{app.deactivateArticleAndMakeItUnavailableForUsage}" th:text="#{app.deactivate}"></span></a></li>
+										<li th:if="${article.productionArticle == null && article.active == false} " ><a  th:href="@{/activateArticle/{id}(id=${article.id})}"><span th:title="#{app.activateArticleAndMakeItUnavailableForUsage}" th:text="#{app.activate}"></span></a></li>
+										<li th:if="${article.productionArticle != null && article.active == true} " ><div lang="active" th:alt="${article.article_number}" th:name="${article.id}" th:title="#{app.deactivateArticleAndMakeItUnavailableForUsage}" class="show-modal" ><span th:text="#{app.deactivate}"></span></div></li>
+										<li th:if="${article.productionArticle != null && article.active == false} " ><div lang="deactivated" th:alt="${article.article_number}" th:name="${article.id}" th:title="#{app.activateArticleAndMakeItUnavailableForUsage}" class="show-modal" ><span th:text="#{app.activate}"></span></div></li>
 										<li><a th:href="@{/formEditArticle/{id}(id=${article.id})}"><span th:title="#{app.goToEditPanelToSeeOrChangeDetails}" th:text="#{app.edit}"></span></a></li>
 									</ul>
 								</li>
@@ -245,16 +247,6 @@
 				<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/config/articleDeactivatedList}"><div th:text="#{app.deactivatedList}" class="buttonik" style="float: right;max-width: 20%;">Deactivated List</div></a>
 			</div><br/><br/>
 
-<!--			<button id="show-modal">Click</button>-->
-
-<!--			<div class="modal">-->
-<!--				<div class="modal__close-bar">-->
-<!--				<div class="modal__contents">-->
-<!--					<span>X</span>-->
-<!--				</div>-->
-<!--					<span th:text="#{app.doYouWantDeactivateAllIntermediateArticlesLinkedWithSelectedFinishProduct}"></span>-->
-<!--				</div>-->
-<!--			</div>-->
 
 			<div th:include="fragments/footer :: footer"></div>
 		</div>
@@ -270,14 +262,16 @@
 				<span>X</span>
 			</div>
 			<p id="textModalMessage" th:text="#{app.doYouWantDeactivateAllIntermediateArticlesLinkedWithSelectedFinishProduct}"></p>
-			<form style="text-align: center" method="post" th:action="@{/deactivateArticle}">
-				<button style="width: 49%" name="deactivateValue" value="1" th:text="#{app.yes}"></button>
-				<button style="width: 49%" name="deactivateValue" value="2" th:text="#{app.no}"></button>
+			<form style="text-align: center" method="post" th:action="@{/changeStatusOfProductionArticle}">
+				<button style="width: 49%" name="multiChange" value="1" th:text="#{app.yes}"></button>
+				<button style="width: 49%" name="multiChange" value="2" th:text="#{app.no}"></button>
 				<input type="hidden" id="id" name="id"><br/>
+				<input type="hidden" id="status" name="status"><br/>
 			</form>
 		</div>
 	</div>
-
+	<span style="display: none" id="textModalMessageDeactivate" th:text="#{app.doYouWantDeactivateAllIntermediateArticlesLinkedWithSelectedFinishProduct}"></span>
+	<span style="display: none" id="textModalMessageActivate" th:text="#{app.doYouWantActivateAllIntermediateArticlesLinkedWithSelectedFinishProduct}"></span>
 
 	<script type="text/javascript" th:src="@{/js/article.js}"></script>
 	<script>

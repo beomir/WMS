@@ -33,7 +33,6 @@ public class ArticleServiceImpl implements ArticleService{
     private IssueLogService issueLogService;
     private WarehouseRepository warehouseRepository;
     private CompanyService companyService;
-    public String articleMessage;
     public ArticleSearch articleSearch;
 
 
@@ -83,7 +82,7 @@ public class ArticleServiceImpl implements ArticleService{
                     transaction.setVendor("");
                     transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                     transactionService.add(transaction);
-                    articleMessage = "Article successfully created";
+                    session.setAttribute("articleMessage","Article successfully created");
 
                 }
                 else articleEdition(article, productionArticle, request,session);
@@ -99,7 +98,7 @@ public class ArticleServiceImpl implements ArticleService{
                 issueLog.setIssueLogFileName("");
                 issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                 issueLogService.add(issueLog);
-                articleMessage = "Article number: " + article.getArticle_number() + ", already exists for company: " + article.getCompany().getName() + ". Check IssueLog ";
+                session.setAttribute("articleMessage","Article number: " + article.getArticle_number() + ", already exists for company: " + article.getCompany().getName() + ". Check IssueLog ");
             }
 
         }
@@ -114,7 +113,8 @@ public class ArticleServiceImpl implements ArticleService{
             issueLog.setIssueLogFileName("");
             issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
             issueLogService.add(issueLog);
-            articleMessage = "One from dimension were 0 or under 0. Check issue log" ;
+            session.setAttribute("articleMessage","One from dimension were 0 or under 0. Check issue log");
+
         }
         if(articleSearch.company == null){
             articleSearch.company = companyService.getOneCompanyByUsername(SecurityUtils.username()).getName();
@@ -150,7 +150,8 @@ public class ArticleServiceImpl implements ArticleService{
                     transaction.setVendor("");
                     transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                     transactionService.add(transaction);
-                    articleMessage = "Article successfully edited";
+                    session.setAttribute("articleMessage","Article successfully edited");
+
                 }
                 else if(article.isProduction() && productionArticle.getProductionArticleType().equals("finish product")){
                     log.error("article.getArticle_number(): " + article.getArticle_number());
@@ -180,7 +181,8 @@ public class ArticleServiceImpl implements ArticleService{
                         transaction.setVendor("");
                         transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                         transactionService.add(transaction);
-                        articleMessage = "Finish product successfully edited";
+                        session.setAttribute("articleMessage","Finish product successfully edited");
+
                     }
                     else{
                         IssueLog issueLog = new IssueLog();
@@ -193,7 +195,7 @@ public class ArticleServiceImpl implements ArticleService{
                         issueLog.setIssueLogFileName("");
                         issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                         issueLogService.add(issueLog);
-                        articleMessage = "Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + productionArticle.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()) + ", check issueLog" ;
+                        session.setAttribute("articleMessage","Qty setup to create finish product (article number: " + article.getArticle_number() + "): " + productionArticle.getQuantityForFinishedProduct() + " are less then sum of already assigned intermediate articles: " + articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName()) + ", check issueLog");
                         session.setAttribute("intermediateQtyForFinishProductStatus",false);
                     }
                 }
@@ -213,7 +215,7 @@ public class ArticleServiceImpl implements ArticleService{
             issueLog.setIssueLogFileName("");
             issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
             issueLogService.add(issueLog);
-            articleMessage = "One from dimension were 0 or under 0. Check issue log" ;
+            session.setAttribute("articleMessage","One from dimension were 0 or under 0. Check issue log");
             session.setAttribute("intermediateQtyForFinishProductStatus",false);
         }
     }
@@ -233,10 +235,12 @@ public class ArticleServiceImpl implements ArticleService{
                         article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
                         articleRepository.save(article);
                         if(request.getHeader("Referer").contains("formEditArticle")){
-                            articleMessage = "Article successfully edited";
+                            session.setAttribute("articleMessage","Article successfully edited");
+
                         }
                         if(request.getHeader("Referer").contains("formArticle")){
-                            articleMessage = "Article successfully created";
+                            session.setAttribute("articleMessage","Article successfully created");
+
                         }
 
                     }
@@ -252,7 +256,7 @@ public class ArticleServiceImpl implements ArticleService{
                         issueLog.setIssueLogFileName("");
                         issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                         issueLogService.add(issueLog);
-                        articleMessage = "Information about sum of quantity needed to create finish good: " + productionArticle.getProductionArticleConnection() + ", is lower than sum  already assigned articles quantity + value from last intermediate article, check issuelog";
+                        session.setAttribute("articleMessage","Information about sum of quantity needed to create finish good: " + productionArticle.getProductionArticleConnection() + ", is lower than sum  already assigned articles quantity + value from last intermediate article, check issuelog");
                         session.setAttribute("intermediateQtyForFinishProductStatus",false);
                     }
 
@@ -268,7 +272,7 @@ public class ArticleServiceImpl implements ArticleService{
                     issueLog.setIssueLogFileName("");
                     issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                     issueLogService.add(issueLog);
-                    articleMessage = "Article connector for production: " + productionArticle.getProductionArticleConnection() + ", not exists as finish product. Check IssueLog ";
+                    session.setAttribute("articleMessage","Article connector for production: " + productionArticle.getProductionArticleConnection() + ", not exists as finish product. Check IssueLog ");
                     session.setAttribute("intermediateQtyForFinishProductStatus",false);
                 }
             }
@@ -284,7 +288,7 @@ public class ArticleServiceImpl implements ArticleService{
                 issueLog.setIssueLogFileName("");
                 issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                 issueLogService.add(issueLog);
-                articleMessage = "Article connector for production with name: " + productionArticle.getProductionArticleConnection() + " can't be parse on number. Check IssueLog ";
+                session.setAttribute("articleMessage","Article connector for production with name: " + productionArticle.getProductionArticleConnection() + " can't be parse on number. Check IssueLog ");
                 session.setAttribute("intermediateQtyForFinishProductStatus",false);
             }
         }
@@ -309,16 +313,17 @@ public class ArticleServiceImpl implements ArticleService{
 
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id,HttpSession session) {
         Article article = articleRepository.getOne(id);
         article.setActive(false);
         article.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         article.setChangeBy(SecurityUtils.usernameForActivations());
         articleRepository.save(article);
+        session.setAttribute("articleMessage","Article: " + article.getArticle_number() + " deactivated");
     }
 
     @Override
-    public void deactivateFinishProductWithIntermediates(Long id) {
+    public void deactivateFinishProductWithIntermediates(Long id,HttpSession session) {
         Article article = articleRepository.getOne(id);
         article.setActive(false);
         article.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
@@ -332,19 +337,37 @@ public class ArticleServiceImpl implements ArticleService{
             intermediateArticle.setChangeBy(SecurityUtils.usernameForActivations());
             articleRepository.save(intermediateArticle);
         }
-
-
+        session.setAttribute("articleMessage","Articles: " + intermediateArticlesList.toString().replace("]","") + "," + article.getArticle_number() +  "] deactivated");
     }
 
 
-
     @Override
-    public void activate(Long id) {
+    public void activate(Long id,HttpSession session) {
         Article article = articleRepository.getOne(id);
         article.setActive(true);
         article.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         article.setChangeBy(SecurityUtils.usernameForActivations());
         articleRepository.save(article);
+        session.setAttribute("articleMessage","Article: " + article.getArticle_number() + " activated");
+    }
+
+    @Override
+    public void activateFinishProductWithIntermediates(Long id,HttpSession session) {
+        Article article = articleRepository.getOne(id);
+        article.setActive(true);
+        article.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        article.setChangeBy(SecurityUtils.usernameForActivations());
+        articleRepository.save(article);
+        List<Long> intermediateArticlesList = articleRepository.intermediateProductNumberByFinishProductNumberAndCompanyName(article.getArticle_number(),article.getCompany().getName());
+        for (Long intermediateArticleNumber : intermediateArticlesList){
+            Article intermediateArticle = articleRepository.findArticleByArticle_number(intermediateArticleNumber);
+            intermediateArticle.setActive(true);
+            intermediateArticle.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            intermediateArticle.setChangeBy(SecurityUtils.usernameForActivations());
+            articleRepository.save(intermediateArticle);
+        }
+
+        session.setAttribute("articleMessage","Articles: " + intermediateArticlesList.toString().replace("]","") + ", " + article.getArticle_number()  + "] activated");
     }
 
     @Override
