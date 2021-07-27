@@ -766,7 +766,34 @@ ol > li > ul > li:hover a span:after {
     right: 0;
 }
 
+.arrows{
+    transition: all 0.5s;
+}
 
+.arrows div{
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.arrows div:after{
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -40px;
+    transition: 0.5s;
+}
+
+.arrows:hover div{
+    padding-right: 45px;
+}
+
+.arrows:hover div:after{
+    opacity: 1;
+    right: 0;
+}
 /*ol > li > ul > li:hover*/
 /*{*/
 /*    background-color: #6495ED;*/

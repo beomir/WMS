@@ -12,6 +12,7 @@ import pl.coderslab.cls_wms_app.repository.ProductionArticleRepository;
 import pl.coderslab.cls_wms_app.repository.TransactionRepository;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -68,7 +69,7 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
     }
 
     @Override
-    public void edit(ProductionArticle productionArticle, Article article,String warehouseName) {
+    public void edit(ProductionArticle productionArticle, Article article, String warehouseName, boolean productionStatusOfArticle, HttpSession session) {
         String storageZoneEdited = "";
         String storageZonePrimary = "";
         Warehouse warehouse = warehouseService.getWarehouseByName(warehouseName);
@@ -87,7 +88,8 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
         }
         ProductionArticle productionArticleOld = productionArticleRepository.getProductionArticleByArticleNumber(articleRepository.finishProductNumberByIntermediateNumberAndCompanyName(article.getArticle_number(),article.getCompany().getName()));
         log.error("productionArticleOld: " + productionArticleOld);
-        if(article.isProduction()){
+        if(article.isProduction() && !productionStatusOfArticle){
+            log.error("Was a production but after changes should be not");
             intermediateArticleEdited.getProductionArticle().remove(productionArticleOld);
             intermediateArticleEdited.setArticle(article);
             intermediateArticleEdited.setCompany(article.getCompany());
@@ -134,8 +136,8 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
 
 
         }
-        else if(!article.isProduction()){
-
+        else if(!article.isProduction() && productionStatusOfArticle){
+            log.error("Should be production but before was not");
             Transaction transaction = new Transaction();
             transaction.setHdNumber(0L);
             transaction.setAdditionalInformation("Production Article: " + article.getArticle_number() + ", type: " + productionArticle.getProductionArticleType() + " changed on not production Article");
@@ -160,6 +162,22 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             intermediateArticleEdited.getProductionArticle().remove(productionArticleOld);
             intermediateArticleRepository.delete(intermediateArticleEdited);
             log.error("Edited article: " + article.getArticle_number() + " deleted from production Article table");
+        }
+        else if(productionStatusOfArticle && article.isProduction()){
+            log.error("3");
+            intermediateArticleEdited.setArticle(article);
+            intermediateArticleEdited.setCompany(article.getCompany());
+            intermediateArticleEdited.setChangeBy(productionArticle.getChangeBy());
+            intermediateArticleEdited.setCreated(productionArticle.getCreated());
+            intermediateArticleEdited.setLast_update(productionArticle.getLast_update());
+            intermediateArticleEdited.setQuantityForFinishedProduct(productionArticle.getQuantityForFinishedProduct());
+            intermediateArticleEdited.setStorageZone(productionArticle.getStorageZone());
+            intermediateArticleEdited.setProductionArticleType(productionArticle.getProductionArticleType());
+            intermediateArticleEdited.setLocation(productionArticle.getLocation());
+            intermediateArticleEdited.setWarehouse(warehouse);
+            intermediateArticleEdited.getProductionArticle().add(productionArticleRepository.getProductionArticleByArticleNumber(Long.parseLong(productionArticle.getProductionArticleConnection())));
+            intermediateArticleRepository.save(intermediateArticleEdited);
+            session.setAttribute("productionArticleMessage","Not production article: " + article.getArticle_number() + " began be a intermediate Article");
         }
     }
 

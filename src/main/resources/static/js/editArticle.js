@@ -9,13 +9,15 @@ let productionArticles = $("[name='productionArticles']");
 
 let productionArticlesArray = [];
 let finishProductStatus = true;
+console.log("selected: " + $('#selectId option:selected').val())
+console.log("selected: " + selectIdForEdit.val())
 
 for (let i = 0; i < productionArticles.length;i++){
     productionArticlesArray.push({val: productionArticles[i].textContent, text: productionArticles[i].textContent})
 }
 
 $( "#productionArticleConnection" ).keyup(function() {
-    if(productionArticleTypeForIntermediate == "intermediate"){
+    if(selectIdForEdit.val() != "finish product"){
         for (let i = 0; i < productionArticles.length;i++){
             if(productionArticleConnectionForEdit.val() == productionArticles[i].textContent){
                 console.log("exist")

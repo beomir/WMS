@@ -91,6 +91,7 @@ public class ArticleController {
         }
         model.addAttribute("article", article);
         model.addAttribute("articleMessage", session.getAttribute("articleMessage"));
+        model.addAttribute("productionArticleMessage", session.getAttribute("productionArticleMessage"));
         model.addAttribute("companies", companies);
         model.addAttribute("articleSearch",articleSearch);
         receptionServiceImpl.insertReceptionFileResult = "";
@@ -147,7 +148,7 @@ public class ArticleController {
 
     @PostMapping("formArticle")
     public String articleAdd(Article article, ProductionArticle productionArticle, HttpServletRequest request,boolean productionArticleCheckbox,HttpSession session) {
-        articleService.addNew(article,productionArticle,request,session);
+        articleService.addNew(article,productionArticle,request,session,productionArticleCheckbox);
         log.error("productionArticle value New Article Post: " + productionArticle);
         log.error("productionArticleCheckbox: " + productionArticleCheckbox);
         log.error("productionArticle.getProductionArticleType(): " + productionArticle.getProductionArticleType());
@@ -200,7 +201,7 @@ public class ArticleController {
     @GetMapping("/config/activateArticle/{id}")
     public String activateArticle(@PathVariable Long id,HttpSession session) {
         articleService.activate(id,session);
-        return "redirect:/config/articleDeactivatedList";
+        return "redirect:/article";
     }
 
     @GetMapping("/formEditArticle/{id}")
@@ -262,19 +263,31 @@ public class ArticleController {
 
     @PostMapping("formEditArticle")
     public String edit(Article article,ProductionArticle productionArticle,String warehouseName,String productionArticleId,HttpServletRequest request,boolean productionArticleCheckbox,HttpSession session) {
-
+        boolean productionStatusOfArticle = article.isProduction();
         log.info("productionArticle value edit Article Post: " + productionArticle);
         log.info("chosen warehouse: " +  warehouseName);
         log.error("productionArticleId: " + productionArticleId);
-        articleService.edit(article,productionArticle,request,session);
+        log.error("productionArticleCheckbox: " + productionArticleCheckbox);
+        articleService.edit(article,productionArticle,request,session,productionArticleCheckbox);
         boolean intermediateQtyForFinishProductStatus = (boolean) session.getAttribute("intermediateQtyForFinishProductStatus");
         log.error("intermediateQtyForFinishProduct: " + intermediateQtyForFinishProductStatus);
-        if(productionArticle.getProductionArticleType().equals("finish product") && intermediateQtyForFinishProductStatus && productionArticleCheckbox) {
-            productionArticleService.edit(productionArticle, article, warehouseName, productionArticleId);
+        log.error("productionStatusOfArticle: " + productionStatusOfArticle);
+        if(productionArticle.getProductionArticleType().equals("finish product") && intermediateQtyForFinishProductStatus) {
+            log.error("production way edit ");
+            if((productionArticleCheckbox && !productionStatusOfArticle) || (!productionArticleCheckbox && productionStatusOfArticle) || (productionArticleCheckbox && productionStatusOfArticle)){
+                log.error("production way edit ");
+                productionArticleService.edit(productionArticle, article, warehouseName, productionArticleId);
+            }
         }
-        else if(productionArticle.getProductionArticleType().equals("intermediate") && intermediateQtyForFinishProductStatus && productionArticleCheckbox){
-            log.error("intermediate way edit 1/2");
-            intermediateArticleService.edit(productionArticle, article, warehouseName);
+        else if(productionArticle.getProductionArticleType().equals("intermediate") && intermediateQtyForFinishProductStatus){
+            log.error("Inter productionArticleCheckbox: " + productionArticleCheckbox);
+            log.error("Inter productionStatusOfArticle: " + productionStatusOfArticle);
+
+            if((productionArticleCheckbox && !productionStatusOfArticle) || (!productionArticleCheckbox && productionStatusOfArticle) || (productionArticleCheckbox && productionStatusOfArticle)){
+                log.error("intermediate way edit 1/2");
+                intermediateArticleService.edit(productionArticle, article, warehouseName,productionStatusOfArticle,session);
+            }
+
         }
         return "redirect:/article";
     }

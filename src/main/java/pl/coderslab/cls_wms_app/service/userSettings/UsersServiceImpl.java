@@ -133,6 +133,7 @@ public class UsersServiceImpl implements UsersService {
         session.setAttribute("productionMessage","");
         session.setAttribute("receptionMessage","");
         session.setAttribute("stockMessage","");
+        session.setAttribute("productionArticleMessage","");
         String userName = "";
         if(SecurityUtils.username().equals("%")){
             userName = "admin";

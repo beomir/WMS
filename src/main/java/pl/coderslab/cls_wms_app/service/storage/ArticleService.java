@@ -13,9 +13,9 @@ public interface ArticleService {
 
     void add(Article article);
 
-    void addNew(Article article, ProductionArticle productionArticle, HttpServletRequest request, HttpSession session);
+    void addNew(Article article, ProductionArticle productionArticle, HttpServletRequest request, HttpSession session,boolean productionArticleCheckbox);
 
-    void edit(Article article, ProductionArticle productionArticle, HttpServletRequest request, HttpSession session);
+    void edit(Article article, ProductionArticle productionArticle, HttpServletRequest request, HttpSession session,boolean productionArticleCheckbox);
 
     List<Article> getArticle(String username);
 

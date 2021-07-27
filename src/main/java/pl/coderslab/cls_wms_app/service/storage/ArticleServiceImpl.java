@@ -55,7 +55,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public void addNew(Article article, ProductionArticle productionArticle,HttpServletRequest request,HttpSession session) {
+    public void addNew(Article article, ProductionArticle productionArticle,HttpServletRequest request,HttpSession session,boolean productionArticleCheckbox) {
         if(article.getDepth() * article.getHeight() * article.getWidth() > 0 && article.getWeight() > 0){
             if(articleRepository.findArticleByArticle_numberAndCompanyName(article.getArticle_number(),article.getCompany()) == null){
                 if(!productionArticle.getProductionArticleType().equals("intermediate")) {
@@ -85,7 +85,7 @@ public class ArticleServiceImpl implements ArticleService{
                     session.setAttribute("articleMessage","Article successfully created");
 
                 }
-                else articleEdition(article, productionArticle, request,session);
+                else articleEdition(article, productionArticle, request,session,productionArticleCheckbox);
             }
             else{
                 IssueLog issueLog = new IssueLog();
@@ -122,12 +122,13 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public void edit(Article article, ProductionArticle productionArticle, HttpServletRequest request, HttpSession session) {
+    public void edit(Article article, ProductionArticle productionArticle, HttpServletRequest request, HttpSession session,boolean productionArticleCheckbox) {
         session.setAttribute("intermediateQtyForFinishProductStatus",true);
         if(article.getDepth() * article.getHeight() * article.getWidth() > 0 && article.getWeight() > 0){
             if(article.getId() == articleRepository.findArticleByArticle_number(article.getArticle_number()).getId()){
                 if(!article.isProduction()) {
                     article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                    article.setProduction(productionArticleCheckbox);
                     articleRepository.save(article);
                     Transaction transaction = new Transaction();
                     transaction.setHdNumber(0L);
@@ -159,6 +160,7 @@ public class ArticleServiceImpl implements ArticleService{
                     log.debug("value from form about qty needed for finish product: " + productionArticle.getQuantityForFinishedProduct());
                     if(productionArticle.getQuantityForFinishedProduct() >= articleRepository.sumOfAssignedIntermediateArticlesQty(article.getArticle_number(),article.getCompany().getName())){
                         article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                        article.setProduction(productionArticleCheckbox);
                         articleRepository.save(article);
                         Transaction transaction = new Transaction();
                         transaction.setHdNumber(0L);
@@ -182,7 +184,6 @@ public class ArticleServiceImpl implements ArticleService{
                         transaction.setWarehouse(warehouseRepository.getOneWarehouse(1L));
                         transactionService.add(transaction);
                         session.setAttribute("articleMessage","Finish product successfully edited");
-
                     }
                     else{
                         IssueLog issueLog = new IssueLog();
@@ -200,7 +201,7 @@ public class ArticleServiceImpl implements ArticleService{
                     }
                 }
                 else {
-                    articleEdition(article,productionArticle,request,session);
+                    articleEdition(article,productionArticle,request,session,productionArticleCheckbox);
                 }
             }
         }
@@ -220,7 +221,7 @@ public class ArticleServiceImpl implements ArticleService{
         }
     }
 
-    private void articleEdition(Article article,ProductionArticle productionArticle, HttpServletRequest request,HttpSession session) {
+    private void articleEdition(Article article,ProductionArticle productionArticle, HttpServletRequest request,HttpSession session, boolean productionArticleCheckbox) {
         if(article.isProduction() && productionArticle.getProductionArticleType().equals("intermediate")){
             log.error("getProductionArticleConnection: " + productionArticle.getProductionArticleConnection());
             log.error("getProductionArticleType: " + productionArticle.getProductionArticleType());
@@ -233,6 +234,7 @@ public class ArticleServiceImpl implements ArticleService{
                     log.error("QuantityForFinishedProduct from DB: " + articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(Long.parseLong(productionArticle.getProductionArticleConnection()),article.getCompany().getName()));
                     if(articleRepository.qtyNeededToCreateFinishProduct(productionArticleNumberForConnection,article.getCompany().getName()) >= articleRepository.sumOfAssignedIntermediateArticlesQtyForEdition(productionArticleNumberForConnection,article.getCompany().getName(),article.getArticle_number()) + productionArticle.getQuantityForFinishedProduct() - articleRepository.qtyNeededToCreateFinishProductFromSingleIntermediateArticle(article.getArticle_number(),article.getCompany().getName())){
                         article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                        article.setProduction(productionArticleCheckbox);
                         articleRepository.save(article);
                         if(request.getHeader("Referer").contains("formEditArticle")){
                             session.setAttribute("articleMessage","Article successfully edited");
@@ -277,19 +279,29 @@ public class ArticleServiceImpl implements ArticleService{
                 }
             }
             catch (NumberFormatException e){
-                log.error(" can't be parse on number");
-                IssueLog issueLog = new IssueLog();
-                issueLog.setIssueLogContent(productionArticle.getProductionArticleConnection() + " can't be parse on number");
-                issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-                issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
-                issueLog.setAdditionalInformation("Article connector for production with name: " + productionArticle.getProductionArticleConnection() + " can't be parse on number");
-                issueLog.setIssueLogFileName("");
-                issueLog.setIssueLogFilePath("");
-                issueLog.setIssueLogFileName("");
-                issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
-                issueLogService.add(issueLog);
-                session.setAttribute("articleMessage","Article connector for production with name: " + productionArticle.getProductionArticleConnection() + " can't be parse on number. Check IssueLog ");
-                session.setAttribute("intermediateQtyForFinishProductStatus",false);
+                if(!productionArticleCheckbox){
+                    article.setChangeBy(SecurityUtils.usernameForActivations());
+                    article.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                    article.setProduction(productionArticleCheckbox);
+                    article.setVolume(article.getDepth() * article.getHeight() * article.getWidth());
+                    articleRepository.save(article);
+                    session.setAttribute("articleMessage", "Intermediate article: " + article.getArticle_number() + " setup as not production article");
+                }
+                else {
+                    log.error(" can't be parse on number");
+                    IssueLog issueLog = new IssueLog();
+                    issueLog.setIssueLogContent(productionArticle.getProductionArticleConnection() + " can't be parse on number");
+                    issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                    issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                    issueLog.setAdditionalInformation("Article connector for production with name: " + productionArticle.getProductionArticleConnection() + " can't be parse on number");
+                    issueLog.setIssueLogFileName("");
+                    issueLog.setIssueLogFilePath("");
+                    issueLog.setIssueLogFileName("");
+                    issueLog.setWarehouse(warehouseRepository.getOneWarehouse(1L));
+                    issueLogService.add(issueLog);
+                    session.setAttribute("articleMessage", "Article connector for production: " + productionArticle.getProductionArticleConnection() + " can't be parse on number. Check IssueLog ");
+                    session.setAttribute("intermediateQtyForFinishProductStatus", false);
+                }
             }
         }
     }
