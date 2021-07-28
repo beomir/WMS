@@ -766,19 +766,51 @@ ol > li > ul > li:hover a span:after {
     right: 0;
 }
 
-.arrows{
+.arrowsRight{
     transition: all 0.5s;
 }
 
-.arrows div{
+.arrowsRight div{
     cursor: pointer;
     display: inline-block;
     position: relative;
     transition: 0.5s;
 }
 
-.arrows div:after{
+.arrowsRight div:after{
     content: '\00bb';
+    position: absolute;
+    transform: scale(1.5);
+    opacity: 0;
+    top: 0;
+    right: -40px;
+    transition: 0.5s;
+}
+
+.arrowsRight:hover div{
+    padding-right: 45px;
+}
+
+.arrowsRight:hover div:after{
+    opacity: 1;
+    right: 0;
+}
+
+.arrowsDown{
+    transition: all 0.5s;
+}
+
+.arrowsDown div{
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.arrowsDown div:after{
+    /*content: '\2B07';*/
+    content: '\2B9B';
+    transform: scale(1.5);
     position: absolute;
     opacity: 0;
     top: 0;
@@ -786,14 +818,15 @@ ol > li > ul > li:hover a span:after {
     transition: 0.5s;
 }
 
-.arrows:hover div{
+.arrowsDown:hover div{
     padding-right: 45px;
 }
 
-.arrows:hover div:after{
+.arrowsDown:hover div:after{
     opacity: 1;
     right: 0;
 }
+
 /*ol > li > ul > li:hover*/
 /*{*/
 /*    background-color: #6495ED;*/
