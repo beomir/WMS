@@ -40,7 +40,7 @@
 			<br/><br/><div th:text="#{app.or}" class="formDescription"></div><br/>
 			<div class="formDescription" th:text="#{app.enterTransferWorkNumberManually}"></div><br/><br/>
 			<label  th:text="#{app.workNumber}" style="margin-left: 15%;color: white;font-weight: bold"></label>
-			<br/><input style="max-width:30%;margin-left: 15%" class="check" pattern="[0-9].{7,}" min="8" max="8" type="text" name="workNumber"/>
+			<br/><input style="max-width:30%;margin-left: 15%" class="check" pattern="[0-9]" min="8" type="text" name="stockTransferWorkNumber"/>
 			<br/><br/>
 			<input  type="hidden" th:value="${token}" name="token"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
