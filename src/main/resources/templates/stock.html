@@ -48,16 +48,16 @@
 				    <tr name="stockTR" th:each="storage: ${stock}" th:style="${storage.status.status == 'to_send'} == TRUE ? 'background: blue;border: solid 1px;' :'border: solid 1px;'" th:styleappend="${storage.status.status == 'on_reception'} == TRUE ? 'background: green;border: solid 1px;' :'border: solid 1px' " >
 						<td th:if="${storage.pieces_qty} > 0" class="tables" th:text="${storage.location.locationName}"></td>
 						<td th:title="${storage.comment != null} == TRUE ? ${storage.comment}" th:style="${storage.comment != null && storage.comment != ''} == TRUE ? 'background: gray;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" style="padding-bottom: 2px">
-							<ol><div th:text="${storage.hd_number}"></div>
+							<ol class="arrowsDown"><div th:text="${storage.hd_number}"></div>
 								<li>
 									<ul>
-										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a th:text="#{app.changeStatus}" th:href="@{/storage/formChangeStatus/{id}(id=${storage.id})}">Change Status</a></li>
-										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a th:text="#{app.changeQuality}" th:href="@{/storage/formChangeQuality/{id}(id=${storage.id})}">Change Quality</a></li>
-										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a th:text="#{app.changeQty}" th:href="@{/storage/formChangeQty/{id}(id=${storage.id})}">Change Qty</a></li>
-										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a th:text="#{app.changeArticle}" th:href="@{/storage/formChangeArticleNumber/{id}(id=${storage.id})}">Change Article number</a></li>
-										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a th:text="#{app.changeUnit}"  th:href="@{/storage/formChangeUnit/{id}(id=${storage.id})}">Change Unit</a></li>
-										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a th:text="#{app.transfer}" th:href="@{/storage/formTransfer/{id}(id=${storage.id})}">Transfer to another Location</a></li>
-										<li><a th:href="@{/formAddComment/{id}(id=${storage.id})}" th:text="#{app.addComment}">Add comment</a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a  th:href="@{/storage/formChangeStatus/{id}(id=${storage.id})}"><span th:text="#{app.changeStatus}"></span></a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a  th:href="@{/storage/formChangeQuality/{id}(id=${storage.id})}"><span th:text="#{app.changeQuality}"></span></a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a  th:href="@{/storage/formChangeQty/{id}(id=${storage.id})}"><span th:text="#{app.changeQty}"></span></a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a  th:href="@{/storage/formChangeArticleNumber/{id}(id=${storage.id})}"><span th:text="#{app.changeArticle}"></span></a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a   th:href="@{/storage/formChangeUnit/{id}(id=${storage.id})}"><span th:text="#{app.changeUnit}"></span></a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a  th:href="@{/storage/formTransfer/{id}(id=${storage.id})}"><span th:text="#{app.transfer}"></span></a></li>
+										<li><a th:href="@{/formAddComment/{id}(id=${storage.id})}" ><span th:text="#{app.addComment}"></span></a></li>
 									</ul>
 								</li>
 							</ol>
@@ -79,7 +79,7 @@
 
 				</table>
 
-				<a th:href="@{/storage/formStock}"><div th:text="#{app.createStock}" class="buttonik" style="float: right;max-width: 20%;">Create Stock</div></a>
+				<a th:href="@{/storage/formStock}"><div  class="buttonik arrowsRight" style="float: right;max-width: 20%;"><div th:text="#{app.createStock}"></div></div></a>
 
 			</div><br/><br/>
 			<div th:include="fragments/footer :: footer"></div>

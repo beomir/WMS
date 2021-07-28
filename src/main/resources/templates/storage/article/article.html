@@ -220,14 +220,13 @@
 							</span>
 						</span>
 
-						<ol>
-								<div th:text="${article.article_number}" ></div>
+						<ol class="arrowsDown2"><div th:text="${article.article_number}" ></div>
 								<li>
 									<ul>
 										<li th:if="${article.productionArticle == null && article.active == true} " ><a  th:href="@{/deleteArticle/{id}(id=${article.id})}"><span th:title="#{app.deactivateArticleAndMakeItUnavailableForUsage}" th:text="#{app.deactivate}"></span></a></li>
 										<li th:if="${article.productionArticle == null && article.active == false} " ><a  th:href="@{/activateArticle/{id}(id=${article.id})}"><span th:title="#{app.activateArticleAndMakeItUnavailableForUsage}" th:text="#{app.activate}"></span></a></li>
-										<li th:if="${article.productionArticle != null && article.active == true} " ><div lang="active" th:alt="${article.article_number}" th:name="${article.id}" th:title="#{app.deactivateArticleAndMakeItUnavailableForUsage}" class="show-modal" ><span th:text="#{app.deactivate}"></span></div></li>
-										<li th:if="${article.productionArticle != null && article.active == false} " ><div lang="deactivated" th:alt="${article.article_number}" th:name="${article.id}" th:title="#{app.activateArticleAndMakeItUnavailableForUsage}" class="show-modal" ><span th:text="#{app.activate}"></span></div></li>
+										<li th:if="${article.productionArticle != null && article.active == true} " ><div lang="active" th:alt="${article.article_number}" th:name="${article.id}" th:title="#{app.deactivateArticleAndMakeItUnavailableForUsage}" class="show-modal" style="width: auto;height: auto"><span th:text="#{app.deactivate}"></span></div></li>
+										<li th:if="${article.productionArticle != null && article.active == false} " ><div lang="deactivated" th:alt="${article.article_number}" th:name="${article.id}" th:title="#{app.activateArticleAndMakeItUnavailableForUsage}" class="show-modal" style="width: auto;height: auto" ><span th:text="#{app.activate}"></span></div></li>
 										<li><a th:href="@{/formEditArticle/{id}(id=${article.id})}"><span th:title="#{app.goToEditPanelToSeeOrChangeDetails}" th:text="#{app.edit}"></span></a></li>
 									</ul>
 								</li>

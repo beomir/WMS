@@ -87,15 +87,15 @@
 					</tr>
 				    <tr style="border: solid 1px" th:each="reception: ${receptions}">
 						<td class="tables" style="padding-bottom: 2px">
-							<ol><div th:text="${reception.receptionNumber}"></div>
+							<ol class="arrowsDown"><div th:text="${reception.receptionNumber}"></div>
 							<li>
 								<ul>
-									<li th:if="${reception.status == 'put_away_pending'}"><a th:href="@{/reception/finishedReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.finishPutAwayWorks}">Finish put away Works</a></li>
-									<li th:if="${reception.status == 'unloading_pending'}"><a th:href="@{/reception/finishUnloadingReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.unloadingFinished}">Unloading Finished</a></li>
-									<li th:if="${reception.status == 'unloading_pending'}"><a th:href="@{/reception/openCreationReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.backToCreation}">Back to Create</a></li>
-									<li th:if="${reception.status == 'creation_pending' && reception.hd_number > 0}"><a th:href="@{/reception/unloadingDoor/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.truckArrived}">Creation Finish - truck arrived</a></li>
-									<li th:if="${reception.pieces_qty != 0}"><a th:href="@{/reception/receptionDetails/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.checkDetails}">Check Details</a></li>
-									<li th:if="${reception.pieces_qty == 0 }"><a th:href="@{/reception/editReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" th:text="#{app.createNewReceptionLine}">Create New Reception line</a></li>
+									<li th:if="${reception.status == 'put_away_pending'}"><a th:href="@{/reception/finishedReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" ><span th:text="#{app.finishPutAwayWorks}"></span></a></li>
+									<li th:if="${reception.status == 'unloading_pending'}"><a th:href="@{/reception/finishUnloadingReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" ><span th:text="#{app.unloadingFinished}"></span></a></li>
+									<li th:if="${reception.status == 'unloading_pending'}"><a th:href="@{/reception/openCreationReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" ><span th:text="#{app.backToCreation}"></span></a></li>
+									<li th:if="${reception.status == 'creation_pending' && reception.hd_number > 0}"><a th:href="@{/reception/unloadingDoor/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" ><span th:text="#{app.truckArrived}"></span></a></li>
+									<li th:if="${reception.pieces_qty != 0}"><a th:href="@{/reception/receptionDetails/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" ><span th:text="#{app.checkDetails}"></span></a></li>
+									<li th:if="${reception.pieces_qty == 0 }"><a th:href="@{/reception/editReception/{receptionNumber}(receptionNumber=${reception.receptionNumber})}" ><span th:text="#{app.createNewReceptionLine}"></span></a></li>
 								</ul>
 							</li>
 						</ol>
@@ -113,7 +113,7 @@
 				    </tr>
 				</table>
 
-				<a th:href="@{/reception/formReception}"><div class="buttonik" style="float: right;max-width: 20%;" th:text="#{app.CreateReception}">Create Reception</div></a>
+				<a th:href="@{/reception/formReception}"><span class="buttonik arrowsRight" style="float: right;max-width: 20%;" ><div th:text="#{app.CreateReception}"></div></span></a>
 				<form enctype="multipart/form-data" class="buttonik2" style="float: right;max-width: 20%;clear:right" method="post" th:action="@{/reception/receptionFile}">
 				<label for="receptionFile" title="File structure: Reception_number:,ArticleNumber:,HandleDeviceNumber:,PiecesQuantity:, VendorName,Unit:,Company:,FromWarehouse:,Quality:">Create Reception from file:</label>
 				<input type="file"

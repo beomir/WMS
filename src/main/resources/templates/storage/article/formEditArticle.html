@@ -23,7 +23,38 @@
 	<div th:include="fragments/whichNavPanelF :: whichNavPanelF"></div>
 </div>
 
-<span th:include="fragments/articlesMenu :: articlesMenu"></span>
+<div th:include="fragments/articlesMenu :: articlesMenu"></div>
+
+<table th:if="${productionArticle.productionArticleType != null && qtyOfAssignedIntermediateToFinishProduct >0}"
+	   style="position: fixed;top:40%;right: 0 ;max-width: 22%;background: #0066d4;border-radius:10px;padding: 5px;color: white">
+	<tr style="border-bottom: solid 1px">
+		<th colspan="2" th:text="#{app.listOfIntermediateArticlesAssignedToThisFinishProduct}"></th>
+	</tr>
+	<tr style="border-bottom: solid 1px">
+		<th th:text="#{app.article}"></th>
+		<th th:text="#{app.quantityForOneFinishedProduct}"></th>
+	</tr>
+	<tr th:each="i : ${intermediatesList}">
+		<td class="arrowsRightShort" style="padding: 5px;cursor: pointer" th:title="#{app.goToArticle}"><a th:href="@{/formEditArticle/{id}(id=${i.id})}"><div style="color: white" th:text="${i.article_number}"></div></a></td>
+		<td style="padding: 5px;transition: 0.5s;" th:text="${i.intermediateArticle.quantityForFinishedProduct}"></td>
+	</tr>
+</table>
+
+<table th:if="${intermediateArticle != null}"
+	   style="position: fixed;top:40%;right: 0 ;max-width: 22%;background: #0066d4;border-radius:10px;padding: 5px;color: white">
+	<tr style="border-bottom: solid 1px">
+		<th th:each="i : ${intermediateArticle.productionArticle}" colspan="2"><div th:text="#{app.listOfIntermediateArticlesAssignedToFinishProduct} + ': ' "></div><a th:href="@{/formEditArticle/{id}(id=${i.article.id})}"><div class="makeItBigger" style="font-weight: bold;color: #aaaaaa;cursor: pointer" th:text="${i.article.article_number}"></div></a></th>
+	</tr>
+	<tr style="border-bottom: solid 1px">
+		<th th:text="#{app.article}"></th>
+		<th th:text="#{app.quantityForOneFinishedProduct}"></th>
+	</tr>
+	<tr th:each="i : ${intermediateArticleListFromIntermediate}">
+		<td class="arrowsRightShort" style="padding: 5px;cursor: pointer" th:title="#{app.goToArticle}"><a th:href="@{/formEditArticle/{id}(id=${i.id})}"><div style="color: white" th:text="${i.article_number}"></div></a></td>
+		<td style="padding: 5px;transition: 0.5s;" th:text="${i.intermediateArticle.quantityForFinishedProduct}"></td>
+	</tr>
+</table>
+
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">

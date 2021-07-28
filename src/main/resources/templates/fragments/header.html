@@ -11,8 +11,8 @@
         <span><a th:href="@{''(lang=fr)}"><img class="makeItBigger" th:src="@{/images/fr2.png}"/></a></span>
     </section>
     <section sec:authorize="isAuthenticated()" style="position:absolute;margin-left: 90%">
-        <a  th:href="@{/users/myProfile/{token}(token=${token})}"><div th:text="#{app.myProfile}" class="buttonik3">My Profile</div></a>
-        <a  th:href="@{/logout}"><div th:text="#{app.logout}" class="buttonik3">Logout</div></a>
+        <a  th:href="@{/users/myProfile/{token}(token=${token})}"><div  class="buttonik3 arrowsRight"><div th:text="#{app.myProfile}"></div></div></a>
+        <a  th:href="@{/logout}"><div  class="buttonik3 arrowsRight"><div th:text="#{app.logout}"></div></div></a>
     </section>
     <div id="div1" class="logo-big"></div><br>
     <div th:text="#{app.logo.d1}" id="div2" class="logo-small"></div><br>

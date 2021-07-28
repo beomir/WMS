@@ -89,7 +89,7 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
         ProductionArticle productionArticleOld = productionArticleRepository.getProductionArticleByArticleNumber(articleRepository.finishProductNumberByIntermediateNumberAndCompanyName(article.getArticle_number(),article.getCompany().getName()));
         log.error("productionArticleOld: " + productionArticleOld);
         if(article.isProduction() && !productionStatusOfArticle){
-            log.error("Was a production but after changes should be not");
+            log.error("1edit: Was a production but after changes should be not");
             intermediateArticleEdited.getProductionArticle().remove(productionArticleOld);
             intermediateArticleEdited.setArticle(article);
             intermediateArticleEdited.setCompany(article.getCompany());
@@ -136,8 +136,9 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
 
 
         }
+        //TODO check check if a situation occurs
         else if(!article.isProduction() && productionStatusOfArticle){
-            log.error("Should be production but before was not");
+            log.error("2edit: Should be production but before was not");
             Transaction transaction = new Transaction();
             transaction.setHdNumber(0L);
             transaction.setAdditionalInformation("Production Article: " + article.getArticle_number() + ", type: " + productionArticle.getProductionArticleType() + " changed on not production Article");
@@ -164,7 +165,7 @@ public class IntermediateArticleServiceImpl implements IntermediateArticleServic
             log.error("Edited article: " + article.getArticle_number() + " deleted from production Article table");
         }
         else if(productionStatusOfArticle && article.isProduction()){
-            log.error("3");
+            log.error("3edit: ");
             intermediateArticleEdited.setArticle(article);
             intermediateArticleEdited.setCompany(article.getCompany());
             intermediateArticleEdited.setChangeBy(productionArticle.getChangeBy());

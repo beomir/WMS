@@ -11,6 +11,9 @@ import java.util.List;
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
+    @Query(value="select article_number from article a inner join intermediate_article pa on a.id = pa.article_id inner join company c on a.company_id = c.id left join intermediate_article_production_article iapa on pa.id = iapa.intermediate_article_id where iapa.production_article_id = (Select iapa.production_article_id pai from article a inner join intermediate_article pa on a.id = pa.article_id inner join company c on a.company_id = c.id left join intermediate_article_production_article iapa on pa.id = iapa.intermediate_article_id where article_number = ?1 and c.name =?2)",nativeQuery = true)
+    List<Long> intermediateArticleNumbersByIntermediateArticleAndCompanyName(Long intermediateArticleNumber, String companyName);
+
     @Query(value="select b.article_number from(Select a.article_number,pa.production_article_type,iapa.production_article_id pai,c.name from article a inner join intermediate_article pa on a.id = pa.article_id inner join company c on a.company_id = c.id left join intermediate_article_production_article iapa on pa.id = iapa.intermediate_article_id union select a.article_number, production_article_type, pa.id, c.name from article a inner join production_article pa on a.id = pa.article_id inner join company c on a.company_id = c.id left join intermediate_article_production_article iapa on pa.id = iapa.production_article_id ) b join intermediate_article p on  b.pai = p.id join article a2 on p.article_id = a2.id where b.production_article_type = 'finish product' and a2.article_number = ?1 and b.name = ?2",nativeQuery = true)
     Long finishProductNumberByIntermediateNumberAndCompanyName(Long intermediateNumber,String companyName);
 

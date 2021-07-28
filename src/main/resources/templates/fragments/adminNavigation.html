@@ -13,7 +13,7 @@
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" th:text="#{app.hello} + ': ' + ${#request.remoteUser} "></div><br/>
         <div style="color: #00BCD4;font-size: 20px;font-weight: bold;" ><span sec:authentication="principal.authorities"></span></div><br/>
 
-        <a th:href="@{/warehouse}"><div th:text="#{app.chWarehouse}" class="btn">Choose Warehouse</div></a>
+        <div class="btn arrowsRight"><a th:href="@{/warehouse}"><div th:text="#{app.chWarehouse}" style="color: white">Choose Warehouse</div></a></div>
         <div class="btn" id="companyMenu">
             <span th:text="#{app.companyMenu}"></span>
             <img id="companyImg" th:src="@{/images/list.png}" class="right"/>

@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="articlesMenu">
-    <a th:if="${#httpServletRequest.requestURI != '/article-browser'}" th:href="@{/article-browser}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;" th:text="#{app.articleList}"></div></a>
-    <a th:if="${#httpServletRequest.requestURI != '/formArticle'}" th:href="@{/formArticle}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.addArticle}"></div></a>
-    <a th:if="${#httpServletRequest.requestURI != '/articleTypes'}" th:href="@{/articleTypes}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.articleTypes}"></div></a>
+    <a th:if="${#httpServletRequest.requestURI != '/article-browser'}" th:href="@{/article-browser}"><div class="buttonik3 arrowsRight" style="float: right;margin-right: 3%;max-width: 10%;"><div th:text="#{app.articleList}"></div></div></a>
+    <a th:if="${#httpServletRequest.requestURI != '/formArticle'}" th:href="@{/formArticle}"><div class="buttonik3 arrowsRight" style="float: right;margin-right: 3%;max-width: 10%;clear:right" ><div th:text="#{app.addArticle}"></div></div></a>
+    <a th:if="${#httpServletRequest.requestURI != '/articleTypes'}" th:href="@{/articleTypes}"><div class="buttonik3 arrowsRight" style="float: right;margin-right: 3%;max-width: 10%;clear:right"><div th:text="#{app.articleTypes}"></div></div></a>
 </div>
 </body>
 </html>

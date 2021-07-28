@@ -25,6 +25,7 @@ import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -222,6 +223,15 @@ public class ArticleController {
             int qtyOfAssignedIntermediateToFinishProduct = articleRepository.intermediateProductNumberByFinishProductNumberAndCompanyName(article.getArticle_number(),companyService.getOneCompanyByUsername(SecurityUtils.username()).getName()).size();
             model.addAttribute("qtyOfAssignedIntermediateToFinishProduct",qtyOfAssignedIntermediateToFinishProduct);
 
+            List<Long> intermediateProductNumberByFinishProductNumberAndCompanyName = articleRepository.intermediateProductNumberByFinishProductNumberAndCompanyName(article.getArticle_number(),companyService.getOneCompanyByUsername(SecurityUtils.username()).getName());
+            List<Article> intermediateArticleList = new ArrayList<>();
+            for(Long intermediateArticleNumber : intermediateProductNumberByFinishProductNumberAndCompanyName){
+                Article intermediateArticle = articleRepository.findArticleByArticle_number(intermediateArticleNumber);
+                intermediateArticleList.add(intermediateArticle);
+            }
+
+            model.addAttribute("intermediatesList",intermediateArticleList);
+
             log.error("productionArticle value: " + productionArticleService.getProductionArticleByArticleId(id));
         }
         if(productionArticleService.getProductionArticleByArticleId(id) == null){
@@ -231,6 +241,14 @@ public class ArticleController {
         if(intermediateArticleService.getIntermediateArticleByArticleId(id) != null){
             IntermediateArticle intermediateArticle = intermediateArticleService.getIntermediateArticleByArticleId(id);
             model.addAttribute("intermediateArticle",intermediateArticle);
+
+            List<Long> intermediateArticleNumbersByIntermediateArticle = articleRepository.intermediateArticleNumbersByIntermediateArticleAndCompanyName(article.getArticle_number(),companyService.getOneCompanyByUsername(SecurityUtils.username()).getName());
+            List<Article> intermediateArticleListFromIntermediate  = new ArrayList<>();
+            for(Long intermediateArticleNumber : intermediateArticleNumbersByIntermediateArticle){
+                Article singularIntermediateArticle = articleRepository.findArticleByArticle_number(intermediateArticleNumber);
+                intermediateArticleListFromIntermediate.add(singularIntermediateArticle);
+            }
+            model.addAttribute("intermediateArticleListFromIntermediate",intermediateArticleListFromIntermediate);
         }
 
 
@@ -250,7 +268,6 @@ public class ArticleController {
         model.addAttribute("companies", companies);
         model.addAttribute("articleTypesList", articleTypesList);
         model.addAttribute("localDateTime", LocalDateTime.now());
-
 
         model.addAttribute("storageZones",storageZoneList);
         model.addAttribute("productionLocations",productionLocations);
