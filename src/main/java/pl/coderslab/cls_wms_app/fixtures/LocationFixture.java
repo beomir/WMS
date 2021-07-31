@@ -22,7 +22,7 @@ public class LocationFixture {
     private final StorageZoneService storageZoneService;
 
     private List<Location> locationList = Arrays.asList(
-            new Location(null, "FLP00101001","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000,3000.00,2171000,2850.0),
+            new Location(null, "FLP00101001","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,200,240,120,5760000.00,3000.00,2171000,2850.0),
             new Location(null, "FLP00101002","Picking floor location", "PFL",null,null,TimeUtils.timeNowLong(), TimeUtils.timeNowLong(),true,"system",true,true,200,240,120,5760000,3000.00,5040000,2700.0),
             new Location(null, "RAP00101001","Picking rack location", "PRL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,200,80,120,1920000,500.00,624000,150),
             new Location(null, "RAR00101001","Reserve rack location", "RRL",null,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),true,"system",false,true,200,80,120,1920000,500.00,1600000,100),

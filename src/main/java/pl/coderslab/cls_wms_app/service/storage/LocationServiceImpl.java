@@ -3,6 +3,7 @@ package pl.coderslab.cls_wms_app.service.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
@@ -14,6 +15,7 @@ import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationSearch;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -413,8 +415,8 @@ public class LocationServiceImpl implements LocationService {
         log.error("reduceTheAvailableContentOfTheLocation: ");
         log.error("Article number: " + article.getArticle_number());
         log.error("Pieces Qty: " + piecesQty);
-        double articlesVolume = article.getVolume() * piecesQty;
-        double articlesWeight = article.getWeight() * piecesQty;
+        double articlesVolume = Precision.round(article.getVolume() * piecesQty,2);
+        double articlesWeight = Precision.round(article.getWeight() * piecesQty,2);
         log.error("articlesVolume: " + articlesVolume);
         log.error("articlesWeight: " + articlesWeight);
         log.error("location: " + locationName + " Warehouse: " + warehouseName);
@@ -427,9 +429,8 @@ public class LocationServiceImpl implements LocationService {
             return false;
         }
         else{
-            location.setFreeWeight(location.getFreeWeight() - articlesWeight);
-            location.setFreeSpace(location.getFreeSpace() - articlesVolume);
-            locationRepository.save(location);
+            location.setFreeWeight(Precision.round(location.getFreeWeight() - articlesWeight,2));
+            location.setFreeSpace(Precision.round(location.getFreeSpace() - articlesVolume,2));
             log.error("enough space and free weight");
             return true;
         }
@@ -444,13 +445,23 @@ public class LocationServiceImpl implements LocationService {
         log.error("Location free space before: "+ location.getFreeSpace());
         log.error("Location free weight before: "+ location.getFreeWeight());
         Article article = articleRepository.findArticleByArticleNumberAndCompanyName(articleNumber,companyName);
-        double articlesVolume = article.getVolume() * piecesQty;
-        double articlesWeight = article.getWeight() * piecesQty;
-        location.setFreeSpace(location.getFreeSpace() + articlesVolume);
-        location.setFreeWeight(location.getFreeWeight() + articlesWeight);
-        locationRepository.save(location);
+        double articlesVolume = Precision.round(article.getVolume() * piecesQty,2);
+        double articlesWeight = Precision.round(article.getWeight() * piecesQty,2);
+        log.error("articlesVolume: "+ articlesVolume);
+        log.error("articlesWeight: "+ articlesWeight);
+        location.setFreeSpace(Precision.round(location.getFreeSpace() + articlesVolume,2));
+        location.setFreeWeight(Precision.round(location.getFreeWeight() + articlesWeight,2));
         log.error("Location free space after: "+ location.getFreeSpace());
         log.error("Location free weight after: "+ location.getFreeWeight());
+        if(location.getFreeSpace() > location.getVolume()){
+            log.error("freeSpace: " + location.getFreeSpace() + " :: maxVolume:" + location.getVolume());
+            location.setFreeSpace(location.getVolume());
+        }
+        if(location.getFreeWeight() > location.getMaxWeight()){
+            log.error("freeWeight: " + location.getFreeWeight() + " :: maxWeight:" + location.getMaxWeight());
+            location.setFreeWeight(location.getMaxWeight());
+        }
+        locationRepository.save(location);
     }
 
     private void addLocationsToStorageZoneIssueLogCreation(String requestedLocationToAdd, AddLocationToStorageZone aLTSZ) {
@@ -850,5 +861,25 @@ public class LocationServiceImpl implements LocationService {
             lCN.setSecondSepFloor(location.getLocationName().substring(3, 11));
         }
         return lCN;
+    }
+
+    @Override
+    public String checkIfEnoughSpaceAndWeight(Article article,String warehouseName,double articlesWeight, double articlesVolume){
+        String articleType = article.getArticleTypes().getArticleClass();
+        BigDecimal articlesWeightBig = BigDecimal.valueOf(articlesWeight);
+        BigDecimal articlesVolumeBig = BigDecimal.valueOf(articlesVolume);
+        log.error("Check if locations are available for all articles, articleType: " + articleType);
+        log.error("Check if locations are available for all articles,articlesWeight: " + articlesWeightBig.toPlainString());
+        log.error("Check if locations are available for all articles,articlesVolume: " + articlesVolumeBig.toPlainString());
+        String destinationLocation = locationRepository.getAvailableLocation("%" + articleType + "%",articlesWeight,articlesVolume,warehouseName).getLocation();
+        if(!destinationLocation.equals("noResult")){
+            Location location = locationRepository.findLocationByLocationName(destinationLocation,warehouseName);
+            BigDecimal freeSpaceAfterCalculation = BigDecimal.valueOf(Precision.round(location.getFreeWeight() - articlesWeight,2));
+            BigDecimal freeWeightAfterCalculation = BigDecimal.valueOf(Precision.round(location.getFreeSpace() - articlesVolume,2));
+            log.error("destinationLocation: " + location.getLocationName());
+            log.error("free volume of location - articlesVolume: " +  freeSpaceAfterCalculation.toPlainString());
+            log.error("free weight of location - articlesWeight: " +  freeWeightAfterCalculation.toPlainString());
+        }
+        return destinationLocation;
     }
 }

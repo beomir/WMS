@@ -90,7 +90,7 @@
 				        <td class="tables" th:text="${locations.warehouse.name}"></td>
 				        <td th:if="${locations.stockList.isEmpty() == true}" class="tables">No</td>
 				        <td th:if="${locations.stockList.isEmpty() == false}" class="tables">Yes</td>
-				        <td class="tables" th:text="${locations.volume}"></td>
+				        <td class="tables" th:text="${#numbers.formatDecimal(locations.volume,0,'COMMA',2,'POINT')}"></td>
 				        <td class="tables" th:text="${locations.maxWeight}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(locations.last_update,0,19),'T',' ')}"></td>
 						<td class="tables" th:text="${locations.changeBy}"></td>

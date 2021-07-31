@@ -46,4 +46,6 @@ public interface LocationService {
     Boolean reduceTheAvailableContentOfTheLocation(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName);
 
     void restoreTheAvailableLocationCapacity(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName);
+
+    String checkIfEnoughSpaceAndWeight(Article article,String warehouseName,double articlesWeight, double articlesVolume);
 }

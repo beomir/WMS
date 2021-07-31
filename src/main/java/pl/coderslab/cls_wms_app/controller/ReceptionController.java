@@ -20,7 +20,6 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
 import pl.coderslab.cls_wms_app.service.wmsValues.VendorService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
-import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -49,11 +48,11 @@ public class ReceptionController {
     private final StatusRepository statusRepository;
     private final WarehouseRepository warehouseRepository;
     private final ExtremelyService extremelyService;
-    private CustomerUserDetailsService customerUserDetailsService;
+
 
 
     @Autowired
-    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository, LocationRepository locationRepository, StatusRepository statusRepository, WarehouseRepository warehouseRepository, ExtremelyService extremelyService, CustomerUserDetailsService customerUserDetailsService) {
+    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository, LocationRepository locationRepository, StatusRepository statusRepository, WarehouseRepository warehouseRepository, ExtremelyService extremelyService) {
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.articleService = articleService;
@@ -67,7 +66,6 @@ public class ReceptionController {
         this.statusRepository = statusRepository;
         this.warehouseRepository = warehouseRepository;
         this.extremelyService = extremelyService;
-        this.customerUserDetailsService = customerUserDetailsService;
 
     }
 
@@ -307,6 +305,7 @@ public class ReceptionController {
 
     @GetMapping("/finishUnloadingReception/{receptionNumber}")
     public String finishUnloading(@PathVariable Long receptionNumber, HttpSession session) {
+        //and create reception put away works
         receptionService.finishUnloading(receptionNumber,session);
         return "redirect:/reception/reception";
     }

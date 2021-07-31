@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
@@ -17,6 +18,7 @@ import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -168,68 +170,96 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     @Override
     public void finishUnloading(Long receptionNumber,  HttpSession session) {
+        boolean availableLocationFound = true;
         log.debug("receptionNumber: " + receptionNumber);
         List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
         Transaction transaction = new Transaction();
         for (Reception singularReception: receptions) {
-            singularReception.setStatus(statusRepository.getStatusByStatusName("put_away_pending","Reception"));
-            receptionRepository.save(singularReception);
-            String destinationLocation = locationRepository.getAvailableLocation("%" + singularReception.getArticle().getArticleTypes().getArticleClass() + "%",singularReception.getArticle().getWeight(),singularReception.getArticle().getVolume(),singularReception.getWarehouse().getName()).getLocation();
-            log.debug("destinationLocation: " + destinationLocation);
-            WorkDetails work = new WorkDetails();
-            work.setPiecesQty(singularReception.getPieces_qty());
-            work.setArticle(singularReception.getArticle());
-            work.setCompany(singularReception.getCompany());
-            work.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-            work.setChangeBy(SecurityUtils.usernameForActivations());
-            work.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-            work.setWarehouse(singularReception.getWarehouse());
-            work.setHdNumber(singularReception.getHd_number());
-            work.setStatus("open");
-            work.setFromLocation(singularReception.getLocation());
-            work.setToLocation(locationRepository.findLocationByLocationName(destinationLocation,singularReception.getWarehouse().getName()));
-            work.setHandle(receptionNumber.toString());
-            work.setWorkDescription("Reception Put Away");
-            log.error(LocalDate.now().getYear() +""+ StringUtils.leftPad(Integer.toString(LocalDate.now().getDayOfMonth()), 2, "0") +"" + receptionNumber + "" +singularReception.getId());
-            work.setWorkNumber(Long.parseLong(LocalDate.now().getYear() +""+ StringUtils.leftPad(Integer.toString(LocalDate.now().getDayOfMonth()), 2, "0") +"" + receptionNumber));
-            work.setWorkType("Reception");
-            workDetailsRepository.save(work);
-            transaction.setTransactionDescription("Reception unloaded");
-            transaction.setAdditionalInformation("Reception: " + receptionNumber + " unloaded");
-            transaction.setReceptionStatus(singularReception.getStatus().getStatus());
-            saveTransactionModel(singularReception, transaction);
+            double articlesWeight = Precision.round(singularReception.getArticle().getWeight() * singularReception.getPieces_qty(),2);
+            double articlesVolume = Precision.round(singularReception.getArticle().getVolume() * singularReception.getPieces_qty(),2);
+            Article article = singularReception.getArticle();
+            String destinationLocation = locationService.checkIfEnoughSpaceAndWeight(article,singularReception.getWarehouse().getName(),articlesWeight,articlesVolume);
+            log.error("destinationLocation: " + destinationLocation);
+            if(destinationLocation.equals("noResult")) {
+                availableLocationFound = false;
+                break;
+            }
+        }
+        //TODO change if below like loop above
+        if(availableLocationFound){
+            for(Reception singularReception : receptions){
+                String articleType = singularReception.getArticle().getArticleTypes().getArticleClass();
+                double articlesWeight = singularReception.getArticle().getWeight() * singularReception.getPieces_qty();
+                double articlesVolume = singularReception.getArticle().getVolume() * singularReception.getPieces_qty();
+                log.error("Locations checked,articleType: " + articleType);
+                log.error("Locations checked,articlesWeight: " + articlesWeight);
+                log.error("Locations checked,articlesVolume: " + articlesVolume);
+                String destinationLocation = locationRepository.getAvailableLocation("%" + articleType + "%",articlesWeight,articlesVolume,singularReception.getWarehouse().getName()).getLocation();
 
-            Transaction workCreation = new Transaction();
-            workCreation.setTransactionDescription("Reception PutAway Work created");
-            workCreation.setAdditionalInformation("Work number: " + work.getWorkNumber() + "for pallet: " + work.getHdNumber() + ", from location: " + work.getFromLocation().getLocationName() + " to: " + work.getToLocation().getLocationName() + " with : " + work.getPiecesQty() + " pieces of article: " + work.getArticle().getArticle_number() + "created" );
-            workCreation.setReceptionStatus(singularReception.getStatus().getStatus());
-            saveTransactionModel(singularReception, workCreation);
-            transactionService.add(workCreation);
+                singularReception.setStatus(statusRepository.getStatusByStatusName("put_away_pending","Reception"));
+                receptionRepository.save(singularReception);
 
-            Stock stock = new Stock();
-            stock.setStatus(statusRepository.getStatusByStatusName("on_reception","StockReception"));
-            stock.setWarehouse(singularReception.getWarehouse());
-            stock.setReceptionNumber(singularReception.getReceptionNumber());
-            stock.setHandle(singularReception.getReceptionNumber().toString());
-            stock.setComment("Reception: " + singularReception.getReceptionNumber());
-            stock.setPieces_qty(singularReception.getPieces_qty());
-            stock.setCompany(singularReception.getCompany());
-            stock.setArticle(singularReception.getArticle());
-            stock.setUnit(singularReception.getUnit());
-            stock.setQuality(singularReception.getQuality());
-            stock.setLocation(singularReception.getLocation());
-            stock.setHd_number(singularReception.getHd_number());
-            stock.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-            stock.setChangeBy(SecurityUtils.usernameForActivations());
-            stock.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-            stockRepository.save(stock);
+                log.debug("destinationLocation: " + destinationLocation);
+                WorkDetails work = new WorkDetails();
+                work.setPiecesQty(singularReception.getPieces_qty());
+                work.setArticle(singularReception.getArticle());
+                work.setCompany(singularReception.getCompany());
+                work.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                work.setChangeBy(SecurityUtils.usernameForActivations());
+                work.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                work.setWarehouse(singularReception.getWarehouse());
+                work.setHdNumber(singularReception.getHd_number());
+                work.setStatus("open");
+                work.setFromLocation(singularReception.getLocation());
+                work.setToLocation(locationRepository.findLocationByLocationName(destinationLocation,singularReception.getWarehouse().getName()));
+                work.setHandle(receptionNumber.toString());
+                work.setWorkDescription("Reception Put Away");
+                log.error(LocalDate.now().getYear() +""+ StringUtils.leftPad(Integer.toString(LocalDate.now().getDayOfMonth()), 2, "0") +"" + receptionNumber + "" +singularReception.getId());
+                work.setWorkNumber(Long.parseLong(LocalDate.now().getYear() +""+ StringUtils.leftPad(Integer.toString(LocalDate.now().getDayOfMonth()), 2, "0") +"" + receptionNumber));
+                work.setWorkType("Reception");
+                workDetailsRepository.save(work);
+                transaction.setTransactionDescription("Reception unloaded");
+                transaction.setAdditionalInformation("Reception: " + receptionNumber + " unloaded");
+                transaction.setReceptionStatus(singularReception.getStatus().getStatus());
+                saveTransactionModel(singularReception, transaction);
+
+                Transaction workCreation = new Transaction();
+                workCreation.setTransactionDescription("Reception PutAway Work created");
+                workCreation.setAdditionalInformation("Work number: " + work.getWorkNumber() + "for pallet: " + work.getHdNumber() + ", from location: " + work.getFromLocation().getLocationName() + " to: " + work.getToLocation().getLocationName() + " with : " + work.getPiecesQty() + " pieces of article: " + work.getArticle().getArticle_number() + "created" );
+                workCreation.setReceptionStatus(singularReception.getStatus().getStatus());
+                saveTransactionModel(singularReception, workCreation);
+                transactionService.add(workCreation);
+
+                Stock stock = new Stock();
+                stock.setStatus(statusRepository.getStatusByStatusName("on_reception","StockReception"));
+                stock.setWarehouse(singularReception.getWarehouse());
+                stock.setReceptionNumber(singularReception.getReceptionNumber());
+                stock.setHandle(singularReception.getReceptionNumber().toString());
+                stock.setComment("Reception: " + singularReception.getReceptionNumber());
+                stock.setPieces_qty(singularReception.getPieces_qty());
+                stock.setCompany(singularReception.getCompany());
+                stock.setArticle(singularReception.getArticle());
+                stock.setUnit(singularReception.getUnit());
+                stock.setQuality(singularReception.getQuality());
+                stock.setLocation(singularReception.getLocation());
+                stock.setHd_number(singularReception.getHd_number());
+                stock.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                stock.setChangeBy(SecurityUtils.usernameForActivations());
+                stock.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                stockRepository.save(stock);
+            }
+            session.setAttribute("receptionMessage","Reception: " + receptionNumber + " unloaded completely, put away works created" );
+            log.error("close creation service receptionMessage: " + session.getAttribute("receptionMessage"));
+        }
+        else{
+            session.setAttribute("receptionMessage","Reception: " + receptionNumber + " can't change status on unloaded because not for all articles in reception available location found");
         }
         transaction.setTransactionType("119");
         transactionService.add(transaction);
 
-        session.setAttribute("receptionMessage","Reception: " + receptionNumber + " unloaded completely, put away works created" );
 
-        log.error("close creation service receptionMessage: " + session.getAttribute("receptionMessage"));
+
+
     }
 
 

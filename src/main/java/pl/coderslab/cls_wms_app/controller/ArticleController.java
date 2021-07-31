@@ -199,7 +199,7 @@ public class ArticleController {
         return "redirect:/article";
     }
 
-    @GetMapping("/config/activateArticle/{id}")
+    @GetMapping("/activateArticle/{id}")
     public String activateArticle(@PathVariable Long id,HttpSession session) {
         articleService.activate(id,session);
         return "redirect:/article";
