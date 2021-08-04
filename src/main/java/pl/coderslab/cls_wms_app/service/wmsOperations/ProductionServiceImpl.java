@@ -252,6 +252,11 @@ public class ProductionServiceImpl implements ProductionService{
         work.setWorkType("Production");
         work.setWorkNumber(production.getProductionNumber());
         workDetailsRepository.save(work);
+
+        Location locationPutAway = work.getToLocation();
+        locationPutAway.setTemporaryFreeWeight(locationPutAway.getTemporaryFreeWeight() - work.getPiecesQty() * work.getArticle().getWeight());
+        locationPutAway.setTemporaryFreeSpace(locationPutAway.getTemporaryFreeSpace() - work.getPiecesQty() * work.getArticle().getVolume());
+        locationRepository.save(locationPutAway);
     }
 
     public Production productionSetters(Production production, String chosenWarehouse, String articleId){

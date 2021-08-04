@@ -452,6 +452,8 @@ public class LocationServiceImpl implements LocationService {
         log.error("articlesWeight: "+ articlesWeight);
         location.setFreeSpace(Precision.round(location.getFreeSpace() + articlesVolume,2));
         location.setFreeWeight(Precision.round(location.getFreeWeight() + articlesWeight,2));
+        location.setTemporaryFreeSpace(location.getFreeSpace());
+        location.setTemporaryFreeWeight(location.getFreeWeight());
         log.error("Location free space after: "+ location.getFreeSpace());
         log.error("Location free weight after: "+ location.getFreeWeight());
         if(location.getFreeSpace() > location.getVolume()){
