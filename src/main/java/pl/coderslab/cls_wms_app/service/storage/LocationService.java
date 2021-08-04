@@ -10,6 +10,7 @@ import pl.coderslab.cls_wms_app.temporaryObjects.LocationSearch;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 public interface LocationService {
 
@@ -47,5 +48,7 @@ public interface LocationService {
 
     void restoreTheAvailableLocationCapacity(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName);
 
-    String checkIfEnoughSpaceAndWeight(Article article,String warehouseName,double articlesWeight, double articlesVolume);
+    String findLocationWithEnoughSpaceAndWeight(Article article, String warehouseName, double articlesWeight, double articlesVolume, Map<String, Double> mapWeight, Map<String, Double> mapVolume,String action);
+
+    void moveBackTemporaryValuesToNormal(Map<String, Double> mapWeight, Map<String, Double> mapVolume,String warehouseName);
 }

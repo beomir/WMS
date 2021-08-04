@@ -46,12 +46,15 @@ public class Location {
     private double depth;
 
     private double volume;
-
     private double maxWeight;
+
     private double freeSpace;
     private double freeWeight;
 
-    public Location(Long id, String locationName, String locationDesc, String locationType, Warehouse warehouse, StorageZone storageZone, String created, String last_update, boolean active, String changeBy,boolean multiItem,boolean hdControl,double height,double width,double depth, double volume, double maxWeight,double freeSpace,double freeWeight) {
+    private double temporaryFreeSpace;
+    private double temporaryFreeWeight;
+
+    public Location(Long id, String locationName, String locationDesc, String locationType, Warehouse warehouse, StorageZone storageZone, String created, String last_update, boolean active, String changeBy,boolean multiItem,boolean hdControl,double height,double width,double depth, double volume, double maxWeight,double freeSpace,double freeWeight,double temporaryFreeSpace, double temporaryFreeWeight) {
         this.id = id;
         this.locationName = locationName;
         this.locationDesc = locationDesc;
@@ -71,6 +74,8 @@ public class Location {
         this.maxWeight = maxWeight;
         this.freeSpace = freeSpace;
         this.freeWeight = freeWeight;
+        this.temporaryFreeSpace = temporaryFreeSpace;
+        this.temporaryFreeWeight = temporaryFreeWeight;
     }
 
     @OneToMany(mappedBy="location")
@@ -101,6 +106,8 @@ public class Location {
                 ", maxWeight='" + maxWeight + '\'' +
                 ", freeSpace='" + freeSpace + '\'' +
                 ", freeWeight='" + freeWeight + '\'' +
+                ", temporaryFreeSpace='" + temporaryFreeSpace + '\'' +
+                ", temporaryFreeWeight='" + temporaryFreeWeight + '\'' +
                 '}';
     }
 }

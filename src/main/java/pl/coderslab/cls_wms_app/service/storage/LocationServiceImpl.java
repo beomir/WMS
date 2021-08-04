@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.Integer.*;
 
@@ -864,22 +865,61 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public String checkIfEnoughSpaceAndWeight(Article article,String warehouseName,double articlesWeight, double articlesVolume){
+    public String findLocationWithEnoughSpaceAndWeight(Article article, String warehouseName, double articlesWeight, double articlesVolume, Map<String, Double> mapWeight, Map<String, Double> mapVolume, String action){
         String articleType = article.getArticleTypes().getArticleClass();
         BigDecimal articlesWeightBig = BigDecimal.valueOf(articlesWeight);
         BigDecimal articlesVolumeBig = BigDecimal.valueOf(articlesVolume);
-        log.error("Check if locations are available for all articles, articleType: " + articleType);
-        log.error("Check if locations are available for all articles,articlesWeight: " + articlesWeightBig.toPlainString());
-        log.error("Check if locations are available for all articles,articlesVolume: " + articlesVolumeBig.toPlainString());
+        log.error(action +" " + article.getArticle_number() +  " Check if locations are available for all articles, articleType: " + articleType);
+        log.error(action +" " + article.getArticle_number() + " Check if locations are available for all articles,articlesWeight: " + articlesWeightBig.toPlainString());
+        log.error(action +" " + article.getArticle_number() + " Check if locations are available for all articles,articlesVolume: " + articlesVolumeBig.toPlainString());
         String destinationLocation = locationRepository.getAvailableLocation("%" + articleType + "%",articlesWeight,articlesVolume,warehouseName).getLocation();
         if(!destinationLocation.equals("noResult")){
             Location location = locationRepository.findLocationByLocationName(destinationLocation,warehouseName);
-            BigDecimal freeSpaceAfterCalculation = BigDecimal.valueOf(Precision.round(location.getFreeWeight() - articlesWeight,2));
-            BigDecimal freeWeightAfterCalculation = BigDecimal.valueOf(Precision.round(location.getFreeSpace() - articlesVolume,2));
-            log.error("destinationLocation: " + location.getLocationName());
-            log.error("free volume of location - articlesVolume: " +  freeSpaceAfterCalculation.toPlainString());
-            log.error("free weight of location - articlesWeight: " +  freeWeightAfterCalculation.toPlainString());
+            log.error(action + " " + article.getArticle_number() +" locationName: " + location.getLocationName() +  " location.getTemporaryFreeSpace() " + location.getTemporaryFreeSpace());
+            log.error("mapWeight.get(destinationLocation): " + mapWeight.get(destinationLocation));
+            if(mapWeight.get(destinationLocation) == null){
+                mapWeight.put(destinationLocation,location.getTemporaryFreeWeight());
+                log.error(action + " mapWeight.put: " + destinationLocation + " " + location.getTemporaryFreeWeight());
+            }
+            log.error("mapVolume.get(destinationLocation): " + mapVolume.get(destinationLocation));
+            if(mapVolume.get(destinationLocation) == null){
+                mapVolume.put(destinationLocation,location.getTemporaryFreeSpace());
+                log.error(action + " mapVolume.put: " + destinationLocation + " " + location.getTemporaryFreeSpace());
+            }
+            BigDecimal freeWeightAfterCalculation = BigDecimal.valueOf(Precision.round(location.getTemporaryFreeWeight() - articlesWeight,2));
+            BigDecimal freeSpaceAfterCalculation = BigDecimal.valueOf(Precision.round(location.getTemporaryFreeSpace() - articlesVolume,2));
+            log.error(action + "for article:  " + article.getArticle_number() + " volumes: " + articlesVolumeBig +  " destinationLocation: " + location.getLocationName() + " free volume of location - articlesVolume: " +  freeSpaceAfterCalculation.toPlainString() + " free weight of location - articlesWeight: " +  freeWeightAfterCalculation.toPlainString());
+            location.setTemporaryFreeWeight(Precision.round(location.getTemporaryFreeWeight() - articlesWeight,2));
+            location.setTemporaryFreeSpace(Precision.round(location.getTemporaryFreeSpace() - articlesVolume,2));
+            locationRepository.save(location);
         }
         return destinationLocation;
+    }
+
+    @Override
+    public void moveBackTemporaryValuesToNormal(Map<String, Double> mapWeight, Map<String, Double> mapVolume,String warehouseName) {
+        log.error("moveBackTemporaryValuesToNormal enter");
+        for (Map.Entry<String, Double> entry : mapWeight.entrySet()) {
+            String locationName = entry.getKey();
+            Double weight = entry.getValue();
+            log.error("Weight map loop locationName: " + locationName + " ,weight: " + weight);
+            Location location = locationRepository.findLocationByLocationName(locationName,warehouseName);
+            log.error("Weight of location before restore value to normal: " + location.getTemporaryFreeWeight());
+            location.setTemporaryFreeWeight(weight);
+            locationRepository.save(location);
+            log.error("Weight of location after restore value to normal: "+ location.getTemporaryFreeWeight());
+        }
+        for (Map.Entry<String, Double> entry : mapVolume.entrySet()) {
+            String locationName = entry.getKey();
+            Double volume = entry.getValue();
+            log.error("Volume map loop locationName: " + locationName + " ,volume: " + volume);
+
+            Location location = locationRepository.findLocationByLocationName(locationName,warehouseName);
+            log.error("Volume of location before restore value to normal: " + location.getTemporaryFreeSpace());
+            location.setTemporaryFreeSpace(volume);
+            locationRepository.save(location);
+            log.error("Volume of location after restore value to normal: " + location.getTemporaryFreeSpace());
+        }
+
     }
 }

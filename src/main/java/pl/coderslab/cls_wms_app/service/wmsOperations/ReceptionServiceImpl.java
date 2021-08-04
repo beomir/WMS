@@ -26,9 +26,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -173,33 +171,42 @@ public class ReceptionServiceImpl implements ReceptionService {
         boolean availableLocationFound = true;
         log.debug("receptionNumber: " + receptionNumber);
         List<Reception> receptions = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
+        Map<String, Double> mapWeight = new HashMap<>();
+        Map<String, Double> mapVolume = new HashMap<>();
         Transaction transaction = new Transaction();
+        String warehouseName = "";
+        //find possible putaway location
         for (Reception singularReception: receptions) {
             double articlesWeight = Precision.round(singularReception.getArticle().getWeight() * singularReception.getPieces_qty(),2);
             double articlesVolume = Precision.round(singularReception.getArticle().getVolume() * singularReception.getPieces_qty(),2);
             Article article = singularReception.getArticle();
-            String destinationLocation = locationService.checkIfEnoughSpaceAndWeight(article,singularReception.getWarehouse().getName(),articlesWeight,articlesVolume);
-            log.error("destinationLocation: " + destinationLocation);
+            warehouseName = singularReception.getWarehouse().getName();
+            String destinationLocation = locationService.findLocationWithEnoughSpaceAndWeight(article,singularReception.getWarehouse().getName(),articlesWeight,articlesVolume,mapWeight,mapVolume,"Check");
+            log.error("reception destinationLocation: " + destinationLocation);
             if(destinationLocation.equals("noResult")) {
+                session.setAttribute("receptionPutawayLocationIssue","article: " + singularReception.getArticle().getArticle_number() + " with qty: " + singularReception.getPieces_qty() + ", on HD: " + singularReception.getHd_number());
                 availableLocationFound = false;
+                log.error("in loop availableLocationFound: " + availableLocationFound);
                 break;
             }
         }
-        //TODO change if below like loop above
+        log.error("availableLocationFound after singularReception loop: " + availableLocationFound);
+
+        //restoreOriginValuesOfWeightAndVolumeForLocationsAfterChecking
+        locationService.moveBackTemporaryValuesToNormal(mapWeight,mapVolume,warehouseName);
+
+        //If available locations are found then create works
         if(availableLocationFound){
             for(Reception singularReception : receptions){
-                String articleType = singularReception.getArticle().getArticleTypes().getArticleClass();
-                double articlesWeight = singularReception.getArticle().getWeight() * singularReception.getPieces_qty();
-                double articlesVolume = singularReception.getArticle().getVolume() * singularReception.getPieces_qty();
-                log.error("Locations checked,articleType: " + articleType);
-                log.error("Locations checked,articlesWeight: " + articlesWeight);
-                log.error("Locations checked,articlesVolume: " + articlesVolume);
-                String destinationLocation = locationRepository.getAvailableLocation("%" + articleType + "%",articlesWeight,articlesVolume,singularReception.getWarehouse().getName()).getLocation();
+                double articlesWeight = Precision.round(singularReception.getArticle().getWeight() * singularReception.getPieces_qty(),2);
+                double articlesVolume = Precision.round(singularReception.getArticle().getVolume() * singularReception.getPieces_qty(),2);
+                Article article = singularReception.getArticle();
+                String destinationLocation = locationService.findLocationWithEnoughSpaceAndWeight(article,singularReception.getWarehouse().getName(),articlesWeight,articlesVolume,mapWeight,mapVolume,"Calculation");
+                log.error("availableLocationFound destinationLocation: " + destinationLocation);
 
                 singularReception.setStatus(statusRepository.getStatusByStatusName("put_away_pending","Reception"));
                 receptionRepository.save(singularReception);
 
-                log.debug("destinationLocation: " + destinationLocation);
                 WorkDetails work = new WorkDetails();
                 work.setPiecesQty(singularReception.getPieces_qty());
                 work.setArticle(singularReception.getArticle());
@@ -252,7 +259,7 @@ public class ReceptionServiceImpl implements ReceptionService {
             log.error("close creation service receptionMessage: " + session.getAttribute("receptionMessage"));
         }
         else{
-            session.setAttribute("receptionMessage","Reception: " + receptionNumber + " can't change status on unloaded because not for all articles in reception available location found");
+            session.setAttribute("receptionMessage","Reception: " + receptionNumber + " can't change status on unloaded because of " + session.getAttribute("receptionPutawayLocationIssue") + ", which have too big volume or weight to locate it in picking location. Create bigger location or change qty for this HD");
         }
         transaction.setTransactionType("119");
         transactionService.add(transaction);
