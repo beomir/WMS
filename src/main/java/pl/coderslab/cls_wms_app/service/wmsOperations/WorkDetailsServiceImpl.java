@@ -3,6 +3,7 @@ package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
@@ -334,7 +335,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
 
     @Override
     public void createPutAwayWork(Long productionNumberToConfirm, HttpSession session) throws CloneNotSupportedException {
-        log.debug("productionNumberToConfirm: " + productionNumberToConfirm);
+        log.error("productionNumberToConfirm: " + productionNumberToConfirm);
         List<WorkDetails> workDetailsToConfirm = workDetailsRepository.getWorkDetailsByWorkNumber(productionNumberToConfirm);
         for (WorkDetails singularWorkToConfirm: workDetailsToConfirm) {
             log.error("id singularWorkToConfirm: " + singularWorkToConfirm.getId());
@@ -360,6 +361,11 @@ public class WorkDetailsServiceImpl implements WorkDetailsService{
               session.setAttribute("produceScannerMessage","Putaway work: " + putAwayAfterProduction.getWorkNumber() + " successfully created");
               session.setAttribute("putawayLocationAfterProducing","found");
               log.debug("locationTo not null");
+              //reserve space and weight in Location
+              log.error("Location put away production status: " + locationTo.getLocationName() + " weight" + locationTo.getTemporaryFreeWeight() + " article to putAway weight: " + singularWorkToConfirm.getArticle().getWeight() + " volume " + locationTo.getTemporaryFreeSpace() + " article to putAway volume: " + singularWorkToConfirm.getArticle().getVolume());
+              locationTo.setTemporaryFreeWeight(Precision.round(locationTo.getTemporaryFreeWeight() - singularWorkToConfirm.getArticle().getWeight(),2));
+              locationTo.setTemporaryFreeSpace(Precision.round(locationTo.getTemporaryFreeSpace() - singularWorkToConfirm.getArticle().getVolume(),2));
+              locationRepository.save(locationTo);
           }
         }
     }
