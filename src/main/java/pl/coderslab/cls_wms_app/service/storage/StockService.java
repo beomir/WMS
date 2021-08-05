@@ -29,7 +29,7 @@ public interface StockService {
 
     void changeQuality(Stock stock, ChosenStockPositional chosenStockPositional);
 
-    void changeUnit(Stock stock, ChosenStockPositional chosenStockPositional);
+    void changeUnit(Stock stock, String newUnit);
 
     void changeComment(Stock stock, String newComment);
 

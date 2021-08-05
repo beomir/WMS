@@ -228,14 +228,31 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void changeUnit(Stock stock, ChosenStockPositional chosenStockPositional) {
-        Transaction transaction = new Transaction();
-        transaction.setTransactionDescription("Unit changed on stock");
-        transaction.setAdditionalInformation("Unit changed from: " + unitRepository.getOne(chosenStockPositional.getUnitId()).getName() + " on: " + stock.getUnit().getName() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
-        transaction.setTransactionType("305");
-        transactionStock(stock, transaction, receptionRepository);
-        transactionService.add(transaction);
-        stockRepository.save(stock);
+    public void changeUnit(Stock stock, String newUnit) {
+        Unit unit = unitRepository.getUnitByName(newUnit);
+        if(unit != null){
+            Transaction transaction = new Transaction();
+            transaction.setTransactionDescription("Unit changed on stock");
+            transaction.setAdditionalInformation("Unit changed from: " + stock.getUnit().getName() + " on: " + newUnit  + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
+            transaction.setTransactionType("305");
+            transactionStock(stock, transaction, receptionRepository);
+            transactionService.add(transaction);
+            stock.setUnit(unit);
+            stockRepository.save(stock);
+        }
+        else {
+            log.error("Incorrect status set: " + newUnit);
+            IssueLog issueLog = new IssueLog();
+            issueLog.setIssueLogContent("Incorrect status set: " + newUnit);
+            issueLog.setIssueLogFilePath("");
+            issueLog.setIssueLogFileName("");
+            issueLog.setWarehouse(stock.getWarehouse());
+            issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+            issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+            issueLog.setAdditionalInformation("Attempt of set incorrect status: " + newUnit + ", for hd number: " + stock.getHd_number() );
+            issueLogService.add(issueLog);
+        }
+
     }
 
     @Override

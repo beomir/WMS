@@ -167,20 +167,19 @@ public class StockController {
 
     @GetMapping("/storage/formChangeUnit/{id}")
     public String updateStockChangeUnit(@PathVariable Long id, Model model,HttpSession session) {
-        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
+
         Stock stock = stockService.findById(id);
-        chosenStockPositionalStatus.setUnitId(stock.getUnit().getId());
-        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
         List<Unit> units = unitService.getUnit();
         model.addAttribute("units", units);
+
         model.addAttribute(stock);
         usersService.loggedUserData(model,session);
         return "storage/formChangeUnit";
     }
 
     @PostMapping("/storage/formChangeUnit")
-    public String updateStockChangeUnitPost(Stock stock, ChosenStockPositional chosenStockPositional) {
-        stockService.changeUnit(stock,chosenStockPositional);
+    public String updateStockChangeUnitPost(Stock stock, String newUnit) {
+        stockService.changeUnit(stock,newUnit);
         return "redirect:/stock";
     }
 
