@@ -217,13 +217,14 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void changeQuality(Stock stock, ChosenStockPositional chosenStockPositional) {
+    public void changeQuality(Stock stock, String newQuality) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Quality changed on stock");
-        transaction.setAdditionalInformation("Quality changed from: " + chosenStockPositional.qualityObj + " on: " + stock.getQuality() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
+        transaction.setAdditionalInformation("Quality changed from: " + stock.getQuality() + " on: " + newQuality  + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("304");
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
+        stock.setQuality(newQuality);
         stockRepository.save(stock);
     }
 

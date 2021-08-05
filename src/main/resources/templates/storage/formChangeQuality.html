@@ -30,9 +30,9 @@
 			<div class="titleList">Change Quality</div><br/>
 			<section>
 				<label style="color: white;font-weight: bold">Change quality</label>
-				<select class="select-css" th:field="*{stock.quality}">
-					<option th:value="EU1">Europen Union first grade</option>
-					<option th:value="EU2">Europen Union second grade</option>
+				<select id="new" class="select-css" name="newQuality">
+					<option th:value="EU1">European Union first grade</option>
+					<option th:value="EU2">European Union second grade</option>
 					<option th:value="BW1">Bonded Warehouse first grade</option>
 					<option th:value="BW2">Bonded Warehouse second grade</option>
 				</select>
@@ -50,7 +50,7 @@
 				<input type="hidden" th:field="*{stock.warehouse}" />
 				<input type="hidden" th:field="*{stock.comment}" />
 				<input type="hidden" th:field="*{stock.location}"/>
-				<input type="hidden" th:field="*{chosenStockPositionalStatus.qualityObj}"/>
+				<input id="old" type="hidden" th:field="*{stock.quality}"/>
 			</section><br/>
 			<section>
 				<br/><button class="button" type="submit">Save</button>
@@ -65,6 +65,6 @@
 <div class="w3copyright-agile">
 	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 </div>
-</div>
+<script type="text/javascript" th:src="@{/js/stockChanges.js}"></script>
 </body>
 </html>
