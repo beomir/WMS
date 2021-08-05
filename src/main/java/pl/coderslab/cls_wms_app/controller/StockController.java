@@ -9,12 +9,12 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.ArticleTypesRepository;
 import pl.coderslab.cls_wms_app.repository.LocationRepository;
-import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
+
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
 import pl.coderslab.cls_wms_app.service.storage.StockServiceImpl;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
-import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
+
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.ExtremelyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
@@ -36,7 +36,7 @@ public class StockController {
     private final StockService stockService;
     private final StockServiceImpl stockServiceImpl;
     private final UsersService usersService;
-    private final ReceptionService receptionService;
+
     private final WarehouseService warehouseService;
     private final CompanyService companyService;
     private final StatusService statusService;
@@ -47,15 +47,14 @@ public class StockController {
     private final ArticleTypesRepository articleTypesRepository;
     private final ExtremelyService extremelyService;
     private final WorkDetailsService workDetailsService;
-    private final WorkDetailsRepository workDetailsRepository;
+
 
 
     @Autowired
-    public StockController(StockService stockService, StockServiceImpl stockServiceImpl, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, ArticleTypesRepository articleTypesRepository, ExtremelyService extremelyService, WorkDetailsService workDetailsService, WorkDetailsRepository workDetailsRepository) {
+    public StockController(StockService stockService, StockServiceImpl stockServiceImpl, UsersService usersService,WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, ArticleTypesRepository articleTypesRepository, ExtremelyService extremelyService, WorkDetailsService workDetailsService) {
         this.stockService = stockService;
         this.stockServiceImpl = stockServiceImpl;
         this.usersService = usersService;
-        this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.companyService = companyService;
         this.statusService = statusService;
@@ -66,7 +65,7 @@ public class StockController {
         this.articleTypesRepository = articleTypesRepository;
         this.extremelyService = extremelyService;
         this.workDetailsService = workDetailsService;
-        this.workDetailsRepository = workDetailsRepository;
+
     }
 
     @GetMapping("/stock")
@@ -188,20 +187,19 @@ public class StockController {
     //Add Comment
 
     @GetMapping("/formAddComment/{id}")
-    public String updateStockAddComment(@PathVariable Long id, Model model,HttpSession session) {
-        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
+    public String updateStockAddComment(@PathVariable Long id, Model model,HttpSession session)  {
         Stock stock = stockService.findById(id);
-        chosenStockPositionalStatus.setCommentObj(stock.getComment());
-        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
-        customerUserDetailsService.chosenStockPosition = stock;
         model.addAttribute(stock);
+
         usersService.loggedUserData(model, session);
         return "storage/formAddComment";
     }
 
     @PostMapping("/formAddComment")
-    public String updateStockAddCommentPost(Stock stock, ChosenStockPositional chosenStockPositional) {
-        stockService.changeComment(stock,chosenStockPositional);
+    public String updateStockAddCommentPost(Stock stock, String newComment) {
+        log.error("newComment: " + newComment);
+        log.error("stock comment: " + stock.getComment());
+        stockService.changeComment(stock,newComment);
         return "redirect:/stock";
     }
 
@@ -217,22 +215,30 @@ public class StockController {
     //Create Stock
 
     @GetMapping("/storage/formStock")
-    public String stockForm(Model model,HttpSession session){
+    public String stockForm(Model model,HttpSession session,@SessionAttribute(required = false) String chosenWarehouse){
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
-        List<Unit> units = unitService.getUnit();
-        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("articles", articles);
-        model.addAttribute("warehouses", warehouses);
+
+        List<Unit> units = unitService.getUnit();
         model.addAttribute("units", units);
+
+        Warehouse warehouse = warehouseService.getWarehouseByName(chosenWarehouse);
+        model.addAttribute("warehouse", warehouse);
+
         model.addAttribute("stock", new Stock());
+
         List<Company> activeCompany = companyService.getCompany();
         model.addAttribute("activeCompany", activeCompany);
+
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("nextPalletNbr", extremelyService.nextPalletNbr());
-        List<Location> locations = locationRepository.locations(customerUserDetailsService.chosenWarehouse);
+
+        List<Location> locations = locationRepository.locations(warehouse.getId());
         model.addAttribute("locations", locations);
+
         List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
         model.addAttribute("articleTypes", articleTypes);
+
         model.addAttribute("locationN", stockServiceImpl.locationName);
         usersService.loggedUserData(model, session);
         return "storage/formStock";
@@ -247,7 +253,7 @@ public class StockController {
 
     //Transfer From FS
     @GetMapping("/storage/formTransfer/{id}")
-    public String transferFromFS(@PathVariable Long id, Model model,HttpSession session) throws CloneNotSupportedException {
+    public String transferFromFS(@PathVariable Long id,@SessionAttribute(required = false) String chosenWarehouse, Model model,HttpSession session) throws CloneNotSupportedException {
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         model.addAttribute("articles", articles);
 
@@ -260,14 +266,14 @@ public class StockController {
         model.addAttribute("chosenStockPosition", chosenStockPositional);
 
         List<Unit> units = unitService.getUnit();
-        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
-        model.addAttribute("warehouses", warehouses);
+        Warehouse warehouse = warehouseService.getWarehouseByName(chosenWarehouse);
+        model.addAttribute("warehouse", warehouse);
         model.addAttribute("units", units);
         List<Company> activeCompany = companyService.getCompany();
         model.addAttribute("activeCompany", activeCompany);
         model.addAttribute("localDateTime", LocalDateTime.now());
         model.addAttribute("nextPalletNbr", extremelyService.nextPalletNbr());
-        List<Location> locations = locationRepository.locations(customerUserDetailsService.chosenWarehouse);
+        List<Location> locations = locationRepository.locations(warehouse.getId());
         model.addAttribute("locations", locations);
         List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
         model.addAttribute("articleTypes", articleTypes);

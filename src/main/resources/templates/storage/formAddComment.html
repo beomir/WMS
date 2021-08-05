@@ -29,8 +29,8 @@
 		<form  method="post" th:action="@{/formAddComment}">
 			<div class="titleList">Add Comment</div><br/>
 			<section>
-				<label style="color: white;font-weight: bold">Add comment</label>
-				<input type="text" th:field="*{stock.comment}"/>
+				<label th:text="#{app.addComment}" style="color: white;font-weight: bold">Add comment</label>
+				<input type="text" id="changingValue" name="newComment" />
 				<input type="hidden" th:field="*{stock.id}"/>
 				<input type="hidden" th:field="*{stock.created}" />
 				<input type="hidden" th:field="*{stock.hd_number}" />
@@ -44,7 +44,7 @@
 				<input type="hidden" th:field="*{stock.warehouse}" />
 				<input type="hidden" th:field="*{stock.pieces_qty}" />
 				<input type="hidden" th:field="*{stock.location}"/>
-				<input type="hidden" th:field="*{chosenStockPositionalStatus.commentObj}"/>
+				<input type="hidden" id="originValue" th:field="*{stock.comment}"/>
 			</section><br/>
 			<section>
 				<br/><button class="button" type="submit">Save</button>
@@ -59,6 +59,8 @@
 <div class="w3copyright-agile">
 	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 </div>
-</div>
+<script>
+	$('#changingValue').val($('#originValue').val())
+</script>
 </body>
 </html>

@@ -248,14 +248,14 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void changeComment(Stock stock, ChosenStockPositional chosenStockPositional) {
+    public void changeComment(Stock stock, String newComment) {
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Comment changed");
-        transaction.setAdditionalInformation("Comment changed from: " + chosenStockPositional.getCommentObj() + " on: " + stock.getComment() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
+        transaction.setAdditionalInformation("Comment changed from: " + stock.getComment() + " on: " + newComment + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
         transaction.setTransactionType("306");
+        stock.setComment(newComment);
         transactionStock(stock, transaction, receptionRepository);
         transactionService.add(transaction);
-
         stockRepository.save(stock);
     }
 

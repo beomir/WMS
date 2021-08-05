@@ -31,7 +31,7 @@ public interface StockService {
 
     void changeUnit(Stock stock, ChosenStockPositional chosenStockPositional);
 
-    void changeComment(Stock stock, ChosenStockPositional chosenStockPositional);
+    void changeComment(Stock stock, String newComment);
 
     Stock get(Long id);
 
