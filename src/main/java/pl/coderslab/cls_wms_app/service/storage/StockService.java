@@ -21,7 +21,7 @@ public interface StockService {
 
     void addNewStock(Stock stock,String locationName);
 
-    void changeStatus(Stock stock, ChosenStockPositional chosenStockPositional);
+    void changeStatus(Stock stock, String newStatus);
 
     void changeArticleNumber(Stock stock, ChosenStockPositional chosenStockPositional);
 

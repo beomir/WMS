@@ -1,6 +1,7 @@
 package pl.coderslab.cls_wms_app.service.storage;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
@@ -83,8 +84,10 @@ public class StockServiceImpl implements StockService {
 
         Location location = locationRepository.findLocationByLocationName(locationNames,stock.getWarehouse().getName());
         stock.setLocation(location);
-        location.setFreeSpace(location.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty());
-        location.setFreeWeight(location.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
+        location.setFreeSpace(Precision.round(location.getFreeSpace() - stock.getArticle().getVolume() * stock.getPieces_qty(),2));
+        location.setFreeWeight(Precision.round(location.getFreeWeight() - stock.getArticle().getWeight() * stock.getPieces_qty(),2));
+        location.setTemporaryFreeSpace(Precision.round(location.getTemporaryFreeSpace()- stock.getArticle().getVolume() * stock.getPieces_qty(),2));
+        location.setTemporaryFreeWeight(Precision.round(location.getTemporaryFreeWeight()- stock.getArticle().getWeight() * stock.getPieces_qty(),2));
         Transaction transaction = new Transaction();
         transaction.setTransactionDescription("Manual stock creation");
         transaction.setAdditionalInformation("New stock line created: Article: " + stock.getArticle().getArticle_number() + ", HD number:" + stock.getHd_number() + ", Qty: " + stock.getPieces_qty() + " in location: " + stock.getLocation().getLocationName());
@@ -96,43 +99,31 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void changeStatus(Stock stock, ChosenStockPositional chosenStockPositional) {
-        try {
-            if(statusRepository.checkIfStockStatusExists(stock.getStatus().getStatus()) != null){
-                log.debug("SERVICE chosenStockPosition: " + chosenStockPositional.statusId);
+    public void changeStatus(Stock stock, String newStatus) {
+            Status newStockStatus = statusRepository.checkIfStockStatusExists(newStatus);
+            if(newStockStatus != null){
+                log.debug("SERVICE newStatus: " + newStatus);
                 Transaction transaction = new Transaction();
                 transaction.setTransactionDescription("Status changed on stock");
-                transaction.setAdditionalInformation("Status changed from: " + statusRepository.getStatusById(chosenStockPositional.statusId).getStatus() + " on: " + stock.getStatus().getStatus() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
+                transaction.setAdditionalInformation("Status changed from: " + stock.getStatus().getStatus()  + " on: " + newStockStatus.getStatus() + " for article: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
                 transaction.setTransactionType("301");
                 transactionStock(stock, transaction, receptionRepository);
                 transactionService.add(transaction);
+                stock.setStatus(newStockStatus);
                 stockRepository.save(stock);
             }
             else{
-                log.error("Incorrect status set: " + stock.getStatus().getStatus());
+                log.error("Incorrect status set: " + newStatus);
                 IssueLog issueLog = new IssueLog();
-                issueLog.setIssueLogContent("Incorrect status set: " + stock.getStatus().getStatus());
+                issueLog.setIssueLogContent("Incorrect status set: " + newStatus);
                 issueLog.setIssueLogFilePath("");
                 issueLog.setIssueLogFileName("");
                 issueLog.setWarehouse(stock.getWarehouse());
                 issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                 issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
-                issueLog.setAdditionalInformation("Attempt of set incorrect status: " + stock.getStatus().getStatus() + ", for hd number: " + stock.getHd_number() );
+                issueLog.setAdditionalInformation("Attempt of set incorrect status: " + newStatus + ", for hd number: " + stock.getHd_number() );
                 issueLogService.add(issueLog);
             }
-        } catch (NullPointerException e) {
-            log.error("Status not exists in DB");
-            IssueLog issueLog = new IssueLog();
-            issueLog.setIssueLogContent("Incorrect status set. Status not exists in DB");
-            issueLog.setIssueLogFilePath("");
-            issueLog.setIssueLogFileName("");
-            issueLog.setWarehouse(stock.getWarehouse());
-            issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-            issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
-            issueLog.setAdditionalInformation("Attempt of set incorrect status for hd number: " + stock.getHd_number() + ".Status not exists in DB  " );
-            issueLogService.add(issueLog);
-        }
-
     }
 
     @Override
