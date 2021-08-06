@@ -107,10 +107,9 @@ public class StockController {
     //change article number
     @GetMapping("/storage/formChangeArticleNumber/{id}")
     public String updateStockChangeArticleNumber(@PathVariable Long id, Model model,HttpSession session) {
-        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
+
         Stock stock = stockService.findById(id);
-        chosenStockPositionalStatus.setArticleId(stock.getArticle().getId());
-        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
+
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         model.addAttribute("articles", articles);
         model.addAttribute(stock);
@@ -119,8 +118,8 @@ public class StockController {
     }
 
     @PostMapping("/storage/formChangeArticleNumber")
-    public String updateStockChangeArticleNumberPost(Stock stock, ChosenStockPositional chosenStockPositionalStatus) {
-        stockService.changeArticleNumber(stock,chosenStockPositionalStatus);
+    public String updateStockChangeArticleNumberPost(Stock stock, String newArticleNumber) {
+        stockService.changeArticleNumber(stock,newArticleNumber);
         return "redirect:/stock";
     }
 

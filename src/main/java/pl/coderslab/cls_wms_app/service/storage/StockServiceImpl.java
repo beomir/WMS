@@ -126,50 +126,94 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void changeArticleNumber(Stock stock, ChosenStockPositional chosenStockPositional) {
+    public void changeArticleNumber(Stock stock, String newArticleNumber) {
         Location location = locationRepository.findLocationByLocationName(stock.getLocation().getLocationName(), stock.getWarehouse().getName());
-        if (articleRepository.getOne(chosenStockPositional.articleId).getArticleTypes().getMixed().contains(stock.getArticle().getArticleTypes().getArticleClass()) && location.getVolume() - stock.getArticle().getVolume() * stock.getPieces_qty() > 0 && location.getMaxWeight() - stock.getArticle().getWeight() * stock.getPieces_qty() > 0) {
-            Transaction transaction = new Transaction();
-            transaction.setTransactionDescription("Article number changed on stock");
-            transaction.setAdditionalInformation("Article number changed from: " + articleRepository.getOne(chosenStockPositional.articleId).getArticle_number() + " on: " + stock.getArticle().getArticle_number() + " in location: " + stock.getLocation().getLocationName());
-            transaction.setTransactionType("302");
-            transactionStock(stock, transaction, receptionRepository);
-            transactionService.add(transaction);
-            location.setFreeSpace(location.getVolume() - stock.getArticle().getVolume() * stock.getPieces_qty());
-            location.setFreeWeight(location.getMaxWeight() - stock.getArticle().getWeight() * stock.getPieces_qty());
-            locationRepository.save(location);
-            stockRepository.save(stock);
-        } else if (!articleRepository.getOne(chosenStockPositional.articleId).getArticleTypes().getMixed().contains(stock.getArticle().getArticleTypes().getArticleClass())) {
-            IssueLog issueLog = new IssueLog();
-            issueLog.setIssueLogContent("Articles in location can't be mix.");
-            issueLog.setIssueLogFilePath("");
-            issueLog.setIssueLogFileName("");
-            issueLog.setWarehouse(stock.getWarehouse());
-            issueLog.setAdditionalInformation("Article: " + articleRepository.getOne(chosenStockPositional.articleId).getArticle_number() + ",have class: " + articleRepository.getOne(chosenStockPositional.articleId).getArticleTypes().getArticleClass() + ", article: " + stock.getArticle().getArticle_number() + ", have class: " + stock.getArticle().getArticleTypes().getArticleClass());
-            issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
-            issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-            issueLogService.add(issueLog);
-        } else if (location.getVolume() - stock.getArticle().getVolume() * stock.getPieces_qty() < 1) {
-            IssueLog issueLog = new IssueLog();
-            issueLog.setIssueLogContent("Location after change article, have not enough space");
-            issueLog.setIssueLogFilePath("");
-            issueLog.setIssueLogFileName("");
-            issueLog.setWarehouse(stock.getWarehouse());
-            issueLog.setAdditionalInformation("");
-            issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
-            issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-            issueLogService.add(issueLog);
-        } else {
-            IssueLog issueLog = new IssueLog();
-            issueLog.setIssueLogContent("Location after change article, is overweight");
-            issueLog.setIssueLogFilePath("");
-            issueLog.setIssueLogFileName("");
-            issueLog.setWarehouse(stock.getWarehouse());
-            issueLog.setAdditionalInformation("");
-            issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
-            issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-            issueLogService.add(issueLog);
+        try{
+            //TODO add in loop all article types to list and check if it is possible to mix changed article with articles occupied the location
+            Long articleNumber = Long.parseLong(newArticleNumber);
+            int qtyOfDifferentArticleInStockLocation = stockRepository.qtyOfDifferentArticleNumberInStockLocation(stock.getLocation().getLocationName());
+            log.error("qtyOfDifferentArticleInStockLocation: " + qtyOfDifferentArticleInStockLocation);
+            Article article = articleRepository.findArticleByArticle_numberAndCompanyName(articleNumber,stock.getCompany());
+            if (article.getArticleTypes().getMixed().contains(stock.getArticle().getArticleTypes().getArticleClass()) && location.getTemporaryFreeSpace() - article.getVolume() * stock.getPieces_qty() > 0 && location.getTemporaryFreeWeight() - article.getWeight() * stock.getPieces_qty() > 0) {
+                Transaction transaction = new Transaction();
+                transaction.setTransactionDescription("Article number changed on stock");
+                transaction.setAdditionalInformation("Article number changed from: " + stock.getArticle().getArticle_number()  + " on: " + article.getArticle_number()  + " in location: " + stock.getLocation().getLocationName());
+                transaction.setTransactionType("302");
+                transactionStock(stock, transaction, receptionRepository);
+                transactionService.add(transaction);
+                if(article.getVolume() > stock.getArticle().getVolume()){
+                    log.error("changed article volume is bigger than previous article. Volume of new article: " + article.getVolume() );
+                    log.error("changed article volume is bigger than previous article. Volume of old article: " + stock.getArticle().getVolume() );
+                    log.error("changed article volume is bigger than previous article. location temporaryFreeWeight before change: " + location.getTemporaryFreeSpace() );
+                    location.setFreeSpace(location.getFreeSpace() - (article.getVolume() * stock.getPieces_qty() - stock.getArticle().getVolume() * stock.getPieces_qty()));
+                    location.setTemporaryFreeSpace(location.getTemporaryFreeSpace() - (article.getVolume() * stock.getPieces_qty() - stock.getArticle().getVolume() * stock.getPieces_qty()));
+                    log.error("changed article volume is bigger than previous article. location temporaryFreeWeight after change: " + location.getTemporaryFreeSpace() );
+                }
+                else if(article.getVolume() < stock.getArticle().getVolume()){
+                    log.error("changed article volume is lower than previous article. Volume of new article: " + article.getVolume() );
+                    log.error("changed article volume is lower than previous article. Volume of old article: " + stock.getArticle().getVolume() );
+                    log.error("changed article volume is lower than previous article. location temporaryFreeWeight before change: " + location.getTemporaryFreeSpace() );
+                    location.setFreeSpace(location.getFreeSpace() + (article.getVolume() * stock.getPieces_qty() - stock.getArticle().getVolume() * stock.getPieces_qty()));
+                    location.setTemporaryFreeSpace(location.getTemporaryFreeSpace() + (article.getVolume() * stock.getPieces_qty() - stock.getArticle().getVolume() * stock.getPieces_qty()));
+                    log.error("changed article volume is lower than previous article. location temporaryFreeWeight after change: " + location.getTemporaryFreeSpace() );
+                }
+                if(article.getWeight() > stock.getArticle().getWeight()){
+                    log.error("changed article weight is bigger than previous article. Volume of new article: " + article.getWeight() );
+                    log.error("changed article weight is bigger than previous article. Volume of old article: " + stock.getArticle().getWeight() );
+                    log.error("changed article weight is bigger than previous article. location temporaryFreeWeight before change: " + location.getTemporaryFreeWeight() );
+                    location.setTemporaryFreeWeight(location.getTemporaryFreeWeight() - (article.getWeight() * stock.getPieces_qty() - stock.getArticle().getWeight() * stock.getPieces_qty()));
+                    location.setFreeWeight(location.getFreeWeight() - (article.getWeight() * stock.getPieces_qty() - stock.getArticle().getWeight() * stock.getPieces_qty()));
+                    log.error("changed article weight is bigger than previous article. location temporaryFreeWeight after change: " + location.getTemporaryFreeWeight() );
+                }
+                else if(article.getWeight() < stock.getArticle().getWeight()){
+                    log.error("changed article weight is lower than previous article. Volume of new article: " + article.getWeight() );
+                    log.error("changed article weight is lower than previous article. Volume of old article: " + stock.getArticle().getWeight() );
+                    log.error("changed article weight is lower than previous article. location temporaryFreeWeight before change: " + location.getTemporaryFreeWeight() );
+                    location.setFreeWeight(location.getFreeWeight() + (article.getWeight() * stock.getPieces_qty() - stock.getArticle().getWeight() * stock.getPieces_qty()));
+                    location.setTemporaryFreeWeight(location.getTemporaryFreeWeight() + (article.getWeight() * stock.getPieces_qty() - stock.getArticle().getWeight() * stock.getPieces_qty()));
+                    log.error("changed article weight is lower than previous article. location temporaryFreeWeight after change: " + location.getTemporaryFreeWeight() );
+                }
+
+                locationRepository.save(location);
+                stockRepository.save(stock);
+            }
+            //check if is more than one article in location, and changed article cannot be mixed with another article in location
+            else if (qtyOfDifferentArticleInStockLocation > 1 && !article.getArticleTypes().getMixed().contains(stock.getArticle().getArticleTypes().getArticleClass())) {
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent("Articles in location can't be mix.");
+                issueLog.setIssueLogFilePath("");
+                issueLog.setIssueLogFileName("");
+                issueLog.setWarehouse(stock.getWarehouse());
+                issueLog.setAdditionalInformation("Article: " + article.getArticle_number() + ",have class: " + article.getArticleTypes().getArticleClass() + ", article: " + stock.getArticle().getArticle_number() + ", have class: " + stock.getArticle().getArticleTypes().getArticleClass());
+                issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                issueLogService.add(issueLog);
+            } else if (location.getTemporaryFreeSpace() - article.getVolume() * stock.getPieces_qty() < 0) {
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent("Location after change article, have not enough space");
+                issueLog.setIssueLogFilePath("");
+                issueLog.setIssueLogFileName("");
+                issueLog.setWarehouse(stock.getWarehouse());
+                issueLog.setAdditionalInformation("");
+                issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                issueLogService.add(issueLog);
+            } else {
+                IssueLog issueLog = new IssueLog();
+                issueLog.setIssueLogContent("Location after change article, is overweight");
+                issueLog.setIssueLogFilePath("");
+                issueLog.setIssueLogFileName("");
+                issueLog.setWarehouse(stock.getWarehouse());
+                issueLog.setAdditionalInformation("");
+                issueLog.setCreatedBy(SecurityUtils.usernameForActivations());
+                issueLog.setCreated(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                issueLogService.add(issueLog);
+            }
         }
+        catch(Exception e){
+
+        }
+
 
     }
 

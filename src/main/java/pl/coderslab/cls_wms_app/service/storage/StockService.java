@@ -23,7 +23,7 @@ public interface StockService {
 
     void changeStatus(Stock stock, String newStatus);
 
-    void changeArticleNumber(Stock stock, ChosenStockPositional chosenStockPositional);
+    void changeArticleNumber(Stock stock, String newArticleNumber);
 
     void changeQty(Stock stock, String newQuantity);
 
