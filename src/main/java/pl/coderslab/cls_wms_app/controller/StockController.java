@@ -128,19 +128,17 @@ public class StockController {
 
     @GetMapping("/storage/formChangeQty/{id}")
     public String updateStockChangeQuantity(@PathVariable Long id, Model model,HttpSession session) {
-        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
+
         Stock stock = stockService.findById(id);
-        chosenStockPositionalStatus.setPieces_qtyObj(stock.getPieces_qty());
-        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
         model.addAttribute(stock);
-        log.error("GET chosenStockPositionalStatus: " + chosenStockPositionalStatus);
+
         usersService.loggedUserData(model,session);
         return "storage/formChangeQty";
     }
 
     @PostMapping("/storage/formChangeQty")
-    public String updateStockChangeQuantityPost(Stock stock, ChosenStockPositional chosenStockPositionalStatus) {
-        stockService.changeQty(stock,chosenStockPositionalStatus);
+    public String updateStockChangeQuantityPost(Stock stock, String newQuantity) {
+        stockService.changeQty(stock,newQuantity);
         return "redirect:/stock";
     }
 

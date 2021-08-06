@@ -25,7 +25,7 @@ public interface StockService {
 
     void changeArticleNumber(Stock stock, ChosenStockPositional chosenStockPositional);
 
-    void changeQty(Stock stock, ChosenStockPositional chosenStockPositional);
+    void changeQty(Stock stock, String newQuantity);
 
     void changeQuality(Stock stock, String newQuality);
 
