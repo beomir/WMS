@@ -44,6 +44,9 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("Select s from Stock s where s.hd_number = ?1")
     Stock getStockByHdNumber(Long hdNumber);
 
+    @Query("Select s from Stock s where s.hd_number = ?1")
+    List<Stock> getStockListByHdNumber(Long hdNumber);
+
     @Query("Select s from Stock s where s.hd_number = ?1 and s.article.article_number =?2 and s.location.locationName = ?3 and s.warehouse.name = ?4 and s.company.name = ?5 and s.handle = ?6")
     Stock getStockByHdNumberArticleNumberLocation(Long hdNumber, Long articleNumber, String locationName,String warehouseName, String companyName, String handle);
 
@@ -58,6 +61,9 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     @Query(value = "select count(distinct a.article_number) from storage s inner join article a on s.article_id = a.id inner join location l on s.location_id = l.id where l.location_name = ?1",nativeQuery = true)
     int qtyOfDifferentArticleNumberInStockLocation(String locationName);
+
+    @Query(value = "select count(distinct s.id) from storage s inner join location l on s.location_id = l.id where l.location_name = ?1",nativeQuery = true)
+    int qtyOfStockId(String locationName);
 
     @Query("Select s from Stock s join WorkDetails wd on s.hd_number = wd.hdNumber and s.article = wd.article where s.handle = ?1 and wd.workDescription = ?2")
     List<Stock> getStockByWorkHandleAndWorkDescription(String handle, String workDescription);

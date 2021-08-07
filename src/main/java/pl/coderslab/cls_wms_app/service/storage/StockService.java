@@ -2,7 +2,6 @@ package pl.coderslab.cls_wms_app.service.storage;
 
 import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.Warehouse;
-import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -19,19 +18,19 @@ public interface StockService {
 
     void add(Stock stock);
 
-    void addNewStock(Stock stock,String locationName);
+    void addNewStock(Stock stock,String locationName,HttpSession session);
 
-    void changeStatus(Stock stock, String newStatus);
+    void changeStatus(Stock stock, String newStatus,HttpSession session);
 
     void changeArticleNumber(Stock stock, String newArticleNumber,HttpSession session);
 
-    void changeQty(Stock stock, String newQuantity);
+    void changeQty(Stock stock, String newQuantity,HttpSession session);
 
-    void changeQuality(Stock stock, String newQuality);
+    void changeQuality(Stock stock, String newQuality,HttpSession session);
 
-    void changeUnit(Stock stock, String newUnit);
+    void changeUnit(Stock stock, String newUnit,HttpSession session);
 
-    void changeComment(Stock stock, String newComment);
+    void changeComment(Stock stock, String newComment,HttpSession session);
 
     Stock get(Long id);
 
@@ -43,7 +42,7 @@ public interface StockService {
 
     void remove(Long id);
 
-    void transfer(Stock stock, String locationName, Stock chosenStockPositional);
+    void transfer(Stock stock, String locationName, Stock chosenStockPositional,HttpSession session);
 
     void produceGoods(Long productionNumberToConfirm) throws CloneNotSupportedException;
 }

@@ -9,20 +9,16 @@ import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.ArticleTypesRepository;
 import pl.coderslab.cls_wms_app.repository.LocationRepository;
-
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
-import pl.coderslab.cls_wms_app.service.storage.StockServiceImpl;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
-
 import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.ExtremelyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.StatusService;
 import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
-import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
-import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
+
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,15 +30,12 @@ import java.util.List;
 @Controller
 public class StockController {
     private final StockService stockService;
-    private final StockServiceImpl stockServiceImpl;
     private final UsersService usersService;
-
     private final WarehouseService warehouseService;
     private final CompanyService companyService;
     private final StatusService statusService;
     private final ArticleService articleService;
     private final UnitService unitService;
-    private CustomerUserDetailsService customerUserDetailsService;
     private final LocationRepository locationRepository;
     private final ArticleTypesRepository articleTypesRepository;
     private final ExtremelyService extremelyService;
@@ -51,21 +44,18 @@ public class StockController {
 
 
     @Autowired
-    public StockController(StockService stockService, StockServiceImpl stockServiceImpl, UsersService usersService,WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, ArticleTypesRepository articleTypesRepository, ExtremelyService extremelyService, WorkDetailsService workDetailsService) {
+    public StockController(StockService stockService, UsersService usersService,WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, LocationRepository locationRepository, ArticleTypesRepository articleTypesRepository, ExtremelyService extremelyService, WorkDetailsService workDetailsService) {
         this.stockService = stockService;
-        this.stockServiceImpl = stockServiceImpl;
         this.usersService = usersService;
         this.warehouseService = warehouseService;
         this.companyService = companyService;
         this.statusService = statusService;
         this.articleService = articleService;
         this.unitService = unitService;
-        this.customerUserDetailsService = customerUserDetailsService;
         this.locationRepository = locationRepository;
         this.articleTypesRepository = articleTypesRepository;
         this.extremelyService = extremelyService;
         this.workDetailsService = workDetailsService;
-
     }
 
     @GetMapping("/stock")
@@ -100,8 +90,8 @@ public class StockController {
     }
 
     @PostMapping("/storage/formChangeStatus")
-    public String updateStockChangeStatusPost(Stock stock, String newStatus) {
-        stockService.changeStatus(stock, newStatus);
+    public String updateStockChangeStatusPost(Stock stock, String newStatus,HttpSession session) {
+        stockService.changeStatus(stock, newStatus,session);
         return "redirect:/stock";
     }
     //change article number
@@ -136,8 +126,8 @@ public class StockController {
     }
 
     @PostMapping("/storage/formChangeQty")
-    public String updateStockChangeQuantityPost(Stock stock, String newQuantity) {
-        stockService.changeQty(stock,newQuantity);
+    public String updateStockChangeQuantityPost(Stock stock, String newQuantity,HttpSession session) {
+        stockService.changeQty(stock,newQuantity,session);
         return "redirect:/stock";
     }
 
@@ -153,8 +143,8 @@ public class StockController {
     }
 
     @PostMapping("/storage/formChangeQuality")
-    public String updateStockChangeQualityPost(Stock stock, String newQuality) {
-        stockService.changeQuality(stock,newQuality);
+    public String updateStockChangeQualityPost(Stock stock, String newQuality,HttpSession session) {
+        stockService.changeQuality(stock,newQuality,session);
         return "redirect:/stock";
     }
 
@@ -173,8 +163,8 @@ public class StockController {
     }
 
     @PostMapping("/storage/formChangeUnit")
-    public String updateStockChangeUnitPost(Stock stock, String newUnit) {
-        stockService.changeUnit(stock,newUnit);
+    public String updateStockChangeUnitPost(Stock stock, String newUnit,HttpSession session) {
+        stockService.changeUnit(stock,newUnit,session);
         return "redirect:/stock";
     }
 
@@ -190,10 +180,8 @@ public class StockController {
     }
 
     @PostMapping("/formAddComment")
-    public String updateStockAddCommentPost(Stock stock, String newComment) {
-        log.error("newComment: " + newComment);
-        log.error("stock comment: " + stock.getComment());
-        stockService.changeComment(stock,newComment);
+    public String updateStockAddCommentPost(Stock stock, String newComment,HttpSession session) {
+        stockService.changeComment(stock,newComment,session);
         return "redirect:/stock";
     }
 
@@ -232,15 +220,14 @@ public class StockController {
         List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
         model.addAttribute("articleTypes", articleTypes);
 
-        model.addAttribute("locationN", stockServiceImpl.locationName);
         usersService.loggedUserData(model, session);
         return "storage/formStock";
     }
 
     @PostMapping("/storage/formStock")
-    public String stockFormPost(Stock stock,String locationN) {
+    public String stockFormPost(Stock stock,String locationN,HttpSession session) {
         log.error("POST: " + locationN);
-        stockService.addNewStock(stock,locationN);
+        stockService.addNewStock(stock,locationN,session);
         return "redirect:/stock";
     }
 
@@ -270,7 +257,7 @@ public class StockController {
         model.addAttribute("locations", locations);
         List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
         model.addAttribute("articleTypes", articleTypes);
-        model.addAttribute("locationN", stockServiceImpl.locationName);
+
         usersService.loggedUserData(model,session);
         return "storage/formTransfer";
     }
@@ -280,8 +267,8 @@ public class StockController {
                                      @SessionAttribute(required = false) Stock chosenStockPositional,
                                      String formTransfer,HttpSession session) {
         if(formTransfer.equals("2")){
-            stockService.transfer(stock,locationN, chosenStockPositional);
-            session.setAttribute("stockMessage","Goods transferred from: " + chosenStockPositional.getLocation().getLocationName() + " to: " + locationN);
+            stockService.transfer(stock,locationN, chosenStockPositional,session);
+
             return "redirect:/stock";
         }
         else if(formTransfer.equals("1") && stock.getStatus().getStatus().equals("on_hand")){

@@ -3,7 +3,6 @@ package pl.coderslab.cls_wms_app.service.wmsOperations;
 import pl.coderslab.cls_wms_app.entity.Stock;
 import pl.coderslab.cls_wms_app.entity.WorkDetails;
 import pl.coderslab.cls_wms_app.repository.WorkDetailsRepository;
-import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
