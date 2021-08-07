@@ -118,8 +118,8 @@ public class StockController {
     }
 
     @PostMapping("/storage/formChangeArticleNumber")
-    public String updateStockChangeArticleNumberPost(Stock stock, String newArticleNumber) {
-        stockService.changeArticleNumber(stock,newArticleNumber);
+    public String updateStockChangeArticleNumberPost(Stock stock, String newArticleNumber,HttpSession session) {
+        stockService.changeArticleNumber(stock,newArticleNumber,session);
         return "redirect:/stock";
     }
 

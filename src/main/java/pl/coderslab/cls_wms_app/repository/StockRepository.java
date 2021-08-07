@@ -35,6 +35,9 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("Select s from Stock s where s.location.locationName = ?1 ")
     Stock getStockByLocationName(String locationName);
 
+    @Query("Select s from Stock s where s.location.locationName = ?1 and s.warehouse.name = ?2")
+    List<Stock> getStockContentByLocationNameAndWarehouse(String locationName,String warehouseName);
+
     @Query("Select s from Stock s where s.shipmentNumber = ?1")
     List<Stock> getStockListByShipmentNumber(Long shipmentNumber);
 
