@@ -1430,6 +1430,21 @@ input:invalid:focus.check {
     -webkit-transform: scale(1.4);
 }
 
+.makeItBiggerSub{
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+}
+
+.makeItBiggerSub:hover{
+    -o-transition: all 0.6s;
+    -moz-transition: all 0.6s;
+    -webkit-transition: all 0.6s;
+    -moz-transform: scale(1.07);
+    -o-transform:scale(1.07);
+    -webkit-transform: scale(1.07);
+}
+
 .unsetColors tr:hover > td{
     background-color: unset !important;
     color: unset !important;

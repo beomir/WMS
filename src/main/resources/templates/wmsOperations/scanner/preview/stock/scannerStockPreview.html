@@ -24,20 +24,17 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form method="post" th:action="@{/scanner/scannerStock}">
-			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div>
-			<div class="underTitle" th:text="#{app.stock}">stock</div><br/><br/>
-			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
-			<div class="formDescription" th:text="#{app.scannerDescription}"> </div><br/><br/><br/>
-			<div class="formContent" th:text="'1. ' + #{app.transferr}"></div>
-			<div class="formContent" th:text="'2. ' + #{app.preview}"></div>
+		<form method="post" th:action="@{/scanner/scannerStockPreview}">
+			<div th:include="fragments/scannerStockPreview :: scannerStockPreview"></div><br/>
+
+			<div class="formDescription" th:text="#{app.scanLocationNameOrHDNumber}"></div><br/><br/>
+			<label  th:text="#{app.locationName} + ' ' +  #{app.or} + ' '  + #{app.handleDevice}" style="margin-left: 15%;color: white;font-weight: bold"></label>
+			<br/><input style="max-width:30%;margin-left: 15%" class="check" min="6" type="text" name="valueToPreview" required/>
 			<br/><br/>
 			<input  type="hidden" th:value="${token}" name="token"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
-
-				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment}}"><div class="circle" th:title="#{app.moveBack}"><-</div></a>
-				<button name="scannerStock" type="submit"  th:value="1" class="circle">1</button>
-				<button name="scannerStock" type="submit"  th:value="2" class="circle">2</button>
+				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/2'}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
+				<button type="submit" class="circleBig" style="font-size:12px" th:text="#{app.search}"></button>
 			</section>
 		</form>
 
@@ -47,6 +44,6 @@
 		<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 	</div>
 </div>
-<script type="text/javascript" th:src="@{/js/logo.js}"></script>
+<script type="text/javascript" th:src="@{/js/workQueueList.js}"></script>
 </body>
 </html>

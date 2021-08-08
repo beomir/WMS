@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div sec:authorize="!hasRole('ROLE_SCANNER')" th:include="fragments/stockNavigation :: stockNavigation"></div>
+</div>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form method="post" th:action="@{/scanner/scannerStockPreviewLocationScannedPost}">
+			<div th:include="fragments/scannerStockPreview :: scannerStockPreview"></div>
+			<div class="underTitle" th:text="#{app.forHd} +  ': ' + ${stockPreview.hd_number}"></div>
+			<br/>
+			<table style="color: white;text-align: left;width:100%">
+				<tr style="font-weight: bold">
+					<th th:text="#{app.locationName}"></th>
+					<th th:text="#{app.articleNumber}"></th>
+					<th th:text="#{app.handleDevice}"></th>
+					<th th:text="#{app.piecesQty}"></th>
+				</tr>
+				<tr>
+					<td th:text="${stockPreview.location.locationName}"></td>
+					<td th:text="${stockPreview.article.article_number}"></td>
+					<td th:text="${stockPreview.hd_number}"></td>
+					<td th:text="${stockPreview.pieces_qty}"></td>
+				</tr>
+			</table>
+			<br/><br/>
+			<div style="text-align: center" th:title="#{app.articleInformation}"><img style="height: 70px;width:70px" class="makeItBigger"  th:src="@{/images/product.png}"/></div>
+			<table style="color: white;text-align: left;width:100%">
+				<tr style="font-weight: bold">
+					<th th:text="#{app.unit}"></th>
+					<th th:text="#{app.quality}"></th>
+					<th th:text="#{app.status}"></th>
+					<th th:text="#{app.receptionNumber}"></th>
+				</tr>
+				<tr>
+					<td th:text="${stockPreview.unit.name}"></td>
+					<td th:text="${stockPreview.quality}"></td>
+					<td th:text="${stockPreview.status.status}"></td>
+					<td th:text="${stockPreview.receptionNumber}"></td>
+				</tr>
+			</table><br><br>
+			<div style="text-align: center" th:title="#{app.locationInformation}"><img style="height: 70px;width:70px" class="makeItBigger"  th:src="@{/images/location.png}"/></div>
+			<table style="color: white;text-align: left;width:100%">
+				<tr style="font-weight: bold">
+					<th th:text="#{app.storageZone}"></th>
+					<th th:text="#{app.freeSpaceInLocation}"></th>
+					<th th:text="#{app.freeWeightInLocation}"></th>
+					<th th:text="#{app.articleClass}"></th>
+				</tr>
+				<tr>
+					<td th:text="${stockPreview.location.storageZone.storageZoneName}"></td>
+					<td th:text="${stockPreview.location.temporaryFreeSpace}"></td>
+					<td th:text="${stockPreview.location.temporaryFreeWeight}"></td>
+					<td th:text="${stockPreview.article.articleTypes.articleClass}"></td>
+				</tr>
+			</table><br><br>
+			<div style="text-align: center" th:title="#{app.changesInformation}"><img style="height: 70px;width:70px" class="makeItBigger"  th:src="@{/images/changes.png}"/></div>
+			<table style="color: white;text-align: left;width:100%">
+				<tr style="font-weight: bold">
+					<th th:text="#{app.created}"></th>
+					<th th:text="#{app.lastUpdate}"></th>
+					<th th:text="#{app.changedBy}"></th>
+				</tr>
+				<tr>
+					<td th:text="${stockPreview.created}"></td>
+					<td th:text="${stockPreview.last_update}"></td>
+					<td th:text="${stockPreview.changeBy}"></td>
+				</tr>
+			</table><br><br>
+			<input  type="hidden" th:value="${token}" name="token"/>
+			<section style="display: flex; align-items: center;justify-content: center;">
+				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/2/2/' + locationName}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
+			</section>
+		</form>
+
+		<div th:include="fragments/footer :: footer"></div>
+	</div>
+	<div class="w3copyright-agile">
+		<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+	</div>
+</div>
+</body>
+</html>

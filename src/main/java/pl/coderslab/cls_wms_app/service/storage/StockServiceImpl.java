@@ -539,7 +539,6 @@ public class StockServiceImpl implements StockService {
                     partialTransfer(stock, locationNames, chosenStockPositional, stockInDestinationLocationList, transaction);
                     log.error("stockRepository.getStockByHdNumber(stock.getHd_number())" + stockRepository.getStockByHdNumber(stock.getHd_number()));
                 } else {
-                    //TODO change Stock on List<Stock>
                     List<Stock> stockInDestinationLocationList = stockRepository.getStockContentByLocationNameAndWarehouse(locationNames,stock.getWarehouse().getName());
                     partialTransfer(stock, locationNames, chosenStockPositional, stockInDestinationLocationList, transaction);
                     log.error("stockRepository.getStockByLocationName(locationNames)" + stockRepository.getStockByLocationName(locationNames));
