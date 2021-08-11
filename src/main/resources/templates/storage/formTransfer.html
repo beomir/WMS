@@ -74,14 +74,16 @@
 			<section class="d-none" id="createNewPalletNumberInLocation">
 				<input id="createNewPalletNumberInLocationCheckbox" name="createNewPalletNumberInLocationCheckbox" type="checkbox">
 				<label style="color: white;font-weight: bold" th:text="#{app.addToExistedPalletInLocation}"></label>
+
 			</section>
 			<section class="d-none" id="ifLocationEmpty">
 				<div id="splitPallet"></div>
+				<div class="d-none" id="hdNumberMessage" style="border: 2px solid; border-radius: 5px;background-color: black;font-weight: bold"></div>
 				<label style="color: white;font-weight: bold" th:text="#{app.handleDevice}">Handle Device number</label>
 				<input type="text" minlength="18" maxlength="18" name="hd_number" id="hd_number" readonly/>
 			</section>
 			<section>
-				<label style="color: white;font-weight: bold" th:text="#{app.piecesQty} + ' / ' + ${stock.pieces_qty} ">Quantity</label>
+				<label style="color: white;font-weight: bold" th:text="#{app.piecesQty} + ' / ' + ${stock.pieces_qty} "></label>
 				<input class="check" id="piecesQty" type="number" th:field="*{stock.pieces_qty}" min="1" th:max="${stock.pieces_qty}" required/>
 			</section>
 			<br/>
@@ -129,6 +131,7 @@
 					<td id="originPallet" th:text="${stock.hd_number}"></td>
 				</tr>
 			</table>
+			<div class="d-none" id="qtyOfTheSamePalletNumberInOneLocation" th:text="${qtyOfTheSamePalletNumberInOneLocation}"></div>
 		</form>
 
 		<div th:include="fragments/footer :: footer"></div>

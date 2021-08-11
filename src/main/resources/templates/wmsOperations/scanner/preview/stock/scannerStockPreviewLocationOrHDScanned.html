@@ -34,13 +34,7 @@
 					<th th:text="#{app.handleDevice}"></th>
 					<th th:text="#{app.piecesQty}"></th>
 				</tr>
-				<tr th:some-field="${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/2/2/' + stockPreview.location.locationName + '/' + stockPreview.hd_number}" onclick="rowClicked(this.getAttribute('some-field'))" th:title="#{app.clickToCheckDetails} + ' ' + #{app.forHd} + ': ' + ${stockPreview.hd_number}" class="makeItBiggerSub" style="cursor: pointer" th:if="${previewWay} == '1'" th:each="stockPreview : ${stockPreviewList}">
-					<td th:text="${stockPreview.location.locationName}"></td>
-					<td th:text="${stockPreview.article.article_number}"></td>
-					<td th:text="${stockPreview.hd_number}"></td>
-					<td th:text="${stockPreview.pieces_qty}"></td>
-				</tr>
-				<tr th:title="#{app.clickToCheckDetails}" class="makeItBiggerSub" style="cursor: pointer" th:if="${previewWay} == '2'">
+				<tr th:some-field="${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/2/2/' + stockPreview.location.locationName + '/' + stockPreview.hd_number}" onclick="rowClicked(this.getAttribute('some-field'))" th:title="#{app.clickToCheckDetails} + ' ' + #{app.forHd} + ': ' + ${stockPreview.hd_number}" class="makeItBiggerSub" style="cursor: pointer" th:each="stockPreview : ${stockPreviewList}">
 					<td th:text="${stockPreview.location.locationName}"></td>
 					<td th:text="${stockPreview.article.article_number}"></td>
 					<td th:text="${stockPreview.hd_number}"></td>

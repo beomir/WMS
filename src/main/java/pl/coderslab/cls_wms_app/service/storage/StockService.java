@@ -42,7 +42,7 @@ public interface StockService {
 
     void remove(Long id);
 
-    void transfer(Stock stock, String locationName, Stock chosenStockPositional,HttpSession session);
+    void transfer(Stock stock, String locationName, Stock chosenStockPositional,HttpSession session) throws CloneNotSupportedException;
 
     void produceGoods(Long productionNumberToConfirm) throws CloneNotSupportedException;
 }

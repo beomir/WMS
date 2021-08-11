@@ -107,8 +107,8 @@ public class ScannerStockPreviewController {
             model.addAttribute("previewWay","1");
         }
         else{
-            Stock stockPreview = stockRepository.getStockByHdNumberAndCompanyNameAndWarehouseName(Long.parseLong(valueToPreview),company.getName(),warehouse);
-            model.addAttribute("stockPreview",stockPreview);
+            List<Stock> stockPreviewList = stockRepository.getStockByHdNumberAndCompanyNameAndWarehouseName(Long.parseLong(valueToPreview),company.getName(),warehouse);
+            model.addAttribute("stockPreviewList",stockPreviewList);
             model.addAttribute("hdNumber", valueToPreview);
             model.addAttribute("previewWay","2");
         }
@@ -130,8 +130,8 @@ public class ScannerStockPreviewController {
         model.addAttribute("warehouse", warehouse);
         log.error("valueToPreview: " + valueToPreview);
         log.error("previewWay: " + session.getAttribute("previewWay"));
-        Stock stockPreview = stockRepository.getStockByHdNumberAndCompanyNameAndWarehouseName(hdNumber,company.getName(),warehouse);
-        model.addAttribute("stockPreview",stockPreview);
+        List<Stock> stockPreviewList = stockRepository.getStockByHdNumberAndCompanyNameAndWarehouseName(hdNumber,company.getName(),warehouse);
+        model.addAttribute("stockPreviewList",stockPreviewList);
         model.addAttribute("locationName", valueToPreview);
         model.addAttribute("previewWay","1");
 

@@ -35,7 +35,7 @@
 					<th th:text="#{app.handleDevice}"></th>
 					<th th:text="#{app.piecesQty}"></th>
 				</tr>
-				<tr>
+				<tr th:each="stockPreview : ${stockPreviewList}">
 					<td th:text="${stockPreview.location.locationName}"></td>
 					<td th:text="${stockPreview.article.article_number}"></td>
 					<td th:text="${stockPreview.hd_number}"></td>
@@ -50,12 +50,14 @@
 					<th th:text="#{app.quality}"></th>
 					<th th:text="#{app.status}"></th>
 					<th th:text="#{app.receptionNumber}"></th>
+					<th th:text="#{app.articleClass}"></th>
 				</tr>
-				<tr>
+				<tr th:each="stockPreview : ${stockPreviewList}">
 					<td th:text="${stockPreview.unit.name}"></td>
 					<td th:text="${stockPreview.quality}"></td>
 					<td th:text="${stockPreview.status.status}"></td>
 					<td th:text="${stockPreview.receptionNumber}"></td>
+					<td th:text="${stockPreview.article.articleTypes.articleClass}"></td>
 				</tr>
 			</table><br><br>
 			<div style="text-align: center" th:title="#{app.locationInformation}"><img style="height: 70px;width:70px" class="makeItBigger"  th:src="@{/images/location.png}"/></div>
@@ -64,13 +66,11 @@
 					<th th:text="#{app.storageZone}"></th>
 					<th th:text="#{app.freeSpaceInLocation}"></th>
 					<th th:text="#{app.freeWeightInLocation}"></th>
-					<th th:text="#{app.articleClass}"></th>
 				</tr>
-				<tr>
+				<tr th:each="stockPreview : ${stockPreviewList}">
 					<td th:text="${stockPreview.location.storageZone.storageZoneName}"></td>
 					<td th:text="${stockPreview.location.temporaryFreeSpace}"></td>
 					<td th:text="${stockPreview.location.temporaryFreeWeight}"></td>
-					<td th:text="${stockPreview.article.articleTypes.articleClass}"></td>
 				</tr>
 			</table><br><br>
 			<div style="text-align: center" th:title="#{app.changesInformation}"><img style="height: 70px;width:70px" class="makeItBigger"  th:src="@{/images/changes.png}"/></div>

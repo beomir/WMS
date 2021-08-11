@@ -14,6 +14,9 @@ import java.util.List;
 @Repository
 public interface StockRepository extends JpaRepository<Stock, Long> {
 
+    @Query(value="select max(row_num) from (select row_number() over (PARTITION BY hd_number) row_num from storage where location_id = (select location_id from storage where id = ?1) ) a",nativeQuery = true)
+    int qtyOfTheSamePalletNumberInOneLocation(Long stockId);
+
     @Query("Select distinct b from Stock b join fetch b.company c join fetch b.article a join fetch b.status s join fetch b.warehouse w JOIN fetch Users u on u.company = c.name where w.name =?1 and u.username like ?2 order by b.location.locationName,c.name, b.hd_number")
     List<Stock> getStorage(String warehouseName, String username);
 
@@ -32,8 +35,8 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("Select s from Stock s where s.id = ?1")
     Stock getStockById(Long id);
 
-    @Query("Select s from Stock s where s.location.locationName = ?1 ")
-    Stock getStockByLocationName(String locationName);
+    @Query("Select s from Stock s where s.location.locationName = ?1 and s.company.name = ?2 and s.warehouse.name = ?3")
+    List<Stock> getStockByLocationNameAndCompanyNameAndWarehouseName(String locationName,String companyName,String warehouseName);
 
     @Query("Select s from Stock s where s.location.locationName = ?1 and s.warehouse.name = ?2")
     List<Stock> getStockContentByLocationNameAndWarehouse(String locationName,String warehouseName);
@@ -66,7 +69,7 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     int qtyOfDifferentArticleNumberInStockLocation(String locationName);
 
     @Query("Select s from Stock s where s.hd_number = ?1 and s.company.name = ?2 and s.warehouse.name = ?3")
-    Stock getStockByHdNumberAndCompanyNameAndWarehouseName(Long hdNumber,String company,String warehouseName);
+    List<Stock> getStockByHdNumberAndCompanyNameAndWarehouseName(Long hdNumber,String company,String warehouseName);
 
     @Query("Select s from Stock s join WorkDetails wd on s.hd_number = wd.hdNumber and s.article = wd.article where s.handle = ?1 and wd.workDescription = ?2")
     List<Stock> getStockByWorkHandleAndWorkDescription(String handle, String workDescription);
