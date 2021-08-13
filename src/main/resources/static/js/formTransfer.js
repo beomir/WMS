@@ -362,12 +362,14 @@ piecesQty.addEventListener('keyup', function () {
         }
 
     } else {
+        hdNumberMessageFunc();
         // $("#ifLocationEmpty").hide(500);
         // $("#createNewPalletNumberInLocation").hide(500);
 
         if (qtyOfTheSamePalletNumberInOneLocation > 1) {
-            $('#hd_number').val(potentialPalletNbr);
             $("#hd_number").attr("readonly", false);
+            $("#hd_number").attr("pattern", "[0-9]{18}");
+            $('#hd_number').val(potentialPalletNbr);
             $('#hd_number').addClass("check");
         } else {
             $('#hd_number').val(originPallet.textContent);
@@ -399,8 +401,9 @@ createNewPalletNumberInLocationCheckbox.addEventListener('change', function () {
     } else {
         if (qtyOfTheSamePalletNumberInOneLocation > 1) {
             console.log("more than one pallet number in the same stock content: " + qtyOfTheSamePalletNumberInOneLocation)
-            $('#hd_number').val(potentialPalletNbr);
             $("#hd_number").attr("readonly", false);
+            $("#hd_number").attr("pattern", "[0-9]{18}");
+            $('#hd_number').val(potentialPalletNbr);
             $('#hd_number').addClass("check");
             hdNumberMessageFunc();
         }
@@ -562,8 +565,10 @@ function checkLocationAvailability() {
                 $('#hd_number').val(currentPallet);
                 if (qtyOfTheSamePalletNumberInOneLocation > 1) {
                     $("#hd_number").attr("readonly", false);
-                    $('#hd_number').val("");
-                    $('#hd_number').text("");
+                    $("#hd_number").attr("pattern", "[0-9]{18}");
+                    $('#hd_number').val(potentialPalletNbr);
+                    $('#hd_number').addClass("check");
+                    hdNumberMessageFunc();
                     console.log("more than one stock content with the same pallet number in this location")
                 }
                 locationIsEmpty = 0;
@@ -683,7 +688,10 @@ function checkLocationAvailability() {
         if (qtyOfTheSamePalletNumberInOneLocation > 1) {
             console.log("qtyOfTheSamePalletNumberInOneLocation: " + qtyOfTheSamePalletNumberInOneLocation)
             $("#hd_number").attr("readonly", false);
+            $("#hd_number").attr("pattern", "[0-9]{18}");
             $('#hd_number').val(potentialPalletNbr);
+            $('#hd_number').addClass("check");
+            hdNumberMessageFunc();
         } else {
             $("#hd_number").attr("readonly", true);
             $('#hd_number').val(currentPallet);
@@ -737,9 +745,11 @@ function checkLocationAvailability() {
                 $('#hd_number').val(originPallet.textContent);
             }
            if(qtyOfTheSamePalletNumberInOneLocation > 1){
-               $('#hd_number').val(potentialPalletNbr);
                $("#hd_number").attr("readonly", false);
+               $("#hd_number").attr("pattern", "[0-9]{18}");
+               $('#hd_number').val(potentialPalletNbr);
                $('#hd_number').addClass("check");
+               hdNumberMessageFunc();
            }
             locationIsEmpty = 0;
             if (sameCompany == 1 && locationIsEmpty == 0) {
@@ -769,9 +779,11 @@ function checkLocationAvailability() {
             $('#hd_number').val(originPallet.textContent);
         }
         if(qtyOfTheSamePalletNumberInOneLocation > 1){
-            $('#hd_number').val(potentialPalletNbr);
             $("#hd_number").attr("readonly", false);
+            $("#hd_number").attr("pattern", "[0-9]{18}");
+            $('#hd_number').val(potentialPalletNbr);
             $('#hd_number').addClass("check");
+            hdNumberMessageFunc();
         }
         locationIsEmpty = 1;
         checkIfPartialTransfer()
@@ -799,14 +811,16 @@ function checkLocationAvailability() {
             }
 
         } else {
+            hdNumberMessageFunc();
             // $("#ifLocationEmpty").hide(500);
             // $("#createNewPalletNumberInLocation").hide(500);
             if(qtyOfTheSamePalletNumberInOneLocation == 1){
                 $('#hd_number').val(originPallet.textContent);
             }
             if(qtyOfTheSamePalletNumberInOneLocation > 1){
-                $('#hd_number').val(potentialPalletNbr);
                 $("#hd_number").attr("readonly", false);
+                $("#hd_number").attr("pattern", "[0-9]{18}");
+                $('#hd_number').val(potentialPalletNbr);
                 $('#hd_number').addClass("check");
             }
             splitPallet.innerHTML = "";
@@ -941,7 +955,7 @@ function checkAllValidations() {
         returnToPreviousPage();
         return false;
     }
-    else if (originPallet.textContent == hd_number.value && qtyOfTheSamePalletNumberInOneLocation > 1){
+    else if ((hd_number.value == originPallet.textContent && parseInt(document.getElementById('piecesQty').value) < parseInt(originalPiecesQty)) || (qtyOfTheSamePalletNumberInOneLocation > 1 && hd_number.value == originPallet.textContent)){
         alert("You can't make transfer to hd number: " + originPallet.textContent + ". This movement will create the same hd number in two different locations. Please enter another pallet number")
         returnToPreviousPage();
         return false;
@@ -998,7 +1012,7 @@ function nearbyAvailablePartialOccupiedLocationsAdd() {
 }
 
 function hdNumberMessageFunc() {
-    if(qtyOfTheSamePalletNumberInOneLocation > 1 && hd_number.value == originPallet.textContent){
+    if((hd_number.value == originPallet.textContent && parseInt(document.getElementById('piecesQty').value) < parseInt(originalPiecesQty)) || (qtyOfTheSamePalletNumberInOneLocation > 1 && hd_number.value == originPallet.textContent)){
         $('#hd_number').css('color', '#8B0000');
         $('#hd_number').css('background-color', '#F5F5DC');
         $('#hd_number').css('border', '2px dashed red');

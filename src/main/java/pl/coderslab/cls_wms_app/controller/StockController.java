@@ -262,19 +262,43 @@ public class StockController {
 
         int qtyOfTheSamePalletNumberInOneLocationByStockId = stockRepository.qtyOfTheSamePalletNumberInOneLocation(id);
         model.addAttribute("qtyOfTheSamePalletNumberInOneLocation",qtyOfTheSamePalletNumberInOneLocationByStockId);
+        model.addAttribute("stockTransferMessage",session.getAttribute("stockTransferMessage").toString());
 
-        usersService.loggedUserData(model,session);
+        session.setAttribute("articleMessage","");
+        session.setAttribute("productionMessage","");
+        session.setAttribute("receptionMessage","");
+        session.setAttribute("stockMessage","");
+        session.setAttribute("productionArticleMessage","");
+        session.setAttribute("stockTransferMessage","");
+        String userName = "";
+        if(SecurityUtils.username().equals("%")){
+            userName = "admin";
+        }
+        else {
+            userName = SecurityUtils.username();
+        }
+        String token = usersService.FindUsernameByToken(userName);
+        model.addAttribute("token", token);
+        model.addAttribute("localDateTime", LocalDateTime.now());
+
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         return "storage/formTransfer";
     }
 
     @PostMapping("/storage/formTransfer")
     public String transferFromFSPost(Stock stock, String locationN,
                                      @SessionAttribute(required = false) Stock chosenStockPositional,
-                                     String formTransfer,HttpSession session) throws CloneNotSupportedException {
+                                     String formTransfer,HttpSession session,boolean createNewPalletNumberInLocationCheckbox) throws CloneNotSupportedException {
+        log.error("createNewPalletNumberInLocationCheckbox: " + createNewPalletNumberInLocationCheckbox);
         if(formTransfer.equals("2")){
-            stockService.transfer(stock,locationN, chosenStockPositional,session);
+            if(stockService.transfer(stock,locationN, chosenStockPositional,session)){
+                return "redirect:/stock";
+            }
+            else{
+                return "redirect:/storage/formTransfer/" + stock.getId();
+            }
 
-            return "redirect:/stock";
         }
         else if(formTransfer.equals("1") && stock.getStatus().getStatus().equals("on_hand")){
             workDetailsService.createTransferWork(chosenStockPositional, stock, locationN);
@@ -283,7 +307,7 @@ public class StockController {
         }
         else{
             session.setAttribute("formTransferMessage","Transfer not possible because of wrong stock status");
-            return "redirect:/formTransfer";
+            return "redirect:/storage/formTransfer/"+ stock.getId();
         }
 
     }
