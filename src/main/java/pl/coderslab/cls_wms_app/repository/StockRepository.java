@@ -117,4 +117,9 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     }
 
 
+    @Query(value = "with locationNumberInSequencePosition As (select oold2.location_number_in_sequence location_number_in_sequence from location inner join storage s2 on location.id = s2.location_id inner join article a2 on s2.article_id = a2.id inner join company c2 on a2.company_id = c2.id inner join order_of_locations_header oolh2 on c2.id = oolh2.company_id and oolh2.active = true inner join order_of_locations_details oold2 on c2.id = oold2.company_id and oolh2.id = oold2.order_of_locations_header_id and location.id = oold2.location_id where location_name = ?1 and article_number = ?3 ) select distinct  oold.location_number_in_sequence from location l inner join storage s on l.id = s.location_id inner join article a on s.article_id = a.id inner join company c on a.company_id = c.id inner join order_of_locations_header oolh on c.id = oolh.company_id and oolh.active = true inner join order_of_locations_details oold on c.id = oold.company_id and oolh.id = oold.order_of_locations_header_id and l.id = oold.location_id where c.name = ?4 and article_number = ?3 and location_name != ?1 order by 1 limit ?2",nativeQuery = true)
+    List<Long> locationNumberInSequencePosition(String locationName,int numberOfLocation,Long articleNumber,String companyName);
+
+    @Query("Select s from Stock s where s.location.id = ?1 and s.company.name = ?2 and s.warehouse.name = ?3 and s.article.article_number = ?4")
+    Stock getStockByLocationIdAndCompanyNameAndWarehouseNameAndArticleNumber(Long locationId,String companyName,String warehouseName,Long articleNumber);
 }

@@ -18,6 +18,9 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     @Query("Select l from Location l where l.active = true")
     List<Location> getLocations();
 
+    @Query("Select l from Location l where l.active = true and l.warehouse.name = ?1")
+    List<Location> getLocationsByWarehouse(String warehouseName);
+
     @Query("Select l from Location l where l.locationName = ?1 and l.warehouse.name = ?2")
     Location findLocationByLocationName(String locationName,String warehouseName);
 
@@ -60,4 +63,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     @Query(value = "Select count(location_name) from location l inner join warehouse w on l.warehouse_id = w.id where location_name = ?1 and w.name = ?2 and location_type = 'EQL'",nativeQuery = true)
     int checkEquipment(String locationName,String scannerChosenWarehouse);
+
+    @Query(value = "select l.id from location l inner join order_of_locations_details oold on l.id = oold.location_id inner join order_of_locations_header oolh on oold.order_of_locations_header_id = oolh.id inner join warehouse w on l.warehouse_id = w.id inner join company c on oold.company_id = c.id where c.name = ?1 and w.name = ?2 and oolh.active = true and oold.location_number_in_sequence = ?3",nativeQuery = true)
+    Long locationId(String companyName,String warehouseName,Long locationNumberInSequence);
 }

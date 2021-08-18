@@ -274,15 +274,5 @@
 	<span style="display: none" id="textModalMessageActivate" th:text="#{app.doYouWantActivateAllIntermediateArticlesLinkedWithSelectedFinishProduct}"></span>
 
 	<script type="text/javascript" th:src="@{/js/article.js}"></script>
-	<script>
-		function errorMessage(){
-			setTimeout(function (){
-				errorMessage().fadeIn(5000)},5000)
-			setTimeout (function (){
-				$("#articleMessage").fadeOut(3000);
-			}, 3000)
-			$("#articleMessage").fadeIn(3000);
-		}
-	</script>
 </body>
 </html>

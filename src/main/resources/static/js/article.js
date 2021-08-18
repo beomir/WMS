@@ -42,3 +42,12 @@ $( ".modal__close-bar span" ).click(function() {
 
 document.querySelector('.overlay')
     .addEventListener('click', toggleModal);
+
+function errorMessage(){
+    setTimeout(function (){
+        errorMessage().fadeIn(5000)},5000)
+    setTimeout (function (){
+        $("#articleMessage").fadeOut(3000);
+    }, 3000)
+    $("#articleMessage").fadeIn(3000);
+}

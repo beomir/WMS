@@ -79,7 +79,6 @@ public class ArticleController {
     public String list(Model model,HttpSession session) {
         List<Article> article = articleService.getArticleByAllCriteria(articleSearch.getArticle_number(),articleSearch.getVolumeBiggerThan(),articleSearch.getVolumeLowerThan(),articleSearch.getWidthBiggerThan(),articleSearch.getWidthLowerThan(),articleSearch.getDepthBiggerThan(),articleSearch.getDepthLowerThan(),articleSearch.getHeightBiggerThan(),articleSearch.getHeightLowerThan(),articleSearch.getWeightBiggerThan(),articleSearch.getWeightLowerThan(),articleSearch.getCreatedBy(),articleSearch.getCreationDateFrom(),articleSearch.getCreationDateTo(),articleSearch.getLastUpdateDateFrom(),articleSearch.getLastUpdateDateTo(),articleSearch.getCompany(),articleSearch.getArticleDescription(),articleSearch.getArticleTypes());
         List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
-
         try{
             Extremely extremely = extremelyRepository.findExtremelyByCompanyNameAndExtremelyName(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_module");
             model.addAttribute("productionModule", extremely.getExtremelyValue());

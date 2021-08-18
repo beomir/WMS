@@ -14,6 +14,8 @@ import java.util.Map;
 
 public interface LocationService {
 
+
+
     void add(Location location);
 
     void addLocation(Location location, LocationNameConstruction locationNameConstruction);
@@ -23,6 +25,8 @@ public interface LocationService {
     void createLocationPack(Location location, LocationNameConstruction locationNameConstruction);
 
     List<Location> getLocations(); //for fixtures
+
+    List<Location> getLocationsByWarehouse(String warehouseName);
 
     List<Location> getDeactivatedLocations();
 

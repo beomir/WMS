@@ -26,77 +26,23 @@
 	<div class="login-form">
 		<form method="post" th:action="@{/scanner/scannerStockPreviewLocationScannedPost}">
 			<div th:include="fragments/scannerStockPreview :: scannerStockPreview"></div>
-			<div class="underTitle" th:text="#{app.forHd} +  ': ' + ${stockPreview.hd_number}"></div>
+			<div class="underTitle" th:text="#{app.forHd} +  ': ' + ${hdNumber}"></div>
+			<div th:if="${locationsForArticleFound != null && locationsForArticleFound != ''}" style="font-size:15px;background-color: #444444;color: white;padding: 5px;border-radius: 2px;border: 5px solid black;font-weight: bold" class="underTitle" th:text="${locationsForArticleFound}"></div>
 			<br/>
-			<table style="color: white;text-align: left;width:100%">
-				<tr style="font-weight: bold">
-					<th th:text="#{app.locationName}"></th>
-					<th th:text="#{app.articleNumber}"></th>
-					<th th:text="#{app.handleDevice}"></th>
-					<th th:text="#{app.piecesQty}"></th>
-				</tr>
-				<tr th:each="stockPreview : ${stockPreviewList}">
-					<td th:text="${stockPreview.location.locationName}"></td>
-					<td th:text="${stockPreview.article.article_number}"></td>
-					<td th:text="${stockPreview.hd_number}"></td>
-					<td th:text="${stockPreview.pieces_qty}"></td>
-				</tr>
-			</table>
-			<br/><br/>
-			<div style="text-align: center" th:title="#{app.articleInformation}"><img style="height: 70px;width:70px" class="makeItBigger"  th:src="@{/images/product.png}"/></div>
-			<table style="color: white;text-align: left;width:100%">
-				<tr style="font-weight: bold">
-					<th th:text="#{app.unit}"></th>
-					<th th:text="#{app.quality}"></th>
-					<th th:text="#{app.status}"></th>
-					<th th:text="#{app.receptionNumber}"></th>
-					<th th:text="#{app.articleClass}"></th>
-				</tr>
-				<tr th:each="stockPreview : ${stockPreviewList}">
-					<td th:text="${stockPreview.unit.name}"></td>
-					<td th:text="${stockPreview.quality}"></td>
-					<td th:text="${stockPreview.status.status}"></td>
-					<td th:text="${stockPreview.receptionNumber}"></td>
-					<td th:text="${stockPreview.article.articleTypes.articleClass}"></td>
-				</tr>
-			</table><br><br>
-			<div style="text-align: center" th:title="#{app.locationInformation}"><img style="height: 70px;width:70px" class="makeItBigger"  th:src="@{/images/location.png}"/></div>
-			<table style="color: white;text-align: left;width:100%">
-				<tr style="font-weight: bold">
-					<th th:text="#{app.storageZone}"></th>
-					<th th:text="#{app.freeSpaceInLocation}"></th>
-					<th th:text="#{app.freeWeightInLocation}"></th>
-				</tr>
-				<tr th:each="stockPreview : ${stockPreviewList}">
-					<td th:text="${stockPreview.location.storageZone.storageZoneName}"></td>
-					<td th:text="${stockPreview.location.temporaryFreeSpace}"></td>
-					<td th:text="${stockPreview.location.temporaryFreeWeight}"></td>
-				</tr>
-			</table><br><br>
-			<div style="text-align: center" th:title="#{app.changesInformation}"><img style="height: 70px;width:70px" class="makeItBigger"  th:src="@{/images/changes.png}"/></div>
-			<table style="color: white;text-align: left;width:100%">
-				<tr style="font-weight: bold">
-					<th th:text="#{app.created}"></th>
-					<th th:text="#{app.lastUpdate}"></th>
-					<th th:text="#{app.changedBy}"></th>
-				</tr>
-				<tr>
-					<td th:text="${stockPreview.created}"></td>
-					<td th:text="${stockPreview.last_update}"></td>
-					<td th:text="${stockPreview.changeBy}"></td>
-				</tr>
-			</table><br><br>
+			<div th:include="fragments/stockPreviewHdDetails :: stockPreviewHdDetails"></div>
+			<br><br>
 			<input  type="hidden" th:value="${token}" name="token"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
-				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/2/2/' + locationName}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
+				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/2/2/' + valueToPreview}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
 			</section>
 		</form>
-
 		<div th:include="fragments/footer :: footer"></div>
 	</div>
 	<div class="w3copyright-agile">
 		<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 	</div>
 </div>
+<div th:include="fragments/showModalFindArticleScanner :: showModalFindArticleScanner"></div>
+<script type="text/javascript" th:src="@{/js/stockPreview.js}"></script>
 </body>
 </html>

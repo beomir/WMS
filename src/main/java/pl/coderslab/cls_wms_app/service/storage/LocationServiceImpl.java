@@ -791,6 +791,11 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    public List<Location> getLocationsByWarehouse(String warehouseName) {
+        return locationRepository.getLocationsByWarehouse(warehouseName);
+    }
+
+    @Override
     public Location findById(Long id) {
         return locationRepository.getOne(id);
     }
