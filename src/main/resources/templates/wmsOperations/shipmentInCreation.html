@@ -7,7 +7,6 @@
 <meta name="keywords" content="" />
 
 	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }</script>
 
 	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
 	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
@@ -27,16 +26,21 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
-				<div class="titleList" th:text="#{app.shipmentInCreationInfo2} + ': ' +  ${warehouse.city}"></div><br/>
+				<div class="titleList" th:text="#{app.shipmentInCreationInfo2} + ' ' +  ${warehouse.city}"></div><br/>
 				<span sec:authorize="!hasRole('ROLE_ADMIN')">
-					<div th:each="company: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} + ${company.name}"></div>
+					<div th:each="company: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} + ' ' + ${company.name}"></div>
 				</span>
 
 				<div th:unless="${stockDifferences.isEmpty()}" th:style="${messages.equals('Change red underlined qty to pass the validation')} == TRUE ? 'color: darkred;font-weight: bold;text-align: center' : 'color: green;font-weight: bold;text-align: center'"  th:text="${messages}"></div>
 				<span>
 					<div th:if="${stockDifferences.isEmpty() && cHMNFS>0}" style="color: green;font-weight: bold;text-align: center" th:text="#{app.shipmentInCreationInfo1}"></div>
 				</span>
+				<br/>
+				<section id="sectionLink">
+				<a id="link" th:href="@{/shipment/closeCreationShipment/}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.finishCreation}"></div></a>
 					<br/>
+					<br/>
+				</section>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
 						<th th:text="#{app.shipmentNumber}" class="tables">Shipment Number</th>
@@ -52,10 +56,10 @@
 					</tr>
 				    <tr style="border: solid 1px" th:each="shipments: ${shipments}">
 						<td class="tables" style="padding-bottom: 2px">
-							<ol style="width: 60%" class="arrowsDown"><div th:text="${shipments.shipmentNumber}"></div>
+							<ol style="width: 60%" class="arrowsDown"><div class="shipmentNumber" th:text="${shipments.shipmentNumber}"></div>
 								<li>
 									<ul>
-										<li><a th:href="@{/shipment/closeCreationShipment/{id}(id=${shipments.id})}"><span th:text="#{app.close}"></span></a></li>
+<!--										<li><a th:href="@{/shipment/closeCreationShipment/{id}(id=${shipments.id})}"><span th:text="#{app.close}"></span></a></li>-->
 										<li><a th:href="@{/shipment/editShipment/{id}(id=${shipments.id})}"><span th:text="#{app.edit}"></span></a></li>
 										<li><a th:href="@{/shipment/deleteShipmentLine/{id}(id=${shipments.id})}"><span th:text="#{app.delete}"></span></a></li>
 									</ul>
@@ -73,7 +77,7 @@
 						<td class="tables" th:text="${shipments.changeBy}"></td>
 				    </tr>
 				</table>
-				<div style="color: white;text-align: center;width: 100%;font-weight: bold;font-size: 25px">Shipment summary:</div>
+				<div th:text="#{app.shipmentSummary}" style="color: white;text-align: center;width: 100%;font-weight: bold;font-size: 25px"></div>
 				<table style="color: white;text-align: left;width:33%;border: solid 1px;float:left">
 					<tr>
 						<th th:text="#{app.article} + ':'"></th>
@@ -84,10 +88,10 @@
 				</table>
 				<table style="color: white;text-align: left;width:34%;border: solid 1px;float:left">
 					<tr>
-						<th class="tables" th:text="#{app.shipmentInCreationInfo3}"></th>
+						<th class="tables" th:text="#{app.shipmentInCreationInfo3} + ': '"></th>
 					</tr>
 					<tr th:each="shipmentCreationSummary: ${shipmentCreationSummary}">
-						<td class="tables" th:text="${shipmentCreationSummary} + ': '"></td>
+						<td class="tables" th:text="${shipmentCreationSummary}"></td>
 					</tr>
 				</table>
 				<table style="color: white;text-align: left;width:33%;border: solid 1px">
@@ -98,15 +102,18 @@
 						<td th:title="${stockDifferencesQty<0} == TRUE ? #{app.notEnoughQtyToSend} : #{app.enoughQtyToSend}" th:style="${stockDifferencesQty<0} == TRUE ? 'background: red'" class="tables" th:text="${stockDifferencesQty}"></td>
 					</tr>
 				</table>
-				<a th:href="@{/shipment/formShipment}"><div class="buttonik arrowsRight" style="float: right;max-width: 20%;"><div  th:text="#{app.addToShipment}"></div></div></a>
+				<a th:href="@{/shipment/formShipment}"><div class="buttonik arrowsRight" style="float: right;max-width: 20%;"><div id="addOrCreate" ></div></div></a>
 				<a th:href="@{/shipment/shipment}"><div class="buttonik arrowsRight" style="float: right;max-width: 20%;clear:right"><div  th:text="#{app.checkShipments}"></div></div></a>
 
 			</div><br/><br/><br/><br/> <br/><br/><br/>
+			<span id="addToShipment" th:text="#{app.addToShipment}"></span>
+			<span id="openNewShipment" th:text="#{app.openNewShipment}"></span>
 			<div th:include="fragments/footer :: footer"></div>
 		</div>
 		<div class="w3copyright-agile">
 			<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 		</div>
 	</div>
+	<script type="text/javascript" th:src="@{/js/shipmentInCreation.js}"></script>
 </body>
 </html>

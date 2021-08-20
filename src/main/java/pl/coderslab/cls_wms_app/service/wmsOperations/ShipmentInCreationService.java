@@ -1,8 +1,6 @@
 package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 import org.springframework.web.bind.annotation.SessionAttribute;
-import pl.coderslab.cls_wms_app.entity.Reception;
-import pl.coderslab.cls_wms_app.entity.Shipment;
 import pl.coderslab.cls_wms_app.entity.ShipmentInCreation;
 
 import java.util.List;
@@ -10,6 +8,8 @@ import java.util.List;
 public interface ShipmentInCreationService {
 
     void addShipmentInCreation(ShipmentInCreation shipmentInCreation);
+
+    void editShipmentInCreation(ShipmentInCreation shipmentInCreation);
 
     List<ShipmentInCreation> getShipmentsListForLoggedUser(String warehouseName,String userName);
 
@@ -34,13 +34,13 @@ public interface ShipmentInCreationService {
 
     void updateCloseCreationShipmentValue(Long shipmentNbr);
 
-    void closeCreationShipment(Long id,String chosenWarehouse);
+    void closeCreationShipment(Long shipmentNumber,String chosenWarehouse);
 
-    Boolean validateTheCorrectnessOfShipment(@SessionAttribute String warehouseName);
+    Boolean validateTheCorrectnessOfShipment(@SessionAttribute String chosenWarehouse);
 
     void remove(Long id);
 
-    String resultOfShipmentCreationValidation(String warehouseName);
+    String resultOfShipmentCreationValidation(String chosenWarehouse);
 
 
 //    void deleteZerosOnStock(@SessionAttribute Long warehouseId,String username);

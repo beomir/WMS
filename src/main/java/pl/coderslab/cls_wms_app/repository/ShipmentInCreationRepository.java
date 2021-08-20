@@ -5,8 +5,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import pl.coderslab.cls_wms_app.entity.Reception;
-import pl.coderslab.cls_wms_app.entity.Shipment;
 import pl.coderslab.cls_wms_app.entity.ShipmentInCreation;
 
 import java.util.List;
@@ -16,6 +14,9 @@ public interface ShipmentInCreationRepository extends JpaRepository<ShipmentInCr
 
     @Query("Select distinct s from ShipmentInCreation s join fetch s.company c join fetch s.warehouse w JOIN fetch Users u on u.company = c.name where w.name =?1 and u.username like ?2")
     List<ShipmentInCreation> getShipmentsListForLoggedUser(String warehouseName,String userName);
+
+    @Query("Select distinct s from ShipmentInCreation s join fetch s.company c join fetch s.warehouse w JOIN fetch Users u on u.company = c.name where s.shipmentNumber = ?1 and w.name =?2 and u.username like ?3")
+    List<ShipmentInCreation> getShipmentInCreationByShipmentNumberAndUserNameAndWarehouseName(Long shipmentNumber,String warehouseName,String userName);
 
     @Query("Select shi from Shipment shi join fetch shi.article a join fetch shi.shipMethod sh join fetch shi.warehouse ")
     List<ShipmentInCreation> getShipmentInCreation();

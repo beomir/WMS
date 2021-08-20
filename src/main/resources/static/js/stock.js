@@ -12,6 +12,11 @@ for(let i = 0; i < statusTD.length; i++){
             $(stockTR[i]).css("background-color", "blue")
         }
     }
+    else if($(statusTD[i]).children().last().attr("title").includes("to_send")){
+        $(statusTD[i]).children().last().attr("src","/images/to_send.png")
+        $(statusTD[i]).children().last().attr("style","height:30px;width:30px")
+        $(stockTR[i]).css("background-color", "#0a7832")
+    }
     else if($(statusTD[i]).children().last().attr("title").includes("put_away")){
         $(statusTD[i]).children().last().attr("src","/images/putaway30x30.png")
         if($(statusTD[i]).children().last().attr("title").includes("production")){

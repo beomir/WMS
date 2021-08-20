@@ -131,11 +131,9 @@
             <ol class="btn2 arrowsDown"><div th:text="#{app.locations}" style="color: white;font-weight: normal">Locations</div>
                  <li style="min-width: 100%;">
                     <ul>
-                        <li>
-                            <a th:href="@{/user/formLocation}"><span th:text="#{app.addLocation}"></span></a>
-                            <a  th:href="@{/user/formLocationPack}"><span th:text="#{app.addLocations}"></span></a>
-                            <a  th:href="@{/user/addLocToStorageZones}"><span th:text="#{app.addLocationsToStorageZone}"></span></a>
-                        </li>
+                        <li> <a  th:href="@{/user/formLocation}"><span th:text="#{app.addLocation}"></span></a></li>
+                        <li> <a  th:href="@{/user/formLocationPack}"><span th:text="#{app.addLocations}"></span></a></li>
+                        <li> <a  th:href="@{/user/addLocToStorageZones}"><span th:text="#{app.addLocationsToStorageZone}"> </span></a></li>
                     </ul>
                 </li>
             </ol>

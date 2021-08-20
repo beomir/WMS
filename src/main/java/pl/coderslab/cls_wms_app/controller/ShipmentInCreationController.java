@@ -164,13 +164,13 @@ public class ShipmentInCreationController {
 
     @PostMapping("editShipment")
     public String updateShipmentPost(ShipmentInCreation shipmentInCreation) {
-        shipmentInCreationService.addShipmentInCreation(shipmentInCreation);
+        shipmentInCreationService.editShipmentInCreation(shipmentInCreation);
         return "redirect:/shipment/shipmentInCreation";
     }
 
-    @GetMapping("/closeCreationShipment/{id}")
-    public String closeCreationShipment(@PathVariable Long id, @SessionAttribute(required = false) String chosenWarehouse) {
-        shipmentInCreationService.closeCreationShipment(id,chosenWarehouse);
+    @GetMapping("/closeCreationShipment/{shipmentNumber}")
+    public String closeCreationShipment(@PathVariable Long shipmentNumber, @SessionAttribute(required = false) String chosenWarehouse) {
+        shipmentInCreationService.closeCreationShipment(shipmentNumber,chosenWarehouse);
         return "redirect:/shipment/shipmentInCreation";
     }
 

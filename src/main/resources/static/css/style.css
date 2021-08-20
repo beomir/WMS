@@ -844,12 +844,12 @@ ol > li > ul > li:hover a span:after {
     position: absolute;
     opacity: 0;
     top: 0;
-    right: -30px;
+    right: -20px;
     transition: 0.5s;
 }
 
 .arrowsDown:hover div{
-    padding-right: 35px;
+    padding-right: 25px;
 }
 
 .arrowsDown:hover div:after{
