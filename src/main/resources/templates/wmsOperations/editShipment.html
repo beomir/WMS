@@ -32,16 +32,16 @@
 			</span>
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
-				<div  th:each="companies: ${companies}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="'Edit Shipment for company: ' + ${companies.name}"></div><br/>
+				<div  th:each="companies: ${companies}"  style="color: white;font-weight: bold;text-align: center;font-size: 25px" th:text="#{app.editShipmentForCompany} + ': ' + ${companies.name}"></div><br/>
 			</span>
 
 			<section>
-				<label style="color: white;font-weight: bold">Edit Shipment</label>
+				<label th:text="#{app.editShipment}" style="color: white;font-weight: bold"></label>
 				<input type="text" th:field="*{shipmentInCreation.shipmentNumber}" readonly/>
 			</section>
 
 			<section>
-				<label style="color: white;font-weight: bold">Article</label>
+				<label th:text="#{app.article}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{shipmentInCreation.article}">
 					<option th:each="i : ${articles}" th:value="${i.id}" th:text="${i.article_number}">
 					</option>
@@ -65,7 +65,7 @@
 			</section><br/>
 
 			<section>
-				<label style="color: white;font-weight: bold">Quality</label>
+				<label th:text="#{app.quality}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{shipmentInCreation.quality}">
 					<option th:value="EU1">European Union first grade</option>
 					<option th:value="EU2">European Union second grade</option>
@@ -75,18 +75,18 @@
 			</section><br/>
 
 			<section>
-				<label style="color: white;font-weight: bold">Unit</label>
+				<label th:text="#{app.unit}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{shipmentInCreation.unit}" >
 					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.name}">
 				</select><br/>
 			</section>
 			<section>
-				<label style="color: white;font-weight: bold">How many do you want sent?</label>
+				<label th:text="#{app.howManyDoYouWantSend}" style="color: white;font-weight: bold"></label>
 				<input type="number" th:field="*{shipmentInCreation.pieces_qty}" required="required" min="1" max="6666666"/>
 			</section>
 
 			<section>
-				<label style="color: white;font-weight: bold">Customer</label>
+				<label th:text="#{app.customer}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{shipmentInCreation.customer}">
 					<option th:each="i : ${customers}" th:value="${i.id}" th:text="${i.name}">
 					</option>
@@ -94,7 +94,7 @@
 			</section><br/>
 
 			<section>
-				<label style="color: white;font-weight: bold">Ship Method</label>
+				<label th:text="#{app.shipMethod}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{shipmentInCreation.shipMethod}">
 					<option th:each="i : ${shipMethods}" th:value="${i.id}" th:text="${i.method_desc}">
 					</option>
@@ -103,7 +103,7 @@
 
 
 			<section>
-				<br/><button class="button" type="submit">Save</button>
+				<br/><button th:text="#{app.save}" class="button" type="submit">Save</button>
 			</section>
 
 		</form>

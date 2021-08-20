@@ -28,22 +28,22 @@
 		<form  method="post" th:action="@{/shipment/formShipment}">
 
 			<span sec:authorize="hasRole('ROLE_ADMIN')">
-			<div th:if="${qtyOfOpenedShipmentsInCreation > 0}" class="titleList">Add to opened Shipment</div><br/><br/>
-			<div th:if="${qtyOfOpenedShipmentsInCreation == 0}" class="titleList">Create a new Shipment</div><br/><br/>
+			<div th:text="#{app.addToOpenedShipment}" th:if="${qtyOfOpenedShipmentsInCreation > 0}" class="titleList"></div><br/><br/>
+			<div th:text="#{app.createNewShipment}" th:if="${qtyOfOpenedShipmentsInCreation == 0}" class="titleList"></div><br/><br/>
 			</span>
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
 				<span th:if="${qtyOfOpenedShipmentsInCreation > 0}" >
-					<div th:each="company: ${companies}"  class="titleList" th:text="'Add to opened Shipment for company: ' + ${company.name}"></div><br/>
+					<div th:each="company: ${companies}"  class="titleList" th:text="#{app.addToOpenedShipmentForCompany} + ': ' + ${company.name}"></div><br/>
 				</span>
 
 				<span  th:if="${qtyOfOpenedShipmentsInCreation == 0}">
-					<div  th:each="company: ${companies}"  class="titleList" th:text="'Create a new Shipment for company: ' + ${company.name}"></div><br/>
+					<div  th:each="company: ${companies}"  class="titleList" th:text="#{app.createNewShipmentForCompany} +': ' + ${company.name}"></div><br/>
 				</span>
 			</span>
 
 			<section  th:if="${qtyOfOpenedShipmentsInCreation > 0}">
-				<label style="color: white;font-weight: bold">Fullfil opened Shipment</label>
+				<label th:text="#{app.fullfilOpenedShipment}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{shipment.shipmentNumber}">
 					<option th:each="i : ${openedShipments}" th:value="${i.shipmentNumber}" th:text="${i.shipmentNumber}">
 					</option>
@@ -51,12 +51,12 @@
 			</section>
 
 			<section  th:if="${qtyOfOpenedShipmentsInCreation == 0}" >
-				<label style="color: white;font-weight: bold">New Shipment</label>
+				<label th:text="#{app.newShipment}" style="color: white;font-weight: bold"></label>
 				<input type="text" th:value="${lastShipmentNumber}" id="shipmentNumber" name="shipmentNumber" readonly/>
 			</section>
 
 			<section>
-				<label style="color: white;font-weight: bold">Article</label>
+				<label th:text="#{app.article}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{shipment.article}">
 					<option th:each="i : ${articles}" th:value="${i.id}" th:text="${i.article_number}">
 					</option>
@@ -72,7 +72,7 @@
 			</section>
 
 			<section sec:authorize="hasRole('ROLE_ADMIN')">
-				<label style="color: white;font-weight: bold">Company</label>
+				<label th:text="#{app.company}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{shipment.company}">
 					<option th:each="i : ${activeCompany}" th:value="${i.id}" th:text="${i.name}">
 					</option>
@@ -80,7 +80,7 @@
 			</section><br/>
 
 			<section>
-				<label style="color: white;font-weight: bold">Quality</label>
+				<label th:text="#{app.quality}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{shipment.quality}">
 					<option th:value="EU1">European Union first grade</option>
 					<option th:value="EU2">European Union second grade</option>
@@ -90,18 +90,18 @@
 			</section><br/>
 
 			<section>
-				<label style="color: white;font-weight: bold">Unit</label>
+				<label th:text="#{app.unit}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{shipment.unit}" >
 					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.name}">
 				</select><br/>
 			</section>
 			<section>
-				<label style="color: white;font-weight: bold">How many do you want sent?</label>
+				<label th:text="#{app.howManyDoYouWantSend}" style="color: white;font-weight: bold"></label>
 				<input type="number" th:field="*{shipment.pieces_qty}" required="required" min="1" max="6666666"/>
 			</section>
 
 			<section>
-				<label style="color: white;font-weight: bold">Customer</label>
+				<label th:text="#{app.customer}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" th:field="*{shipment.customer}">
 					<option th:each="i : ${customers}" th:value="${i.id}" th:text="${i.name}">
 					</option>
@@ -109,8 +109,8 @@
 			</section><br/>
 
 			<section>
-				<label style="color: white;font-weight: bold">Ship Method</label>
-				<select class="select-css" th:field="*{shipment.shipMethod}">
+				<label th:text="#{app.shipMethod}" style="color: white;font-weight: bold"></label>
+				<select id="shipMethodSelect" class="select-css" th:field="*{shipment.shipMethod}">
 					<option th:each="i : ${shipMethods}" th:value="${i.id}" th:text="${i.method_desc}">
 					</option>
 				</select>
@@ -118,15 +118,21 @@
 
 
 			<section>
-				<br/><button class="button" type="submit">Save</button>
+				<br/><button th:text="#{app.save}" class="button" type="submit"></button>
 			</section>
-
 		</form>
+		<span style="display: none" class="shipMethodOfExistedShipment" th:if="${qtyOfOpenedShipmentsInCreation > 0}" th:each="i : ${openedShipments}" th:text="${i.shipMethod.id}"></span>
 		<div th:include="fragments/footer :: footer"></div>
 	</div>
 	<div class="w3copyright-agile">
 		<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 	</div>
 </div>
+<script>
+	if($('.shipMethodOfExistedShipment').first().text() != '' && $('.shipMethodOfExistedShipment').first().text() != null){
+		$("#shipMethodSelect").val($('.shipMethodOfExistedShipment').first().text()).change()
+		$('.shipMethodOfExistedShipment').remove();
+	}
+</script>
 </body>
 </html>

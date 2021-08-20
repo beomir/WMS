@@ -16,7 +16,6 @@ import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ShipMethodService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ShipmentService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
-import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;

@@ -15,7 +15,6 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CustomerService;
 import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
-import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
