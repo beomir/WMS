@@ -34,16 +34,16 @@
 
 			<span sec:authorize="!hasRole('ROLE_ADMIN')">
 				<span th:if="${qtyOfOpenedShipmentsInCreation > 0}" >
-					<div th:each="companies: ${companies}"  class="titleList" th:text="'Add to opened Shipment for company: ' + ${companies.name}"></div><br/>
+					<div th:each="company: ${companies}"  class="titleList" th:text="'Add to opened Shipment for company: ' + ${company.name}"></div><br/>
 				</span>
 
 				<span  th:if="${qtyOfOpenedShipmentsInCreation == 0}">
-					<div  th:each="companies: ${companies}"  class="titleList" th:text="'Create a new Shipment for company: ' + ${companys.name}"></div><br/>
+					<div  th:each="company: ${companies}"  class="titleList" th:text="'Create a new Shipment for company: ' + ${company.name}"></div><br/>
 				</span>
 			</span>
 
 			<section  th:if="${qtyOfOpenedShipmentsInCreation > 0}">
-				<label style="color: white;font-weight: bold">Fullfill opened Shipment</label>
+				<label style="color: white;font-weight: bold">Fullfil opened Shipment</label>
 				<select class="select-css" th:field="*{shipment.shipmentNumber}">
 					<option th:each="i : ${openedShipments}" th:value="${i.shipmentNumber}" th:text="${i.shipmentNumber}">
 					</option>
@@ -63,7 +63,7 @@
 				</select>
 				<input type="hidden" th:field="*{shipment.id}"/>
 				<input type="hidden" th:each="i : ${companies}" th:value="${i.id}" id="company" name="company"/>
-				<input type="hidden" th:each="i : ${warehouses}" th:value="${i.id}" id="warehouse" name="warehouse"/>
+				<input type="hidden" th:value="${warehouse.id}" name="warehouse"/>
 				<input type="hidden" th:value="false" id="shipment.creation_closed" name="shipment.creation_closed"/>
 				<input type="hidden" th:value="1" id="status" name="status"/>
 				<input type="hidden" th:value="${localDateTime}" id="created" name="created"/>
@@ -82,8 +82,8 @@
 			<section>
 				<label style="color: white;font-weight: bold">Quality</label>
 				<select class="select-css" th:field="*{shipment.quality}">
-					<option th:value="EU1">Europen Union first grade</option>
-					<option th:value="EU2">Europen Union second grade</option>
+					<option th:value="EU1">European Union first grade</option>
+					<option th:value="EU2">European Union second grade</option>
 					<option th:value="BW1">Bonded Warehouse first grade</option>
 					<option th:value="BW2">Bonded Warehouse second grade</option>
 				</select>

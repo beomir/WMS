@@ -27,37 +27,37 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
-				<div th:each="warehouse: ${warehouse}" class="titleList" th:text="'Your Shipments during Creation in ' + ${warehouse.city}"></div><br/>
+				<div class="titleList" th:text="#{app.shipmentInCreationInfo2} + ': ' +  ${warehouse.city}"></div><br/>
 				<span sec:authorize="!hasRole('ROLE_ADMIN')">
-					<div th:each="companies: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companies.name}"></div>
+					<div th:each="company: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} + ${company.name}"></div>
 				</span>
 
 				<div th:unless="${stockDifferences.isEmpty()}" th:style="${messages.equals('Change red underlined qty to pass the validation')} == TRUE ? 'color: darkred;font-weight: bold;text-align: center' : 'color: green;font-weight: bold;text-align: center'"  th:text="${messages}"></div>
 				<span>
-					<div th:if="${stockDifferences.isEmpty() && cHMNFS>0}" style="color: green;font-weight: bold;text-align: center">Your Shipment passed successfully. You can find it in Shipments. Aritcles marked here to ship changed status on stock</div>
+					<div th:if="${stockDifferences.isEmpty() && cHMNFS>0}" style="color: green;font-weight: bold;text-align: center" th:text="#{app.shipmentInCreationInfo1}"></div>
 				</span>
 					<br/>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
-						<th class="tables">Shipment Number</th>
-						<th class="tables">Article</th>
-						<th class="tables">Unit</th>
-						<th class="tables">Pieces Qty</th>
-						<th th:if="${#request.remoteUser.contains('admin')}" class="tables">Company</th>
-						<th class="tables">Quality</th>
-						<th class="tables">Ship method</th>
-						<th class="tables">Created</th>
-						<th class="tables">Last update</th>
-						<th class="tables">Changed by</th>
+						<th th:text="#{app.shipmentNumber}" class="tables">Shipment Number</th>
+						<th th:text="#{app.article}" class="tables">Article</th>
+						<th th:text="#{app.unit}" class="tables">Unit</th>
+						<th th:text="#{app.piecesQty}" class="tables">Pieces Qty</th>
+						<th th:text="#{app.company}" th:if="${#request.remoteUser.contains('admin')}" class="tables">Company</th>
+						<th th:text="#{app.quality}" class="tables">Quality</th>
+						<th th:text="#{app.shipMethod}" class="tables">Ship method</th>
+						<th th:text="#{app.created}" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" class="tables">Last update</th>
+						<th th:text="#{app.chandedBy}" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="shipments: ${shipments}">
 						<td class="tables" style="padding-bottom: 2px">
-							<ol><div th:text="${shipments.shipmentNumber}"></div>
+							<ol style="width: 60%" class="arrowsDown"><div th:text="${shipments.shipmentNumber}"></div>
 								<li>
 									<ul>
-										<li><a th:href="@{/shipment/closeCreationShipment/{id}(id=${shipments.id})}">Close Creation</a></li>
-										<li><a th:href="@{/shipment/editShipment/{id}(id=${shipments.id})}">Edit</a></li>
-										<li><a th:href="@{/shipment/deleteShipmentLine/{id}(id=${shipments.id})}">Delete</a></li>
+										<li><a th:href="@{/shipment/closeCreationShipment/{id}(id=${shipments.id})}"><span th:text="#{app.close}"></span></a></li>
+										<li><a th:href="@{/shipment/editShipment/{id}(id=${shipments.id})}"><span th:text="#{app.edit}"></span></a></li>
+										<li><a th:href="@{/shipment/deleteShipmentLine/{id}(id=${shipments.id})}"><span th:text="#{app.delete}"></span></a></li>
 									</ul>
 								</li>
 							</ol>
@@ -76,7 +76,7 @@
 				<div style="color: white;text-align: center;width: 100%;font-weight: bold;font-size: 25px">Shipment summary:</div>
 				<table style="color: white;text-align: left;width:33%;border: solid 1px;float:left">
 					<tr>
-						<th>Article:</th>
+						<th th:text="#{app.article} + ':'"></th>
 					</tr>
 					<tr th:each="stockDifferences: ${stockDifferences}">
 						<td class="tables" th:text="${stockDifferences}"></td>
@@ -84,23 +84,22 @@
 				</table>
 				<table style="color: white;text-align: left;width:34%;border: solid 1px;float:left">
 					<tr>
-						<th class="tables">Sum pieces for sending:</th>
+						<th class="tables" th:text="#{app.shipmentInCreationInfo3}"></th>
 					</tr>
 					<tr th:each="shipmentCreationSummary: ${shipmentCreationSummary}">
-						<td class="tables" th:text="${shipmentCreationSummary}"></td>
+						<td class="tables" th:text="${shipmentCreationSummary} + ': '"></td>
 					</tr>
 				</table>
 				<table style="color: white;text-align: left;width:33%;border: solid 1px">
 					<tr>
-						<th>Difference to Stock:</th>
+						<th th:text="#{app.shipmentInCreationInfo4} + ': '"></th>
 					</tr>
 					<tr th:each="stockDifferencesQty: ${stockDifferencesQty}">
-						<td th:title="${stockDifferencesQty<0} == TRUE ? 'Not enough goods for send! Edit or Delete one of shipment line to make proper quantity' : 'Enough quantity to send'" th:style="${stockDifferencesQty<0} == TRUE ? 'background: red'" class="tables" th:text="${stockDifferencesQty}"></td>
+						<td th:title="${stockDifferencesQty<0} == TRUE ? #{app.notEnoughQtyToSend} : #{app.enoughQtyToSend}" th:style="${stockDifferencesQty<0} == TRUE ? 'background: red'" class="tables" th:text="${stockDifferencesQty}"></td>
 					</tr>
 				</table>
-
-				<a th:href="@{/shipment/formShipment}"><div class="buttonik" style="float: right;max-width: 20%;">Add to Shipment</div></a>
-				<a th:href="@{/shipment/shipment}"><div class="buttonik" style="float: right;max-width: 20%;clear:right">Check Shipments</div></a>
+				<a th:href="@{/shipment/formShipment}"><div class="buttonik arrowsRight" style="float: right;max-width: 20%;"><div  th:text="#{app.addToShipment}"></div></div></a>
+				<a th:href="@{/shipment/shipment}"><div class="buttonik arrowsRight" style="float: right;max-width: 20%;clear:right"><div  th:text="#{app.checkShipments}"></div></div></a>
 
 			</div><br/><br/><br/><br/> <br/><br/><br/>
 			<div th:include="fragments/footer :: footer"></div>

@@ -194,7 +194,7 @@ public class ReceptionController {
     }
 
     @PostMapping("receptionFile")
-    public String receptionFile(@RequestParam("receptionFile") MultipartFile file)
+    public String receptionFile(@RequestParam("receptionFile") MultipartFile file,@SessionAttribute(required = false) String chosenWarehouse)
     {
         if(!file.isEmpty()) {
             try {
@@ -212,7 +212,7 @@ public class ReceptionController {
                 stream.close();
 
                 log.info("File {} has been successfully uploaded as {}", file.getOriginalFilename(), fileName);
-                receptionService.insertFileContentToDB(fsFile);
+                receptionService.insertFileContentToDB(fsFile,chosenWarehouse);
             } catch (Exception e) {
                 log.error("File has not been uploaded", e);
             }

@@ -51,13 +51,8 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
-    public List<Shipment> getShipment(Long id, String username) {
-        return shipmentRepository.getShipment(id, username);
-    }
-
-    @Override
     public List<Shipment> getShipments() {
-        return shipmentRepository.getShipmenta();
+        return shipmentRepository.getShipments();
     }
 
     @Override
@@ -66,11 +61,16 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
-    public void finishShipment(Long shipmentNbrtoFinish)  {
-        List<Shipment> finishedShipment = shipmentRepository.getShipmentByShipmentNumber(shipmentNbrtoFinish);
-        List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForShipmentType(shipmentRepository.getConmpanyNameByShipmentNumber(shipmentNbrtoFinish),"Shipment");
-        String shipmentNbr = shipmentNbrtoFinish.toString();
-        String warehouse = shipmentRepository.getWarehouseByShipmentNumber(shipmentNbrtoFinish);
+    public List<Shipment> getShipmentsForLoggedUser(String companyName, String username) {
+        return shipmentRepository.getShipmentsForLoggedUser(companyName, username);
+    }
+
+    @Override
+    public void finishShipment(Long shipmentNbrToFinish)  {
+        List<Shipment> finishedShipment = shipmentRepository.getShipmentByShipmentNumber(shipmentNbrToFinish);
+        List<EmailRecipients> mailGroup = emailRecipientsRepository.getEmailRecipientsByCompanyForShipmentType(shipmentRepository.getCompanyNameByShipmentNumber(shipmentNbrToFinish),"Shipment");
+        String shipmentNbr = shipmentNbrToFinish.toString();
+        String warehouse = shipmentRepository.getWarehouseByShipmentNumber(shipmentNbrToFinish);
         File shipment = new File("outbound/outbound" + shipmentNbr + ".txt");
         while (shipment.exists()) {
             int random = new Random().nextInt(100);
@@ -117,14 +117,14 @@ public class ShipmentServiceImpl implements ShipmentService {
             shipmentsToFinish.setFinished(true);
         }
 
-        for(Stock stockToRemove : stockRepository.getStockListByShipmentNumber(shipmentNbrtoFinish)) {
+        for(Stock stockToRemove : stockRepository.getStockListByShipmentNumber(shipmentNbrToFinish)) {
             stockService.remove(stockToRemove.getId());
         }
     }
 
     @Override
-    public int checkHowManyNotfinishedShipments(Long id, String username) {
-        return shipmentRepository.checkHowManyNotfinishedShipments(id, username);
+    public int checkHowManyNotFinishedShipments(String warehouseName, String username) {
+        return shipmentRepository.checkHowManyNotFinishedShipments(warehouseName, username);
     }
 
     @Override

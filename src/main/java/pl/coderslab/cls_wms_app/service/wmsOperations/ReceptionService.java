@@ -33,7 +33,7 @@ public interface ReceptionService {
 
     void sendReceptions(String company);
 
-    void insertFileContentToDB(File fsFile);
+    void insertFileContentToDB(File fsFile,String chosenWarehouse);
 
     void addNewReceptionLine(Reception reception,HttpSession session);
 

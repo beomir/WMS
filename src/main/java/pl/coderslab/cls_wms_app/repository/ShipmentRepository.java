@@ -5,9 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import pl.coderslab.cls_wms_app.entity.Reception;
 import pl.coderslab.cls_wms_app.entity.Shipment;
-import pl.coderslab.cls_wms_app.entity.Warehouse;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +17,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     List<Shipment> getShipment(Long id,String username);
 
     @Query("Select shi from Shipment shi join fetch shi.article a join fetch shi.shipMethod sh join fetch shi.warehouse ")
-    List<Shipment> getShipmenta();
+    List<Shipment> getShipments();
 
     @Modifying
     @Transactional
@@ -31,8 +29,8 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query(value = "DELETE s.* from storage s inner join shipments shi on shi.shipment_number = s.shipment_number where shi.shipment_number = ?1 and shi.finished = true",nativeQuery = true)
     void deleteStockAfterFinishShipment(Long shipmentNbr);
 
-    @Query(value = "select count(*) from shipments s join company c on s.company_id = c.id join users u on u.company = c.name where creation_closed = true and finished = false and  s.warehouse_id = ?1 and u.username like ?2",nativeQuery = true)
-    int checkHowManyNotfinishedShipments(Long id, String username);
+    @Query(value = "select count(*) from shipments s join warehouse w on w.id = s.warehouse_id join company c on s.company_id = c.id join users u on u.company = c.name where creation_closed = true and finished = false and  w.name = ?1 and u.username like ?2",nativeQuery = true)
+    int checkHowManyNotFinishedShipments(String warehouseName, String username);
 
     @Query(value = "select  c2.name, sum(pieces_qty) from shipments s join company c on s.company_id = c.id join users u on u.company = c.name join customers c2 on c2.id = s.customer_id where creation_closed = true and finished = true and  s.warehouse_id = ?1 and u.username like ?2 group by c2.name",nativeQuery = true)
     Map<String,Integer> surveyMap(Long id, String username);
@@ -41,7 +39,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     List<Shipment> getShipmentByShipmentNumber(Long shipmentNbr);
 
     @Query(value="Select distinct c.name from shipments s inner join company c on s.company_id = c.id where s.shipment_number = ?1",nativeQuery = true)
-    String getConmpanyNameByShipmentNumber(Long shipmentNbr);
+    String getCompanyNameByShipmentNumber(Long shipmentNbr);
 
     @Query(value="Select distinct w.name from shipments s inner join warehouse w on s.warehouse_id = w.id where s.shipment_number = ?1",nativeQuery = true)
     String getWarehouseByShipmentNumber(Long shipmentNbr);
@@ -52,6 +50,6 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Query("Select shi from Shipment shi where shi.shipmentNumber = ?1")
     Shipment getOneShipmentByShipmentNumber(Long shipmentNumber);
 
-    @Query("Select s from Shipment s where s.id = ?1")
-    List<Shipment> getShipmentsByShipmentId(Long id);
+    @Query("Select distinct s from Shipment s join fetch s.article a join fetch s.shipMethod sh join fetch s.warehouse w join s.company c join Users u on u.company = c.name  where w.name =?1 and u.username like ?2 order by s.finished,s.shipmentNumber")
+    List<Shipment> getShipmentsForLoggedUser(String warehouseName,String userName);
 }

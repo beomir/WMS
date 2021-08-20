@@ -11,36 +11,36 @@ public interface ShipmentInCreationService {
 
     void addShipmentInCreation(ShipmentInCreation shipmentInCreation);
 
-    List<ShipmentInCreation> getShipmentInCreationById(Long id);
+    List<ShipmentInCreation> getShipmentsListForLoggedUser(String warehouseName,String userName);
 
     List<ShipmentInCreation> getShipmentInCreation();
 
     ShipmentInCreation findById(Long id);
 
-    int qtyOfOpenedShipmentsInCreation(Long id, String username);
+    int qtyOfOpenedShipmentsInCreation(String warehouseName, String username);
 
     Long lastShipment();
 
-    List<ShipmentInCreation> openedShipments(Long id, String username);
+    List<ShipmentInCreation> openedShipments(String warehouseName, String username);
 
-    List<Long> stockDifference(Long id, String username);
+    List<Long> stockDifference(String warehouseName, String username);
 
-    List<Long> stockDifferenceQty(Long id, String username);
+    List<Long> stockDifferenceQty(String warehouseName, String username);
 
-    List<Long> shipmentCreationSummary(Long id, String username);
+    List<Long> shipmentCreationSummary(String warehouseName, String username);
 
 
     int getCreatedShipmentById(Long shipmentNbr);
 
     void updateCloseCreationShipmentValue(Long shipmentNbr);
 
-    void closeCreationShipment(Long id,@SessionAttribute Long warehouseId);
+    void closeCreationShipment(Long id,String chosenWarehouse);
 
-    Boolean validateTheCorrectnessOfShipment(@SessionAttribute Long warehouseId);
+    Boolean validateTheCorrectnessOfShipment(@SessionAttribute String warehouseName);
 
     void remove(Long id);
 
-    String resultOfShipmentCreationValidation(Long id);
+    String resultOfShipmentCreationValidation(String warehouseName);
 
 
 //    void deleteZerosOnStock(@SessionAttribute Long warehouseId,String username);

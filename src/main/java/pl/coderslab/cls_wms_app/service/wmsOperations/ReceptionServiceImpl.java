@@ -18,7 +18,6 @@ import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -547,7 +546,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     }
 
     @Override
-    public void insertFileContentToDB(File fsFile) {
+    public void insertFileContentToDB(File fsFile,String chosenWarehouse) {
         try (BufferedReader br = new BufferedReader(new FileReader(fsFile))) {
             String line;
             int counter = 0;
@@ -756,7 +755,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                     issuelog.setCreated(LocalDateTime.now().toString());
                     issuelog.setIssueLogFileName(errorFile.getName());
                     issuelog.setCreatedBy(SecurityUtils.usernameForActivations());
-                    issuelog.setWarehouse(warehouseRepository.getOneWarehouse(customerUserDetailsService.chosenWarehouse));
+                    issuelog.setWarehouse(warehouseRepository.getWarehouseByName(chosenWarehouse));
                     issuelog.setIssueLogFilePath(errorFile.toString());
                     if(reception.getCompany() == null ) {
                         issuelog.setAdditionalInformation("");

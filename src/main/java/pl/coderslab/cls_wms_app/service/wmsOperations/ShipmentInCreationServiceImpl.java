@@ -40,8 +40,8 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
     }
 
     @Override
-    public List<ShipmentInCreation> getShipmentInCreationById(Long id) {
-        return shipmentInCreationRepository.getShipmentInCreationById(id);
+    public List<ShipmentInCreation> getShipmentsListForLoggedUser(String warehouseName,String userName) {
+        return shipmentInCreationRepository.getShipmentsListForLoggedUser(warehouseName,userName);
     }
 
     @Override
@@ -56,8 +56,8 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
 
 
     @Override
-    public int qtyOfOpenedShipmentsInCreation(Long id, String username) {
-        return shipmentInCreationRepository.qtyOfOpenedShipmentsInCreation(id, username);
+    public int qtyOfOpenedShipmentsInCreation(String warehouseName, String username) {
+        return shipmentInCreationRepository.qtyOfOpenedShipmentsInCreation(warehouseName, username);
     }
 
     @Override
@@ -66,23 +66,23 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
     }
 
     @Override
-    public List<ShipmentInCreation> openedShipments(Long id, String username) {
-        return shipmentInCreationRepository.openedShipments(id, username);
+    public List<ShipmentInCreation> openedShipments(String warehouseName, String username) {
+        return shipmentInCreationRepository.openedShipments(warehouseName, username);
     }
 
     @Override
-    public List<Long> stockDifference(Long id, String username) {
-        return shipmentInCreationRepository.stockDifference(id, username);
+    public List<Long> stockDifference(String warehouseName, String username) {
+        return shipmentInCreationRepository.stockDifference(warehouseName, username);
     }
 
     @Override
-    public List<Long> stockDifferenceQty(Long id, String username) {
-        return shipmentInCreationRepository.stockDifferenceQty(id, username);
+    public List<Long> stockDifferenceQty(String warehouseName, String username) {
+        return shipmentInCreationRepository.stockDifferenceQty(warehouseName, username);
     }
 
     @Override
-    public List<Long> shipmentCreationSummary(Long id, String username) {
-        return shipmentInCreationRepository.shipmentCreationSummary(id, username);
+    public List<Long> shipmentCreationSummary(String warehouseName, String username) {
+        return shipmentInCreationRepository.shipmentCreationSummary(warehouseName, username);
     }
 
 
@@ -100,9 +100,9 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
 
 
     @Override
-    public void closeCreationShipment(Long id, @SessionAttribute Long warehouseId) {
+    public void closeCreationShipment(Long id, String chosenWarehouse) {
         ShipmentInCreation shipmentInCreation = shipmentInCreationRepository.getOne(id);
-        if(validateTheCorrectnessOfShipment(warehouseId)) {
+        if(validateTheCorrectnessOfShipment(chosenWarehouse)) {
 
             //old process based on SQL
 //            Long shipmentNmbr = shipmentInCreationRepository.getOne(id).getShipmentNumber();
@@ -201,8 +201,8 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
     }
 
     @Override
-    public Boolean validateTheCorrectnessOfShipment(@SessionAttribute Long warehouseId) {
-        List<Long> checkShipments = shipmentInCreationRepository.stockDifferenceQty(warehouseId, SecurityUtils.username());
+    public Boolean validateTheCorrectnessOfShipment(String chosenWarehouse) {
+        List<Long> checkShipments = shipmentInCreationRepository.stockDifferenceQty(chosenWarehouse, SecurityUtils.username());
         boolean shipmentReadyToCloseCreation = true;
         for (int i = 0; i < checkShipments.size(); i++) {
             log.debug(String.valueOf(checkShipments.get(i)));
@@ -217,10 +217,10 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
     }
 
     @Override
-    public String resultOfShipmentCreationValidation(@SessionAttribute Long warehouseId){
+    public String resultOfShipmentCreationValidation(@SessionAttribute String warehouseName){
         String failedAttempt = "Change red underlined qty to pass the validation";
         String attemptSuccessful = "Validation passed succesfully. You can close creation without problem";
-        if(validateTheCorrectnessOfShipment(warehouseId)){
+        if(validateTheCorrectnessOfShipment(warehouseName)){
             return attemptSuccessful;
         }
         else{

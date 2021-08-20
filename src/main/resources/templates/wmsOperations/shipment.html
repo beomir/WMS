@@ -36,27 +36,27 @@
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
 
-				<div th:each="warehouse: ${warehouse}" class="titleList" th:text="'Your Shipment in ' + ${warehouse.city}"></div><br/>
+				<div class="titleList" th:text="'Your Shipment in ' + ${warehouse.city}"></div><br/>
 				<div sec:authorize="!hasRole('ROLE_ADMIN')">
-					<div th:each="companies: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${companies.name}"></div>
+					<div th:each="company: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="'For company: ' + ${company.name}"></div>
 					<a th:href="@{/shipment/formShipment}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.declareShipment}"></div></a>
 					<br/><br/>
 				</div><br/><br/>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
-						<th class="tables">Shipment Number</th>
-						<th class="tables">HD number</th>
-						<th class="tables">Article</th>
-						<th class="tables">Unit</th>
-						<th class="tables">Pieces Qty</th>
-						<th sec:authorize="hasRole('ROLE_ADMIN')" class="tables">Company</th>
-						<th class="tables">Quality</th>
-						<th class="tables">Ship method</th>
+						<th th:text="#{app.shipmentNumber}" class="tables">Shipment Number</th>
+						<th th:text="#{app.handleDevice}" class="tables">HD number</th>
+						<th th:text="#{app.article}" class="tables">Article</th>
+						<th th:text="#{app.unit}"  class="tables">Unit</th>
+						<th th:text="#{app.piecesQty}" class="tables">Pieces Qty</th>
+						<th th:text="#{app.company}" sec:authorize="hasRole('ROLE_ADMIN')" class="tables">Company</th>
+						<th th:text="#{app.quality}" class="tables">Quality</th>
+						<th th:text="#{app.shipMethod}" class="tables">Ship method</th>
 						<th class="tables">Creation closed</th>
-						<th class="tables">Finished</th>
-						<th class="tables">Created</th>
-						<th class="tables">Last update</th>
-						<th class="tables">Changed by</th>
+						<th  class="tables">Finished</th>
+						<th th:text="#{app.createdBy}" class="tables">Created</th>
+						<th th:text="#{app.lastUpdate}" class="tables">Last update</th>
+						<th th:text="#{app.chandedBy}" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="shipments: ${shipments}">
 						<td class="tables" style="padding-bottom: 2px">
@@ -85,7 +85,7 @@
 
 				    </tr>
 				</table>
-				<a th:href="@{/shipment/shipmentInCreation}"><div th:text="#{app.checkShipmentInCreation}" class="buttonik" style="float: right;max-width: 20%;">Check Shipments in Creation</div></a>
+				<a th:href="@{/shipment/shipmentInCreation}"><div th:text="#{app.checkShipmentInCreation}" class="buttonik" style="float: right;max-width: 20%;"></div></a>
 
 <!--					<div align="center">-->
 <!--						<span th:include="fragments/barGraph :: barGraph"></span>-->

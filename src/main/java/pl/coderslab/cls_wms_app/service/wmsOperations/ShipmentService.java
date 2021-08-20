@@ -11,15 +11,16 @@ public interface ShipmentService {
 
     void add(Shipment shipment);
 
-    List<Shipment> getShipment(Long id, String username);
 
     List<Shipment> getShipments();
 
     Shipment findById(Long id);
 
+    List<Shipment> getShipmentsForLoggedUser(String warehouseName, String username);
+
     void finishShipment(Long id) throws IOException, MessagingException;
 
-    int checkHowManyNotfinishedShipments(Long id,String username);
+    int checkHowManyNotFinishedShipments(String warehouseName,String username);
 
     Map<String,Integer> surveyMap(Long id, String username);
 
