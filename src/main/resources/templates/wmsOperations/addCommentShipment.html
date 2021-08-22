@@ -26,28 +26,33 @@
 
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
-		<form  method="post" th:action="@{/formAddComment}">
+		<form  method="post" th:action="@{/shipment/addCommentShipment}">
 			<div class="titleList" th:text="#{app.addComment}">Add Comment</div><br/>
 			<section>
 				<label th:text="#{app.addComment}" style="color: white;font-weight: bold"></label>
 				<input type="text" id="changingValue" name="newComment" />
-				<input type="hidden" th:field="*{stock.id}"/>
-				<input type="hidden" th:field="*{stock.created}" />
-				<input type="hidden" th:field="*{stock.hd_number}" />
-				<input type="hidden" th:field="*{stock.status}" />
-				<input type="hidden" th:field="*{stock.receptionNumber}" />
-				<input type="hidden" th:field="*{stock.shipmentNumber}" />
-				<input type="hidden" th:field="*{stock.article}" />
-				<input type="hidden" th:field="*{stock.company}" />
-				<input type="hidden" th:field="*{stock.quality}" />
-				<input type="hidden" th:field="*{stock.unit}" />
-				<input type="hidden" th:field="*{stock.warehouse}" />
-				<input type="hidden" th:field="*{stock.pieces_qty}" />
-				<input type="hidden" th:field="*{stock.location}"/>
-				<input type="hidden" id="originValue" th:field="*{stock.comment}"/>
+				<input type="hidden" th:field="*{shipment.id}"/>
+				<input type="hidden" th:field="*{shipment.created}" />
+				<input type="hidden" th:field="*{shipment.hd_number}" />
+				<input type="hidden" th:field="*{shipment.status}" />
+				<input type="hidden" th:field="*{shipment.finished}" />
+				<input type="hidden" th:field="*{shipment.creation_closed}" />
+				<input type="hidden" th:field="*{shipment.shipmentNumber}" />
+				<input type="hidden" th:field="*{shipment.article}" />
+				<input type="hidden" th:field="*{shipment.company}" />
+				<input type="hidden" th:field="*{shipment.quality}" />
+				<input type="hidden" th:field="*{shipment.unit}" />
+				<input type="hidden" th:field="*{shipment.warehouse}" />
+				<input type="hidden" th:field="*{shipment.pieces_qty}" />
+				<input type="hidden" th:field="*{shipment.location}"/>
+				<input type="hidden" th:field="*{shipment.shipMethod}"/>
+				<input type="hidden" th:field="*{shipment.customer}"/>
+				<input type="hidden" th:field="*{shipment.last_update}"/>
+				<input type="hidden" th:field="*{shipment.changeBy}"/>
+				<input type="hidden" id="originValue" th:field="*{shipment.comment}"/>
 			</section><br/>
 			<section>
-				<br/><button class="button" type="submit">Save</button>
+				<br/><button class="button" type="submit" th:text="#{app.save}"></button>
 			</section>
 		</form>
 

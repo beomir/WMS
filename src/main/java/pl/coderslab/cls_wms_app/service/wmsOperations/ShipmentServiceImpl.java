@@ -67,6 +67,13 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
+    public void addComment(Shipment shipment, String newComment, HttpSession session) {
+        shipment.setComment(newComment);
+        shipmentRepository.save(shipment);
+        session.setAttribute("shipmentMessage","New comment: \"" + newComment + "\", added" );
+    }
+
+    @Override
     public List<Shipment> getShipments() {
         return shipmentRepository.getShipments();
     }
@@ -225,28 +232,32 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
-    public void assignDoorLocationToShipment(Long shipmentNumber, Long doorLocation, HttpSession session) {
-        log.debug("shipmentNumber: " + shipmentNumber);
-        log.debug("doorLocation: " + doorLocation);
+    public void assignDoorLocationToShipment(Long shipmentNumber, Long doorLocation, HttpSession session,String warehouseName) {
+        log.error("shipmentNumber: " + shipmentNumber);
+        log.error("doorLocation: " + doorLocation);
         boolean enoughCapacity = false;
-        List<Shipment> shipments = shipmentRepository.getShipmentByShipmentNumber(shipmentNumber);
+        List<ShipmentInCreation> shipmentsInCreation = shipmentInCreationRepository.getShipmentInCreationByShipmentNumberAndUserNameAndWarehouseName(shipmentNumber,warehouseName,SecurityUtils.usernameForActivations());
+        log.error("shipmentsList: " + shipmentsInCreation);
         Location location = locationRepository.getOne(doorLocation);
         Transaction transaction = new Transaction();
-        for (Shipment singularShipment: shipments) {
+        log.error("location for shipment: " + location.getLocationName());
+        for (ShipmentInCreation singularShipment: shipmentsInCreation) {
             if(locationService.reduceTheAvailableContentOfTheLocation(location.getLocationName(),singularShipment.getArticle().getArticle_number(),singularShipment.getPieces_qty(),singularShipment.getWarehouse().getName(),singularShipment.getCompany().getName())){
                 singularShipment.setStatus(statusRepository.getStatusByStatusName("picking_pending","Shipment"));
                 singularShipment.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                 singularShipment.setLocation(location);
-                shipmentRepository.save(singularShipment);
+                shipmentInCreationRepository.save(singularShipment);
                 transaction.setAdditionalInformation("Assign shipment: " + singularShipment + " to dock door: " + location.getLocationName());
                 transaction.setReceptionStatus(singularShipment.getStatus().getStatus());
                 saveTransactionModel(singularShipment, transaction);
                 enoughCapacity = true;
+                log.error("1.Enough space for shipment: " + shipmentNumber);
             }
             else{
                 transaction.setAdditionalInformation("Assign shipment: " + shipmentNumber + " to dock door: " + location.getLocationName() + " unsuccessful because of not enough location free capacity");
                 transaction.setReceptionStatus(singularShipment.getStatus().getStatus());
                 enoughCapacity = false;
+                log.error("1.Not enough space for shipment: " + shipmentNumber);
             }
         }
         if(enoughCapacity){
@@ -254,10 +265,11 @@ public class ShipmentServiceImpl implements ShipmentService {
             session.setAttribute("shipmentMessage", "Shipment: " + shipmentNumber + " assigned to door: " + location.getLocationName());
             transaction.setTransactionType("118");
             transactionService.add(transaction);
-            log.info("close creation service shipmentMessage: " + session.getAttribute("shipmentMessage"));
+            log.error("2.close creation service shipmentMessage: " + session.getAttribute("shipmentMessage"));
         }
         else{
             session.setAttribute("shipmentMessage", "Not enough space or free weight in location: " + location.getLocationName());
+            log.error("2.Not enough space for shipment: " + shipmentNumber);
         }
     }
 
@@ -311,7 +323,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         return shipmentRepository.getShipmentSummary(shipmentCompany,shipmentWarehouse,shipmentCustomer,shipmentStatus,shipmentLocation,shipmentShipmentNumber,shipmentHdNumber,shipmentCreatedFrom,shipmentCreatedTo,shipmentCreatedBy);
     }
 
-    private void saveTransactionModel(Shipment shipment, Transaction transaction) {
+    private void saveTransactionModel(ShipmentInCreation shipment, Transaction transaction) {
         transaction.setTransactionGroup("Shipment");
         transaction.setCreated(shipment.getCreated());
         transaction.setCreatedBy(SecurityUtils.usernameForActivations());
@@ -323,7 +335,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         transaction.setUnit(shipment.getUnit().getName());
         transaction.setVendor(shipment.getCustomer().getName());
         transaction.setQuantity(shipment.getPieces_qty());
-        transaction.setHdNumber(shipment.getHd_number());
+        transaction.setHdNumber(0L);
     }
 
 

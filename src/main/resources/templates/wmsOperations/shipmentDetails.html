@@ -39,8 +39,8 @@
 				<div class="titleList" th:text="#{app.yourShipmentIn} + ' ' + ${warehouse.city}"></div><br/>
 				<div sec:authorize="!hasRole('ROLE_ADMIN')">
 					<div th:each="company: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} + ': ' + ${company.name}"></div>
-					<a th:href="@{/shipment/formShipment}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{app.declareShipment}"></div></a>
-					<a th:href="@{/shipment/shipment}"><div class="buttonik2" style="float: right;max-width: 20%;" th:text="#{goToShipmentHeader}"></div></a>
+					<a th:href="@{/shipment/formShipment}"><div class="btn2" style="float: right;max-width: 20%;" th:text="#{app.declareShipment}"></div></a>
+					<a th:href="@{/shipment/shipment}"><div class="btn2" style="float: right;max-width: 20%;clear:right" th:text="#{goToShipmentHeader}"></div></a>
 					<br/><br/>
 				</div><br/><br/>
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
@@ -61,16 +61,15 @@
 					</tr>
 				    <tr style="border: solid 1px" th:each="shipments: ${shipments}">
 						<td class="tables" style="padding-bottom: 2px">
-							<ol><div th:text="${shipments.shipmentNumber}"></div>
+							<ol class="arrowsDown"><div style="float:left;width:60%" th:text="${shipments.shipmentNumber}"></div>
 								<li>
 									<ul>
-										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a th:href="@{/shipment/finishedShipment/{id}(id=${shipments.id})}">Finish</a></li>
-										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a th:href="@{/shipment/addCommentShipment/{id}(id=${shipments.id})}">Add comment</a></li>
+										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a  th:href="@{/shipment/addCommentShipment/{id}(id=${shipments.id})}"><span th:text="#{app.addComment}"></span></a></li>
 									</ul>
 								</li>
 							</ol>
 						</td>
-						<td class="tables" th:text="${shipments.hd_number}"></td>
+						<td th:title="${shipments.comment != null} == TRUE ? ${shipments.comment}" th:style="${shipments.comment != null && shipments.comment != ''} == TRUE ? 'background: gray;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" th:text="${shipments.hd_number}"></td>
 						<td class="tables" th:text="${shipments.article.article_number}"></td>
 				        <td class="tables" th:text="${shipments.unit.name}"></td>
 				        <td class="tables" th:text="${shipments.pieces_qty}"></td>

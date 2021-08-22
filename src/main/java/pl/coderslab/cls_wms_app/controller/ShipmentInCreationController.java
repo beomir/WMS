@@ -201,8 +201,8 @@ public class ShipmentInCreationController {
     }
 
     @PostMapping("loadingDoor")
-    public String closeCreationAndStartPickingPost(Long shipmentNumber, Long doorLocation,HttpSession session) {
-        shipmentService.assignDoorLocationToShipment(shipmentNumber,doorLocation, session);
-        return "redirect:/closeCreationShipment/" + shipmentNumber;
+    public String closeCreationAndStartPickingPost(Long shipmentNumber, Long doorLocation,HttpSession session,@SessionAttribute(required = false) String chosenWarehouse) {
+        shipmentService.assignDoorLocationToShipment(shipmentNumber,doorLocation, session,chosenWarehouse);
+        return "redirect:/shipment/closeCreationShipment/" + shipmentNumber;
     }
 }

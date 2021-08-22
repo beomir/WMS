@@ -11,7 +11,6 @@ import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.ShipmentRepository;
 import pl.coderslab.cls_wms_app.repository.StatusRepository;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
-import pl.coderslab.cls_wms_app.service.wmsOperations.ShipMethodService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ShipmentService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CustomerService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
@@ -28,16 +27,14 @@ import java.util.List;
 public class ShipmentController {
 
     private final ShipmentService shipmentService;
-    private final ShipMethodService shipMethodService;
     private final WarehouseService warehouseService;
     private final UsersService usersService;
     private final StatusRepository statusRepository;
     private final CustomerService customerService;
 
     @Autowired
-    public ShipmentController(ShipmentService shipmentService, ShipMethodService shipMethodService, WarehouseService warehouseService, UsersService usersService, StatusRepository statusRepository, CustomerService customerService) {
+    public ShipmentController(ShipmentService shipmentService, WarehouseService warehouseService, UsersService usersService, StatusRepository statusRepository, CustomerService customerService) {
         this.shipmentService = shipmentService;
-        this.shipMethodService = shipMethodService;
         this.warehouseService = warehouseService;
         this.usersService = usersService;
         this.statusRepository = statusRepository;
@@ -117,10 +114,9 @@ public class ShipmentController {
         }
     }
 
-    @GetMapping("/finishedShipment/{id}")
-    public String finishShipment(@PathVariable Long id) throws IOException, MessagingException {
-        Long getShipmentById = shipmentService.findById(id).getShipmentNumber();
-        shipmentService.finishShipment(getShipmentById);
+    @GetMapping("/finishedShipment/{shipmentNumber}")
+    public String finishShipment(@PathVariable Long shipmentNumber) throws IOException, MessagingException {
+        shipmentService.finishShipment(shipmentNumber);
         return "redirect:/shipment/shipment";
     }
 
@@ -183,6 +179,21 @@ public class ShipmentController {
         log.info("Post createdFrom: " + shipmentCreatedFrom);
         log.info("Post createdTo: " + shipmentCreatedTo);
         return "redirect:/shipment/shipment";
+    }
+
+    @GetMapping("/addCommentShipment/{id}")
+    public String addCommentToDetailLine(@PathVariable Long id,Model model,HttpSession session) {
+        Shipment shipment = shipmentService.findById(id);
+        model.addAttribute("shipment",shipment);
+
+        usersService.loggedUserData(model, session);
+        return "wmsOperations/addCommentShipment";
+    }
+
+    @PostMapping("/addCommentShipment")
+    public String addCommentToDetailLinePost(Shipment shipment, String newComment,HttpSession session) {
+        shipmentService.addComment(shipment,newComment,session);
+        return "redirect:/shipment/shipmentDetails/" + shipment.getShipmentNumber();
     }
 
 

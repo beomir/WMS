@@ -14,6 +14,7 @@ public interface ShipmentService {
 
     void add(Shipment shipment);
 
+    void addComment(Shipment shipment,String newComment,HttpSession session);
 
     List<Shipment> getShipments();
 
@@ -23,7 +24,7 @@ public interface ShipmentService {
 
     List<Shipment> getShipmentsForLoggedUserByShipmentNumber(String warehouseName, String username,Long shipmentNumber);
 
-    void finishShipment(Long id) throws IOException, MessagingException;
+    void finishShipment(Long shipmentNumber) throws IOException, MessagingException;
 
     int checkHowManyNotFinishedShipments(String warehouseName,String username);
 
@@ -31,7 +32,7 @@ public interface ShipmentService {
 
     void sentShipments(String company);
 
-    void assignDoorLocationToShipment(Long shipmentNumber, Long doorLocation, HttpSession session);
+    void assignDoorLocationToShipment(Long shipmentNumber, Long doorLocation, HttpSession session,String chosenWarehouse);
 
     List<ShipmentRepository.ShipmentViewObject>shipmentSummary(String shipmentCompany, String shipmentWarehouse,
                                                                String shipmentCustomer, String shipmentStatus, String shipmentLocation,

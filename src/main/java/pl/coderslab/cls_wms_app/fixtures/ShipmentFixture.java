@@ -30,10 +30,10 @@ public class ShipmentFixture {
 
 
     private List<Shipment> shipmentList = Arrays.asList(
-            new Shipment(null, null,null,10L, null,202000000000000005L,"EU1",null,null,null, true,20200001L,true,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Shipment(null, null,null,12L, null,202000000000000006L,"BW1",null,null,null, true,20200002L,true,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Shipment(null, null,null,12L, null,202000000000000007L,"EU1",null,null,null, true,20200003L,true,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Shipment(null, null,null,12L, null,202000000000000008L,"EU1",null,null,null, true,20200004L,true,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null)
+            new Shipment(null, null,null,10L, null,202000000000000005L,"EU1",null,null,null, true,20200001L,true,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null,null),
+            new Shipment(null, null,null,12L, null,202000000000000006L,"BW1",null,null,null, true,20200002L,true,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null,null),
+            new Shipment(null, null,null,12L, null,202000000000000007L,"EU1",null,null,null, true,20200003L,true,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null,null),
+            new Shipment(null, null,null,12L, null,202000000000000008L,"EU1",null,null,null, true,20200004L,true,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null,null)
 
     );
 

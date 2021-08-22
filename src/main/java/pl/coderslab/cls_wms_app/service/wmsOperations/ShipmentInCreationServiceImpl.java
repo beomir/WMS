@@ -207,6 +207,7 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
         shipment.setShipmentNumber(shipmentInCreation.getShipmentNumber());
         shipment.setQuality(shipmentInCreation.getQuality());
         shipment.setShipMethod(shipmentInCreation.getShipMethod());
+        shipment.setLocation(shipmentInCreation.getLocation());
         shipment.setStatus(statusRepository.getStatusById(2L));
         shipment.setWarehouse(shipmentInCreation.getWarehouse());
         shipment.setChangeBy(SecurityUtils.username());

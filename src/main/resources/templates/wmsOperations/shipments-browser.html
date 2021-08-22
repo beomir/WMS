@@ -47,15 +47,15 @@
 			<section>
 				<label th:text="#{app.customer}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" name="shipmentCustomer">
+					<option selected th:value="'%'" th:text="#{app.all}">All</option>
 					<option th:each="i : ${customers}" th:value="${i.name}" th:text="${i.name}">
-					<option th:value="'%'">All</option>
 					</option>
 				</select>
 			</section><br/><br/>
 			<section>
 				<label th:text="#{app.status}" style="color: white;font-weight: bold"></label>
 				<select class="select-css" name="shipmentStatus">
-					<option selected th:value="'%'">All</option>
+					<option selected th:value="'%'" th:text="#{app.all}">All</option>
 					<option th:each="i : ${status}" th:value="${i.status}" th:text="${i.status}">
 					</option>
 				</select>

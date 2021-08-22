@@ -87,19 +87,18 @@
 						<th th:text="#{app.handleDeviceQty}" class="tables">Qty of Pallets</th>
 						<th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{app.company}" class="tables">Company</th>
 						<th th:text="#{app.status}" class="tables">Status</th>
-						<th th:text="#{app.location}" class="tables">Location</th>
+						<th th:text="#{app.destinationLocation}" class="tables"></th>
 						<th th:text="#{app.created}" class="tables">Created</th>
 						<th th:text="#{app.lastUpdate}" class="tables">Last update</th>
 						<th th:text="#{app.chandedBy}" class="tables">Changed by</th>
 					</tr>
 				    <tr style="border: solid 1px" th:each="shipments: ${shipments}">
-						<td class="tables" style="padding-bottom: 2px">
-							<ol><div th:text="${shipments.shipmentNumber}"></div>
+						<td class="tables">
+							<ol th:class="${shipments.finished == 'false'} ? arrowsDown : '' "><div style="float:left;width:60%" th:text="${shipments.shipmentNumber}"></div>
 								<li>
 									<ul>
-										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a th:href="@{/shipment/finishedShipment/{id}(id=${shipments.id})}">Finish</a></li>
-										<li th:if="${shipments.finished == false && shipments.creation_closed != false}"><a th:text="#{app.details}" th:href="@{/shipment/shipmentDetails/{shipmentNumber}(shipmentNumber=${shipments.shipmentNumber})}"></a></li>
-<!--										<li th:if="${shipments.creation_closed == true && shipments.finished == false }"><a th:href="@{/openCreationShipment/{id}(id=${shipments.id})}">Open Creation</a></li>-->
+										<li th:if="${shipments.finished == 'false'}"><a th:href="@{/shipment/finishedShipment/{shipmentNumber}(shipmentNumber=${shipments.shipmentNumber})}"><span th:text="#{app.finish}"></span></a></li>
+										<li th:if="${shipments.finished == 'false'}"><a th:href="@{/shipment/shipmentDetails/{shipmentNumber}(shipmentNumber=${shipments.shipmentNumber})}"><span th:text="#{app.details}"></span></a></li>
 									</ul>
 								</li>
 							</ol>
