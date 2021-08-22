@@ -36,6 +36,18 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query(value = "select s.id from storage s  join article a on (a.id = s.article_id) join status st on (st.id = s.status_id) join warehouse w on (w.id = s.warehouse_id) where a.article_number = ?1 and st.status = 'on_hand' and w.name = ?2 order by s.pieces_qty desc limit 1",nativeQuery = true)
     Long searchStockToSend(Long articleNumber, String warehouseName);
 
+    @Query(value = "select s.id from storage s join article a on (a.id = s.article_id) join status st on (st.id = s.status_id) join warehouse w on (w.id = s.warehouse_id) join company c on c.id = s.company_id join receptions r on s.reception_number = r.reception_number and s.hd_number = r.hd_number where a.article_number = ?1 and st.status = 'on_hand' and w.name = ?2 and c.name = ?3 order by r.created, s.pieces_qty desc  limit 1",nativeQuery = true)
+    Long searchStockToSendFIFO(Long articleNumber, String warehouseName, String companyName);
+
+    @Query(value = "select s.id from storage s join article a on (a.id = s.article_id) join status st on (st.id = s.status_id) join warehouse w on (w.id = s.warehouse_id) join company c on c.id = s.company_id join receptions r on s.reception_number = r.reception_number and s.hd_number = r.hd_number where a.article_number = ?1 and st.status = 'on_hand' and w.name = ?2 and c.name = ?3 order by r.created, s.pieces_qty desc  limit 1",nativeQuery = true)
+    Long searchStockToSendFEFO(Long articleNumber, String warehouseName,String companyName);
+
+    @Query(value = "select s.id from storage s join article a on (a.id = s.article_id) join status st on (st.id = s.status_id) join warehouse w on (w.id = s.warehouse_id) join company c on c.id = s.company_id join receptions r on s.reception_number = r.reception_number and s.hd_number = r.hd_number where a.article_number = ?1 and st.status = 'on_hand' and w.name = ?2 and c.name = ?3 order by r.created desc, s.pieces_qty desc  limit 1",nativeQuery = true)
+    Long searchStockToSendLIFO(Long articleNumber, String warehouseName,String companyName);
+
+    @Query(value = "select distinct s.id from storage s join article a on (a.id = s.article_id) join status st on (st.id = s.status_id) join warehouse w on (w.id = s.warehouse_id) join company c on a.company_id = c.id inner join order_of_locations_header oolh on c.id = oolh.company_id inner join order_of_locations_details oold on oolh.id = oold.order_of_locations_header_id and oolh.active and s.location_id = oold.location_id join receptions r on s.reception_number = r.reception_number and s.hd_number = r.hd_number where a.article_number = ?1 and st.status = 'on_hand' and w.name = ?2 and c.name = ?3 order by oold.location_number_in_sequence, s.pieces_qty desc limit 1",nativeQuery = true)
+    Long searchStockToSendOLS(Long articleNumber, String warehouseName, String companyName);
+
     @Query("Select s from Stock s where s.id = ?1")
     Stock getStockById(Long id);
 

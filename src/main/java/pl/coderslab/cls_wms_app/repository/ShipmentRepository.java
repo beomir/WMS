@@ -52,4 +52,23 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     @Query("Select distinct s from Shipment s join fetch s.article a join fetch s.shipMethod sh join fetch s.warehouse w join s.company c join Users u on u.company = c.name  where w.name =?1 and u.username like ?2 order by s.finished,s.shipmentNumber")
     List<Shipment> getShipmentsForLoggedUser(String warehouseName,String userName);
+
+    @Query("Select distinct s from Shipment s join fetch s.article a join fetch s.shipMethod sh join fetch s.warehouse w join s.company c join Users u on u.company = c.name  where w.name =?1 and u.username like ?2 and s.shipmentNumber = ?3 order by s.finished,s.shipmentNumber")
+    List<Shipment> getShipmentsForLoggedUserByShipmentNumber(String warehouseName,String userName,Long shipmentNumber);
+
+    @Query(value ="select shipmentNumber,sum(pieces_qty) pieces_qty,status finished,max(created) created,max(last_update) last_update,max(change_by) changeBy,company,location,sum(case when hd_number = '' then 0 else 1 end) Hd_number,warehouse from ( Select shipment_number shipmentNumber ,pieces_qty,s.status,shi.created,shi.last_update,shi.change_by,c.name company,IFNULL(l.location_name,'') location,IFNULL(Hd_number,'') Hd_number,w.name warehouse from shipments shi inner join status s on shi.status_id = s.id inner join warehouse w on shi.warehouse_id = w.id inner join company c on shi.company_id = c.id left join location l on shi.location_id = l.id inner join vendors v on c.id = v.company_id where c.name like ?1 and w.name like ?2 and v.name like ?3 and s.status like ?4 and CONCAT(shi.shipment_number,'') like ?6 and shi.created > ?8 and shi.created < ?9 and shi.change_by like ?10) a where location like ?5  and CONCAT(hd_number,'') like ?7 group by company, location, status, shipmentNumber,warehouse",nativeQuery = true)
+    List<ShipmentRepository.ShipmentViewObject> getShipmentSummary(String companyName, String warehouseName, String vendorName, String status, String locationName, String receptionNumber, String hdNumber, String createdFrom, String createdTo, String createdBy);
+
+    public static interface ShipmentViewObject {
+        Long getShipmentNumber();
+        Long getPieces_qty();
+        String getFinished();
+        String getCreated();
+        String getLast_update();
+        String getChangeBy();
+        String getCompany();
+        String getLocation();
+        Long getHd_number();
+        String getWarehouse();
+    }
 }

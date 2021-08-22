@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
+import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ShipMethodService;
@@ -35,9 +36,10 @@ public class ShipmentInCreationController {
     private final CustomerService customerService;
     private final ShipmentService shipmentService;
     private final UsersService usersService;
+    private final LocationRepository locationRepository;
 
     @Autowired
-    public ShipmentInCreationController(ShipmentInCreationService shipmentInCreationService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, ArticleService articleService, UnitService unitService, CustomerService customerService, ShipmentService shipmentService, UsersService usersService) {
+    public ShipmentInCreationController(ShipmentInCreationService shipmentInCreationService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, ArticleService articleService, UnitService unitService, CustomerService customerService, ShipmentService shipmentService, UsersService usersService, LocationRepository locationRepository) {
 
         this.shipMethodService = shipMethodService;
         this.warehouseService = warehouseService;
@@ -48,6 +50,7 @@ public class ShipmentInCreationController {
         this.customerService = customerService;
         this.shipmentService = shipmentService;
         this.usersService = usersService;
+        this.locationRepository = locationRepository;
     }
 
     @GetMapping("/shipmentInCreation")
@@ -179,4 +182,27 @@ public class ShipmentInCreationController {
         return "redirect:/shipment/shipmentInCreation";
     }
 
+
+    @GetMapping("/loadingDoor/{shipmentNumber}")
+    public String closeCreationAndStartPicking(@PathVariable Long shipmentNumber,
+                                               Model model,
+                                               @SessionAttribute(required = false) String chosenWarehouse,
+                                               HttpServletRequest request,HttpSession session) {
+        if(usersService.warehouseSelection(session,chosenWarehouse,request).equals("warehouseSelected")) {
+            List<Location> shipmentDoorLocations = locationRepository.shipmentDoorLocations(chosenWarehouse);
+            model.addAttribute("locations", shipmentDoorLocations);
+            model.addAttribute(shipmentNumber);
+            usersService.loggedUserData(model,session);
+            return "wmsOperations/loadingDoor";
+        }
+        else{
+            return "redirect:/selectWarehouse";
+        }
+    }
+
+    @PostMapping("loadingDoor")
+    public String closeCreationAndStartPickingPost(Long shipmentNumber, Long doorLocation,HttpSession session) {
+        shipmentService.assignDoorLocationToShipment(shipmentNumber,doorLocation, session);
+        return "redirect:/closeCreationShipment/" + shipmentNumber;
+    }
 }

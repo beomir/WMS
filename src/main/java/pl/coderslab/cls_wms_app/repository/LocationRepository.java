@@ -38,6 +38,9 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     @Query("Select l from Location l where l.warehouse.id = ?1 and l.locationType = 'RDL'")
     List<Location> receptionDoorLocations(Long warehouseId);
 
+    @Query("Select l from Location l where l.warehouse.name = ?1 and l.locationType = 'SDL'")
+    List<Location> shipmentDoorLocations(String warehouseName);
+
     @Query(value = "Select IFNULL((Select location_name from location l join warehouse w on l.warehouse_id = w.id where l.free_space = l.volume and l.free_weight = l.max_weight and l.location_type not in( 'RDL','SDL','EQL','PPL') and l.temporary_free_space > ?3 and l.temporary_free_weight > ?2 and w.name = ?4 union Select location_name location from location l join storage s on l.id = s.location_id join article a on s.article_id = a.id  join article_types t on a.article_types_id = t.id   join warehouse w on s.warehouse_id = w.id where t.mixed like ?1 and l.temporary_free_weight > ?2 and l.temporary_free_space > ?3 and w.name = ?4 and l.multi_item = true and l.location_type not in( 'RDL','SDL','EQL','PPL')  order by 1 limit 1),'noResult') location",nativeQuery = true)
     AvailableLocations getAvailableLocation(String articleType, double articleWeight, double articleVolume, String warehouseName );
 

@@ -4,12 +4,16 @@ package pl.coderslab.cls_wms_app.service.wmsOperations;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.app.SendEmailService;
 import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.*;
+import pl.coderslab.cls_wms_app.service.storage.LocationService;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
+import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
 
 
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,6 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -32,10 +38,15 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final SchedulerRepository schedulerRepository;
     private final StockService stockService;
     private final StockRepository stockRepository;
+    private final LocationRepository locationRepository;
+    private final LocationService locationService;
+    private final StatusRepository statusRepository;
+    private final TransactionService transactionService;
+    private final CompanyRepository companyRepository;
 
 
     @Autowired
-    public ShipmentServiceImpl(ShipmentRepository shipmentRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ShipmentInCreationRepository shipmentInCreationRepository, SchedulerRepository schedulerRepository, StockService stockService, StockRepository stockRepository) {
+    public ShipmentServiceImpl(ShipmentRepository shipmentRepository, SendEmailService sendEmailService, EmailRecipientsRepository emailRecipientsRepository, ShipmentInCreationRepository shipmentInCreationRepository, SchedulerRepository schedulerRepository, StockService stockService, StockRepository stockRepository, LocationRepository locationRepository, LocationService locationService, StatusRepository statusRepository, TransactionService transactionService, CompanyRepository companyRepository) {
         this.shipmentRepository = shipmentRepository;
         this.sendEmailService = sendEmailService;
         this.emailRecipientsRepository = emailRecipientsRepository;
@@ -43,6 +54,11 @@ public class ShipmentServiceImpl implements ShipmentService {
         this.schedulerRepository = schedulerRepository;
         this.stockService = stockService;
         this.stockRepository = stockRepository;
+        this.locationRepository = locationRepository;
+        this.locationService = locationService;
+        this.statusRepository = statusRepository;
+        this.transactionService = transactionService;
+        this.companyRepository = companyRepository;
     }
 
     @Override
@@ -63,6 +79,11 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     public List<Shipment> getShipmentsForLoggedUser(String companyName, String username) {
         return shipmentRepository.getShipmentsForLoggedUser(companyName, username);
+    }
+
+    @Override
+    public List<Shipment> getShipmentsForLoggedUserByShipmentNumber(String warehouseName, String username, Long shipmentNumber) {
+        return shipmentRepository.getShipmentsForLoggedUserByShipmentNumber(warehouseName, username,shipmentNumber);
     }
 
     @Override
@@ -203,6 +224,107 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     }
 
+    @Override
+    public void assignDoorLocationToShipment(Long shipmentNumber, Long doorLocation, HttpSession session) {
+        log.debug("shipmentNumber: " + shipmentNumber);
+        log.debug("doorLocation: " + doorLocation);
+        boolean enoughCapacity = false;
+        List<Shipment> shipments = shipmentRepository.getShipmentByShipmentNumber(shipmentNumber);
+        Location location = locationRepository.getOne(doorLocation);
+        Transaction transaction = new Transaction();
+        for (Shipment singularShipment: shipments) {
+            if(locationService.reduceTheAvailableContentOfTheLocation(location.getLocationName(),singularShipment.getArticle().getArticle_number(),singularShipment.getPieces_qty(),singularShipment.getWarehouse().getName(),singularShipment.getCompany().getName())){
+                singularShipment.setStatus(statusRepository.getStatusByStatusName("picking_pending","Shipment"));
+                singularShipment.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                singularShipment.setLocation(location);
+                shipmentRepository.save(singularShipment);
+                transaction.setAdditionalInformation("Assign shipment: " + singularShipment + " to dock door: " + location.getLocationName());
+                transaction.setReceptionStatus(singularShipment.getStatus().getStatus());
+                saveTransactionModel(singularShipment, transaction);
+                enoughCapacity = true;
+            }
+            else{
+                transaction.setAdditionalInformation("Assign shipment: " + shipmentNumber + " to dock door: " + location.getLocationName() + " unsuccessful because of not enough location free capacity");
+                transaction.setReceptionStatus(singularShipment.getStatus().getStatus());
+                enoughCapacity = false;
+            }
+        }
+        if(enoughCapacity){
+            transaction.setTransactionDescription("Reception assigned to reception dock door");
+            session.setAttribute("shipmentMessage", "Shipment: " + shipmentNumber + " assigned to door: " + location.getLocationName());
+            transaction.setTransactionType("118");
+            transactionService.add(transaction);
+            log.info("close creation service shipmentMessage: " + session.getAttribute("shipmentMessage"));
+        }
+        else{
+            session.setAttribute("shipmentMessage", "Not enough space or free weight in location: " + location.getLocationName());
+        }
+    }
+
+    @Override
+    public List<ShipmentRepository.ShipmentViewObject> shipmentSummary(String shipmentCompany, String shipmentWarehouse,
+                                                                       String shipmentCustomer, String shipmentStatus, String shipmentLocation,
+                                                                       String shipmentShipmentNumber, String shipmentHdNumber,
+                                                                       String shipmentCreatedFrom, String shipmentCreatedTo, String shipmentCreatedBy) {
+        if(shipmentCompany == null || shipmentCompany.equals("")){
+            shipmentCompany = companyRepository.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName();
+        }
+        if(shipmentWarehouse == null || shipmentWarehouse.equals("")){
+            shipmentWarehouse = "%";
+        }
+        if(shipmentCustomer == null || shipmentCustomer.equals("")){
+            shipmentCustomer = "%" ;
+        }
+        if(shipmentStatus == null || shipmentStatus.equals("")){
+            shipmentStatus = "%";
+        }
+        if( shipmentShipmentNumber == null || shipmentShipmentNumber.equals("")){
+            shipmentShipmentNumber = "%";
+        }
+        if(shipmentHdNumber == null || shipmentHdNumber.equals("")){
+            shipmentHdNumber = "%";
+        }
+        if(shipmentCreatedFrom == null || shipmentCreatedFrom.equals("")){
+            shipmentCreatedFrom = "1970-01-01";
+        }
+        if(shipmentCreatedTo == null || shipmentCreatedTo.equals("")){
+            shipmentCreatedTo = "2222-02-02";
+        }
+        if(shipmentCreatedBy == null || shipmentCreatedBy.equals("")){
+            shipmentCreatedBy = "%" ;
+        }
+        if(shipmentLocation == null || shipmentLocation.equals("")){
+            shipmentLocation = "%";
+        }
+
+        log.error(" createdBy: " + shipmentCreatedBy);
+        log.error(" warehouse: " + shipmentWarehouse );
+        log.error(" company: " + shipmentCompany );
+        log.error(" customer: " + shipmentCustomer);
+        log.error(" shipmentNumber: " + shipmentShipmentNumber);
+        log.error(" hdNumber: " + shipmentHdNumber);
+        log.error(" status: " + shipmentStatus);
+        log.error(" location: " + shipmentLocation);
+        log.error(" createdFrom: " + shipmentCreatedFrom);
+        log.error(" createdTo: " + shipmentCreatedTo);
+
+        return shipmentRepository.getShipmentSummary(shipmentCompany,shipmentWarehouse,shipmentCustomer,shipmentStatus,shipmentLocation,shipmentShipmentNumber,shipmentHdNumber,shipmentCreatedFrom,shipmentCreatedTo,shipmentCreatedBy);
+    }
+
+    private void saveTransactionModel(Shipment shipment, Transaction transaction) {
+        transaction.setTransactionGroup("Shipment");
+        transaction.setCreated(shipment.getCreated());
+        transaction.setCreatedBy(SecurityUtils.usernameForActivations());
+        transaction.setCompany(shipment.getCompany());
+        transaction.setWarehouse(shipment.getWarehouse());
+        transaction.setReceptionNumber(shipment.getShipmentNumber());
+        transaction.setArticle(shipment.getArticle().getArticle_number());
+        transaction.setQuality(shipment.getQuality());
+        transaction.setUnit(shipment.getUnit().getName());
+        transaction.setVendor(shipment.getCustomer().getName());
+        transaction.setQuantity(shipment.getPieces_qty());
+        transaction.setHdNumber(shipment.getHd_number());
+    }
 
 
 }

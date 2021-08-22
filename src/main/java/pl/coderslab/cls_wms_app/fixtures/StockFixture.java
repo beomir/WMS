@@ -34,7 +34,7 @@ public class StockFixture {
             new Stock(null, 202000000000000002L, null,  10L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190001L,"system",null,null),
             new Stock(null, 202000000000000003L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190001L,"system",null,null),
             new Stock(null, 202000000000000004L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190001L,"system",null,null),
-            new Stock(null, 202000000000000005L, null,  5L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190001L,"system",null,null),
+            new Stock(null, 202000000000000005L, null,  5L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190002L,"system",null,null),
             new Stock(null, 202000000000000006L, null,  20L,null,null,"EU1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190001L,"system",null,null),
             new Stock(null, 202000000000000007L, null,  44L,null,null,"BW1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190001L,"system",null,null),
             new Stock(null, 202000000000000008L, null,  20L,null,null,"BW1",null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),null,null,null,20190001L,"system",null,null),

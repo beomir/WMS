@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="shipmentMenu">
+    <a th:if="${#httpServletRequest.requestURI != '/shipment//formShipment'}" th:href="@{shipment/formShipment}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;" th:text="#{app.createShipment}"></div></a>
+    <a th:if="${#httpServletRequest.requestURI != '/shipment/shipment'}" th:href="@{/shipment/shipment}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.checkShipments}"></div></a>
+    <a th:if="${#httpServletRequest.requestURI != '/shipment/shipments-browser'}" th:href="@{/shipment/shipments-browser}"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.findShipment}"></div></a>
+    <a th:if="${#httpServletRequest.requestURI != '/workDetails'}" th:href="@{/workDetails}" target="_blank"><div class="buttonik3" style="float: right;margin-right: 3%;max-width: 10%;clear:right" th:text="#{app.works}"></div></a>
+</div>
+</body>
+</html>

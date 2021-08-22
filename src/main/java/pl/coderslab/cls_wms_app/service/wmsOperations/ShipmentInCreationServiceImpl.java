@@ -135,7 +135,22 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
                 int qtyToSend = shipmentInCreation.getPieces_qty().intValue();
                 log.error("qtyToSend: " + qtyToSend);
                 while (qtyToSend > 0) {
-                    Stock stockToSend = stockRepository.getStockById(stockRepository.searchStockToSend(shipmentInCreation.getArticle().getArticle_number(), shipmentInCreation.getWarehouse().getName()));
+                    String shipMethod = shipmentInCreation.getShipMethod().getMethod();
+                    Stock stockToSend = null;
+                    log.error("Ship Method: " + shipmentInCreation.getShipMethod().getMethod());
+                    if(shipMethod.equals("FIFO")){
+                        stockToSend = stockRepository.getStockById(stockRepository.searchStockToSendFIFO(shipmentInCreation.getArticle().getArticle_number(), shipmentInCreation.getWarehouse().getName(),shipmentInCreation.getCompany().getName()));
+                   log.error("Fifo direction");
+                    } else if(shipMethod.equals("FEFO")){
+                        stockToSend = stockRepository.getStockById(stockRepository.searchStockToSendFEFO(shipmentInCreation.getArticle().getArticle_number(), shipmentInCreation.getWarehouse().getName(),shipmentInCreation.getCompany().getName()));
+                        log.error("FEFO direction");
+                    } else if(shipMethod.equals("LIFO")){
+                        stockToSend = stockRepository.getStockById(stockRepository.searchStockToSendLIFO(shipmentInCreation.getArticle().getArticle_number(), shipmentInCreation.getWarehouse().getName(),shipmentInCreation.getCompany().getName()));
+                        log.error("LIFO direction");
+                    } else if(shipMethod.equals("Order_location_sequence")){
+                        stockToSend = stockRepository.getStockById(stockRepository.searchStockToSendOLS(shipmentInCreation.getArticle().getArticle_number(), shipmentInCreation.getWarehouse().getName(),shipmentInCreation.getCompany().getName()));
+                        log.error("Order_location_sequence direction");
+                    }
                     int qtyToSendOnStock = stockToSend.getPieces_qty().intValue();
 
                     log.error("Available to send from stock: " + stockToSend.getPieces_qty() + " stock id:" + stockToSend.getId());
