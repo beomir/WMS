@@ -64,4 +64,21 @@ public class IntermediateArticle {
         this.changeBy = changeBy;
         this.productionArticle = productionArticle;
     }
+
+    @Override
+    public String toString() {
+        return "IntermediateArticle{" +
+                "id=" + id +
+                ", article=" + article +
+                ", storageZone=" + storageZone +
+                ", warehouse=" + warehouse +
+                ", company=" + company +
+                ", location=" + location +
+                ", productionArticleType='" + productionArticleType + '\'' +
+                ", quantityForFinishedProduct=" + quantityForFinishedProduct +
+                ", created='" + created + '\'' +
+                ", last_update='" + last_update + '\'' +
+                ", changeBy='" + changeBy + '\'' +
+                '}';
+    }
 }

@@ -31,10 +31,12 @@ public class LoadFixtures {
     private ExtremelyFixture extremelyFixture;
     private ProductionArticleFixture productionArticleFixture;
     private IntermediateArticleFixture intermediateArticleFixture;
+    private OrderOfLocationHeaderFixture oderOfLocationsHeaderFixture;
+    private OrderOfLocationDetailsFixture orderOfLocationDetailsFixture;
 
 
     @Autowired
-    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture, TransactionFixture transactionFixture, LocationFixture locationFixture, StorageZoneFixture storageZoneFixture, ArticleTypesFixture articleTypesFixture, ExtremelyFixture extremelyFixture, ProductionArticleFixture productionArticleFixture, IntermediateArticleFixture intermediateArticleFixture) {
+    public LoadFixtures(StockFixture stockFixture, CompanyFixture companyFixture, WarehouseFixture warehouseFixture, StatusFixture statusFixture, ArticleFixture articleFixture, UsersFixture usersFixture, VendorFixture vendorFixture, ReceptionFixture receptionFixture, ShipMethodFixture shipMethodFixture, CustomerFixture customerFixture, ShipmentFixture shipmentFixture, UnitFixture unitFixture, UsersRolesFixture usersRolesFixture, EmailTypesFixture emailTypesFixture, EmailRecipientsFixture emailRecipientsFixture, SchedulerFixture schedulerFixture, TransactionFixture transactionFixture, LocationFixture locationFixture, StorageZoneFixture storageZoneFixture, ArticleTypesFixture articleTypesFixture, ExtremelyFixture extremelyFixture, ProductionArticleFixture productionArticleFixture, IntermediateArticleFixture intermediateArticleFixture, OrderOfLocationHeaderFixture oderOfLocationsHeaderFixture, OrderOfLocationDetailsFixture orderOfLocationDetailsFixture) {
         this.stockFixture = stockFixture;
         this.companyFixture = companyFixture;
         this.usersFixture = usersFixture;
@@ -58,6 +60,8 @@ public class LoadFixtures {
         this.extremelyFixture = extremelyFixture;
         this.productionArticleFixture = productionArticleFixture;
         this.intermediateArticleFixture = intermediateArticleFixture;
+        this.oderOfLocationsHeaderFixture = oderOfLocationsHeaderFixture;
+        this.orderOfLocationDetailsFixture = orderOfLocationDetailsFixture;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -88,6 +92,9 @@ public class LoadFixtures {
         extremelyFixture.loadIntoDB();
         productionArticleFixture.loadIntoDB();
         intermediateArticleFixture.loadIntoDB();
+
+        oderOfLocationsHeaderFixture.loadIntoDB();
+        orderOfLocationDetailsFixture.loadIntoDB();
 
 
     }

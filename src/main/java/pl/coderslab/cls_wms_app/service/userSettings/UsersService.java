@@ -52,4 +52,6 @@ public interface UsersService {
     String changePassword(Users users,String email, CheckPassword check);
 
     void edit(Users users);
+
+    void nextURL(HttpServletRequest request,HttpSession session);
 }

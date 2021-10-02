@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="scannerStockPreview">
+    <section style="margin-left: 33%;position: absolute">
+        <span th:if="${valueToPreview == null}"><img style="height: 70px;width:70px" class="makeItBigger"  th:src="@{/images/preview.png}"/></span>
+        <span th:if="${previewWay == '1'} "><img style="height: 70px;width:70px" class="makeItBigger" th:title="#{app.previewStockByLocation} + ': ' + ${valueToPreview}" th:src="@{/images/preview.png}"/></span>
+        <span th:if="${previewWay == '2'} "><img style="height: 70px;width:70px" class="makeItBigger" th:title="#{app.previewStockByHDNumber} + ': ' + ${valueToPreview}"  th:src="@{/images/preview.png}"/></span>
+    </section>
+    <div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
+    <div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bold;text-align: center" th:text="${message}"></div>
+    <div class="underTitle" th:text="#{app.stockPreview}"></div><br/>
+    <div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
+    <div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
+    <div th:if="${previewWay == '1'}" class="underTitle" th:text="#{app.previewStockByLocation} + ': ' + ${valueToPreview}"></div>
+    <div th:if="${previewWay == '2'}" class="underTitle" th:text="#{app.previewStockByHDNumber} + ': ' + ${valueToPreview}"></div>
+
+</div>
+</body>
+</html>

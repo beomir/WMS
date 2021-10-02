@@ -2,6 +2,7 @@ package pl.coderslab.cls_wms_app.service.wmsOperations;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
@@ -12,6 +13,7 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
 
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 
 
@@ -63,7 +65,6 @@ public class ProductionServiceImpl implements ProductionService{
 
     @Override
     public void delete(Long id) {
-        Production production = productionRepository.getOne(id);
         productionRepository.deleteById(id);
     }
 
@@ -105,21 +106,14 @@ public class ProductionServiceImpl implements ProductionService{
 
     @Override
     public void createProduction(Production production, String articleId, String chosenWarehouse, HttpSession session) {
+        double sumOfVolumeForProduction = 0;
+        double sumOfWeightForProduction = 0;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         Long newProductionNumber =  Long.parseLong(LocalDateTime.now().format(formatter) + "001");
         productionSetters(production, chosenWarehouse,articleId);
         boolean workProductionStatus = false;
-        // check extremely information
-        if(extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),"Production_after_creation").getExtremelyValue().equals("2")){
-            production.setStatus("Created");
-            session.setAttribute("productionMessage","Production for finish product: " + articleRepository.getOne(Long.parseLong(articleId)).getArticle_number() + " was successfully created. Extremely flag set on 2, so works were not created");
-        }
-        if(extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),"Production_after_creation").getExtremelyValue().equals("1")){
-            production.setStatus("Picking pending");
-            workProductionStatus = true;
-            session.setAttribute("productionMessage","Production and works for finish product: " + articleRepository.getOne(Long.parseLong(articleId)).getArticle_number() + " was successfully created.");
-        }
+
         // check if productionNumber exists
         if(productionRepository.getProductionNumberByProductionNumber(newProductionNumber) != null){
             production.setProductionNumber(productionRepository.lastProductionNumberForToday(newProductionNumber) + 1L);
@@ -129,33 +123,68 @@ public class ProductionServiceImpl implements ProductionService{
         }
 
         List<Article> intermediateArticles = articleRepository.articlesListForProduction(Long.parseLong(articleId),companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()),chosenWarehouse);
-        for (Article intermediateArticle: intermediateArticles) {
+        Location putawayProductionLocation = articleRepository.findArticleByArticle_number(production.getFinishProductNumber()).getProductionArticle().getLocation();
+        //check if on destinationLocation is enough space and free weight
+        for(Article intermediateArticle: intermediateArticles){
             List<IntermediateArticle> intermediateArticleList = intermediateArticle.getProductionArticle().getIntermediateArticle();
-            if(workProductionStatus){
-                // Work & production creation
-                for (IntermediateArticle ia : intermediateArticleList){
-                    log.error("Qty on stock: " + stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getPieces_qty());
-                    log.error("Qty from form: " + ia.getQuantityForFinishedProduct());
-                    if(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getPieces_qty() - ia.getQuantityForFinishedProduct() >= 0) {
-                        Stock stock = stockRepository.getStockById(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getId());
-                        saveProductionInLoop(production, ia);
-                        changesOnStock(stock,ia);
-                        workCreationInLoop(production, ia,stock);
+            for (IntermediateArticle ia : intermediateArticleList) {
+                sumOfVolumeForProduction = sumOfVolumeForProduction + Precision.round(ia.getQuantityForFinishedProduct() * ia.getArticle().getVolume(),2);
+                sumOfWeightForProduction = sumOfWeightForProduction + Precision.round(ia.getQuantityForFinishedProduct() * ia.getArticle().getWeight(),2);
+                log.error("intermediate Article volume: " + Precision.round(ia.getQuantityForFinishedProduct() * ia.getArticle().getVolume(),2));
+                log.error("intermediate Article weight: " + Precision.round(ia.getQuantityForFinishedProduct() * ia.getArticle().getWeight(),2));
+            }
+        }
+        BigDecimal bigSumOfVolumeForProduction = BigDecimal.valueOf(sumOfVolumeForProduction);
+        BigDecimal bigSumOfWeightForProduction = BigDecimal.valueOf(sumOfWeightForProduction);
+        log.error("productionLocation: " + putawayProductionLocation.getLocationName());
+        log.error("bigSumOfVolumeForProduction: " + bigSumOfVolumeForProduction);
+        log.error("bigSumOfWeightForProduction: " + bigSumOfWeightForProduction);
+        log.error("putawayProductionLocation.getFreeWeight(): " + putawayProductionLocation.getFreeWeight());
+        log.error("putawayProductionLocation.getFreeSpace(): " + putawayProductionLocation.getFreeSpace());
+
+        if(putawayProductionLocation.getFreeWeight() >= sumOfWeightForProduction && putawayProductionLocation.getFreeSpace() >= sumOfVolumeForProduction){
+            // check extremely information
+            if(extremelyRepository.findExtremelyByCompanyNameAndExtremelyName(companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),"Production_after_creation").getExtremelyValue().equals("2")){
+                production.setStatus("Created");
+                session.setAttribute("productionMessage","Production for finish product: " + articleRepository.getOne(Long.parseLong(articleId)).getArticle_number() + " was successfully created. Extremely flag set on 2, so works were not created");
+            }
+            if(extremelyRepository.findExtremelyByCompanyNameAndExtremelyName(companyService.getOneCompanyByUsername(SecurityUtils.usernameForActivations()).getName(),"Production_after_creation").getExtremelyValue().equals("1")){
+                production.setStatus("Picking pending");
+                workProductionStatus = true;
+                session.setAttribute("productionMessage","Production and works for finish product: " + articleRepository.getOne(Long.parseLong(articleId)).getArticle_number() + " was successfully created.");
+            }
+
+            for (Article intermediateArticle: intermediateArticles) {
+                List<IntermediateArticle> intermediateArticleList = intermediateArticle.getProductionArticle().getIntermediateArticle();
+                if(workProductionStatus){
+                    // Work & production creation
+                    for (IntermediateArticle ia : intermediateArticleList){
+                        log.error("Qty on stock: " + stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getPieces_qty());
+                        log.error("Qty from form: " + ia.getQuantityForFinishedProduct());
+                        if(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getPieces_qty() - ia.getQuantityForFinishedProduct() >= 0) {
+                            Stock stock = stockRepository.getStockById(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getId());
+                            saveProductionInLoop(production, ia);
+                            changesOnStock(stock,ia,production);
+                            workCreationInLoop(production, ia,stock);
+                        }
+                    }
+                }
+                else{
+                    // only production creation
+                    for (IntermediateArticle ia : intermediateArticleList){
+                        log.error("Qty on stock: " + stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(), ia.getWarehouse().getName(), ia.getArticle().getArticle_number()).getPieces_qty());
+                        log.error("Qty from form: " + ia.getQuantityForFinishedProduct());
+                        if(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getPieces_qty() - ia.getQuantityForFinishedProduct() >= 0) {
+                            Stock stock = stockRepository.getStockById(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getId());
+                            saveProductionInLoop(production, ia);
+                            changesOnStock(stock,ia,production);
+                        }
                     }
                 }
             }
-             else{
-                // only production creation
-                for (IntermediateArticle ia : intermediateArticleList){
-                    log.error("Qty on stock: " + stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(), ia.getWarehouse().getName(), ia.getArticle().getArticle_number()).getPieces_qty());
-                    log.error("Qty from form: " + ia.getQuantityForFinishedProduct());
-                    if(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getPieces_qty() - ia.getQuantityForFinishedProduct() >= 0) {
-                        Stock stock = stockRepository.getStockById(stockRepository.smallStockDataLimitedToOne(ia.getCompany().getName(),ia.getWarehouse().getName(),ia.getArticle().getArticle_number()).getId());
-                        saveProductionInLoop(production, ia);
-                        changesOnStock(stock,ia);
-                    }
-                }
-            }
+        }
+        else{
+            session.setAttribute("productionMessage","Production and works were not created because not enough space or available weight in production location: " + putawayProductionLocation.getLocationName());
         }
 
     }
@@ -214,7 +243,7 @@ public class ProductionServiceImpl implements ProductionService{
         work.setChangeBy(SecurityUtils.usernameForActivations());
         work.setLast_update(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         work.setWarehouse(ia.getWarehouse());
-        work.setHdNumber(stock.getHd_number() + 7000000000000L);
+        work.setHdNumber(stock.getHd_number());
         work.setStatus("open");
         work.setFromLocation(stock.getLocation());
         work.setToLocation(locationRepository.findLocationByLocationName(ia.getLocation().getLocationName(),production.getWarehouse().getName()));
@@ -223,6 +252,11 @@ public class ProductionServiceImpl implements ProductionService{
         work.setWorkType("Production");
         work.setWorkNumber(production.getProductionNumber());
         workDetailsRepository.save(work);
+
+        Location locationPutAway = work.getToLocation();
+        locationPutAway.setTemporaryFreeWeight(locationPutAway.getTemporaryFreeWeight() - work.getPiecesQty() * work.getArticle().getWeight());
+        locationPutAway.setTemporaryFreeSpace(locationPutAway.getTemporaryFreeSpace() - work.getPiecesQty() * work.getArticle().getVolume());
+        locationRepository.save(locationPutAway);
     }
 
     public Production productionSetters(Production production, String chosenWarehouse, String articleId){
@@ -235,20 +269,21 @@ public class ProductionServiceImpl implements ProductionService{
         return production;
     }
 
-    public void changesOnStock(Stock stock, IntermediateArticle ia){
+    public void changesOnStock(Stock stock, IntermediateArticle ia,Production production){
         Stock stockForProduction = new Stock();
         stockForProduction.setStatus(statusRepository.getStatusByStatusName("production_picking_pending","Production"));
         stockForProduction.setLocation(stock.getLocation());
         stockForProduction.setChangeBy(SecurityUtils.usernameForActivations());
         stockForProduction.setUnit(stock.getUnit());
-        stockForProduction.setHd_number(stock.getHd_number() + 7000000000000L);
+        stockForProduction.setHd_number(stock.getHd_number());
         stockForProduction.setCreated(TimeUtils.timeNowLong());
         stockForProduction.setArticle(stock.getArticle());
         stockForProduction.setCompany(stock.getCompany());
         stockForProduction.setWarehouse(stock.getWarehouse());
         stockForProduction.setPieces_qty(ia.getQuantityForFinishedProduct());
         stockForProduction.setReceptionNumber(stock.getReceptionNumber());
-        stockForProduction.setComment("Original HD number: " + stock.getHd_number());
+        stockForProduction.setComment("Production: " + production.getProductionNumber().toString());
+        stockForProduction.setHandle(production.getProductionNumber().toString());
         stockForProduction.setShipmentNumber(stock.getShipmentNumber());
         stockForProduction.setLast_update(TimeUtils.timeNowLong());
         stockForProduction.setQuality(stock.getQuality());
@@ -258,7 +293,6 @@ public class ProductionServiceImpl implements ProductionService{
         stock.setChangeBy(SecurityUtils.usernameForActivations());
         stockRepository.save(stock);
         stockRepository.save(stockForProduction);
-        //TODO to think about this functionality linked with deleting zeros
         if(stock.getPieces_qty() == 0){
             log.error("stock: " + stock.getId() + " " + stock.getHd_number() + " " + stock.getArticle().getArticle_number() + " " + " deleted");
             stockRepository.delete(stock);

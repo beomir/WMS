@@ -5,8 +5,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import pl.coderslab.cls_wms_app.entity.Reception;
-import pl.coderslab.cls_wms_app.entity.Shipment;
 import pl.coderslab.cls_wms_app.entity.ShipmentInCreation;
 
 import java.util.List;
@@ -14,30 +12,32 @@ import java.util.List;
 @Repository
 public interface ShipmentInCreationRepository extends JpaRepository<ShipmentInCreation, Long> {
 
+    @Query("Select distinct s from ShipmentInCreation s join fetch s.company c join fetch s.warehouse w JOIN fetch Users u on u.company = c.name where w.name =?1 and u.username like ?2")
+    List<ShipmentInCreation> getShipmentsListForLoggedUser(String warehouseName,String userName);
 
-    @Query("Select distinct s from ShipmentInCreation s join fetch s.article a join fetch s.shipMethod sh join fetch s.warehouse w where w.id =?1")
-    List<ShipmentInCreation> getShipmentInCreationById(Long id);
+    @Query("Select distinct s from ShipmentInCreation s join fetch s.company c join fetch s.warehouse w JOIN fetch Users u on u.company = c.name where s.shipmentNumber = ?1 and w.name =?2 and u.username like ?3")
+    List<ShipmentInCreation> getShipmentInCreationByShipmentNumberAndUserNameAndWarehouseName(Long shipmentNumber,String warehouseName,String userName);
 
     @Query("Select shi from Shipment shi join fetch shi.article a join fetch shi.shipMethod sh join fetch shi.warehouse ")
     List<ShipmentInCreation> getShipmentInCreation();
 
-    @Query(value ="Select count(distinct sic.shipment_number) From shipment_in_creation sic join  company c on sic.company_id = c.id join  warehouse w on sic.warehouse_id = w.id JOIN  users u on u.company = c.name where sic.creation_closed = false and w.id =?1 and u.username like ?2", nativeQuery = true)
-    int qtyOfOpenedShipmentsInCreation(Long id, String username);
+    @Query(value ="Select count(distinct sic.shipment_number) From shipment_in_creation sic join  company c on sic.company_id = c.id join  warehouse w on sic.warehouse_id = w.id JOIN  users u on u.company = c.name where sic.creation_closed = false and w.name =?1 and u.username like ?2", nativeQuery = true)
+    int qtyOfOpenedShipmentsInCreation(String warehouseName, String username);
 
     @Query(value = "select tT.shipNbr + 1 from ( Select sic.shipment_number shipNbr From shipment_in_creation sic union Select s.shipment_number shipNbr From shipments s ) tT order by 1 DESC Limit 1", nativeQuery = true)
     Long lastShipment();
 
-    @Query("Select distinct sic From ShipmentInCreation sic join fetch sic.company c join fetch sic.warehouse w JOIN fetch Users u on u.company = c.name where sic.creation_closed = false and w.id =?1 and u.username like ?2 order by 1 DESC")
-    List<ShipmentInCreation> openedShipments(Long id, String username);
+    @Query("Select distinct sic From ShipmentInCreation sic join fetch sic.company c join fetch sic.warehouse w JOIN fetch Users u on u.company = c.name where sic.creation_closed = false and w.name =?1 and u.username like ?2 order by 1 DESC")
+    List<ShipmentInCreation> openedShipments(String warehouseName, String username);
 
-    @Query(value = "select article_number,  sum(a.on_stock) - sum(a.to_sent) diff from (select  article_number, s.pieces_qty on_stock,0 to_sent from storage s inner join article a on s.article_id = a.id inner join shipment_in_creation sic on s.article_id = sic.article_id join company c on a.company_id = c.id join users u on u.company = c.name where  s.warehouse_id = ?1 and u.username like ?2 and s.status_id = 1 union select article_number, 0,sic.pieces_qty to_sent from shipment_in_creation sic inner join article a on sic.article_id = a.id join company c on a.company_id = c.id join users u on u.company = c.name where  sic.warehouse_id = ?1 and u.username like ?2 ) a group by article_number order by article_number" , nativeQuery = true)
-    List<Long> stockDifference(Long id, String username);
+    @Query(value = "select article_number,  sum(a.on_stock) - sum(a.to_sent) diff from (select  article_number, s.pieces_qty on_stock,0 to_sent from storage s inner join warehouse w on w.id = s.warehouse_id inner join article a on s.article_id = a.id inner join shipment_in_creation sic on s.article_id = sic.article_id join company c on a.company_id = c.id join users u on u.company = c.name where  w.name = ?1 and u.username like ?2 and s.status_id = 1 union select article_number, 0,sic.pieces_qty to_sent from shipment_in_creation sic inner join warehouse w on w.id = sic.warehouse_id inner join article a on sic.article_id = a.id join company c on a.company_id = c.id join users u on u.company = c.name where  w.name = ?1 and u.username like ?2 ) a group by article_number order by article_number" , nativeQuery = true)
+    List<Long> stockDifference(String warehouseName, String username);
 
-    @Query(value = "select distinct  sum(a.on_stock - a.to_sent) diff, article_number from ( select b.ar article_number, sum(b.on_stock) on_stock, b.to_sent from ( select distinct article_number ar, s.pieces_qty on_stock,0 to_sent from storage s inner join article a on s.article_id = a.id join shipment_in_creation sic on s.article_id = sic.article_id join company c on a.company_id = c.id join users u on u.company = c.name where  s.warehouse_id = ?1 and u.username like ?2 and s.status_id = 1 ) b group by b.ar,b.to_sent union select article_number, 0,sum(sic.pieces_qty) to_sent from shipment_in_creation sic inner join article a on sic.article_id = a.id join company c on a.company_id = c.id join users u on u.company = c.name where  sic.warehouse_id = ?1 and u.username like ?2 group by article_number) a group by article_number order by article_number" , nativeQuery = true)
-    List<Long> stockDifferenceQty(Long id, String username);
+    @Query(value = "select distinct  sum(a.on_stock - a.to_sent) diff, article_number from ( select b.ar article_number, sum(b.on_stock) on_stock, b.to_sent from ( select distinct article_number ar, s.pieces_qty on_stock,0 to_sent from storage s inner join warehouse w on w.id = s.warehouse_id inner join article a on s.article_id = a.id join shipment_in_creation sic on s.article_id = sic.article_id join company c on a.company_id = c.id join users u on u.company = c.name where  w.name = ?1 and u.username like ?2 and s.status_id = 1 ) b group by b.ar,b.to_sent union select article_number, 0,sum(sic.pieces_qty) to_sent from shipment_in_creation sic inner join warehouse w on w.id = sic.warehouse_id inner join article a on sic.article_id = a.id join company c on a.company_id = c.id join users u on u.company = c.name where  w.name = ?1 and u.username like ?2 group by article_number) a group by article_number order by article_number" , nativeQuery = true)
+    List<Long> stockDifferenceQty(String warehouseName, String username);
 
-    @Query(value = "select sum(sic.pieces_qty) to_sent, article_number from shipment_in_creation sic inner join article a on sic.article_id = a.id join company c on a.company_id = c.id join users u on u.company = c.name where  sic.warehouse_id = ?1 and u.username like ?2  group by article_number order by article_number" , nativeQuery = true)
-    List<Long> shipmentCreationSummary(Long id, String username);
+    @Query(value = "select sum(sic.pieces_qty) to_sent, article_number from shipment_in_creation sic inner join warehouse w on w.id = sic.warehouse_id inner join article a on sic.article_id = a.id join company c on a.company_id = c.id join users u on u.company = c.name where  w.name = ?1 and u.username like ?2  group by article_number order by article_number" , nativeQuery = true)
+    List<Long> shipmentCreationSummary(String warehouseName, String username);
 
 //    @Query("Select distinct sic From ShipmentInCreation sic join fetch sic.article a join fetch Stock s on s.article = sic.article and s.warehouse = sic.warehouse and sic.company = s.company join fetch sic.company c join fetch sic.warehouse w JOIN fetch Users u on u.company = c.name where sic.creation_closed = false and w.id =?1 and u.username like ?2 order by 1 DESC")
 //    List<ShipmentInCreation> stockDifferencesTest(Long id, String username);

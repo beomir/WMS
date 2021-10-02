@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
 import pl.coderslab.cls_wms_app.entity.*;
+import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ShipMethodService;
@@ -15,8 +16,8 @@ import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CustomerService;
 import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
-import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,10 +36,10 @@ public class ShipmentInCreationController {
     private final CustomerService customerService;
     private final ShipmentService shipmentService;
     private final UsersService usersService;
-    private final CustomerUserDetailsService customerUserDetailsService;
+    private final LocationRepository locationRepository;
 
     @Autowired
-    public ShipmentInCreationController(ShipmentInCreationService shipmentInCreationService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, ArticleService articleService, UnitService unitService, CustomerService customerService, ShipmentService shipmentService, UsersService usersService, CustomerUserDetailsService customerUserDetailsService) {
+    public ShipmentInCreationController(ShipmentInCreationService shipmentInCreationService, ShipMethodService shipMethodService, WarehouseService warehouseService, CompanyService companyService, ArticleService articleService, UnitService unitService, CustomerService customerService, ShipmentService shipmentService, UsersService usersService, LocationRepository locationRepository) {
 
         this.shipMethodService = shipMethodService;
         this.warehouseService = warehouseService;
@@ -49,79 +50,85 @@ public class ShipmentInCreationController {
         this.customerService = customerService;
         this.shipmentService = shipmentService;
         this.usersService = usersService;
-        this.customerUserDetailsService = customerUserDetailsService;
+        this.locationRepository = locationRepository;
     }
 
     @GetMapping("/shipmentInCreation")
-    public String list(Model model, HttpSession session) {
-        List<ShipmentInCreation> getShipmentInCreation = shipmentInCreationService.getShipmentInCreationById(customerUserDetailsService.chosenWarehouse );
-        List<ShipMethod> shipMethod = shipMethodService.getShipMethod();
-        List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse );
-        model.addAttribute("shipments", getShipmentInCreation);
-        model.addAttribute("shipMethod", shipMethod);
-        model.addAttribute("warehouse", warehouse);
+    public String list(Model model,
+                       HttpSession session,
+                       @SessionAttribute(required = false) String chosenWarehouse,
+                       HttpServletRequest request) {
+        if(usersService.warehouseSelection(session,chosenWarehouse,request).equals("warehouseSelected")) {
 
-        List<Long> stockDifferences = shipmentInCreationService.stockDifference(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
-        model.addAttribute("stockDifferences", stockDifferences);
-        List<Long> stockDifferencesQty = shipmentInCreationService.stockDifferenceQty(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
-        model.addAttribute("stockDifferencesQty", stockDifferencesQty);
-        List<Long> shipmentCreationSummary = shipmentInCreationService.shipmentCreationSummary(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
-        model.addAttribute("shipmentCreationSummary", shipmentCreationSummary);
+            List<ShipmentInCreation> getShipmentInCreation = shipmentInCreationService.getShipmentsListForLoggedUser(chosenWarehouse,SecurityUtils.username());
+            List<ShipMethod> shipMethod = shipMethodService.getShipMethod();
+            model.addAttribute("shipments", getShipmentInCreation);
+            model.addAttribute("shipMethod", shipMethod);
 
-        List<Shipment> shipments = shipmentService.getShipment(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
-        model.addAttribute("shipment", shipments);
-        String messages = shipmentInCreationService.resultOfShipmentCreationValidation(customerUserDetailsService.chosenWarehouse );
-        model.addAttribute("messages", messages);
+            Warehouse warehouse = warehouseService.getWarehouseByName(chosenWarehouse);
+            model.addAttribute("warehouse", warehouse);
+            List<Long> stockDifferences = shipmentInCreationService.stockDifference(chosenWarehouse, SecurityUtils.username());
+            model.addAttribute("stockDifferences", stockDifferences);
 
-        int checkHowManyNotFinishedShipments = shipmentService.checkHowManyNotfinishedShipments(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
-        model.addAttribute("cHMNFS", checkHowManyNotFinishedShipments);
+            List<Long> stockDifferencesQty = shipmentInCreationService.stockDifferenceQty(chosenWarehouse, SecurityUtils.username());
+            model.addAttribute("stockDifferencesQty", stockDifferencesQty);
+            List<Long> shipmentCreationSummary = shipmentInCreationService.shipmentCreationSummary(chosenWarehouse, SecurityUtils.username());
+            model.addAttribute("shipmentCreationSummary", shipmentCreationSummary);
 
-        usersService.loggedUserData(model,session);
-        if(customerUserDetailsService.chosenWarehouse == null){
-            return "redirect:/warehouse";
-        }
-        else{
+            List<Shipment> shipments = shipmentService.getShipmentsForLoggedUser(chosenWarehouse, SecurityUtils.username());
+            model.addAttribute("shipment", shipments);
+            String messages = shipmentInCreationService.resultOfShipmentCreationValidation(chosenWarehouse);
+            model.addAttribute("messages", messages);
+
+            int checkHowManyNotFinishedShipments = shipmentService.checkHowManyNotFinishedShipments(chosenWarehouse, SecurityUtils.username());
+            model.addAttribute("cHMNFS", checkHowManyNotFinishedShipments);
+            usersService.loggedUserData(model, session);
+
             return "wmsOperations/shipmentInCreation";
         }
+        else{
+            return "redirect:/selectWarehouse";
+        }
+
     }
 
     @GetMapping("/formShipment")
-    public String shipmentForm(Model model,HttpSession session){
-        model.addAttribute("shipment", new ShipmentInCreation());
-        List<Customer> customers = customerService.getCustomer(SecurityUtils.username());
-        model.addAttribute("customers", customers);
+    public String shipmentForm(Model model,
+                               HttpSession session,
+                               @SessionAttribute(required = false) String chosenWarehouse,
+                               HttpServletRequest request){
+        if(usersService.warehouseSelection(session,chosenWarehouse,request).equals("warehouseSelected")) {
 
-        List<Unit> units = unitService.getUnit();
-        model.addAttribute("units", units);
+            model.addAttribute("shipment", new ShipmentInCreation());
+            List<Customer> customers = customerService.getCustomer(SecurityUtils.username());
+            model.addAttribute("customers", customers);
+            model.addAttribute("lastShipmentNumber", shipmentInCreationService.lastShipment());
 
-        List<ShipMethod> shipMethods = shipMethodService.getShipMethod();
-        model.addAttribute("shipMethods", shipMethods);
+            List<Unit> units = unitService.getUnit();
+            model.addAttribute("units", units);
+            List<ShipMethod> shipMethods = shipMethodService.getShipMethod();
+            model.addAttribute("shipMethods", shipMethods);
 
-        List<Article> articles = articleService.getArticle(SecurityUtils.username());
-        model.addAttribute("articles", articles);
+            List<Article> articles = articleService.getArticle(SecurityUtils.username());
+            model.addAttribute("articles", articles);
+            Warehouse warehouse = warehouseService.getWarehouseByName(chosenWarehouse);
+            model.addAttribute("warehouse", warehouse);
 
-        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse );
-        model.addAttribute("warehouses", warehouses);
+            int qtyOfOpenedShipmentsInCreation = shipmentInCreationService.qtyOfOpenedShipmentsInCreation(chosenWarehouse, SecurityUtils.username());
+            model.addAttribute("qtyOfOpenedShipmentsInCreation", qtyOfOpenedShipmentsInCreation);
+            List<ShipmentInCreation> openedShipments = shipmentInCreationService.openedShipments(chosenWarehouse, SecurityUtils.username());
+            model.addAttribute("openedShipments", openedShipments);
 
-        int qtyOfOpenedShipmentsInCreation = shipmentInCreationService.qtyOfOpenedShipmentsInCreation(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
-        model.addAttribute("qtyOfOpenedShipmentsInCreation", qtyOfOpenedShipmentsInCreation);
+            List<Company> activeCompany = companyService.getCompany();
+            model.addAttribute("activeCompany", activeCompany);
+            usersService.loggedUserData(model, session);
 
-        List<ShipmentInCreation> openedShipments = shipmentInCreationService.openedShipments(customerUserDetailsService.chosenWarehouse ,SecurityUtils.username());
-        model.addAttribute("openedShipments", openedShipments);
-
-        model.addAttribute("lastShipmentNumber", shipmentInCreationService.lastShipment());
-
-        List<Company> activeCompany = companyService.getCompany();
-        model.addAttribute("activeCompany", activeCompany);
-
-
-        usersService.loggedUserData(model, session);
-        if(customerUserDetailsService.chosenWarehouse == null){
-            return "redirect:/warehouse";
-        }
-        else{
             return "wmsOperations/formShipment";
         }
+        else{
+            return "redirect:/selectWarehouse";
+        }
+
     }
 
     @PostMapping("formShipment")
@@ -131,7 +138,10 @@ public class ShipmentInCreationController {
     }
 
     @GetMapping("/editShipment/{id}")
-    public String updateShipment(@PathVariable Long id, Model model, @SessionAttribute Long warehouseId,HttpSession session) {
+    public String updateShipment(@PathVariable Long id,
+                                 Model model,
+                                 @SessionAttribute(required = false) String chosenWarehouse,
+                                 HttpSession session) {
         ShipmentInCreation shipmentInCreation = shipmentInCreationService.findById(id);
         model.addAttribute(shipmentInCreation);
         model.addAttribute("localDateTime", LocalDateTime.now());
@@ -140,32 +150,29 @@ public class ShipmentInCreationController {
 
         List<Unit> units = unitService.getUnit();
         model.addAttribute("units", units);
-
         List<ShipMethod> shipMethods = shipMethodService.getShipMethod();
         model.addAttribute("shipMethods", shipMethods);
 
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         model.addAttribute("articles", articles);
-
-        List<Warehouse> warehouses = warehouseService.getWarehouse(warehouseId);
-        model.addAttribute("warehouses", warehouses);
+        Warehouse warehouse = warehouseService.getWarehouseByName(chosenWarehouse);
+        model.addAttribute("warehouse", warehouse);
 
         List<Company> activeCompany = companyService.getCompany();
         model.addAttribute("activeCompany", activeCompany);
-
         usersService.loggedUserData(model,session);
         return "wmsOperations/editShipment";
     }
 
     @PostMapping("editShipment")
     public String updateShipmentPost(ShipmentInCreation shipmentInCreation) {
-        shipmentInCreationService.addShipmentInCreation(shipmentInCreation);
+        shipmentInCreationService.editShipmentInCreation(shipmentInCreation);
         return "redirect:/shipment/shipmentInCreation";
     }
 
-    @GetMapping("/closeCreationShipment/{id}")
-    public String closeCreationShipment(@PathVariable Long id, @SessionAttribute Long warehouseId) {
-        shipmentInCreationService.closeCreationShipment(id,warehouseId);
+    @GetMapping("/closeCreationShipment/{shipmentNumber}")
+    public String closeCreationShipment(@PathVariable Long shipmentNumber, @SessionAttribute(required = false) String chosenWarehouse) {
+        shipmentInCreationService.closeCreationShipment(shipmentNumber,chosenWarehouse);
         return "redirect:/shipment/shipmentInCreation";
     }
 
@@ -175,4 +182,27 @@ public class ShipmentInCreationController {
         return "redirect:/shipment/shipmentInCreation";
     }
 
+
+    @GetMapping("/loadingDoor/{shipmentNumber}")
+    public String closeCreationAndStartPicking(@PathVariable Long shipmentNumber,
+                                               Model model,
+                                               @SessionAttribute(required = false) String chosenWarehouse,
+                                               HttpServletRequest request,HttpSession session) {
+        if(usersService.warehouseSelection(session,chosenWarehouse,request).equals("warehouseSelected")) {
+            List<Location> shipmentDoorLocations = locationRepository.shipmentDoorLocations(chosenWarehouse);
+            model.addAttribute("locations", shipmentDoorLocations);
+            model.addAttribute(shipmentNumber);
+            usersService.loggedUserData(model,session);
+            return "wmsOperations/loadingDoor";
+        }
+        else{
+            return "redirect:/selectWarehouse";
+        }
+    }
+
+    @PostMapping("loadingDoor")
+    public String closeCreationAndStartPickingPost(Long shipmentNumber, Long doorLocation,HttpSession session,@SessionAttribute(required = false) String chosenWarehouse) {
+        shipmentService.assignDoorLocationToShipment(shipmentNumber,doorLocation, session,chosenWarehouse);
+        return "redirect:/shipment/closeCreationShipment/" + shipmentNumber;
+    }
 }

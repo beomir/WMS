@@ -129,10 +129,12 @@ public class UsersServiceImpl implements UsersService {
         locationNameConstruction.message = "";
         addLocationToStorageZone.message = "";
         alertMessage = "";
-        articleServiceImpl.articleMessage = "";
+        session.setAttribute("articleMessage","");
         session.setAttribute("productionMessage","");
         session.setAttribute("receptionMessage","");
-
+        session.setAttribute("stockMessage","");
+        session.setAttribute("productionArticleMessage","");
+        session.setAttribute("stockTransferMessage","");
         String userName = "";
         if(SecurityUtils.username().equals("%")){
             userName = "admin";
@@ -166,6 +168,18 @@ public class UsersServiceImpl implements UsersService {
         }
         else{
             return "warehouseSelected";
+        }
+    }
+
+    @Override
+    public void nextURL(HttpServletRequest request,HttpSession session){
+        if(request.getRequestURL().toString().contains("localhost:8080")){
+            session.setAttribute("nextURL",request.getRequestURL().toString().substring(request.getRequestURL().toString().lastIndexOf("localhost:8080") + 14));
+            log.error("localHost: " + session.getAttribute("nextURL").toString());
+        }
+        else{
+            session.setAttribute("nextURL",request.getRequestURL().toString().substring(request.getRequestURL().toString().lastIndexOf("https://cls-wms.herokuapp.com") + 28));
+            log.error("Heroku: " +session.getAttribute("nextURL").toString());
         }
     }
 

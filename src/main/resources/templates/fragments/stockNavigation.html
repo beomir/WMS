@@ -19,37 +19,37 @@
             <span th:text="#{app.chWarehouse}"></span>
             <img th:src="@{/images/return.png}" class="right"/>
             </div></a>
-        <a th:href="@{/stock}" ><div th:text="#{app.checkStock}" class="btn">Check Stock</div></a>
-        <a th:href="@{/workDetails-browser}" ><div th:text="#{app.works}" class="btn">Works</div></a>
+        <div class="btn arrowsRight"><a th:href="@{/stock}" ><div th:text="#{app.checkStock}" style="color:#fff">Check Stock</div></a></div>
+        <div class="btn arrowsRight"><a th:href="@{/workDetails-browser}" ><div th:text="#{app.works}" style="color:#fff">Works</div></a></div>
         <div class="btn" id="productionMenu">
             <span th:text="#{app.productionMenu}"></span>
             <img id="productionImg" th:src="@{/images/list.png}" class="right"/>
         </div>
         <div id="productionBtn" class="d-none">
-            <a th:href="@{/production-browser}"><div th:text="#{app.ongoingProductions}" class="btn2"></div></a>
-            <a th:href="@{/startProducing}"><div th:text="#{app.startProducing}" class="btn2"></div></a>
+            <div class="btn2 arrowsRight"><a th:href="@{/production-browser}"><div th:text="#{app.ongoingProductions}" style="color: white"></div></a></div>
+            <div class="btn2 arrowsRight"><a th:href="@{/startProducing}"><div th:text="#{app.startProducing}" style="color: white"></div></a></div>
         </div>
-        <a th:href="@{/scanner/{token}(token=${token})}" ><div th:text="#{app.scanner}" class="btn">scanner</div></a>
+        <div class="btn arrowsRight"><a th:href="@{/scanner/{token}(token=${token})}" ><div th:text="#{app.scanner}" style="color: #fff">scanner</div></a></div>
         <div class="btn" id="reception">
             <span th:text="#{app.receptionMenu}"></span>
             <img id="receptionImg" th:src="@{/images/list.png}" class="right"/>
         </div>
         <div id="receptionBtn" class="d-none">
-        <a th:href="@{/reception/formReception}"><div th:text="#{app.declareReception}"  class="btn2">Declare Reception</div></a>
-        <a th:href="@{/reception/receptions-browser}"><div th:text="#{app.checkReceptions}"  class="btn2">Check Receptions</div></a>
+            <div class="btn2 arrowsRight"><a th:href="@{/reception/formReception}"><div th:text="#{app.declareReception}"  style="color: #fff">Declare Reception</div></a></div>
+            <div class="btn2 arrowsRight"><a th:href="@{/reception/receptions-browser}"><div th:text="#{app.checkReceptions}"  style="color: #fff">Check Receptions</div></a></div>
             </div>
         <div class="btn" id="shipment">
             <span th:text="#{app.shipmentMenu}"></span>
             <img id="shipmentImg" th:src="@{/images/list.png}" class="right"/>
         </div>
         <div id="shipmentBtn" class="d-none">
-        <a th:href="@{/shipment/formShipment}"><div th:text="#{app.declareShipment}" class="btn2">Declare Shipment</div></a>
-        <a th:href="@{/shipment/shipment}">
-            <ol class="btn2"><div th:text="#{app.checkShipment}" style="color: white;font-weight: normal">Check Shipments</div >
+            <div class="btn2 arrowsRight"><a th:href="@{/shipment/formShipment}"><div th:text="#{app.declareShipment}" style="color: white">Declare Shipment</div></a></div>
+        <a th:href="@{/shipment/shipments-browser}">
+            <ol class="btn2 arrowsDown"><div th:text="#{app.checkShipment}" style="color: white;font-weight: normal">Check Shipments</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.checkShipmentInCreation}" th:href="@{/shipment/shipmentInCreation}">Check Shipments in Creation</a>
+                            <a th:href="@{/shipment/shipmentInCreation}"><span th:text="#{app.checkShipmentInCreation}"></span></a>
                         </li>
                     </ul>
                 </li>
@@ -57,95 +57,93 @@
         </a>
             </div>
         <div class="btn" id="configuration">
-            <span th:text="#{app.setting}"></span>
+            <span th:text="#{app.config}"></span>
             <img id="settingImg" th:src="@{/images/list.png}" class="right"/>
         </div>
         <span id="configBtn" class="d-none" style="width:100%">
             <span sec:authorize="!hasRole('ROLE_ADMIN')">
         <a th:href="@{/user/scheduler}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.scheduler}" style="color: white;font-weight: normal">Scheduler</div>
+            <ol class="btn2 arrowsDown"><div th:text="#{app.scheduler}" style="color: white;font-weight: normal">Scheduler</div>
                 <li style="min-width: 100%;">
                     <ul>
-                        <li><a th:text="#{app.addScheduler}" th:href="@{/user/formScheduler}">Create Scheduler</a></li>
+                        <li><a th:href="@{/user/formScheduler}"><span th:text="#{app.addScheduler}"></span></a></li>
                     </ul>
                 </li>
             </ol>
         </a>
             <a th:href="@{/emailRecipients}" style="min-width: 100%">
-             <ol class="btn2"><div th:text="#{app.emailRecipientsList}" style="color: white;font-weight: normal">Emails Recipients list</div >
+             <ol class="btn2 arrowsDown"><div th:text="#{app.emailRecipientsList}" style="color: white;font-weight: normal">Emails Recipients list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a sec:authorize="hasRole('ROLE_USER')" th:text="#{app.addRecipientsList}" th:href="@{/user/formEmailRecipients}">Create New email recipient</a>
+                            <a sec:authorize="hasRole('ROLE_USER')"  th:href="@{/user/formEmailRecipients}"><span th:text="#{app.addRecipientsList}"></span></a>
                         </li>
                     </ul>
                 </li>
             </ol>
             </a>
             <a th:href="@{/article-browser}" style="min-width: 100%">
-             <ol class="btn2"><div th:text="#{app.articleList}" style="color: white;font-weight: normal">Article list</div >
+             <ol class="btn2 arrowsDown"><div th:text="#{app.articleList}" style="color: white;font-weight: normal">Article list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addArticle}" th:href="@{/formArticle}">Create New Article</a>
+                            <a  th:href="@{/formArticle}"><span th:text="#{app.addArticle}"></span></a>
                         </li>
                     </ul>
                 </li>
             </ol>
         </a>
                 <a th:href="@{/articleTypes}" style="min-width: 100%">
-                <ol class="btn2"><div th:text="#{app.articleTypes}" style="color: white;font-weight: normal">Article list</div >
+                <ol class="btn2 arrowsRight"><div th:text="#{app.articleTypes}" style="color: white;font-weight: normal">Article list</div >
                 </ol>
             </a>
              <a th:href="@{/shipment/customer}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.customerList}" style="color: white;font-weight: normal">Customer list</div >
+            <ol class="btn2 arrowsDown"><div th:text="#{app.customerList}" style="color: white;font-weight: normal">Customer list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addCustomer}" th:href="@{/shipment/formCustomer}">Create New Customer</a>
+                            <a  th:href="@{/shipment/formCustomer}"><span th:text="#{app.addCustomer}"></span></a>
                         </li>
                     </ul>
                 </li>
             </ol>
         </a>
             <a th:href="@{/reception/vendor}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.vendorList}" style="color: white;font-weight: normal">Vendor list</div >
+            <ol class="btn2 arrowsDown"><div th:text="#{app.vendorList}" style="color: white;font-weight: normal">Vendor list</div >
                 <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addVendor}" th:href="@{/reception/formVendor}">Create New Vendor</a>
+                            <a th:href="@{/reception/formVendor}"><span th:text="#{app.addVendor}"></span></a>
                         </li>
                     </ul>
                 </li>
             </ol>
         </a>
                 <a th:href="@{/user/transactions-browser}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.transactions}" style="color: white;font-weight: normal">Transaction</div>
+            <ol class="btn2 arrowsRight"><div th:text="#{app.transactions}" style="color: white;font-weight: normal">Transaction</div>
             </ol>
         </a>
                  <a th:href="@{/user/issueLog-browser}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.issueLog}" style="color: white;font-weight: normal">Issue Log</div>
+            <ol class="btn2 arrowsRight"><div th:text="#{app.issueLog}" style="color: white;font-weight: normal">Issue Log</div>
             </ol>
         </a>
                       <a th:href="@{/user/locations-browser}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.locations}" style="color: white;font-weight: normal">Locations</div>
+            <ol class="btn2 arrowsDown"><div th:text="#{app.locations}" style="color: white;font-weight: normal">Locations</div>
                  <li style="min-width: 100%;">
                     <ul>
-                        <li>
-                            <a th:text="#{app.addLocation}" th:href="@{/user/formLocation}">Create New Location</a>
-                            <a th:text="#{app.addLocations}" th:href="@{/user/formLocationPack}">Create Location pack</a>
-                            <a th:text="#{app.addLocationsToStorageZone}" th:href="@{/user/addLocToStorageZones}">Add Locations To Storage Zone</a>
-                        </li>
+                        <li> <a  th:href="@{/user/formLocation}"><span th:text="#{app.addLocation}"></span></a></li>
+                        <li> <a  th:href="@{/user/formLocationPack}"><span th:text="#{app.addLocations}"></span></a></li>
+                        <li> <a  th:href="@{/user/addLocToStorageZones}"><span th:text="#{app.addLocationsToStorageZone}"> </span></a></li>
                     </ul>
                 </li>
             </ol>
         </a>
              <a th:href="@{/user/storageZones-browser}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.storageZones}" style="color: white;font-weight: normal">Storage Zones</div>
+            <ol class="btn2 arrowsDown"><div th:text="#{app.storageZones}" style="color: white;font-weight: normal">Storage Zones</div>
                  <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addStorageZone}" th:href="@{/user/formLocation}">Create New Storage Zone</a>
+                            <a  th:href="@{/user/formLocation}"><span th:text="#{app.addStorageZone}"></span></a>
                         </li>
                     </ul>
                 </li>
@@ -160,47 +158,42 @@
         </div>
         <span id="companyBtn" class="d-none">
             <a th:href="@{/config/warehouseList}" >
-            <ol class="btn2"><div th:text="#{app.warehousesList}" style="color: white;font-weight: normal">Warehouses list</div >
+            <ol class="btn2 arrowsDown"><div th:text="#{app.warehousesList}" style="color: white;font-weight: normal">Warehouses list</div >
                 <li style="min-width: 100%;">
                     <ul>
-                        <li><a th:text="#{app.addWarehouse}" th:href="@{/config/formWarehouseCreation}">Create New Warehouse</a></li>
-                        <li><a th:text="#{app.deactivateWarehouse}"  th:href="@{/config/warehouseDeactivatedList}">Deactivated warehouses list</a></li>
+                        <li><a  th:href="@{/config/formWarehouseCreation}"><span th:text="#{app.addWarehouse}"></span></a></li>
+                        <li><a  th:href="@{/config/warehouseDeactivatedList}"><span th:text="#{app.deactivateWarehouse}"></span></a></li>
                     </ul>
                 </li>
             </ol>
         </a>
             <a th:href="@{/config/company}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.companiesList}" style="color: white;font-weight: normal">Companies list</div >
+            <ol class="btn2 arrowsDown"><div th:text="#{app.companiesList}" style="color: white;font-weight: normal">Companies list</div >
                 <li style="min-width: 100%;">
                     <ul>
-                        <li>
-                            <a th:text="#{app.addCompany}" th:href="@{/config/formCompany}">Create New Company</a>
-                        <li><a th:text="#{app.deactivateCompany}" th:href="@{/config/companyDeactivatedList}">Deactivated company list</a></li>
-                        </li>
+                        <li><a th:href="@{/config/formCompany}"><span th:text="#{app.addCompany}"></span></a></li>
+                        <li><a th:href="@{/config/companyDeactivatedList}"><span th:text="#{app.deactivateCompany}"></span></a></li>
+
                     </ul>
                 </li>
             </ol>
         </a>
         <a th:href="@{/reception/vendor}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.vendorList}" style="color: white;font-weight: normal">Vendor list</div>
+            <ol class="btn2 arrowsDown"><div th:text="#{app.vendorList}" style="color: white;font-weight: normal">Vendor list</div>
             <li style="min-width: 100%;">
                 <ul>
-                    <li>
-                        <a th:text="#{app.addVendor}" th:href="@{/reception/formVendor}">Create New Vendor</a>
-                    <li><a th:text="#{app.deactivateVendor}" th:href="@{/config/vendorDeactivatedList}">Deactivated vendor list</a></li>
-                    </li>
+                    <li><a th:href="@{/reception/formVendor}"><span th:text="#{app.addVendor}"></span></a></li>
+                    <li><a th:href="@{/config/vendorDeactivatedList}"><span th:text="#{app.deactivateVendor}"></span></a></li>
                 </ul>
             </li>
         </ol>
         </a>
         <a th:href="@{/shipment/customer}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.customerList}" style="color: white;font-weight: normal">Customer list</div >
+            <ol class="btn2 arrowsDown"><div th:text="#{app.customerList}" style="color: white;font-weight: normal">Customer list</div >
                 <li style="min-width: 100%;">
                     <ul>
-                        <li>
-                            <a th:text="#{app.addCustomer}" th:href="@{/shipment/formCustomer}">Create New Customer</a>
-                        <li><a th:text="#{app.deactivateCustomer}" th:href="@{/config/customerDeactivatedList}">Deactivated customer list</a></li>
-                        </li>
+                        <li><a  th:href="@{/shipment/formCustomer}"><span th:text="#{app.addCustomer}"></span></a></li>
+                        <li><a  th:href="@{/config/customerDeactivatedList}"><span th:text="#{app.deactivateCustomer}"></span></a></li>
                     </ul>
                 </li>
             </ol>
@@ -213,27 +206,25 @@
         </div>
         <span id="stockBtn" class="d-none">
         <a th:href="@{/article-browser}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.articleList}" style="color: white;font-weight: normal">Article list</div >
+            <ol class="btn2 arrowsDown"><div th:text="#{app.articleList}" style="color: white;font-weight: normal">Article list</div >
                 <li style="min-width: 100%;">
                     <ul>
-                        <li>
-                            <a th:text="#{app.addArticle}" th:href="@{formArticle}">Create New Article</a>
-                        <li><a th:text="#{app.deactivateArticle}" th:href="@{/config/articleDeactivatedList}">Deactivated article list</a></li>
-                        </li>
+                        <li><a th:href="@{formArticle}"><span th:text="#{app.addArticle}"></span></a></li>
+                        <li><a th:href="@{/config/articleDeactivatedList}"><span th:text="#{app.deactivateArticle}"></span></a></li>
                     </ul>
                 </li>
             </ol>
         </a>
             <a th:href="@{/articleTypes}" style="min-width: 100%">
-                <ol class="btn2"><div th:text="#{app.articleTypes}" style="color: white;font-weight: normal">Article list</div >
+                <ol class="btn2 arrowsRight"><div th:text="#{app.articleTypes}" style="color: white;font-weight: normal">Article list</div >
                 </ol>
             </a>
         <a th:href="@{/config/unit}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.unitsList}" style="color: white;font-weight: normal">Units list</div >
+            <ol class="btn2 arrowsDown"><div th:text="#{app.unitsList}" style="color: white;font-weight: normal">Units list</div >
                 <li style="min-width: 100%;">
                     <ul>
-                        <li><a th:text="#{app.addUnit}" th:href="@{/config/formUnitCreation}">Create New Unit</a></li>
-                        <li><a th:text="#{app.deactivateUnit}" th:href="@{/config/unitDeactivatedList}">Deactivated units list</a></li>
+                        <li><a th:href="@{/config/formUnitCreation}"><span th:text="#{app.addUnit}"></span></a></li>
+                        <li><a th:href="@{/config/unitDeactivatedList}"><span th:text="#{app.deactivateUnit}"></span></a></li>
                     </ul>
                 </li>
             </ol>
@@ -245,23 +236,22 @@
         </div>
         <span id="userBtn" class="d-none">
         <a th:href="@{/config/userList}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.userList}" style="color: white;font-weight: normal">User list</div >
+            <ol class="btn2 arrowsDown"><div th:text="#{app.userList}" style="color: white;font-weight: normal">User list</div >
                 <li style="min-width: 100%;">
                     <ul>
-                        <li><a th:text="#{app.addUser}" th:href="@{/config/formUserCreation}">Create New User</a></li>
-                        <li><a th:text="#{app.deactivateUsers}" th:href="@{/config/usersDeactivatedList}">Deactivated users list</a></li>
+                        <li><a  th:href="@{/config/formUserCreation}"><span th:text="#{app.addUser}"></span></a></li>
+                        <li><a  th:href="@{/config/usersDeactivatedList}"><span th:text="#{app.deactivateUsers}"></span></a></li>
                     </ul>
                 </li>
             </ol>
         </a>
         <a th:href="@{/emailRecipients}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.emailRecipientsList}" style="color: white;font-weight: normal">Emails Recipients list</div >
+            <ol class="btn2 arrowsDown"><div th:text="#{app.emailRecipientsList}" style="color: white;font-weight: normal">Emails Recipients list</div >
                 <li style="min-width: 100%;">
                     <ul>
-                        <li>
-                            <a th:text="#{app.addRecipientsList}" th:href="@{/user/formEmailRecipients}">Create New email recipient</a></li>
-                        <li><a th:text="#{app.deactivateRecipientsList}" th:href="@{/config/emailRecipientsDeactivatedList}">Deactivated email recipients</a>
-                        </li>
+                        <li><a th:href="@{/user/formEmailRecipients}"><span th:text="#{app.addRecipientsList}"></span></a></li>
+                        <li><a th:href="@{/config/emailRecipientsDeactivatedList}"><span th:text="#{app.deactivateRecipientsList}"></span></a></li>
+
                     </ul>
                 </li>
             </ol>
@@ -273,52 +263,50 @@
         </div>
         <span id="configBt" class="d-none">
             <a th:href="@{/config/extremely}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.extremely}" style="color: white;font-weight: normal">extremely</div>
+            <ol class="btn2 arrowsDown"><div th:text="#{app.extremely}" style="color: white;font-weight: normal">extremely</div>
                  <li style="min-width: 100%;">
                     <ul>
-                        <li><a th:text="#{app.addExtremely}" th:href="@{/config/formExtremelyCreation}">Create extremely</a></li>
+                        <li><a th:href="@{/config/formExtremelyCreation}"><span th:text="#{app.addExtremely}"></span></a></li>
                     </ul>
                 </li>
             </ol>
         </a>
             <a th:href="@{/user/scheduler}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.scheduler}" style="color: white;font-weight: normal">Scheduler</div>
+            <ol class="btn2 arrowsDown"><div th:text="#{app.scheduler}" style="color: white;font-weight: normal">Scheduler</div>
                 <li style="min-width: 100%;">
                     <ul>
-                        <li><a th:text="#{app.addScheduler}" th:href="@{/user/formScheduler}">Create Scheduler</a></li>
-                        <li><a th:text="#{app.deactivateSchedulers}" th:href="@{/config/schedulersDeactivatedList}">Deactivated schedulers list</a></li>
+                        <li><a th:href="@{/user/formScheduler}"><span th:text="#{app.addScheduler}"></span></a></li>
+                        <li><a th:href="@{/config/schedulersDeactivatedList}"><span th:text="#{app.deactivateSchedulers}"></span></a></li>
                     </ul>
                 </li>
             </ol>
         </a>
             <a th:href="@{/user/transactions-browser}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.transactions}" style="color: white;font-weight: normal">Transaction</div>
+            <ol class="btn2 arrowsRight"><div th:text="#{app.transactions}" style="color: white;font-weight: normal">Transaction</div>
             </ol>
         </a>
              <a th:href="@{/user/issueLog-browser}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.issueLog}" style="color: white;font-weight: normal">Issue Log</div>
+            <ol class="btn2 arrowsRight"><div th:text="#{app.issueLog}" style="color: white;font-weight: normal">Issue Log</div>
             </ol>
         </a>
                   <a th:href="@{/user/locations-browser}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.locations}" style="color: white;font-weight: normal">Locations</div>
+            <ol class="btn2 arrowsDown"><div th:text="#{app.locations}" style="color: white;font-weight: normal">Locations</div>
                  <li style="min-width: 100%;">
                     <ul>
-                        <li>
-                            <a th:text="#{app.addLocation}" th:href="@{/user/formLocation}">Create New Location</a>
-                            <a th:text="#{app.addLocations}" th:href="@{/user/formLocationPack}">Create Location pack</a>
-                            <a th:text="#{app.addLocationsToStorageZone}" th:href="@{/user/addLocToStorageZones}">Add Locations To Storage Zone</a>
-                            <a th:text="#{app.deactivatedList}" th:href="@{/config/locationsDeactivatedList}">Deactivated List</a>
-                        </li>
+                        <li> <a  th:href="@{/user/formLocation}"><span th:text="#{app.addLocation}"></span></a></li>
+                        <li> <a  th:href="@{/user/formLocationPack}"><span th:text="#{app.addLocations}"></span></a></li>
+                        <li> <a  th:href="@{/user/addLocToStorageZones}"><span th:text="#{app.addLocationsToStorageZone}"></span></a></li>
+                        <li> <a  th:href="@{/config/locationsDeactivatedList}"><span th:text="#{app.deactivatedList}"></span></a></li>
                     </ul>
                 </li>
             </ol>
         </a>
              <a th:href="@{/user/storageZones-browser}" style="min-width: 100%">
-            <ol class="btn2"><div th:text="#{app.storageZones}" style="color: white;font-weight: normal">Storage Zones</div>
+            <ol class="btn2 arrowsDown"><div th:text="#{app.storageZones}" style="color: white;font-weight: normal">Storage Zones</div>
                  <li style="min-width: 100%;">
                     <ul>
                         <li>
-                            <a th:text="#{app.addStorageZone}" th:href="@{/user/formLocation}">Create New Storage Zone</a>
+                            <a  th:href="@{/user/formLocation}"><span th:text="#{app.addStorageZone}"></span></a>
                         </li>
                     </ul>
                 </li>

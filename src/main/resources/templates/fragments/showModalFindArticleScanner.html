@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="showModalFindArticleScanner">
+<div class="overlay overlay--hidden"></div>
+<div class="modal modal--hidden">
+    <div style="background-color: darkblue" class="modal__contents">
+        <div class="modal__close-bar">
+            <span th:title="#{app.makeItClosed}" style="color: white" class="makeItBigger">X</span>
+        </div>
+        <p style="color: white"><span  id="textModalMessage" th:text="#{app.selectArticleWhichYouWantToFindNearLocation} + ': '"></span><span name="placeForLocationName"></span></p>
+        <form id="searchNearbyLocationsForArticle" style="text-align: center" method="post" th:action="@{/scanner/findArticleInNearbyLocations}">
+            <table style="text-align: left;width:100%">
+                <tr style="cursor: pointer;color: white"  th:each="stockPreview : ${stockPreviewList}">
+                    <td><div name="articleNumber" id="articleNumber" style="font-weight: bold" th:value="${stockPreview.article.article_number}"  th:text="${stockPreview.article.article_number}"></div></td>
+                </tr>
+            </table>
+            <br/><br/>
+            <label><span th:text="#{app.enterInHowManyLocationsToSearchForAnArticleMax} + ' ' + ${ScanSPLocNum.extremelyValue} + '    '" style="color: white;font-style: italic"></span><img id="informationIcon" class="makeItBigger" th:src="@{/images/32px-Information_icon.png}"  th:title="#{app.scanSPLocNumInfo}"/></label>
+            <input class="check" id="inHowManyLocations" pattern="[0-9]" min="1" th:max="${ScanSPLocNum.extremelyValue}" name="inHowManyLocations" type="number"/>
+            <input name="placeForLocationName" type="hidden"/>
+            <input name="valueToPreview" th:value="${valueToPreview}" type="hidden"/>
+            <input  type="hidden" th:value="${token}" name="token"/>
+        </form>
+    </div>
+</div>
+</div>
+</body>
+</html>

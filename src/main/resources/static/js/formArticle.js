@@ -44,6 +44,11 @@ function checkValidation(){
         returnToPreviousPage();
         return false;
     }
+    if(window.location.href.includes("formEditArticle") && finishProductStatus == false){
+        alert("Finish product: " + productionArticleConnectionForEdit.val() + " not exists")
+        returnToPreviousPage();
+        return false;
+    }
 }
 
 function returnToPreviousPage() {
@@ -76,26 +81,28 @@ specialStorageZone.addEventListener("click",function(){
 productionArticle.addEventListener("click", function (e) {
     if (!this.checked) {
         $("#hide").hide(400);
-        // $("#productionArticleConnection").removeAttr('required').val("")
+        $("#productionArticleConnection").removeAttr('required').val("")
         // $("#quantityForFinishedProduct").removeAttr('required').val("")
-        production.value = "false"
         productionArticleConnectionFunction();
     } else {
         $("#hide").show(400);
         // $("#productionArticleConnection").prop('required',true);
         // $("#quantityForFinishedProduct").prop('required',true);
         productionArticleConnectionFunction()
+        $("#productionArticleConnection").prop('required',true)
         production.value = "true"
     }
 })
 $('#productionArticle').click(function() {
     if ($(this).is(':checked')) {
         $("#productionArticleDetails").show(400);
+        $("#quantityForFinishedProduct").prop("required",true);
         $('html, body').animate({
             scrollTop: $("#productionArticleDetails").offset().top
         }, 2000);
     } else {
         $("#productionArticleDetails").hide(400);
+        $("#quantityForFinishedProduct").prop("required","");
         console.log("Checkbox is unchecked.")
         $('html, body').animate({
             scrollTop: $("#top").offset().top
@@ -104,6 +111,9 @@ $('#productionArticle').click(function() {
 });
 
 select.addEventListener("change", function () {
+    if(window.location.href.includes("formEditArticle")){
+        changeOptionForIntermediate();
+    }
     productionArticleConnectionFunction();
 
 })
@@ -118,10 +128,10 @@ function productionArticleConnectionFunction(){
         document.getElementById("productionArticleConnection").value = document.getElementById('articleNumber').value
         productionArticleConnection.innerHTML = document.getElementById('articleNumber').value
     }
-    else if(!window.location.href.includes("formEditArticle")){
+    else{
+
         productionArticleConnection.value = "";
         $("#productionArticleConnection").removeAttr('readonly').val("")
-
     }
 }
 
@@ -141,7 +151,7 @@ if(window.location.href.indexOf("formEditArticle") > -1){
     if(storageZoneValue=="NotAssigned"){
         $('#specialStorageZoneDetail option[value=""]').attr('selected','selected');
     }
-    //////////////////
+
 }
 
 /////////// 01.06.2021
@@ -188,6 +198,8 @@ function chooseProductionLocation(){
     document.getElementById("productionLocationHeader").style.display = "none";
     $("#productionLocationHeader").show(400);
 }
+
+
 
 
 

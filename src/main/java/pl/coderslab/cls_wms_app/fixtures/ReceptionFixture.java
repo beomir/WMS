@@ -11,7 +11,6 @@ import pl.coderslab.cls_wms_app.service.wmsValues.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 @Component
 //@Profile("local")
@@ -28,29 +27,37 @@ public class ReceptionFixture {
 
 
     private List<Reception> receptionList = Arrays.asList(
-            new Reception(null, null,null,12L, null,202000000000000006L,"BW1",null,null, 20200001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,12L, null,202000000000000007L,"EU1",null,null, 20200002L,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,12L, null,202000000000000008L,"EU1",null,null, 20200003L,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,10L, null,202000000000000005L,"EU1",null,null,20200004L,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,12L, null,201900000000000001L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,20L, null,201900000000000002L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,33L, null,201900000000000003L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,55L, null,201900000000000004L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,21L, null,201900000000000005L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,64L, null,201900000000000006L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,31L, null,201900000000000007L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,2L, null,201900000000000008L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,17L, null,201900000000000009L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,35L, null,201900000000000010L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,19L, null,201900000000000011L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,21L, null,201900000000000012L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,88L, null,201900000000000013L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,77L, null,201900000000000014L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
-            new Reception(null, null,null,65L, null,201900000000000015L,"BW1",null,null, 20190002L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null)
+            new Reception(null, null,null,12L, null,202100000000000006L,"BW1",null,null, 20200001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,12L, null,202100000000000007L,"EU1",null,null, 20200002L,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,12L, null,202100000000000008L,"EU1",null,null, 20200003L,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,10L, null,202100000000000005L,"EU1",null,null,20200004L,null,TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,10L, null,202000000000000000L,"EU1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,12L, null,202000000000000001L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,20L, null,202000000000000002L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,33L, null,202000000000000003L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,55L, null,202000000000000004L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,5L, null,202000000000000005L,"EU1",null,null, 20190002L ,null, TimeUtils.timeNowLong() + 1,TimeUtils.timeNowLong() + 1,"system",null),
+            new Reception(null, null,null,64L, null,202000000000000006L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,31L, null,202000000000000007L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,2L, null,202000000000000008L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,17L, null,202000000000000009L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,35L, null,202000000000000010L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,19L, null,202000000000000011L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,21L, null,202000000000000012L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,88L, null,202000000000000013L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,77L, null,202000000000000014L,"BW1",null,null, 20190001L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,65L, null,202000000000000015L,"BW1",null,null, 20190002L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,65L, null,202000000000000016L,"BW1",null,null, 20190002L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,65L, null,202000000000000017L,"BW1",null,null, 20190002L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,65L, null,202000000000000018L,"BW1",null,null, 20190002L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,65L, null,202000000000000019L,"BW1",null,null, 20190002L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,65L, null,202000000000000020L,"BW1",null,null, 20190002L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,65L, null,202000000000000021L,"BW1",null,null, 20190002L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null),
+            new Reception(null, null,null,65L, null,202000000000000022L,"BW1",null,null, 20190002L ,null, TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system",null)
     );
 
     @Autowired
-    public ReceptionFixture(ReceptionService receptionService, ArticleService articleService, VendorService vendorService, CompanyService companyService, WarehouseService warehouseService, UnitService unitService, StatusService statusService) {
+    public ReceptionFixture(ReceptionService receptionService, ArticleService articleService, VendorService vendorService, CompanyService companyService, WarehouseService warehouseService, UnitService unitService, StatusService statusService, LocationService locationService) {
         this.receptionService = receptionService;
         this.articleService = articleService;
         this.vendorService = vendorService;
@@ -58,6 +65,7 @@ public class ReceptionFixture {
         this.warehouseService = warehouseService;
         this.unitService = unitService;
         this.statusService = statusService;
+        this.locationService = locationService;
     }
 
     public void loadIntoDB() {
@@ -67,10 +75,16 @@ public class ReceptionFixture {
         List<Warehouse> warehouses = warehouseService.getWarehouse();
         List<Unit> unit = unitService.getUnit();
         List<Status> status = statusService.getStatus();
+        List<Location> locationList = locationService.getLocations();
 
         for (Reception reception : receptionList) {
             reception.setUnit(unit.get(0));
             receptionService.add(reception);
+        }
+
+        for (int i = 4; i < receptionList.size();i++) {
+            receptionList.get(i).setLocation(locationList.get(4));
+            receptionService.add(receptionList.get(i));
         }
 
         Reception reception1 = receptionList.get(0);

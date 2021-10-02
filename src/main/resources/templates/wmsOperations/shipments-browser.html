@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>WMS CLS app</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+
+	<script src ="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body onload="logo()">
+<div class="main-agileits">
+	<div th:include="fragments/header :: header"></div>
+</div>
+
+<span th:include="fragments/shipmentMenu :: shipmentMenu"></span>
+
+<div id="navigate-panel" style="float: left" class="mainw4-agileinfo">
+	<div th:include="fragments/stockNavigation :: stockNavigation"></div>
+</div>
+
+<div id="content" class="mainw3-agileinfo">
+	<div class="login-form">
+		<form  method="post" th:action="@{/shipment/shipments-browser}">
+			<div th:text="#{app.findShipment}" class="titleList"></div><br/>
+			<section>
+				<label th:text="#{app.warehouseName}" style="color: white;font-weight: bold"></label>
+				<select class="select-css" name="shipmentWarehouse">
+					<option th:each="i : ${warehouses}" th:value="${i.name}" th:text="${i.name}">
+					<option th:value="'%'">All</option>
+					</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label th:text="#{app.company}" style="color: white;font-weight: bold" ></label>
+				<select class="select-css" name="shipmentCompany">
+					<option th:each="i : ${companies}" th:value="${i.name}" th:text="${i.name}">
+					</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label th:text="#{app.customer}" style="color: white;font-weight: bold"></label>
+				<select class="select-css" name="shipmentCustomer">
+					<option selected th:value="'%'" th:text="#{app.all}">All</option>
+					<option th:each="i : ${customers}" th:value="${i.name}" th:text="${i.name}">
+					</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label th:text="#{app.status}" style="color: white;font-weight: bold"></label>
+				<select class="select-css" name="shipmentStatus">
+					<option selected th:value="'%'" th:text="#{app.all}">All</option>
+					<option th:each="i : ${status}" th:value="${i.status}" th:text="${i.status}">
+					</option>
+				</select>
+			</section><br/><br/>
+			<section>
+				<label th:text="#{app.location}" style="color: white;font-weight: bold">Location</label>
+				<input type="text" name="shipmentLocation"/>
+			</section>
+			<section>
+				<label th:text="#{app.shipmentNumber}" style="color: white;font-weight: bold"></label>
+				<input type="text" name="shipmentNumber"/>
+			</section>
+			<section>
+				<label th:text="#{app.handleDevice}" style="color: white;font-weight: bold"></label>
+				<input type="text" name="shipmentHdNumber"/>
+			</section>
+			<section>
+				<label th:text="#{app.createdBy}" style="color: white;font-weight: bold"></label>
+				<input type="text" name="shipmentCreatedBy"/>
+			</section>
+			<section>
+				<label th:text="#{app.shipmentCreated} + ' ' + #{app.from}" style="color: white;font-weight: bold"></label>
+				<input type="date" name="shipmentCreatedFrom"/>
+			</section>
+
+			<section>
+				<label th:text="#{app.shipmentCreated} + ' ' + #{app.to}" style="color: white;font-weight: bold"></label>
+				<input type="date" name="shipmentCreatedTo"/>
+			</section>
+
+			<section>
+				<br/><button class="button"  th:text="#{app.search}" type="submit">Search</button>
+			</section>
+		</form>
+
+	</div>
+
+	<div th:include="fragments/footer :: footer"></div>
+
+</div>
+<div class="w3copyright-agile">
+	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
+</div>
+</div>
+</body>
+</html>

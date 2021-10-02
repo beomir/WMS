@@ -17,7 +17,8 @@ public class ShipMethodFixture {
     private List<ShipMethod> shipMethodList = Arrays.asList(
             new ShipMethod(null, "LIFO", "Last in First out", TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
             new ShipMethod(null, "FIFO", "First in First out",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
-            new ShipMethod(null, "FEFO", "First expired First out",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
+            new ShipMethod(null, "FEFO", "First expired First out",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system"),
+            new ShipMethod(null, "Order_location_sequence", "Order location sequence",TimeUtils.timeNowLong(),TimeUtils.timeNowLong(),"system")
     );
 
     @Autowired

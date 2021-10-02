@@ -63,4 +63,22 @@ public class ProductionArticle {
         this.productionArticleConnection = productionArticleConnection;
         this.quantityForFinishedProduct = quantityForFinishedProduct;
     }
+
+    @Override
+    public String toString() {
+        return "ProductionArticle{" +
+                "id=" + id +
+                ", article=" + article +
+                ", storageZone=" + storageZone +
+                ", warehouse=" + warehouse +
+                ", company=" + company +
+                ", intermediateArticle=" + intermediateArticle +
+                ", productionArticleType='" + productionArticleType + '\'' +
+                ", productionArticleConnection='" + productionArticleConnection + '\'' +
+                ", quantityForFinishedProduct=" + quantityForFinishedProduct +
+                ", created='" + created + '\'' +
+                ", last_update='" + last_update + '\'' +
+                ", changeBy='" + changeBy + '\'' +
+                '}';
+    }
 }

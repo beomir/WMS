@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="stockPreviewHdDetails">
+    <section id="headerHdDetails">
+    <table style="color: white;text-align: left;width:100%">
+        <tr style="font-weight: bold">
+            <th th:text="#{app.locationName}"></th>
+            <th th:text="#{app.articleNumber}"></th>
+            <th th:text="#{app.handleDevice}"></th>
+            <th th:text="#{app.piecesQty}"></th>
+        </tr>
+        <tr th:each="stockPreview : ${stockPreviewList}">
+            <td id="locationName" th:text="${stockPreview.location.locationName}"></td>
+            <td th:text="${stockPreview.article.article_number}"></td>
+            <td th:text="${stockPreview.hd_number}"></td>
+            <td th:text="${stockPreview.pieces_qty}"></td>
+        </tr>
+    </table>
+    </section>
+    <div  class="show-modal2" style="text-align: center" th:title="#{app.articleInformation}"><img onclick="iconFlashing()" style="height: 70px;width:70px;cursor: pointer" class="makeItBigger"  th:src="@{/images/product.png}"/></div>
+    <table style="color: white;text-align: left;width:100%">
+        <tr style="font-weight: bold">
+            <th th:text="#{app.unit}"></th>
+            <th th:text="#{app.quality}"></th>
+            <th th:text="#{app.status}"></th>
+            <th th:text="#{app.receptionNumber}"></th>
+            <th th:text="#{app.articleClass}"></th>
+        </tr>
+        <tr th:each="stockPreview : ${stockPreviewList}">
+            <td th:text="${stockPreview.unit.name}"></td>
+            <td th:text="${stockPreview.quality}"></td>
+            <td th:text="${stockPreview.status.status}"></td>
+            <td th:text="${stockPreview.receptionNumber}"></td>
+            <td th:text="${stockPreview.article.articleTypes.articleClass}"></td>
+        </tr>
+    </table><br>
+    <div style="text-align: center" th:title="#{app.locationInformation}"><img style="height: 70px;width:70px;cursor: pointer" class="makeItBigger"  th:src="@{/images/location.png}"/></div>
+    <table style="color: white;text-align: left;width:100%">
+        <tr style="font-weight: bold">
+            <th th:text="#{app.storageZone}"></th>
+            <th th:text="#{app.freeSpaceInLocation}"></th>
+            <th th:text="#{app.freeWeightInLocation}"></th>
+        </tr>
+        <tr th:each="stockPreview : ${stockPreviewList}">
+            <td th:text="${stockPreview.location.storageZone.storageZoneName}"></td>
+            <td th:text="${stockPreview.location.temporaryFreeSpace}"></td>
+            <td th:text="${stockPreview.location.temporaryFreeWeight}"></td>
+        </tr>
+    </table><br>
+    <div style="text-align: center" th:title="#{app.changesInformation}"><img style="height: 70px;width:70px" class="makeItBigger"  th:src="@{/images/changes.png}"/></div>
+    <table style="color: white;text-align: left;width:100%">
+        <tr style="font-weight: bold">
+            <th th:text="#{app.created}"></th>
+            <th th:text="#{app.lastUpdate}"></th>
+            <th th:text="#{app.changedBy}"></th>
+        </tr>
+        <tr th:each="stockPreview : ${stockPreviewList}">
+            <td th:text="${stockPreview.created}"></td>
+            <td th:text="${stockPreview.last_update}"></td>
+            <td th:text="${stockPreview.changeBy}"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

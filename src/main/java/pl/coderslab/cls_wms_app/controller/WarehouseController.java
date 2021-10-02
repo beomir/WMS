@@ -10,7 +10,6 @@ import pl.coderslab.cls_wms_app.entity.Warehouse;
 import pl.coderslab.cls_wms_app.repository.WarehouseRepository;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
-import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
@@ -21,14 +20,12 @@ public class WarehouseController {
 
     private final WarehouseService warehouseService;
     private final UsersService usersService;
-    private final CustomerUserDetailsService customerUserDetailsService;
     private final WarehouseRepository warehouseRepository;
 
     @Autowired
-    public WarehouseController(WarehouseService warehouseService, UsersService usersService, CustomerUserDetailsService customerUserDetailsService, WarehouseRepository warehouseRepository) {
+    public WarehouseController(WarehouseService warehouseService, UsersService usersService, WarehouseRepository warehouseRepository) {
         this.warehouseService = warehouseService;
         this.usersService = usersService;
-        this.customerUserDetailsService = customerUserDetailsService;
         this.warehouseRepository = warehouseRepository;
     }
 
@@ -49,7 +46,8 @@ public class WarehouseController {
         session.setAttribute("warehouseId", id);
         session.setAttribute("chosenWarehouse",warehouseRepository.getOneWarehouse(id).getName());
         //saved session value to variable
-        customerUserDetailsService.chosenWarehouse = id;
+        Warehouse warehouse = warehouseRepository.getOne(id);
+        session.setAttribute("chosenWarehouse", warehouse.getName());
         return "redirect:/stock";
     }
 

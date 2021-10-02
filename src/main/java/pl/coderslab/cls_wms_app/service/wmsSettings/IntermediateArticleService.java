@@ -4,15 +4,16 @@ import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.IntermediateArticle;
 import pl.coderslab.cls_wms_app.entity.ProductionArticle;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public interface IntermediateArticleService {
 
     void add(IntermediateArticle intermediateArticle);
 
-    void addNew(IntermediateArticle intermediateArticle, Article article);
+    void addNew(ProductionArticle productionArticle, Article article);
 
-    void edit(IntermediateArticle intermediateArticle, Article article, String warehouseName,String productionArticleId);
+    void edit(ProductionArticle productionArticle, Article article, String warehouseName, boolean productionStatusOfArticle, HttpSession session);
 
     List<IntermediateArticle> getIntermediateArticlesByUsername(String username);
 

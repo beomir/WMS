@@ -731,11 +731,162 @@ ol > li:hover > ul
     display: block;
 }
 
+
+
 ol > li > ul > li
 {
     background-color: #0098d4;
     position: relative;
     z-index: 100;
+    transition: 0.5s;
+}
+
+ol > li > ul > li a span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+ol > li > ul > li a span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -10px;
+    transition: 0.5s;
+}
+
+ol > li > ul > li:hover a span {
+    padding-right: 15px;
+}
+
+ol > li > ul > li:hover a span:after {
+    opacity: 1;
+    right: 0;
+}
+
+.arrowsRight{
+    transition: all 0.5s;
+}
+
+.arrowsRight div{
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.arrowsRight div:after{
+    content: '\00bb';
+    position: absolute;
+    transform: scale(1.5);
+    opacity: 0;
+    top: 0;
+    right: -40px;
+    transition: 0.5s;
+}
+
+.arrowsRight:hover div{
+    padding-right: 45px;
+}
+
+.arrowsRight:hover div:after{
+    opacity: 1;
+    right: 0;
+}
+
+.arrowsRightShort{
+    transition: all 0.5s;
+}
+
+.arrowsRightShort div{
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.arrowsRightShort div:after{
+    content: '\00bb';
+    position: absolute;
+    transform: scale(1.5);
+    opacity: 0;
+    top: 0;
+    right: -5px;
+    transition: 0.5s;
+}
+
+.arrowsRightShort:hover div{
+    padding-right: 15px;
+}
+
+.arrowsRightShort:hover div:after{
+    opacity: 1;
+    right: 0;
+}
+
+.arrowsDown{
+    transition: all 0.5s;
+}
+
+.arrowsDown div{
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.arrowsDown div:after{
+    /*content: '\2B07';*/
+    content: '\2B9B';
+    transform: scale(1.5);
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.arrowsDown:hover div{
+    padding-right: 25px;
+}
+
+.arrowsDown:hover div:after{
+    opacity: 1;
+    right: 0;
+}
+
+
+.arrowsDown2{
+    transition: all 0.5s;
+}
+
+.arrowsDown2 > div{
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.arrowsDown2 > div:after{
+    /*content: '\2B07';*/
+    content: '\2B9B';
+    transform: scale(1.5);
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -30px;
+    transition: 0.5s;
+}
+
+.arrowsDown2:hover div{
+    padding-right: 35px;
+}
+
+.arrowsDown2:hover div:after{
+    opacity: 1;
+    right: 0;
 }
 
 /*ol > li > ul > li:hover*/
@@ -1279,6 +1430,21 @@ input:invalid:focus.check {
     -webkit-transform: scale(1.4);
 }
 
+.makeItBiggerSub{
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+}
+
+.makeItBiggerSub:hover{
+    -o-transition: all 0.6s;
+    -moz-transition: all 0.6s;
+    -webkit-transition: all 0.6s;
+    -moz-transform: scale(1.07);
+    -o-transform:scale(1.07);
+    -webkit-transform: scale(1.07);
+}
+
 .unsetColors tr:hover > td{
     background-color: unset !important;
     color: unset !important;
@@ -1291,4 +1457,121 @@ input:invalid:focus.check {
     -moz-transform: scale(1.4);
     -o-transform:scale(1.4);
     -webkit-transform: scale(1.4);
+}
+
+
+.overlay {
+    background-color: rgba(0,0,0,0.8);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.overlay--hidden {
+    display: none;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    transition: all .3s ease;
+}
+
+.modal--hidden {
+    display: none;
+}
+
+.modal__contents {
+    background-color: #fff;
+    padding: 2rem 4rem;
+    border: 2px solid #2309ca;
+}
+
+
+.modal__close-bar {
+     cursor: pointer;
+     display: flex;
+     justify-content: flex-end;
+     justify-content: flex-end;
+     margin-right: -2rem;
+     margin-top: -1rem;
+ }
+
+.show-modal {
+    background-color: #0098d4;
+    width: 100%;
+    height: 100%;
+    color:white;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.show-modal:hover{
+    background-color: #2309ca;
+}
+
+.show-modal span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.show-modal span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -10px;
+    transition: 0.5s;
+}
+
+.show-modal:hover span {
+    padding-right: 15px;
+}
+
+.show-modal:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+.show-modal2 {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.show-modal2 span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.show-modal2 span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -10px;
+    transition: 0.5s;
+}
+
+.show-modal2:hover span {
+    padding-right: 15px;
+}
+
+.show-modal2:hover span:after {
+    opacity: 1;
+    right: 0;
 }

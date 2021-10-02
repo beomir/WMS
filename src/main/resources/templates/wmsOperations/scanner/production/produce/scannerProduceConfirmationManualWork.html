@@ -25,11 +25,7 @@
 <div id="content" class="mainw3-agileinfo">
 	<div class="login-form">
 		<form method="post" th:action="@{/scanner/produceMenuManualWorkProductionNumberFound}">
-			<div class="titleList" th:text="#{app.scannerMenu}">Scanner Menu</div><br/>
-			<div style="font-size:25px;background: -webkit-linear-gradient(#751d1d, #efef08);-webkit-background-clip: text;-webkit-text-fill-color: transparent;;font-weight: bold;text-align: center" th:text="${message}"></div>
-			<div class="underTitle" th:text="#{app.production} + ' ' + #{app.produce}"></div><br/>
-			<div class="underTitle" th:text="#{app.selectedWarehuse} + ': ' + ${warehouse}"></div><br/>
-			<div class="underTitle" th:text="#{app.equipment} +  ': ' + ${equipment}"></div><br/>
+			<div th:include="fragments/scannerProduceProduction :: scannerProduceProduction"></div><br/>
 			<div class="formDescription" th:text="#{app.doYouConfirmTheProduction} + ' ' + ${workToDoFound.piecesQty} + ' ' + #{app.piecesOf} +  ' ' + ${workToDoFound.article} + ' ' + #{app.fromTheIntermediateArticlesBelow}"></div><br/><br/>
 			<br/><br/>
 			<table style="color: white;text-align: left;width:100%">
@@ -40,8 +36,9 @@
 			</table>
 			<br/><br/>
 			<input  type="hidden" th:value="${token}" name="token"/>
+			<input  type="hidden" th:value="${productionNumber}" name="productionNumberToConfirm"/>
 			<section style="display: flex; align-items: center;justify-content: center;">
-				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/5' + productionNumber}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
+				<a style="color:white"  th:href="@{${'/scanner/' + token + '/' + warehouse + '/' + equipment + '/5/2'}}"><div class="circleBig" th:title="#{app.moveBack}"><-</div></a>
 				<button type="submit" class="circleBig" style="font-size:12px" th:value="true" name="produceConfirmation" th:text="#{app.confirm}"></button>
 			</section>
 		</form>

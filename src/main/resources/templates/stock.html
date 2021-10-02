@@ -23,11 +23,12 @@
 	<div id="content" class="mainw3-agileinfo">
 		<div style="width: 1200px" class="login-form">
 			<div style="background-color: #00BCD4;border-radius: 3px" class="login-agileits-top">
-				<div th:each="warehouse: ${warehouse}" class="titleList" th:text="#{app.stockIn} +' ' + ${warehouse.city}"></div><br/>
+				<div class="titleList" th:text="#{app.stockIn} +' ' + ${warehouse.city}"></div><br/>
 
-				<div sec:authorize="!hasRole('ROLE_ADMIN')">
-					<div th:each="companies: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} +': ' + ${companies.name}"></div><br/><br/>
-				</div>
+				<span sec:authorize="!hasRole('ROLE_ADMIN')">
+					<div th:each="companies: ${companies}" style="color: white;text-align: center;font-size: 20px;font-weight: bold;" th:text="#{app.forCompany} +': ' + ${companies.name}"></div>
+				</span>
+				<div th:unless="${stockMessage == null}" id="message" style="color: darkred;font-weight: bold;text-align: center" th:text="${stockMessage}"></div><br/><br/>
 
 				<table  style="color: white;text-align: left;width:100%;border: solid 1px">
 					<tr style="border: solid 1px">
@@ -46,17 +47,17 @@
 					</tr>
 				    <tr name="stockTR" th:each="storage: ${stock}" th:style="${storage.status.status == 'to_send'} == TRUE ? 'background: blue;border: solid 1px;' :'border: solid 1px;'" th:styleappend="${storage.status.status == 'on_reception'} == TRUE ? 'background: green;border: solid 1px;' :'border: solid 1px' " >
 						<td th:if="${storage.pieces_qty} > 0" class="tables" th:text="${storage.location.locationName}"></td>
-						<td th:title="${storage.comment != null} == TRUE ? ${storage.comment}" th:style="${storage.comment != null && storage.comment != ''} == TRUE ? 'background: gray;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables" style="padding-bottom: 2px">
-							<ol><div th:text="${storage.hd_number}"></div>
+						<td th:title="${storage.comment != null} == TRUE ? ${storage.comment}" th:style="${storage.comment != null && storage.comment != ''} == TRUE ? 'background: gray;padding-bottom: 2px' : 'padding-bottom: 2px'" class="tables">
+							<ol class="arrowsDown"><div th:text="${storage.hd_number}"></div>
 								<li>
 									<ul>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeStatus}" th:href="@{/storage/formChangeStatus/{id}(id=${storage.id})}">Change Status</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeQuality}" th:href="@{/storage/formChangeQuality/{id}(id=${storage.id})}">Change Quality</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeQty}" th:href="@{/storage/formChangeQty/{id}(id=${storage.id})}">Change Qty</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeArticle}" th:href="@{/storage/formChangeArticleNumber/{id}(id=${storage.id})}">Change Article number</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.changeUnit}"  th:href="@{/storage/formChangeUnit/{id}(id=${storage.id})}">Change Unit</a></li>
-										<li th:unless="${storage.status.status.equals('to_send') || storage.status.status.equals('on_reception')}"><a th:text="#{app.transfer}" th:href="@{/storage/formTransfer/{id}(id=${storage.id})}">Transfer to another Location</a></li>
-										<li><a th:href="@{/formAddComment/{id}(id=${storage.id})}" th:text="#{app.addComment}">Add comment</a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a  th:href="@{/storage/formChangeStatus/{id}(id=${storage.id})}"><span th:text="#{app.changeStatus}"></span></a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a  th:href="@{/storage/formChangeQuality/{id}(id=${storage.id})}"><span th:text="#{app.changeQuality}"></span></a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a  th:href="@{/storage/formChangeQty/{id}(id=${storage.id})}"><span th:text="#{app.changeQty}"></span></a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a  th:href="@{/storage/formChangeArticleNumber/{id}(id=${storage.id})}"><span th:text="#{app.changeArticle}"></span></a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a   th:href="@{/storage/formChangeUnit/{id}(id=${storage.id})}"><span th:text="#{app.changeUnit}"></span></a></li>
+										<li th:if="${storage.status.process.equals('Stock') && !storage.status.status.equals('transfer')}"><a  th:href="@{/storage/formTransfer/{id}(id=${storage.id})}"><span th:text="#{app.transfer}"></span></a></li>
+										<li><a th:href="@{/formAddComment/{id}(id=${storage.id})}" ><span th:text="#{app.addComment}"></span></a></li>
 									</ul>
 								</li>
 							</ol>
@@ -68,7 +69,7 @@
 				        <td name="statusTD" class="tables" style="text-align: center;vertical-align: middle">
 							<img class="makeItBigger" th:title="${storage.status.status}"/>
 						</td>
-				        <td class="tables" th:text="${storage.location.freeSpace}"></td>
+				        <td class="tables" th:text="${#numbers.formatDecimal(storage.location.freeSpace,0,'COMMA',2,'POINT')}"></td>
 				        <td class="tables" th:text="${storage.location.freeWeight}"></td>
 						<td sec:authorize="hasRole('ROLE_ADMIN')" class="tables" th:text="${storage.company.name}"></td>
 						<td class="tables" th:text="${#strings.replace(#strings.substring(storage.last_update,0,19),'T',' ')}"></td>
@@ -78,7 +79,7 @@
 
 				</table>
 
-				<a th:href="@{/storage/formStock}"><div th:text="#{app.createStock}" class="buttonik" style="float: right;max-width: 20%;">Create Stock</div></a>
+				<a th:href="@{/storage/formStock}"><div  class="buttonik arrowsRight" style="float: right;max-width: 20%;"><div th:text="#{app.createStock}"></div></div></a>
 
 			</div><br/><br/>
 			<div th:include="fragments/footer :: footer"></div>

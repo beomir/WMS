@@ -32,7 +32,7 @@
 			<div th:text="#{app.truckArrived}" class="titleList"></div><br/>
 			<section>
 				<label th:text="#{app.assignDoorToReception} + ': ' + ${receptionNumber}" style="color: white;font-weight: bold"></label>
-				<select  class="select-css" th:value="${doorLocation}" name="doorLocation" id="doorLocation">
+				<select  class="select-css" name="doorLocation" id="doorLocation">
 					<option th:each="i : ${locations}" th:value="${i.id}" th:text="${i.locationName}">
 				</select>
 				<input type="hidden" th:value="${receptionNumber}" name="receptionNumber" id="receptionNumber"/>

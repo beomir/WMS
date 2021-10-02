@@ -29,9 +29,9 @@
 		<form method="post" th:action="@{/storage/formChangeUnit}">
 			<div class="titleList">Change Unit</div><br/>
 			<section>
-				<label style="color: white;font-weight: bold">Change unit</label>
-				<select class="select-css" th:field="*{stock.unit}" >
-					<option th:each="i : ${units}" th:value="${i.id}" th:text="${i.description}">
+				<label th:text="#{app.changeUnit}" style="color: white;font-weight: bold">Change unit</label>
+				<select id="new" class="select-css" name="newUnit" >
+					<option th:each="i : ${units}" th:value="${i.name}" th:text="${i.description}">
 				</select>
 
 				<input type="hidden" th:field="*{stock.id}"/>
@@ -47,7 +47,7 @@
 				<input type="hidden" th:field="*{stock.warehouse}" />
 				<input type="hidden" th:field="*{stock.comment}" />
 				<input type="hidden" th:field="*{stock.location}"/>
-				<input type="hidden" th:field="*{chosenStockPositionalStatus.unitId}"/>
+				<input id="old" type="hidden" th:field="*{stock.unit.name}"/>
 			</section><br/>
 			<section>
 				<br/><button class="button" type="submit">Save</button>
@@ -62,6 +62,6 @@
 <div class="w3copyright-agile">
 	<p>© 2017 Tiny Ui Login Form . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a></p>
 </div>
-</div>
+<script type="text/javascript" th:src="@{/js/stockChanges.js}"></script>
 </body>
 </html>

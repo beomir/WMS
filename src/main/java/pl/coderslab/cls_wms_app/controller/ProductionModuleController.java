@@ -179,7 +179,7 @@ public class ProductionModuleController {
     @GetMapping("producingHeader/{id}")
     public String producingHeader(@PathVariable Long id, Model model,@SessionAttribute(required = false) String chosenWarehouse,HttpSession session) {
 
-        String productionAfterCreationValue = extremelyRepository.checkProductionModuleStatus(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_after_creation").getExtremelyValue();
+        String productionAfterCreationValue = extremelyRepository.findExtremelyByCompanyNameAndExtremelyName(companyService.getOneCompanyByUsername(SecurityUtils.username()).getName(),"Production_after_creation").getExtremelyValue();
         model.addAttribute("productionAfterCreationValue",productionAfterCreationValue);
 
         Article article = articleRepository.articleForProduction(id,companyService.getOneCompanyByUsername(SecurityUtils.username()),chosenWarehouse);

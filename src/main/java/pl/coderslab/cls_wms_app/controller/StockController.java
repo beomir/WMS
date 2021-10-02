@@ -12,17 +12,17 @@ import pl.coderslab.cls_wms_app.repository.LocationRepository;
 import pl.coderslab.cls_wms_app.repository.StockRepository;
 import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.storage.StockService;
-import pl.coderslab.cls_wms_app.service.storage.StockServiceImpl;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
-import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
+import pl.coderslab.cls_wms_app.service.wmsOperations.WorkDetailsService;
+import pl.coderslab.cls_wms_app.service.wmsSettings.ExtremelyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.StatusService;
 import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
-import pl.coderslab.cls_wms_app.temporaryObjects.ChosenStockPositional;
-import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,81 +31,77 @@ import java.util.List;
 @Controller
 public class StockController {
     private final StockService stockService;
-    private final StockServiceImpl stockServiceImpl;
     private final UsersService usersService;
-    private final ReceptionService receptionService;
     private final WarehouseService warehouseService;
     private final CompanyService companyService;
     private final StatusService statusService;
     private final ArticleService articleService;
     private final UnitService unitService;
-    private CustomerUserDetailsService customerUserDetailsService;
     private final LocationRepository locationRepository;
-    private final StockRepository stockRepository;
     private final ArticleTypesRepository articleTypesRepository;
-    private final ChosenStockPositional chosenStockPositional;
+    private final ExtremelyService extremelyService;
+    private final WorkDetailsService workDetailsService;
+    private final StockRepository stockRepository;
 
 
     @Autowired
-    public StockController(StockService stockService, StockServiceImpl stockServiceImpl, UsersService usersService, ReceptionService receptionService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, CustomerUserDetailsService customerUserDetailsService, LocationRepository locationRepository, StockRepository stockRepository, ArticleTypesRepository articleTypesRepository, ChosenStockPositional chosenStockPositional) {
+    public StockController(StockService stockService, UsersService usersService, WarehouseService warehouseService, CompanyService companyService, StatusService statusService, ArticleService articleService, UnitService unitService, LocationRepository locationRepository, ArticleTypesRepository articleTypesRepository, ExtremelyService extremelyService, WorkDetailsService workDetailsService, StockRepository stockRepository) {
         this.stockService = stockService;
-        this.stockServiceImpl = stockServiceImpl;
         this.usersService = usersService;
-        this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.companyService = companyService;
         this.statusService = statusService;
         this.articleService = articleService;
         this.unitService = unitService;
-        this.customerUserDetailsService = customerUserDetailsService;
         this.locationRepository = locationRepository;
-        this.chosenStockPositional = chosenStockPositional;
-        this.stockRepository = stockRepository;
         this.articleTypesRepository = articleTypesRepository;
+        this.extremelyService = extremelyService;
+        this.workDetailsService = workDetailsService;
+        this.stockRepository = stockRepository;
     }
 
     @GetMapping("/stock")
-    public String list(Model model, HttpSession session) {
-        List<Stock> storage = stockService.getStorage(customerUserDetailsService.chosenWarehouse,SecurityUtils.username());
-        List<Warehouse> warehouse = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
-        model.addAttribute("stock", storage);
-        model.addAttribute("warehouse", warehouse);
-
-        usersService.loggedUserData(model,session);
-        if(customerUserDetailsService.chosenWarehouse == null){
-            return "redirect:/warehouse";
+    public String list(Model model, HttpSession session, @SessionAttribute(required = false) String chosenWarehouse, HttpServletRequest request,
+                       @SessionAttribute(required = false) String stockMessage) {
+        if(usersService.warehouseSelection(session,chosenWarehouse,request).equals("warehouseSelected")){
+            List<Stock> storage = stockService.getStorage(chosenWarehouse,SecurityUtils.username());
+            Warehouse warehouse = warehouseService.getWarehouseByName(chosenWarehouse);
+            model.addAttribute("stock", storage);
+            model.addAttribute("warehouse", warehouse);
+            model.addAttribute("stockMessage", stockMessage);
+            usersService.loggedUserData(model,session);
+            return "stock";
         }
             else{
-                return "stock";
+            return "redirect:/selectWarehouse";
         }
     }
 
     //change status
     @GetMapping("/storage/formChangeStatus/{id}")
     public String updateStockChangeStatus(@PathVariable Long id, Model model,HttpSession session) {
-        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
+
         Stock stock = stockService.findById(id);
-        chosenStockPositionalStatus.setStatusId(stock.getStatus().getId());
-        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
+
         List<Status> statuses = statusService.getStockStatuses();
         model.addAttribute("statuses", statuses);
+
         model.addAttribute(stock);
         usersService.loggedUserData(model,session);
         return "storage/formChangeStatus";
     }
 
     @PostMapping("/storage/formChangeStatus")
-    public String updateStockChangeStatusPost(Stock stock, ChosenStockPositional chosenStockPositionalStatus) {
-        stockService.changeStatus(stock, chosenStockPositionalStatus);
+    public String updateStockChangeStatusPost(Stock stock, String newStatus,HttpSession session) {
+        stockService.changeStatus(stock, newStatus,session);
         return "redirect:/stock";
     }
     //change article number
     @GetMapping("/storage/formChangeArticleNumber/{id}")
     public String updateStockChangeArticleNumber(@PathVariable Long id, Model model,HttpSession session) {
-        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
+
         Stock stock = stockService.findById(id);
-        chosenStockPositionalStatus.setArticleId(stock.getArticle().getId());
-        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
+
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         model.addAttribute("articles", articles);
         model.addAttribute(stock);
@@ -114,8 +110,8 @@ public class StockController {
     }
 
     @PostMapping("/storage/formChangeArticleNumber")
-    public String updateStockChangeArticleNumberPost(Stock stock, ChosenStockPositional chosenStockPositionalStatus) {
-        stockService.changeArticleNumber(stock,chosenStockPositionalStatus);
+    public String updateStockChangeArticleNumberPost(Stock stock, String newArticleNumber,HttpSession session) {
+        stockService.changeArticleNumber(stock,newArticleNumber,session);
         return "redirect:/stock";
     }
 
@@ -123,19 +119,17 @@ public class StockController {
 
     @GetMapping("/storage/formChangeQty/{id}")
     public String updateStockChangeQuantity(@PathVariable Long id, Model model,HttpSession session) {
-        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
+
         Stock stock = stockService.findById(id);
-        chosenStockPositionalStatus.setPieces_qtyObj(stock.getPieces_qty());
-        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
         model.addAttribute(stock);
-        log.error("GET chosenStockPositionalStatus: " + chosenStockPositionalStatus);
+
         usersService.loggedUserData(model,session);
         return "storage/formChangeQty";
     }
 
     @PostMapping("/storage/formChangeQty")
-    public String updateStockChangeQuantityPost(Stock stock, ChosenStockPositional chosenStockPositionalStatus) {
-        stockService.changeQty(stock,chosenStockPositionalStatus);
+    public String updateStockChangeQuantityPost(Stock stock, String newQuantity,HttpSession session) {
+        stockService.changeQty(stock,newQuantity,session);
         return "redirect:/stock";
     }
 
@@ -143,18 +137,16 @@ public class StockController {
 
     @GetMapping("/storage/formChangeQuality/{id}")
     public String updateStockChangeQuality(@PathVariable Long id, Model model,HttpSession session) {
-        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
         Stock stock = stockService.findById(id);
-        chosenStockPositionalStatus.setQualityObj(stock.getQuality());
-        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
         model.addAttribute(stock);
         usersService.loggedUserData(model,session);
+
         return "storage/formChangeQuality";
     }
 
     @PostMapping("/storage/formChangeQuality")
-    public String updateStockChangeQualityPost(Stock stock, ChosenStockPositional chosenStockPositionalStatus) {
-        stockService.changeQuality(stock,chosenStockPositionalStatus);
+    public String updateStockChangeQualityPost(Stock stock, String newQuality,HttpSession session) {
+        stockService.changeQuality(stock,newQuality,session);
         return "redirect:/stock";
     }
 
@@ -162,46 +154,41 @@ public class StockController {
 
     @GetMapping("/storage/formChangeUnit/{id}")
     public String updateStockChangeUnit(@PathVariable Long id, Model model,HttpSession session) {
-        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
+
         Stock stock = stockService.findById(id);
-        chosenStockPositionalStatus.setUnitId(stock.getUnit().getId());
-        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
         List<Unit> units = unitService.getUnit();
         model.addAttribute("units", units);
+
         model.addAttribute(stock);
         usersService.loggedUserData(model,session);
         return "storage/formChangeUnit";
     }
 
     @PostMapping("/storage/formChangeUnit")
-    public String updateStockChangeUnitPost(Stock stock, ChosenStockPositional chosenStockPositional) {
-        stockService.changeUnit(stock,chosenStockPositional);
+    public String updateStockChangeUnitPost(Stock stock, String newUnit,HttpSession session) {
+        stockService.changeUnit(stock,newUnit,session);
         return "redirect:/stock";
     }
 
     //Add Comment
 
     @GetMapping("/formAddComment/{id}")
-    public String updateStockAddComment(@PathVariable Long id, Model model,HttpSession session) {
-        ChosenStockPositional chosenStockPositionalStatus = new ChosenStockPositional();
+    public String updateStockAddComment(@PathVariable Long id, Model model,HttpSession session)  {
         Stock stock = stockService.findById(id);
-        chosenStockPositionalStatus.setCommentObj(stock.getComment());
-        model.addAttribute("chosenStockPositionalStatus",chosenStockPositionalStatus);
-        customerUserDetailsService.chosenStockPosition = stock;
         model.addAttribute(stock);
+
         usersService.loggedUserData(model, session);
         return "storage/formAddComment";
     }
 
     @PostMapping("/formAddComment")
-    public String updateStockAddCommentPost(Stock stock, ChosenStockPositional chosenStockPositional) {
-        stockService.changeComment(stock,chosenStockPositional);
+    public String updateStockAddCommentPost(Stock stock, String newComment,HttpSession session) {
+        stockService.changeComment(stock,newComment,session);
         return "redirect:/stock";
     }
 
 
     //DeleteStock
-
 //    @GetMapping("/delete/{id}")
 //    public String removeStock(@PathVariable Long id) {
 //        stockService.delete(id);
@@ -211,83 +198,118 @@ public class StockController {
     //Create Stock
 
     @GetMapping("/storage/formStock")
-    public String stockForm(Model model,HttpSession session){
+    public String stockForm(Model model,HttpSession session,@SessionAttribute(required = false) String chosenWarehouse){
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
-        List<Unit> units = unitService.getUnit();
-        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
         model.addAttribute("articles", articles);
-        model.addAttribute("warehouses", warehouses);
+
+        List<Unit> units = unitService.getUnit();
         model.addAttribute("units", units);
+
+        Warehouse warehouse = warehouseService.getWarehouseByName(chosenWarehouse);
+        model.addAttribute("warehouse", warehouse);
+
         model.addAttribute("stock", new Stock());
+
         List<Company> activeCompany = companyService.getCompany();
         model.addAttribute("activeCompany", activeCompany);
+
         model.addAttribute("localDateTime", LocalDateTime.now());
-        model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
-        List<Location> locations = locationRepository.locations(customerUserDetailsService.chosenWarehouse);
+        model.addAttribute("nextPalletNbr", extremelyService.nextPalletNbr());
+
+        List<Location> locations = locationRepository.locations(warehouse.getId());
         model.addAttribute("locations", locations);
+
         List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
         model.addAttribute("articleTypes", articleTypes);
-        model.addAttribute("locationN", stockServiceImpl.locationName);
+
         usersService.loggedUserData(model, session);
         return "storage/formStock";
     }
 
     @PostMapping("/storage/formStock")
-    public String stockFormPost(Stock stock,String locationN) {
+    public String stockFormPost(Stock stock,String locationN,HttpSession session) {
         log.error("POST: " + locationN);
-        stockService.addNewStock(stock,locationN);
+        stockService.addNewStock(stock,locationN,session);
         return "redirect:/stock";
     }
 
     //Transfer From FS
     @GetMapping("/storage/formTransfer/{id}")
-    public String transferFromFS(@PathVariable Long id, Model model,HttpSession session) {
+    public String transferFromFS(@PathVariable Long id,@SessionAttribute(required = false) String chosenWarehouse, Model model,HttpSession session) throws CloneNotSupportedException {
         List<Article> articles = articleService.getArticle(SecurityUtils.username());
         model.addAttribute("articles", articles);
-        ChosenStockPositional chosenStockPositional = new ChosenStockPositional();
         Stock stock = stockService.findById(id);
         model.addAttribute("stock", stock);
 
-        chosenStockPositional.setIdObj(stock.getId());
-        chosenStockPositional.setChangeByObj(stock.getChangeBy());
-        chosenStockPositional.setArticleId(stock.getArticle().getId());
-        chosenStockPositional.setCommentObj(stock.getComment());
-        chosenStockPositional.setCompanyId(stock.getCompany().getId());
-        chosenStockPositional.setCreatedObj(stock.getCreated());
-        chosenStockPositional.setHd_numberObj(stock.getHd_number());
-        chosenStockPositional.setLocationId(stock.getLocation().getId());
-        chosenStockPositional.setQualityObj(stock.getQuality());
-        chosenStockPositional.setUnitId(stock.getUnit().getId());
-        chosenStockPositional.setReceptionNumberObj(stock.getReceptionNumber());
-        chosenStockPositional.setWarehouseId(stock.getWarehouse().getId());
-        chosenStockPositional.setStatusId(stock.getStatus().getId());
-        chosenStockPositional.setLast_updateObj(stock.getLast_update());
-        chosenStockPositional.setPieces_qtyObj(stock.getPieces_qty());
-        chosenStockPositional.setShipmentNumberObj(stock.getShipmentNumber());
-
+        Stock chosenStockPositional = (Stock) stock.clone();
+        session.setAttribute("chosenStockPositional",chosenStockPositional);
         model.addAttribute("chosenStockPosition", chosenStockPositional);
-
         List<Unit> units = unitService.getUnit();
-        List<Warehouse> warehouses = warehouseService.getWarehouse(customerUserDetailsService.chosenWarehouse);
-        model.addAttribute("warehouses", warehouses);
+
+        Warehouse warehouse = warehouseService.getWarehouseByName(chosenWarehouse);
+        model.addAttribute("warehouse", warehouse);
         model.addAttribute("units", units);
         List<Company> activeCompany = companyService.getCompany();
+
         model.addAttribute("activeCompany", activeCompany);
         model.addAttribute("localDateTime", LocalDateTime.now());
-        model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
-        List<Location> locations = locationRepository.locations(customerUserDetailsService.chosenWarehouse);
+        model.addAttribute("nextPalletNbr", extremelyService.nextPalletNbr());
+
+        List<Location> locations = locationRepository.locations(warehouse.getId());
         model.addAttribute("locations", locations);
         List<ArticleTypes> articleTypes = articleTypesRepository.getArticleTypes();
         model.addAttribute("articleTypes", articleTypes);
-        model.addAttribute("locationN", stockServiceImpl.locationName);
-        usersService.loggedUserData(model,session);
+
+        int qtyOfTheSamePalletNumberInOneLocationByStockId = stockRepository.qtyOfTheSamePalletNumberInOneLocation(id);
+        model.addAttribute("qtyOfTheSamePalletNumberInOneLocation",qtyOfTheSamePalletNumberInOneLocationByStockId);
+        model.addAttribute("stockTransferMessage",session.getAttribute("stockTransferMessage").toString());
+
+        session.setAttribute("articleMessage","");
+        session.setAttribute("productionMessage","");
+        session.setAttribute("receptionMessage","");
+        session.setAttribute("stockMessage","");
+        session.setAttribute("productionArticleMessage","");
+        session.setAttribute("stockTransferMessage","");
+        String userName = "";
+        if(SecurityUtils.username().equals("%")){
+            userName = "admin";
+        }
+        else {
+            userName = SecurityUtils.username();
+        }
+        String token = usersService.FindUsernameByToken(userName);
+        model.addAttribute("token", token);
+        model.addAttribute("localDateTime", LocalDateTime.now());
+
+        List<Company> companies = companyService.getCompanyByUsername(SecurityUtils.username());
+        model.addAttribute("companies", companies);
         return "storage/formTransfer";
     }
 
     @PostMapping("/storage/formTransfer")
-    public String transferFromFSPost(Stock stock, String locationN, ChosenStockPositional chosenStockPositional) {
-        stockService.transfer(stock,locationN, chosenStockPositional);
-        return "redirect:/stock";
+    public String transferFromFSPost(Stock stock, String locationN,
+                                     @SessionAttribute(required = false) Stock chosenStockPositional,
+                                     String formTransfer,HttpSession session,boolean createNewPalletNumberInLocationCheckbox) throws CloneNotSupportedException {
+        log.error("createNewPalletNumberInLocationCheckbox: " + createNewPalletNumberInLocationCheckbox);
+        if(formTransfer.equals("2")){
+            if(stockService.transfer(stock,locationN, chosenStockPositional,session)){
+                return "redirect:/stock";
+            }
+            else{
+                return "redirect:/storage/formTransfer/" + stock.getId();
+            }
+
+        }
+        else if(formTransfer.equals("1") && stock.getStatus().getStatus().equals("on_hand")){
+            workDetailsService.createTransferWork(chosenStockPositional, stock, locationN);
+            session.setAttribute("stockMessage","Transfer Work number: " + chosenStockPositional.getHandle() + " created");
+            return "redirect:/stock";
+        }
+        else{
+            session.setAttribute("formTransferMessage","Transfer not possible because of wrong stock status");
+            return "redirect:/storage/formTransfer/"+ stock.getId();
+        }
+
     }
 
 }

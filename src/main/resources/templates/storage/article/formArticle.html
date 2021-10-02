@@ -74,7 +74,7 @@
 				</select>
 			</section><br/>
 			<section th:if="${productionModule} == 'on'">
-				<input type="checkbox" id="productionArticle"/>
+				<input type="checkbox" name="productionArticleCheckbox" id="productionArticle"/>
 				<label th:text="#{app.productionArticle}" style="letter-spacing: 2px;color: white"></label><br/><br/>
 				<div id="productionArticleDetails" style="background: #2309ca;border-radius:10px;padding: 8px">
 						<label th:text="#{app.productionArticleType}" style="color: white;font-weight: normal"></label>
@@ -85,7 +85,7 @@
 						<label th:text="#{app.productionArticleConnection}" style="color: white;font-weight: normal"></label>
 						<input class="check" id="productionArticleConnection" th:field="*{productionArticle.productionArticleConnection}" type="text"/>
 						<label th:text="#{app.quantityForOneFinishedProduct}" style="color: white;font-weight: normal"></label>
-						<input class="check" id="quantityForFinishedProduct" th:field="*{productionArticle.quantityForFinishedProduct}" pattern="^[0-9]*$" type="text" required/>
+						<input class="check" id="quantityForFinishedProduct" th:field="*{productionArticle.quantityForFinishedProduct}" pattern="^[0-9]*$" type="text"/>
 						<div id="productionLocation" style="background: #0066d4;border-radius:10px;padding: 5px">
 						<div th:text="#{app.locationToPutAsideAnIntermediateArticleForTheProductionOfTheFinalProduct}" style="color: white;font-weight: bold"></div><br/>
 							<label  th:text="#{app.whichWarehouse}" style="color: white;font-weight: bold"></label>

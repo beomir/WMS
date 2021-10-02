@@ -15,14 +15,11 @@ public interface ReceptionService {
 
     void edit(Reception reception,HttpSession session);
 
-
     Reception findById(Long id);
 
     void finishReception(Long receptionNmbr,HttpSession session) ;
 
     Long lastReception();
-
-    Long nextPalletNbr();
 
     List<Reception> openedReceptions(Long id, String username);
 
@@ -36,7 +33,7 @@ public interface ReceptionService {
 
     void sendReceptions(String company);
 
-    void insertFileContentToDB(File fsFile);
+    void insertFileContentToDB(File fsFile,String chosenWarehouse);
 
     void addNewReceptionLine(Reception reception,HttpSession session);
 
@@ -45,5 +42,7 @@ public interface ReceptionService {
     void finishUnloading(Long receptionNumber,HttpSession session);
 
     List<ReceptionRepository.ReceptionViewObject> receptionSummary(String company, String warehouse, String vendor, String status, String location, String receptionNumber, String hdNumber, String createdFrom, String createdTo, String createdBy);
+
+
 
 }

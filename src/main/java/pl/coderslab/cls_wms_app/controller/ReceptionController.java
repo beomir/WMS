@@ -15,11 +15,11 @@ import pl.coderslab.cls_wms_app.service.storage.ArticleService;
 import pl.coderslab.cls_wms_app.service.userSettings.UsersService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionService;
 import pl.coderslab.cls_wms_app.service.wmsOperations.ReceptionServiceImpl;
+import pl.coderslab.cls_wms_app.service.wmsSettings.ExtremelyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.CompanyService;
 import pl.coderslab.cls_wms_app.service.wmsValues.UnitService;
 import pl.coderslab.cls_wms_app.service.wmsValues.VendorService;
 import pl.coderslab.cls_wms_app.service.wmsValues.WarehouseService;
-import pl.coderslab.cls_wms_app.temporaryObjects.CustomerUserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -47,11 +47,12 @@ public class ReceptionController {
     private final LocationRepository locationRepository;
     private final StatusRepository statusRepository;
     private final WarehouseRepository warehouseRepository;
-    private CustomerUserDetailsService customerUserDetailsService;
+    private final ExtremelyService extremelyService;
+
 
 
     @Autowired
-    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository, LocationRepository locationRepository, StatusRepository statusRepository, WarehouseRepository warehouseRepository, CustomerUserDetailsService customerUserDetailsService) {
+    public ReceptionController(ReceptionService receptionService, WarehouseService warehouseService, ArticleService articleService, VendorService vendorService, CompanyService companyService, UnitService unitService, UsersService usersService, ReceptionServiceImpl receptionServiceImpl, ReceptionRepository receptionRepository, LocationRepository locationRepository, StatusRepository statusRepository, WarehouseRepository warehouseRepository, ExtremelyService extremelyService) {
         this.receptionService = receptionService;
         this.warehouseService = warehouseService;
         this.articleService = articleService;
@@ -64,7 +65,7 @@ public class ReceptionController {
         this.locationRepository = locationRepository;
         this.statusRepository = statusRepository;
         this.warehouseRepository = warehouseRepository;
-        this.customerUserDetailsService = customerUserDetailsService;
+        this.extremelyService = extremelyService;
 
     }
 
@@ -110,12 +111,18 @@ public class ReceptionController {
     }
 
     @GetMapping("reception")
-    public String list(Model model,@SessionAttribute(required = false) String chosenWarehouse,@SessionAttribute(required = false) String receptionCreatedBy,
-                       @SessionAttribute(required = false) String receptionWarehouse,@SessionAttribute(required = false) String receptionCompany,
-                       @SessionAttribute(required = false) String receptionVendor,@SessionAttribute(required = false) String receptionReceptionNumber
-            ,@SessionAttribute(required = false) String receptionHdNumber,@SessionAttribute(required = false) String receptionStatus,
-                       @SessionAttribute(required = false) String receptionLocation,@SessionAttribute(required = false) String receptionCreatedFrom
-            ,@SessionAttribute(required = false) String receptionCreatedTo,@SessionAttribute(required = false) String receptionMessage,HttpSession session) {
+    public String list(Model model,@SessionAttribute(required = false) String chosenWarehouse,
+                       @SessionAttribute(required = false) String receptionCreatedBy,
+                       @SessionAttribute(required = false) String receptionWarehouse,
+                       @SessionAttribute(required = false) String receptionCompany,
+                       @SessionAttribute(required = false) String receptionVendor,
+                       @SessionAttribute(required = false) String receptionReceptionNumber,
+                       @SessionAttribute(required = false) String receptionHdNumber,
+                       @SessionAttribute(required = false) String receptionStatus,
+                       @SessionAttribute(required = false) String receptionLocation,
+                       @SessionAttribute(required = false) String receptionCreatedFrom,
+                       @SessionAttribute(required = false) String receptionCreatedTo,
+                       @SessionAttribute(required = false) String receptionMessage,HttpSession session) {
 
         String warehouseName = receptionWarehouse;
         if(warehouseName==null){
@@ -153,7 +160,10 @@ public class ReceptionController {
     }
 
     @GetMapping("receptionDetails/{receptionNumber}")
-    public String list(@PathVariable Long receptionNumber,Model model,@SessionAttribute(required = false) String receptionMessage,@SessionAttribute(required = false) String chosenWarehouse, HttpServletRequest request,HttpSession session) {
+    public String list(@PathVariable Long receptionNumber,Model model,
+                       @SessionAttribute(required = false) String receptionMessage,
+                       @SessionAttribute(required = false) String chosenWarehouse,
+                       HttpServletRequest request,HttpSession session) {
         log.error("receptionMessage: " + receptionMessage);
         if(usersService.warehouseSelection(session,chosenWarehouse,request).equals("warehouseSelected")){
             List<Reception> reception = receptionRepository.getReceptionByReceptionNumber(receptionNumber);
@@ -184,7 +194,7 @@ public class ReceptionController {
     }
 
     @PostMapping("receptionFile")
-    public String receptionFile(@RequestParam("receptionFile") MultipartFile file)
+    public String receptionFile(@RequestParam("receptionFile") MultipartFile file,@SessionAttribute(required = false) String chosenWarehouse)
     {
         if(!file.isEmpty()) {
             try {
@@ -202,7 +212,7 @@ public class ReceptionController {
                 stream.close();
 
                 log.info("File {} has been successfully uploaded as {}", file.getOriginalFilename(), fileName);
-                receptionService.insertFileContentToDB(fsFile);
+                receptionService.insertFileContentToDB(fsFile,chosenWarehouse);
             } catch (Exception e) {
                 log.error("File has not been uploaded", e);
             }
@@ -216,7 +226,10 @@ public class ReceptionController {
 
 
     @GetMapping("formReception")
-    public String receptionForm(Model model, @SessionAttribute(required = false) String searchingWarehouse,@SessionAttribute(required = false) String chosenWarehouse, HttpServletRequest request,HttpSession session){
+    public String receptionForm(Model model,
+                                @SessionAttribute(required = false) String searchingWarehouse,
+                                @SessionAttribute(required = false) String chosenWarehouse,
+                                HttpServletRequest request,HttpSession session){
         String warehouseName = searchingWarehouse;
         if(searchingWarehouse==null){
             warehouseName = chosenWarehouse;
@@ -229,7 +242,7 @@ public class ReceptionController {
             List<Warehouse> warehouses = warehouseService.getWarehouse();
             Warehouse warehouse = warehouseService.getWarehouseByName(warehouseName);
             model.addAttribute("lastReceptionNumber", receptionService.lastReception());
-            model.addAttribute("nextPalletNbr", receptionService.nextPalletNbr());
+            model.addAttribute("nextPalletNbr", extremelyService.nextPalletNbr());
             model.addAttribute("reception", new Reception());
             model.addAttribute("articles", articles);
             model.addAttribute("vendors", vendors);
@@ -273,11 +286,9 @@ public class ReceptionController {
                                                  HttpServletRequest request,HttpSession session) {
         if(usersService.warehouseSelection(session,chosenWarehouse,request).equals("warehouseSelected")) {
             receptionService.closeCreation(receptionNumber, session);
-            Long doorLocation = 0L;
             List<Location> receptionDoorLocations = locationRepository.receptionDoorLocations(warehouseRepository.getWarehouseByName(chosenWarehouse).getId());
             model.addAttribute("locations", receptionDoorLocations);
             model.addAttribute(receptionNumber);
-            model.addAttribute(doorLocation);
             usersService.loggedUserData(model,session);
             return "wmsOperations/unloadingDoor";
         }
@@ -294,6 +305,7 @@ public class ReceptionController {
 
     @GetMapping("/finishUnloadingReception/{receptionNumber}")
     public String finishUnloading(@PathVariable Long receptionNumber, HttpSession session) {
+        //and create reception put away works
         receptionService.finishUnloading(receptionNumber,session);
         return "redirect:/reception/reception";
     }

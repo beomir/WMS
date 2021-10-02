@@ -1,14 +1,20 @@
 package pl.coderslab.cls_wms_app.service.storage;
 
 
+import pl.coderslab.cls_wms_app.entity.Article;
 import pl.coderslab.cls_wms_app.entity.Location;
+import pl.coderslab.cls_wms_app.entity.StorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationSearch;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 public interface LocationService {
+
+
 
     void add(Location location);
 
@@ -18,9 +24,9 @@ public interface LocationService {
 
     void createLocationPack(Location location, LocationNameConstruction locationNameConstruction);
 
-    List<Location> getLocationByWarehouseName(String warehouseName);
-
     List<Location> getLocations(); //for fixtures
+
+    List<Location> getLocationsByWarehouse(String warehouseName);
 
     List<Location> getDeactivatedLocations();
 
@@ -40,4 +46,13 @@ public interface LocationService {
 
     void addLocationsToStorageZone(AddLocationToStorageZone aLTSZ);
 
+    Location findAvailableLocationAfterProducing(Article article, StorageZone storageZone, String warehouseName);
+
+    Boolean reduceTheAvailableContentOfTheLocation(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName);
+
+    void restoreTheAvailableLocationCapacity(String locationName,Long articleNumber,Long piecesQty,String warehouseName,String companyName);
+
+    String findLocationWithEnoughSpaceAndWeight(Article article, String warehouseName, double articlesWeight, double articlesVolume, Map<String, Double> mapWeight, Map<String, Double> mapVolume,String action);
+
+    void moveBackTemporaryValuesToNormal(Map<String, Double> mapWeight, Map<String, Double> mapVolume,String warehouseName);
 }

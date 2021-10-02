@@ -6,15 +6,16 @@ import pl.coderslab.cls_wms_app.temporaryObjects.ArticleSearch;
 
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public interface ArticleService {
 
     void add(Article article);
 
-    void addNew(Article article, ProductionArticle productionArticle, HttpServletRequest request);
+    void addNew(Article article, ProductionArticle productionArticle, HttpServletRequest request, HttpSession session,boolean productionArticleCheckbox);
 
-    void edit(Article article, ProductionArticle productionArticle,HttpServletRequest request);
+    void edit(Article article, ProductionArticle productionArticle, HttpServletRequest request, HttpSession session,boolean productionArticleCheckbox);
 
     List<Article> getArticle(String username);
 
@@ -24,10 +25,13 @@ public interface ArticleService {
 
     Article findById(Long id);
 
+    void delete(Long id,HttpSession session);
 
-    void delete(Long id);
+    void deactivateFinishProductWithIntermediates(Long id,HttpSession session);
 
-    void activate(Long id);
+    void activate(Long id,HttpSession session);
+
+    void activateFinishProductWithIntermediates(Long id,HttpSession session);
 
     void save(ArticleSearch articleSearch);
 

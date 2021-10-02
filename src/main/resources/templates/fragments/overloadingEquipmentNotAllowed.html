@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+<div th:fragment="overloadingEquipmentNotAllowed">
+    <div class="formDescription" th:text="#{app.overloadedEquipmentNotAllowedInfo}"> </div><br/><br/><br/>
+    <br/><br/>
+    <input  type="hidden" th:value="${token}" name="token"/>
+    <input  type="hidden" th:value="${workNumber}" name="workNumber"/>
+
+</div>
+</body>
+</html>

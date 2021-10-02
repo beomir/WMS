@@ -3,12 +3,11 @@ package pl.coderslab.cls_wms_app.service.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.cls_wms_app.app.SecurityUtils;
-import pl.coderslab.cls_wms_app.entity.IssueLog;
-import pl.coderslab.cls_wms_app.entity.Location;
-import pl.coderslab.cls_wms_app.entity.Transaction;
+import pl.coderslab.cls_wms_app.entity.*;
 import pl.coderslab.cls_wms_app.repository.*;
 import pl.coderslab.cls_wms_app.service.wmsSettings.IssueLogService;
 import pl.coderslab.cls_wms_app.service.wmsSettings.TransactionService;
@@ -16,9 +15,11 @@ import pl.coderslab.cls_wms_app.temporaryObjects.AddLocationToStorageZone;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationNameConstruction;
 import pl.coderslab.cls_wms_app.temporaryObjects.LocationSearch;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.Integer.*;
 
@@ -29,6 +30,7 @@ public class LocationServiceImpl implements LocationService {
     public LocationSearch locationSearch;
     public LocationNameConstruction lNC;
     private final IssueLogService issueLogService;
+    private final ArticleRepository articleRepository;
     private final StorageZoneRepository storageZoneRepository;
     private final WarehouseRepository warehouseRepository;
     private final TransactionService transactionService;
@@ -41,11 +43,12 @@ public class LocationServiceImpl implements LocationService {
     String locationName;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC, IssueLogService issueLogService, StorageZoneRepository storageZoneRepository, WarehouseRepository warehouseRepository, TransactionService transactionService, CompanyRepository companyRepository, AddLocationToStorageZone addLocationToStorageZone, ExtremelyRepository extremelyRepository) {
+    public LocationServiceImpl(LocationRepository locationRepository, LocationSearch locationSearch, LocationNameConstruction lNC, IssueLogService issueLogService, ArticleRepository articleRepository, StorageZoneRepository storageZoneRepository, WarehouseRepository warehouseRepository, TransactionService transactionService, CompanyRepository companyRepository, AddLocationToStorageZone addLocationToStorageZone, ExtremelyRepository extremelyRepository) {
         this.locationRepository = locationRepository;
         this.locationSearch = locationSearch;
         this.lNC = lNC;
         this.issueLogService = issueLogService;
+        this.articleRepository = articleRepository;
         this.storageZoneRepository = storageZoneRepository;
         this.warehouseRepository = warehouseRepository;
         this.transactionService = transactionService;
@@ -393,6 +396,77 @@ public class LocationServiceImpl implements LocationService {
         }
     }
 
+    @Override
+    public Location findAvailableLocationAfterProducing(Article article, StorageZone storageZone, String warehouseName) {
+        if(locationRepository.getAvailableLocationForStorageZone(article.getArticleTypes().getMixed(),article.getWeight(),article.getVolume(),warehouseName,storageZone.getStorageZoneName()) == null){
+            return null;
+        }
+        else{
+            LocationRepository.AvailableLocationsForStorageZone availableLocationForStorageZone = locationRepository.getAvailableLocationForStorageZone(article.getArticleTypes().getMixed(),article.getWeight(),article.getVolume(),warehouseName,storageZone.getStorageZoneName());
+            Location location = locationRepository.findLocationByLocationName(availableLocationForStorageZone.getLocation(),warehouseName);
+            return location;
+        }
+
+    }
+
+    @Override
+    public Boolean reduceTheAvailableContentOfTheLocation(String locationName, Long articleNumber, Long piecesQty,String warehouseName,String companyName) {
+        Location location = locationRepository.findLocationByLocationName(locationName,warehouseName);
+        Article article = articleRepository.findArticleByArticleNumberAndCompanyName(articleNumber,companyName);
+        log.error("reduceTheAvailableContentOfTheLocation: ");
+        log.error("Article number: " + article.getArticle_number());
+        log.error("Pieces Qty: " + piecesQty);
+        double articlesVolume = Precision.round(article.getVolume() * piecesQty,2);
+        double articlesWeight = Precision.round(article.getWeight() * piecesQty,2);
+        log.error("articlesVolume: " + articlesVolume);
+        log.error("articlesWeight: " + articlesWeight);
+        log.error("location: " + locationName + " Warehouse: " + warehouseName);
+        log.error("locationFreeSpace: " + location.getFreeSpace());
+        log.error("locationFreeWeight: " + location.getFreeWeight());
+        String extremelyMaxEquipmentCapacityStatus = extremelyRepository.findExtremelyByCompanyNameAndExtremelyName(companyName,"max_capacity_on_equipment").getExtremelyValue();
+        log.error("extremelyMaxEquipmentCapacityStatus: " + extremelyMaxEquipmentCapacityStatus);
+        if(!extremelyMaxEquipmentCapacityStatus.equals("1") && (location.getFreeSpace() < articlesVolume || location.getFreeWeight() < articlesWeight)){
+            log.error("Not enough space or free weight");
+            return false;
+        }
+        else{
+            location.setFreeWeight(Precision.round(location.getFreeWeight() - articlesWeight,2));
+            location.setFreeSpace(Precision.round(location.getFreeSpace() - articlesVolume,2));
+            log.error("enough space and free weight");
+            return true;
+        }
+
+    }
+
+    @Override
+    public void restoreTheAvailableLocationCapacity(String locationName, Long articleNumber, Long piecesQty, String warehouseName, String companyName) {
+        log.error("restoreTheAvailableLocationCapacity:");
+        log.error("locationName: " + locationName);
+        Location location = locationRepository.findLocationByLocationName(locationName,warehouseName);
+        log.error("Location free space before: "+ location.getFreeSpace());
+        log.error("Location free weight before: "+ location.getFreeWeight());
+        Article article = articleRepository.findArticleByArticleNumberAndCompanyName(articleNumber,companyName);
+        double articlesVolume = Precision.round(article.getVolume() * piecesQty,2);
+        double articlesWeight = Precision.round(article.getWeight() * piecesQty,2);
+        log.error("articlesVolume: "+ articlesVolume);
+        log.error("articlesWeight: "+ articlesWeight);
+        location.setFreeSpace(Precision.round(location.getFreeSpace() + articlesVolume,2));
+        location.setFreeWeight(Precision.round(location.getFreeWeight() + articlesWeight,2));
+        location.setTemporaryFreeSpace(location.getFreeSpace());
+        location.setTemporaryFreeWeight(location.getFreeWeight());
+        log.error("Location free space after: "+ location.getFreeSpace());
+        log.error("Location free weight after: "+ location.getFreeWeight());
+        if(location.getFreeSpace() > location.getVolume()){
+            log.error("freeSpace: " + location.getFreeSpace() + " :: maxVolume:" + location.getVolume());
+            location.setFreeSpace(location.getVolume());
+        }
+        if(location.getFreeWeight() > location.getMaxWeight()){
+            log.error("freeWeight: " + location.getFreeWeight() + " :: maxWeight:" + location.getMaxWeight());
+            location.setFreeWeight(location.getMaxWeight());
+        }
+        locationRepository.save(location);
+    }
+
     private void addLocationsToStorageZoneIssueLogCreation(String requestedLocationToAdd, AddLocationToStorageZone aLTSZ) {
 
         if (locationRepository.findLocationByLocationName(requestedLocationToAdd,aLTSZ.warehouse) == null) {
@@ -422,7 +496,7 @@ public class LocationServiceImpl implements LocationService {
             Location location = locationRepository.findLocationByLocationName(requestedLocationToAdd,aLTSZ.warehouse);
             Transaction transaction = new Transaction();
             transaction.setAdditionalInformation("Location: " + requestedLocationToAdd + " have changed Storage Zone from: " + location.getStorageZone().getStorageZoneName() + ", to: " + aLTSZ.getStorageZone());
-            location.setStorageZone(storageZoneRepository.findStorageZoneByStorageZoneName(aLTSZ.getStorageZone()));
+            location.setStorageZone(storageZoneRepository.findStorageZoneByStorageZoneName(aLTSZ.getStorageZone(),aLTSZ.warehouse));
             location.setLast_update(LocalDateTime.now().toString());
             transaction.setHdNumber(0L);
             transaction.setArticle(0L);
@@ -505,7 +579,7 @@ public class LocationServiceImpl implements LocationService {
                 }
             } else if(maxQtyOfLocationsToCreate <= locationsRange){
                 log.error("Extremly value: " + maxQtyOfLocationsToCreate + " is lower than location range or extremelyValue is not a number check issueLog");
-                if(extremelyValueSetup == true){
+                if(extremelyValueSetup){
                     IssueLog issueLog = new IssueLog();
                     issueLog.setIssueLogContent("Exteremly value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremlyValue is not a number");
                     maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
@@ -532,7 +606,7 @@ public class LocationServiceImpl implements LocationService {
                 }
             } else if(maxQtyOfLocationsToCreate <= locationsRange){
                 log.error("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
-                if(extremelyValueSetup == true) {
+                if(extremelyValueSetup) {
                     IssueLog issueLog = new IssueLog();
                     issueLog.setIssueLogContent("Extremly value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
                     maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
@@ -560,7 +634,7 @@ public class LocationServiceImpl implements LocationService {
                 }
             } else if(maxQtyOfLocationsToCreate <= locationsRange){
                 log.error("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
-                if(extremelyValueSetup == true) {
+                if(extremelyValueSetup) {
                     IssueLog issueLog = new IssueLog();
                     issueLog.setIssueLogContent("Extremly value: " + maxQtyOfLocationsToCreate + " is lower than location range: " + locationsRange + " or extremelyValue is not a number check issueLog");
                     maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
@@ -608,7 +682,7 @@ public class LocationServiceImpl implements LocationService {
             }
             else if(maxQtyOfLocationsToCreate <= rackNumberRange * rackHeightRange * locationNumberRange){
                 log.error("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range + " + rackNumberRange * rackHeightRange * locationNumberRange + " or extremlyValue is not a number");
-                if(extremelyValueSetup == true) {
+                if(extremelyValueSetup) {
                     IssueLog issueLog = new IssueLog();
                     issueLog.setIssueLogContent("Extremely value: " + maxQtyOfLocationsToCreate + " is lower than location range or extremelyValue is not a number check issueLog");
                     maxQtyOfLocationToCreateLowerThanLocationRange(location, issueLog);
@@ -618,7 +692,7 @@ public class LocationServiceImpl implements LocationService {
         }
         log.error("maxQtyOfLocationsToCreate in main method: " + maxQtyOfLocationsToCreate);
         log.error("extremelyValueSetup: " + extremelyValueSetup);
-        if(extremelyValueSetup == false){
+        if(!extremelyValueSetup){
             lNC.message = "Extremely value for warehouse: " + location.getWarehouse().getName() + " is not setup, check issue log";
         }
         else if(maxQtyOfLocationsToCreate == 0){
@@ -709,15 +783,16 @@ public class LocationServiceImpl implements LocationService {
     }
 
 
-    @Override
-    public List<Location> getLocationByWarehouseName(String warehouseName) {
-        return locationRepository.getLocationByWarehouseName(warehouseName);
-    }
 
     //for fixtures
     @Override
     public List<Location> getLocations() {
         return locationRepository.getLocations();
+    }
+
+    @Override
+    public List<Location> getLocationsByWarehouse(String warehouseName) {
+        return locationRepository.getLocationsByWarehouse(warehouseName);
     }
 
     @Override
@@ -794,5 +869,64 @@ public class LocationServiceImpl implements LocationService {
             lCN.setSecondSepFloor(location.getLocationName().substring(3, 11));
         }
         return lCN;
+    }
+
+    @Override
+    public String findLocationWithEnoughSpaceAndWeight(Article article, String warehouseName, double articlesWeight, double articlesVolume, Map<String, Double> mapWeight, Map<String, Double> mapVolume, String action){
+        String articleType = article.getArticleTypes().getArticleClass();
+        BigDecimal articlesWeightBig = BigDecimal.valueOf(articlesWeight);
+        BigDecimal articlesVolumeBig = BigDecimal.valueOf(articlesVolume);
+        log.error(action +" " + article.getArticle_number() +  " Check if locations are available for all articles, articleType: " + articleType);
+        log.error(action +" " + article.getArticle_number() + " Check if locations are available for all articles,articlesWeight: " + articlesWeightBig.toPlainString());
+        log.error(action +" " + article.getArticle_number() + " Check if locations are available for all articles,articlesVolume: " + articlesVolumeBig.toPlainString());
+        String destinationLocation = locationRepository.getAvailableLocation("%" + articleType + "%",articlesWeight,articlesVolume,warehouseName).getLocation();
+        if(!destinationLocation.equals("noResult")){
+            Location location = locationRepository.findLocationByLocationName(destinationLocation,warehouseName);
+            log.error(action + " " + article.getArticle_number() +" locationName: " + location.getLocationName() +  " location.getTemporaryFreeSpace() " + location.getTemporaryFreeSpace());
+            log.error("mapWeight.get(destinationLocation): " + mapWeight.get(destinationLocation));
+            if(mapWeight.get(destinationLocation) == null){
+                mapWeight.put(destinationLocation,location.getTemporaryFreeWeight());
+                log.error(action + " mapWeight.put: " + destinationLocation + " " + location.getTemporaryFreeWeight());
+            }
+            log.error("mapVolume.get(destinationLocation): " + mapVolume.get(destinationLocation));
+            if(mapVolume.get(destinationLocation) == null){
+                mapVolume.put(destinationLocation,location.getTemporaryFreeSpace());
+                log.error(action + " mapVolume.put: " + destinationLocation + " " + location.getTemporaryFreeSpace());
+            }
+            BigDecimal freeWeightAfterCalculation = BigDecimal.valueOf(Precision.round(location.getTemporaryFreeWeight() - articlesWeight,2));
+            BigDecimal freeSpaceAfterCalculation = BigDecimal.valueOf(Precision.round(location.getTemporaryFreeSpace() - articlesVolume,2));
+            log.error(action + "for article:  " + article.getArticle_number() + " volumes: " + articlesVolumeBig +  " destinationLocation: " + location.getLocationName() + " free volume of location - articlesVolume: " +  freeSpaceAfterCalculation.toPlainString() + " free weight of location - articlesWeight: " +  freeWeightAfterCalculation.toPlainString());
+            location.setTemporaryFreeWeight(Precision.round(location.getTemporaryFreeWeight() - articlesWeight,2));
+            location.setTemporaryFreeSpace(Precision.round(location.getTemporaryFreeSpace() - articlesVolume,2));
+            locationRepository.save(location);
+        }
+        return destinationLocation;
+    }
+
+    @Override
+    public void moveBackTemporaryValuesToNormal(Map<String, Double> mapWeight, Map<String, Double> mapVolume,String warehouseName) {
+        log.error("moveBackTemporaryValuesToNormal enter");
+        for (Map.Entry<String, Double> entry : mapWeight.entrySet()) {
+            String locationName = entry.getKey();
+            Double weight = entry.getValue();
+            log.error("Weight map loop locationName: " + locationName + " ,weight: " + weight);
+            Location location = locationRepository.findLocationByLocationName(locationName,warehouseName);
+            log.error("Weight of location before restore value to normal: " + location.getTemporaryFreeWeight());
+            location.setTemporaryFreeWeight(weight);
+            locationRepository.save(location);
+            log.error("Weight of location after restore value to normal: "+ location.getTemporaryFreeWeight());
+        }
+        for (Map.Entry<String, Double> entry : mapVolume.entrySet()) {
+            String locationName = entry.getKey();
+            Double volume = entry.getValue();
+            log.error("Volume map loop locationName: " + locationName + " ,volume: " + volume);
+
+            Location location = locationRepository.findLocationByLocationName(locationName,warehouseName);
+            log.error("Volume of location before restore value to normal: " + location.getTemporaryFreeSpace());
+            location.setTemporaryFreeSpace(volume);
+            locationRepository.save(location);
+            log.error("Volume of location after restore value to normal: " + location.getTemporaryFreeSpace());
+        }
+
     }
 }

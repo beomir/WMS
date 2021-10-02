@@ -36,12 +36,29 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
 
     @Override
     public void addShipmentInCreation(ShipmentInCreation shipmentInCreation) {
+        List<ShipmentInCreation> shipmentInCreationList = shipmentInCreationRepository.getShipmentInCreationByShipmentNumberAndUserNameAndWarehouseName(shipmentInCreation.getShipmentNumber(),shipmentInCreation.getWarehouse().getName(),SecurityUtils.username());
+        if(shipmentInCreationList.size() > 0){
+            for (ShipmentInCreation shipmentInCreationEdit: shipmentInCreationList) {
+                shipmentInCreationEdit.setShipMethod(shipmentInCreation.getShipMethod());
+                shipmentInCreationRepository.save(shipmentInCreationEdit);
+            }
+        }
         shipmentInCreationRepository.save(shipmentInCreation);
     }
 
     @Override
-    public List<ShipmentInCreation> getShipmentInCreationById(Long id) {
-        return shipmentInCreationRepository.getShipmentInCreationById(id);
+    public void editShipmentInCreation(ShipmentInCreation shipmentInCreation) {
+        List<ShipmentInCreation> shipmentInCreationList = shipmentInCreationRepository.getShipmentInCreationByShipmentNumberAndUserNameAndWarehouseName(shipmentInCreation.getShipmentNumber(),shipmentInCreation.getWarehouse().getName(),SecurityUtils.username());
+        for (ShipmentInCreation shipmentInCreationEdit: shipmentInCreationList) {
+            shipmentInCreationEdit.setShipMethod(shipmentInCreation.getShipMethod());
+            shipmentInCreationRepository.save(shipmentInCreationEdit);
+        }
+        shipmentInCreationRepository.save(shipmentInCreation);
+    }
+
+    @Override
+    public List<ShipmentInCreation> getShipmentsListForLoggedUser(String warehouseName,String userName) {
+        return shipmentInCreationRepository.getShipmentsListForLoggedUser(warehouseName,userName);
     }
 
     @Override
@@ -56,8 +73,8 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
 
 
     @Override
-    public int qtyOfOpenedShipmentsInCreation(Long id, String username) {
-        return shipmentInCreationRepository.qtyOfOpenedShipmentsInCreation(id, username);
+    public int qtyOfOpenedShipmentsInCreation(String warehouseName, String username) {
+        return shipmentInCreationRepository.qtyOfOpenedShipmentsInCreation(warehouseName, username);
     }
 
     @Override
@@ -66,23 +83,23 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
     }
 
     @Override
-    public List<ShipmentInCreation> openedShipments(Long id, String username) {
-        return shipmentInCreationRepository.openedShipments(id, username);
+    public List<ShipmentInCreation> openedShipments(String warehouseName, String username) {
+        return shipmentInCreationRepository.openedShipments(warehouseName, username);
     }
 
     @Override
-    public List<Long> stockDifference(Long id, String username) {
-        return shipmentInCreationRepository.stockDifference(id, username);
+    public List<Long> stockDifference(String warehouseName, String username) {
+        return shipmentInCreationRepository.stockDifference(warehouseName, username);
     }
 
     @Override
-    public List<Long> stockDifferenceQty(Long id, String username) {
-        return shipmentInCreationRepository.stockDifferenceQty(id, username);
+    public List<Long> stockDifferenceQty(String warehouseName, String username) {
+        return shipmentInCreationRepository.stockDifferenceQty(warehouseName, username);
     }
 
     @Override
-    public List<Long> shipmentCreationSummary(Long id, String username) {
-        return shipmentInCreationRepository.shipmentCreationSummary(id, username);
+    public List<Long> shipmentCreationSummary(String warehouseName, String username) {
+        return shipmentInCreationRepository.shipmentCreationSummary(warehouseName, username);
     }
 
 
@@ -100,9 +117,10 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
 
 
     @Override
-    public void closeCreationShipment(Long id, @SessionAttribute Long warehouseId) {
-        ShipmentInCreation shipmentInCreation = shipmentInCreationRepository.getOne(id);
-        if(validateTheCorrectnessOfShipment(warehouseId)) {
+    public void closeCreationShipment(Long shipmentNumber, String chosenWarehouse) {
+        List<ShipmentInCreation> shipmentInCreationList = shipmentInCreationRepository.getShipmentInCreationByShipmentNumberAndUserNameAndWarehouseName(shipmentNumber,chosenWarehouse,SecurityUtils.username());
+        log.error("shipmentInCreationList: " + shipmentInCreationList);
+        if(validateTheCorrectnessOfShipment(chosenWarehouse)) {
 
             //old process based on SQL
 //            Long shipmentNmbr = shipmentInCreationRepository.getOne(id).getShipmentNumber();
@@ -113,53 +131,64 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
 //            shipmentInCreationRepository.insertDataToStockAfterCloseCreationWithCorrectStatus(warehouseId,SecurityUtils.username());
 //            shipmentInCreationRepository.deleteQtyAfterCloseCreation(warehouseId,SecurityUtils.username());
 //            shipmentInCreationRepository.deleteZerosOnStock(warehouseId,SecurityUtils.username());
+            for (ShipmentInCreation shipmentInCreation : shipmentInCreationList) {
+                int qtyToSend = shipmentInCreation.getPieces_qty().intValue();
+                log.error("qtyToSend: " + qtyToSend);
+                while (qtyToSend > 0) {
+                    String shipMethod = shipmentInCreation.getShipMethod().getMethod();
+                    Stock stockToSend = null;
+                    log.error("Ship Method: " + shipmentInCreation.getShipMethod().getMethod());
+                    if(shipMethod.equals("FIFO")){
+                        stockToSend = stockRepository.getStockById(stockRepository.searchStockToSendFIFO(shipmentInCreation.getArticle().getArticle_number(), shipmentInCreation.getWarehouse().getName(),shipmentInCreation.getCompany().getName()));
+                   log.error("Fifo direction");
+                    } else if(shipMethod.equals("FEFO")){
+                        stockToSend = stockRepository.getStockById(stockRepository.searchStockToSendFEFO(shipmentInCreation.getArticle().getArticle_number(), shipmentInCreation.getWarehouse().getName(),shipmentInCreation.getCompany().getName()));
+                        log.error("FEFO direction");
+                    } else if(shipMethod.equals("LIFO")){
+                        stockToSend = stockRepository.getStockById(stockRepository.searchStockToSendLIFO(shipmentInCreation.getArticle().getArticle_number(), shipmentInCreation.getWarehouse().getName(),shipmentInCreation.getCompany().getName()));
+                        log.error("LIFO direction");
+                    } else if(shipMethod.equals("Order_location_sequence")){
+                        stockToSend = stockRepository.getStockById(stockRepository.searchStockToSendOLS(shipmentInCreation.getArticle().getArticle_number(), shipmentInCreation.getWarehouse().getName(),shipmentInCreation.getCompany().getName()));
+                        log.error("Order_location_sequence direction");
+                    }
+                    int qtyToSendOnStock = stockToSend.getPieces_qty().intValue();
 
-            int qtyToSend = shipmentInCreation.getPieces_qty().intValue();
-            while(qtyToSend>0){
-                Stock stockToSend = stockRepository.getStockById(stockRepository.searchStockToSend(shipmentInCreation.getArticle().getArticle_number(),shipmentInCreation.getWarehouse().getName()));
-                int qtyToSendOnStock = stockToSend.getPieces_qty().intValue();
+                    log.error("Available to send from stock: " + stockToSend.getPieces_qty() + " stock id:" + stockToSend.getId());
+                    log.error("Left to be shipped: " + qtyToSend);
 
-                log.debug("Na stoku dostepne do wyslania: " + stockToSend.getPieces_qty() + " id stocku:" + stockToSend.getId());
-                log.debug("Pozostało do wyslania: " + qtyToSend);
+                    if (qtyToSendOnStock > qtyToSend) {
 
-                if(qtyToSendOnStock > qtyToSend) {
+                        newShipment(shipmentInCreation, qtyToSend, stockToSend);
+                        System.out.println("qtyToSendOnStock > qtyToSend, stock id: " + stockToSend.getId());
+                        stockToSend.setPieces_qty(stockToSend.getPieces_qty() - qtyToSend);
+                        stockService.add(stockToSend);
+                        if (qtyToSend - qtyToSendOnStock < 0) {
+                            qtyToSend = 0;
+                        } else {
+                            qtyToSend = qtyToSend - qtyToSendOnStock;
+                        }
 
-                    newShipment(shipmentInCreation, qtyToSend, stockToSend);
-                    System.out.println("qtyToSendOnStock > qtyToSend, stock id: " + stockToSend.getId());
-                    stockToSend.setPieces_qty(stockToSend.getPieces_qty() - qtyToSend);
-                    stockService.add(stockToSend);
-                    if(qtyToSend - qtyToSendOnStock < 0){
+                        log.error("on stock more than in shipment: qtyToSend " + qtyToSend);
+                    } else if (qtyToSendOnStock == qtyToSend) {
                         qtyToSend = 0;
-                    }
-                    else{
-                        qtyToSend = qtyToSend - qtyToSendOnStock;
-                    }
 
-                    log.debug("na stoku wiecej niz do wysylki: qtyToSend " + qtyToSend);
-                }
-                else if(qtyToSendOnStock == qtyToSend){
-                    qtyToSend = 0;
-
-                    log.debug("na stoku tyle co do wysylki");
-                    newShipment(shipmentInCreation, qtyToSendOnStock, stockToSend);
-                    stockService.remove(stockToSend.getId());
-                }
-                else{
-                    System.out.println("qtyToSendOnStock < qtyToSend, stock id: " + stockToSend.getId());
-                    newShipment(shipmentInCreation, qtyToSendOnStock, stockToSend);
-                    stockService.remove(stockToSend.getId());
-                    log.debug("na stoku mniej niz do wysylki");
-                    if(qtyToSend - qtyToSendOnStock < 0){
-                        qtyToSend = 0;
-                    }
-                    else{
-                        qtyToSend = qtyToSend - qtyToSendOnStock;
+                        log.error("the same value for send and on stock");
+                        newShipment(shipmentInCreation, qtyToSendOnStock, stockToSend);
+                        stockService.remove(stockToSend.getId());
+                    } else {
+                        System.out.println("qtyToSendOnStock < qtyToSend, stock id: " + stockToSend.getId());
+                        newShipment(shipmentInCreation, qtyToSendOnStock, stockToSend);
+                        stockService.remove(stockToSend.getId());
+                        log.error("less on stock than to send");
+                        if (qtyToSend - qtyToSendOnStock < 0) {
+                            qtyToSend = 0;
+                        } else {
+                            qtyToSend = qtyToSend - qtyToSendOnStock;
+                        }
                     }
                 }
+                remove(shipmentInCreation.getId());
             }
-
-            remove(id);
-
         }
     }
 
@@ -178,12 +207,15 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
         shipment.setShipmentNumber(shipmentInCreation.getShipmentNumber());
         shipment.setQuality(shipmentInCreation.getQuality());
         shipment.setShipMethod(shipmentInCreation.getShipMethod());
+        shipment.setLocation(shipmentInCreation.getLocation());
         shipment.setStatus(statusRepository.getStatusById(2L));
         shipment.setWarehouse(shipmentInCreation.getWarehouse());
         shipment.setChangeBy(SecurityUtils.username());
         shipmentService.add(shipment);
 
         Stock stock = new Stock();
+        stock.setReceptionNumber(stockToSend.getReceptionNumber());
+        stock.setLocation(stockToSend.getLocation());
         stock.setArticle(shipmentInCreation.getArticle());
         stock.setCompany(shipmentInCreation.getCompany());
         stock.setUnit(shipmentInCreation.getUnit());
@@ -201,26 +233,26 @@ public class ShipmentInCreationServiceImpl implements ShipmentInCreationService{
     }
 
     @Override
-    public Boolean validateTheCorrectnessOfShipment(@SessionAttribute Long warehouseId) {
-        List<Long> checkShipments = shipmentInCreationRepository.stockDifferenceQty(warehouseId, SecurityUtils.username());
+    public Boolean validateTheCorrectnessOfShipment(String chosenWarehouse) {
+        List<Long> checkShipments = shipmentInCreationRepository.stockDifferenceQty(chosenWarehouse, SecurityUtils.username());
         boolean shipmentReadyToCloseCreation = true;
         for (int i = 0; i < checkShipments.size(); i++) {
-            log.debug(String.valueOf(checkShipments.get(i)));
+            log.error(String.valueOf(checkShipments.get(i)));
 //            System.out.println(checkShipments.get(i));
             if (checkShipments.get(i) < 0) {
                 shipmentReadyToCloseCreation = false;
             }
         }
-        log.debug(String.valueOf(shipmentReadyToCloseCreation));
+        log.error(String.valueOf(shipmentReadyToCloseCreation));
 //        System.out.println(shipmentReadyToCloseCreation);
         return shipmentReadyToCloseCreation;
     }
 
     @Override
-    public String resultOfShipmentCreationValidation(@SessionAttribute Long warehouseId){
+    public String resultOfShipmentCreationValidation(@SessionAttribute String warehouseName){
         String failedAttempt = "Change red underlined qty to pass the validation";
-        String attemptSuccessful = "Validation passed succesfully. You can close creation without problem";
-        if(validateTheCorrectnessOfShipment(warehouseId)){
+        String attemptSuccessful = "Validation passed successfully. You can close creation without problem";
+        if(validateTheCorrectnessOfShipment(warehouseName)){
             return attemptSuccessful;
         }
         else{
